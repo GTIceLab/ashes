@@ -1,0 +1,16 @@
+{   
+
+    "_comment1":"Amatrixcol + Bmatrixcol = CEW_cols+CNS_cols+2",
+    "_comment2":"Num of input from CEW is CEW col-8, Num of input from CNS is CNS col-10",
+    "foundry": "TSMC",
+    "process_node": "350nm",
+    "cab1": ["TA2Cell_LongL_Cab__0","TA2Cell_LongL_Cab__1","TA2Cell_NoFG","4WTA_IndirectProg__0","4WTA_IndirectProg__1","NandPfets"],
+    "cab1_Cblock_rows":20,
+    "cab1_CEW_cols":14,
+    "cab1_CNS_cols":18,
+    "cab1_Amatrix_cols":16,
+    "col_cab1":[1,2,3,4,5,6,7]
+
+}
+
+
