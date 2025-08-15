@@ -1053,7 +1053,37 @@ class TSMC350nm_Modulation(StandardCell):
 		circuit.addInstance(self,self.island)
 
 
+class TSMC350nm_Termination_bot(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),GATE=None,IREF=None,IOUT=None,GND=None,GND_b=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_Termination_bot'
+		self.GATE = Port(circuit,self,'GATE','W',1*self.dim[0])
+		self.IREF = Port(circuit,self,'IREF','W',1*self.dim[0])
+		self.IOUT = Port(circuit,self,'IOUT','E',1*self.dim[0])
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
+
+
+		# Initialize ports with given values
+		portsInit = [GATE,IREF,IOUT,GND,GND_b]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)		
 		
+
 		
 class SHblock1:
 	def __init__(self,input,num_instances='1',type='FPAA',board=['3.0', '3.0a'],SHblock1_ls='0',SHblock1_Ibias='3e-06',SHblock1_cap0_1x_cs='1'):
