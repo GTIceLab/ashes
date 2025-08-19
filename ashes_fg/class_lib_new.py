@@ -2420,6 +2420,54 @@ class ChipFrame(StandardCell):
 		# Add cell to circuit
 		circuit.addInstance(self, self.island)
 
+class SmallPadFrame(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),gnd_N=None,esd_vdd_N=None,avdd_N=None,VINJ_N=None,DVDD_N=None,IO_N_CLK=None,IO_N=None,gnd_S=None,esd_vdd_S=None,avdd_S=None,VINJ_S=None,DVDD_S=None,IO_S=None,IO_Bare_E=None,gnd_E=None,IO_E_RES=None,IO_E=None,IO_Bare_W=None,gnd_W=None,IO_W_RES=None,IO_W=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'frame_6p9mm_2mm_edit'
+
+		self.gnd_N = Port(circuit,self,'gnd_N','N',9*self.dim[1])
+		self.esd_vdd_N = Port(circuit,self,'esd_vdd_N','N',3*self.dim[1])
+		self.avdd_N = Port(circuit,self,'avdd_N','N',3*self.dim[1])
+		self.VINJ_N = Port(circuit,self,'VINJ_N','N',3*self.dim[1])
+		self.DVDD_N = Port(circuit,self,'DVDD_N','N',3*self.dim[1])
+		self.IO_N_CLK = Port(circuit,self,'IO_N_CLK','N',4*self.dim[1])
+		self.IO_N = Port(circuit,self,'IO_N','N',36*self.dim[1])
+
+		self.gnd_S = Port(circuit,self, 'gnd_S' ,'S',3*self.dim[1])
+		self.esd_vdd_S = Port(circuit,self, 'esd_vdd_S' ,'S',3*self.dim[1])
+		self.avdd_S = Port(circuit,self, 'avdd_S' ,'S',3*self.dim[1])
+		self.VINJ_S = Port(circuit,self, 'VINJ_S' ,'S',3*self.dim[1])
+		self.DVDD_S = Port(circuit,self, 'DVDD_S' ,'S',3*self.dim[1])
+		self.IO_S = Port(circuit,self, 'IO_S' ,'S',46*self.dim[1])
+
+		self.IO_Bare_E = Port(circuit,self, 'IO_Bare_E' ,'E',2*self.dim[0])
+		self.gnd_E = Port(circuit,self, 'gnd_E' ,'E',2*self.dim[0])
+		self.IO_E_RES = Port(circuit,self, 'IO_E_RES' ,'E',2*self.dim[0])
+		self.IO_E = Port(circuit,self, 'IO_E' ,'E',9*self.dim[0])
+
+		self.IO_Bare_W = Port(circuit,self, 'IO_Bare_W' ,'W',2*self.dim[0])
+		self.gnd_W = Port(circuit,self, 'gnd_W' ,'W',2*self.dim[0])
+		self.IO_W_RES = Port(circuit,self, 'IO_W_RES' ,'W',2*self.dim[0])
+		self.IO_W = Port(circuit,self, 'IO_W' ,'W',9*self.dim[0])
+
+		# Initialize ports with given values
+		portsInit = [gnd_N,esd_vdd_N,avdd_N,VINJ_N,DVDD_N,IO_N_CLK,IO_N,gnd_S,esd_vdd_S,avdd_S,VINJ_S,DVDD_S,IO_S,IO_Bare_E,gnd_E,IO_E_RES,IO_E,IO_Bare_W,gnd_W,IO_W_RES,IO_W]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
 class FakeCell(FakeStandardCell):
 	def __init__(self,circuit,island=None,dim=(2,2),FakePort=None):
 
