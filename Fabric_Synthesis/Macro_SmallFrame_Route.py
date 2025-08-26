@@ -13,14 +13,14 @@ macro.place([0,0])
 # Frame
 # -------------------------------------------------------------------------------
 FrameIsland = Island(Top)
-chipframe = ChipFrame(Top,FrameIsland,[1,1])
+chipframe = SmallPadFrame(Top,FrameIsland,[1,1])
 chipframe.place([0,0])
 chipframe.markChipFrame()
 
 # Macro <--> Frame Connections
 # --------------------------------------------------------------------------------
 # ___ IO Pins ___
-
+# north
 macro.peri_spi_slave_RX_DV += chipframe.IO_N[0]
 macro.peri_spi_mstr_RX_DV += chipframe.IO_N[1]
 
@@ -43,28 +43,6 @@ macro.mclk += chipframe.IO_N[17]
 # macro.puc_rst_dbg += chipframe.IO_N[18] # pin doesn't exist in the layout
 macro.V_IO += chipframe.IO_N[19]
 
-# west pins
-macro.peri_spi_mstr_TX_Ready += chipframe.IO_W[0]
-macro.peri_spi_mstr_cs_n_3 += chipframe.IO_W[1]
-macro.peri_spi_mstr_cs_n_2 += chipframe.IO_W[2]
-macro.peri_spi_mstr_cs_n_1 += chipframe.IO_W[3]
-macro.peri_spi_mstr_cs_n_0 += chipframe.IO_W[4]
-macro.peri_spi_mstr_mosi += chipframe.IO_W[5]
-macro.peri_spi_mstr_miso += chipframe.IO_W[6]
-macro.peri_spi_slave_cs_n += chipframe.IO_W[7]
-macro.peri_spi_slave_mosi += chipframe.IO_W[8]
-
-macro.peri_spi_slave_miso += chipframe.IO_W[9]
-macro.peri_spi_rst += chipframe.IO_W[10]
-macro.peri_use_uP += chipframe.IO_W[11]
-macro.sram_CS_VBIAS += chipframe.IO_W[12]
-macro.irq[13] += chipframe.IO_W[13]
-macro.irq[12] += chipframe.IO_W[14]
-macro.irq[11] += chipframe.IO_W[15]
-macro.irq[10] += chipframe.IO_W[16]
-macro.irq_acc[13] += chipframe.IO_W[17]
-macro.irq_acc[12] += chipframe.IO_W[18]
-
 # bottom right macro pins to east frame pins
 macro.VG_IO += chipframe.IO_E[0]
 macro.VD_IO += chipframe.IO_E[1]
@@ -81,6 +59,29 @@ macro.Bias_Trim += chipframe.IO_Bare_E[1]
 macro.VTUN_AM += chipframe.IO_E_RES[0]
 macro.VTUN_fgmem += chipframe.IO_E_RES[1]
 
+# west lines
+macro.peri_spi_mstr_TX_Ready += chipframe.IO_W[0]
+macro.peri_spi_mstr_cs_n_3 += chipframe.IO_W[1]
+macro.peri_spi_mstr_cs_n_2 += chipframe.IO_W[2]
+macro.peri_spi_mstr_cs_n_1 += chipframe.IO_W[3]
+macro.peri_spi_mstr_cs_n_0 += chipframe.IO_W[4]
+macro.peri_spi_mstr_mosi += chipframe.IO_W[5]
+macro.peri_spi_mstr_miso += chipframe.IO_W[6]
+macro.peri_spi_slave_cs_n += chipframe.IO_W[7]
+macro.peri_spi_slave_mosi += chipframe.IO_W[8]
+
+# south
+macro.peri_spi_slave_miso += chipframe.IO_S[0]
+macro.peri_spi_rst += chipframe.IO_S[1]
+macro.peri_use_uP += chipframe.IO_S[2]
+macro.sram_CS_VBIAS += chipframe.IO_S[3]
+macro.irq[13] += chipframe.IO_S[4]
+macro.irq[12] += chipframe.IO_S[5]
+macro.irq[11] += chipframe.IO_S[6]
+macro.irq[10] += chipframe.IO_S[7]
+macro.irq_acc[13] += chipframe.IO_S[8]
+macro.irq_acc[12] += chipframe.IO_S[9]
+
 # ___ clk lines ___
 macro.peri_spi_cpu_clk += chipframe.IO_N_CLK[0]
 macro.peri_spi_slave_clk += chipframe.IO_N_CLK[1]
@@ -93,11 +94,12 @@ macro.AVDD_AM += chipframe.avdd_N[2]
 macro.VINJ += chipframe.VINJ_N[2]
 macro.DVDD += chipframe.DVDD_N[2]
 
+
 # Compilation
 #-------------------------------------------------------------------------------
 design_limits = [7e6, 6.21e6]
-location_islands = ((250600, 4500000), (20600, 20000))
+location_islands = ((210600, 410000), (20600, 20000))
 # location_islands = ((250600, 4600000), (20600, 20000), (300000, 250600))
 # location_islands = None
 
-compile_asic(Top,process="TSMC350nm",fileName="Macro_Frame",p_and_r = True,design_limits = design_limits, location_islands = location_islands)
+compile_asic(Top,process="TSMC350nm",fileName="Macro_SmallFrame",p_and_r = True,design_limits = design_limits, location_islands = location_islands)
