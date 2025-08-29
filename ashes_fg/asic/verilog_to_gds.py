@@ -1783,7 +1783,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
                     def_file.write(f'  END\n\n')
         # Write blockages for any manually specified cells or islands
-        m3_except = ['TSMC350nm_drainSelect_progrundrains', 'S_BLOCK_SEC1_PINS', 'S_BLOCK_BUFFER', 'S_BLOCK_SPACE_UP_PINS', 'S_BLOCK_CONN_PINS', 'S_BLOCK_SPACE_DOWN_PINS', 'S_BLOCK_SEC2_PINS', 'S_BLOCK_23CONN', 'S_BLOCK_SEC3_PINS', 'TSMC350nm_Cap_Bank', 'Full_Macro_Edit']
+        m3_except = ['TSMC350nm_drainSelect_progrundrains', 'S_BLOCK_SEC1_PINS', 'S_BLOCK_BUFFER', 'S_BLOCK_SPACE_UP_PINS', 'S_BLOCK_CONN_PINS', 'S_BLOCK_SPACE_DOWN_PINS', 'S_BLOCK_SEC2_PINS', 'S_BLOCK_23CONN', 'S_BLOCK_SEC3_PINS', 'TSMC350nm_Cap_Bank']
         for val, island in cell_order_in_island.items():
             for idx, item in island['items'].items():
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m3_except:
@@ -1838,39 +1838,16 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     def_file.write(f'  END\n\n')
         # Write blockages for the frame to keep routes internal
         if frame_module:
-            # print(f"\n\n frame-module-blockages for loop now \n\n")
             frame_name = frame_module.module_name
             frame_origin = cell_info[frame_name]['origin']
             frame_w, frame_h = cell_info[frame_name]['width'], cell_info[frame_name]['height']
             frame_blockage_size = int(1*dbu) # specify in micron, convert to database units (nm)
-            num_metals = len(metal_layers)  
-            # ---------------------------
-            # ----- -- my changes -- ----
-            ref_left_pin_name = 'IO_W<0>'
-            ref_bot_pin_name = 'IO_S<0>'
-            frame_ref_pin = cell_info[frame_name]['cell_pins']
-            # print(f"pins: {frame_ref_pin.values()}")
-            if ref_left_pin_name and ref_bot_pin_name in frame_ref_pin:
-                pin_left_name_int = frame_ref_pin[ref_left_pin_name]
-                pin_bot_name_int = frame_ref_pin[ref_bot_pin_name]
-                print(f"Left: {int(pin_left_name_int['RECT'][0])}\n Loc: {loc[0]}")
-                pin_ref_left = int(pin_left_name_int['RECT'][0]) - 10000            
-                pin_ref_bot  = int(pin_bot_name_int['RECT'][1]) - 10000
-                # print(f'\n\nleft side: {pin_ref_left}\n bottom side: {pin_ref_bot}\n')
-                # frame_blockage_size = int(1*dbu+pin_ref_left) # specify in micron, convert to database units (nm)
-                frame_blockage_W_E = pin_ref_left
-                frame_blockage_N_S = pin_ref_bot
-            else:
-                print(f"Pin {ref_left_pin_name} or {ref_bot_pin_name} not found.")
-                frame_blockage_size = int(1*dbu) # specify in micron, convert to database units (nm)
-                frame_blockage_N_S = frame_blockage_size
-                frame_blockage_W_E = frame_blockage_size    
-
+            num_metals = len(metal_layers)
             for num in range(num_metals):
                 # West blockage
                 block_x1 = frame_origin[0]
                 block_y1 = frame_origin[1]
-                block_x2 = frame_origin[0] + frame_blockage_W_E
+                block_x2 = frame_origin[0] + frame_blockage_size
                 block_y2 = frame_h
                 poly_mlayer = metal_layers[num]
                 def_file.write(f'  - {poly_mlayer}\n')
@@ -1878,7 +1855,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
                 def_file.write(f'  END\n\n')
                 # East blockage
-                block_x1 = frame_w - frame_blockage_W_E
+                block_x1 = frame_w - frame_blockage_size
                 block_y1 = frame_origin[1]
                 block_x2 = frame_w
                 block_y2 = frame_h
@@ -1889,7 +1866,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 def_file.write(f'  END\n\n')
                 # North blockage
                 block_x1 = frame_origin[0]
-                block_y1 = frame_h - frame_blockage_N_S
+                block_y1 = frame_h - frame_blockage_size
                 block_x2 = frame_w
                 block_y2 = frame_h
                 poly_mlayer = metal_layers[num]
@@ -1901,7 +1878,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 block_x1 = frame_origin[0]
                 block_y1 = frame_origin[1]
                 block_x2 = frame_w
-                block_y2 = frame_origin[1] + frame_blockage_N_S
+                block_y2 = frame_origin[1] + frame_blockage_size
                 poly_mlayer = metal_layers[num]
                 def_file.write(f'  - {poly_mlayer}\n')
                 def_file.write(f'    LAYER {poly_mlayer} ;\n')

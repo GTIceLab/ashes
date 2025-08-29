@@ -1830,7 +1830,7 @@ class cab1(StandardCell):
 
 
 		# Define cell information
-		self.name = 'cab1' # this matches the gds name
+		self.name = 'cab1'
 		self.e_cns0 = Port(circuit,self,'e_cns0','E',1*self.dim[0])
 		self.e_cns1 = Port(circuit,self,'e_cns1','E',1*self.dim[0])
 		self.e_cns2 = Port(circuit,self,'e_cns2','E',1*self.dim[0])
@@ -2765,7 +2765,7 @@ class SmallPadFrame(StandardCell):
 		circuit.addInstance(self,self.island)
 
 class FakeCell(FakeStandardCell):
-	def __init__(self,circuit,island=None,dim=(2,2),FakePort=None):
+	def __init__(self,circuit,island=None,dim=(1,1),FakePort=None):
 
 		# Define variables
 		self.circuit = circuit

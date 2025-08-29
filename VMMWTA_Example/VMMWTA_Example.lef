@@ -158,8 +158,13 @@ END TSMC350nm_VinjDecode2to4_vtile_spacing
 MACRO TSMC350nm_VinjDecode2to4_vtile_bridge_spacing
 END TSMC350nm_VinjDecode2to4_vtile_bridge_spacing
 
+<<<<<<< HEAD
 MACRO TSMC350nm_VinjDecode2to4_vtile_D_bridge
 END TSMC350nm_VinjDecode2to4_vtile_D_bridge
+=======
+MACRO TSMC350nm_VinjDecode2to4_vtile_B_bridge
+END TSMC350nm_VinjDecode2to4_vtile_B_bridge
+>>>>>>> 918d362 (Adding current VMMWTA and LLM algorithm progress)
 
 MACRO TSMC350nm_VinjDecode2to4_vtile
   PIN Vinj
@@ -244,6 +249,7 @@ MACRO TSMC350nm_VinjDecode2to4_vtile
   END IN<0>
 END TSMC350nm_VinjDecode2to4_vtile
 
+<<<<<<< HEAD
 MACRO TSMC350nm_VinjDecode2to4_vtile_C_bridge
 END TSMC350nm_VinjDecode2to4_vtile_C_bridge
 
@@ -253,6 +259,17 @@ END TSMC350nm_VinjDecode2to4_vtile_B_bridge
 MACRO TSMC350nm_VinjDecode2to4_vtile_A_bridge
 END TSMC350nm_VinjDecode2to4_vtile_A_bridge
 
+=======
+MACRO TSMC350nm_VinjDecode2to4_vtile_A_bridge
+END TSMC350nm_VinjDecode2to4_vtile_A_bridge
+
+MACRO TSMC350nm_VinjDecode2to4_vtile_D_bridge
+END TSMC350nm_VinjDecode2to4_vtile_D_bridge
+
+MACRO TSMC350nm_VinjDecode2to4_vtile_C_bridge
+END TSMC350nm_VinjDecode2to4_vtile_C_bridge
+
+>>>>>>> 918d362 (Adding current VMMWTA and LLM algorithm progress)
 MACRO TSMC350nm_drainSelect01d3
   PIN Vinj
     DIRECTION INOUT ;
@@ -927,6 +944,7 @@ MACRO TSMC350nm_VinjDecode2to4_htile_B_bridge
   END VGRUN<3>
 END TSMC350nm_VinjDecode2to4_htile_B_bridge
 
+<<<<<<< HEAD
 MACRO TSMC350nm_VinjDecode2to4_htile_C_bridge
   PIN VGRUN<0>
     DIRECTION INOUT ;
@@ -997,6 +1015,8 @@ MACRO TSMC350nm_VinjDecode2to4_htile_D_bridge
   END VGRUN<3>
 END TSMC350nm_VinjDecode2to4_htile_D_bridge
 
+=======
+>>>>>>> 918d362 (Adding current VMMWTA and LLM algorithm progress)
 MACRO TSMC350nm_VinjDecode2to4_htile_spacing
   PIN VGRUN<0>
     DIRECTION INOUT ;
@@ -1032,40 +1052,201 @@ MACRO TSMC350nm_VinjDecode2to4_htile_spacing
   END VGRUN<3>
 END TSMC350nm_VinjDecode2to4_htile_spacing
 
+<<<<<<< HEAD
 MACRO TSMC350nm_VinjDecode2to4_htile_bridge_spacing
   PIN VGRUN<0>
+=======
+MACRO TSMC350nm_VMMWTA
+  PIN VMM_Vs<0>
+>>>>>>> 918d362 (Adding current VMMWTA and LLM algorithm progress)
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL2 ;
+<<<<<<< HEAD
         RECT 9.1 9.52 9.7 9.99 ;
     END
   END VGRUN<0>
   PIN VGRUN<1>
+=======
+        RECT 3.0 21.3 3.6 22.0 ;
+    END
+  END VMM_Vs<0>
+  PIN VINJ
+>>>>>>> 918d362 (Adding current VMMWTA and LLM algorithm progress)
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL2 ;
+<<<<<<< HEAD
         RECT 11.2 9.51 11.8 9.99 ;
     END
   END VGRUN<1>
   PIN VGRUN<2>
+=======
+        RECT 5.1 21.3 5.7 22.0 ;
+    END
+  END VINJ
+  PIN VMM_Vg<0>
+>>>>>>> 918d362 (Adding current VMMWTA and LLM algorithm progress)
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL2 ;
+<<<<<<< HEAD
         RECT 28.7 9.41 29.3 9.99 ;
     END
   END VGRUN<2>
   PIN VGRUN<3>
+=======
+        RECT 7.2 21.3 7.8 22.0 ;
+    END
+  END VMM_Vg<0>
+  PIN GND
+>>>>>>> 918d362 (Adding current VMMWTA and LLM algorithm progress)
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL2 ;
+<<<<<<< HEAD
         RECT 33.6 9.47 34.2 9.99 ;
     END
   END VGRUN<3>
 END TSMC350nm_VinjDecode2to4_htile_bridge_spacing
+=======
+        RECT 9.3 21.3 9.9 22.0 ;
+    END
+  END GND
+  PIN VTUN<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.4 21.3 12.0 22.0 ;
+    END
+  END VTUN<0>
+  PIN VMM_Vg<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 15.6 21.1 16.2 22.0 ;
+    END
+  END VMM_Vg<1>
+  PIN VMM_Vs<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 19.8 21.19 20.4 22.0 ;
+    END
+  END VMM_Vs<1>
+  PIN Ibias_Vs
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 23.1 21.27 23.7 22.0 ;
+    END
+  END Ibias_Vs
+  PIN Ibias_Vg
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 27.3 21.23 27.9 22.0 ;
+    END
+  END Ibias_Vg
+  PIN VTUN<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 31.5 21.16 32.1 22.0 ;
+    END
+  END VTUN<1>
+  PIN PROG
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 52.52 21.35 53.12 22.0 ;
+    END
+  END PROG
+  PIN Vmid
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 71.56 21.32 72.16 22.0 ;
+    END
+  END Vmid
+  PIN Vd<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 20.3 0.4 20.8 ;
+    END
+  END Vd<0>
+  PIN Vd<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 14.7 0.4 15.2 ;
+    END
+  END Vd<1>
+  PIN Vd<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 7.0 0.4 7.5 ;
+    END
+  END Vd<2>
+  PIN Vd<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 2.1 0.4 2.6 ;
+    END
+  END Vd<3>
+  PIN Vout<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 115.07 17.3 115.63 17.8 ;
+    END
+  END Vout<0>
+  PIN Vout<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 115.07 14.5 115.63 15.0 ;
+    END
+  END Vout<1>
+  PIN Vout<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 115.07 8.2 115.63 8.7 ;
+    END
+  END Vout<2>
+  PIN Vout<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 115.07 4.0 115.63 4.5 ;
+    END
+  END Vout<3>
+END TSMC350nm_VMMWTA
+>>>>>>> 918d362 (Adding current VMMWTA and LLM algorithm progress)
 
 MACRO TSMC350nm_4x2_Indirect
   PIN Vg<1>
@@ -1374,6 +1555,7 @@ MACRO TSMC350nm_4x2_Indirect
   END Vd_R<2>
 END TSMC350nm_4x2_Indirect
 
+<<<<<<< HEAD
 MACRO TSMC350nm_VMMWTA
   PIN VMM_Vs<0>
     DIRECTION INOUT ;
@@ -1537,4 +1719,6 @@ MACRO TSMC350nm_VMMWTA
   END Vout<3>
 END TSMC350nm_VMMWTA
 
+=======
+>>>>>>> 918d362 (Adding current VMMWTA and LLM algorithm progress)
 END LIBRARY
