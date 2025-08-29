@@ -2066,7 +2066,6 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                             def_file.write(f'  END\n\n')       
         # Write blockages for the frame to keep routes internal
         if frame_module:
-            # print(f"\n\n frame-module-blockages for loop now \n\n")
             frame_name = frame_module.module_name
             frame_origin = cell_info[frame_name]['origin']
             frame_w, frame_h = cell_info[frame_name]['width'], cell_info[frame_name]['height']
@@ -2098,7 +2097,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 # West blockage
                 block_x1 = frame_origin[0]
                 block_y1 = frame_origin[1]
-                block_x2 = frame_origin[0] + frame_blockage_W_E
+                block_x2 = frame_origin[0] + frame_blockage_size
                 block_y2 = frame_h
                 poly_mlayer = metal_layers[num]
                 def_file.write(f'  - {poly_mlayer}\n')
@@ -2106,7 +2105,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
                 def_file.write(f'  END\n\n')
                 # East blockage
-                block_x1 = frame_w - frame_blockage_W_E
+                block_x1 = frame_w - frame_blockage_size
                 block_y1 = frame_origin[1]
                 block_x2 = frame_w
                 block_y2 = frame_h
@@ -2117,7 +2116,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 def_file.write(f'  END\n\n')
                 # North blockage
                 block_x1 = frame_origin[0]
-                block_y1 = frame_h - frame_blockage_N_S
+                block_y1 = frame_h - frame_blockage_size
                 block_x2 = frame_w
                 block_y2 = frame_h
                 poly_mlayer = metal_layers[num]
@@ -2129,7 +2128,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 block_x1 = frame_origin[0]
                 block_y1 = frame_origin[1]
                 block_x2 = frame_w
-                block_y2 = frame_origin[1] + frame_blockage_N_S
+                block_y2 = frame_origin[1] + frame_blockage_size
                 poly_mlayer = metal_layers[num]
                 def_file.write(f'  - {poly_mlayer}\n')
                 def_file.write(f'    LAYER {poly_mlayer} ;\n')
