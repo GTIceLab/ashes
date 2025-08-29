@@ -1084,7 +1084,7 @@ class TSMC350nm_Termination_bot(StandardCell):
 		circuit.addInstance(self,self.island)		
 
 class DelayLine(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),Vsel=None, Vg=None, VTUN=None, VINJ=None, PROG=None, VDD=None, GND=None, VD_P=None, V_NW=None, VD_R=None, V_SW=None, V_NE=None, V_SE=None):
+	def __init__(self,circuit,island=None,dim=(1,1),Vsel=None, Vg=None, VTUN=None, VINJ=None, PROG=None, VDD=None, GND=None, VD_P=None, V_NW=None, VD_R=None, V_SW=None, V_NE=None, V_SE=None, Vsel_b=None,Vg_b=None,VTUN_b=None,VINJ_b=None,PROG_b=None,VDD_b=None,GND_b=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -1095,7 +1095,7 @@ class DelayLine(StandardCell):
 
 
 		# Define cell information
-		self.name = 'DelayLine'
+		self.name = 'TSMC350nm_DelayLine'
 		self.Vsel = Port(circuit,self,'Vsel','N',2*self.dim[1])
 		self.Vg = Port(circuit,self,'Vg','N',2*self.dim[1])
 		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
@@ -1112,8 +1112,16 @@ class DelayLine(StandardCell):
 		self.V_NE = Port(circuit,self,'V_NE','E',1*self.dim[0])
 		self.V_SE = Port(circuit,self,'V_SE','E',1*self.dim[0])
 
+		self.Vsel_b = Port(circuit,self,'Vsel','S',2*self.dim[1])
+		self.Vg_b = Port(circuit,self,'Vg','S',2*self.dim[1])
+		self.VTUN_b = Port(circuit,self,'VTUN','S',1*self.dim[1])
+		self.VINJ_b = Port(circuit,self,'VINJ','S',1*self.dim[1])
+		self.PROG_b = Port(circuit,self,'PROG','S',1*self.dim[1])
+		self.VDD_b = Port(circuit,self,'VDD','S',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND','S',1*self.dim[1])
+
 		# Initialize ports with given values
-		portsInit = [Vsel, Vg, VTUN, VINJ, PROG, VDD, GND, VD_P, V_NW, VD_R, V_SW, V_NE, V_SE]
+		portsInit = [Vsel, Vg, VTUN, VINJ, PROG, VDD, GND, VD_P, V_NW, VD_R, V_SW, V_NE, V_SE, Vsel_b,Vg_b,VTUN_b,VINJ_b,PROG_b,VDD_b,GND_b]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])

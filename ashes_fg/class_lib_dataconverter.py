@@ -1,5 +1,43 @@
 from ashes_fg.asic.asic_compile import *
 
+class TSMC350nm_AnalogBuffer(StandardCell):
+    def __init__(self,circuit,island=None,dim=(1,1),VTUN=None,VTUN_b=None,VDD=None,VDD_b=None,GND=None,GND_b=None,VINJ=None,VINJ_b=None,Vg=None,Vg_b=None,Vd_P=None,Vsel=None,Vsel_b=None,Vin=None,Vout=None):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+
+        # Define cell information
+        self.name = 'TSMC350nm_AnalogBuffer'
+        self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+        self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
+        self.VDD = Port(circuit,self,'VDD','N',1*self.dim[1])
+        self.VDD_b = Port(circuit,self,'VDD_b','S',1*self.dim[1])
+        self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+        self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
+        self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
+        self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
+        self.Vg = Port(circuit,self,'Vg','N',1*self.dim[1])
+        self.Vg_b = Port(circuit,self,'Vg_b','S',1*self.dim[1])
+        self.Vd_P = Port(circuit,self,'Vd_P','W',1*self.dim[1])
+        self.Vsel = Port(circuit,self,'Vsel','N',1*self.dim[1])
+        self.Vsel_b = Port(circuit,self,'Vsel_b','S',1*self.dim[1])
+        self.Vin = Port(circuit,self,'Vin','W',1*self.dim[1])
+        self.Vout = Port(circuit,self,'Vout','E',1*self.dim[1])
+
+        # Initialize ports with given values
+        portsInit = []
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
 class TSMC350nm_EPOT(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),VDD=None,VDD_b=None,VINJ=None,VINJ_b=None,GND=None,GND_b=None,VTUN=None,VTUN_b=None,Prog=None,Prog_b=None,Vg=None,Vg_b=None,Vsel=None,Vsel_b=None,VD_P=None,VINPLUS=None,Vout=None):
         # Define variables
