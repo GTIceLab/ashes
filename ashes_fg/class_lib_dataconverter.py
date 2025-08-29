@@ -1,4 +1,37 @@
 from ashes_fg.asic.asic_compile import *
+class TSMC350nm_AnalogBuffer(StandardCell):
+    def __init__(self,circuit,island=None,dim=(1,1),VDD=None,VINJ=None,GND=None,VTUN=None,Vg=None,Vsel=None,Vd_P=None,Vin=None,Vout=None):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+        
+        
+        # Define cell information
+        self.name = 'AnalogBuffer'
+        self.VDD = Port(circuit,self,'VDD','N',1*self.dim[1])
+        self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
+        self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+        self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+        self.Vg = Port(circuit,self,'Vg','N',1*self.dim[1])
+        self.Vsel = Port(circuit,self,'Vsel','W',1*self.dim[0])
+        self.Vd_P = Port(circuit,self,'Vd_P','W',1*self.dim[0])
+        self.Vin = Port(circuit,self,'Vin', 'W',1*self.dim[0])
+        self.Vout = Port(circuit,self,'Vout','E',1*self.dim[0])
+        
+        
+        # Initialize ports with given values
+        portsInit = [VDD,VINJ,GND,VTUN,Vg,Vsel,Vd_P,Vin,Vout]
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+        
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
 
 class TSMC350nm_EPOT(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),VDD=None,VDD_b=None,VINJ=None,VINJ_b=None,GND=None,GND_b=None,VTUN=None,VTUN_b=None,Prog=None,Prog_b=None,Vg=None,Vg_b=None,Vsel=None,Vsel_b=None,VD_P=None,VINPLUS=None,Vout=None):

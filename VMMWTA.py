@@ -10,7 +10,7 @@ from ashes_fg.asic.asic_systems import *
 
 Top = Circuit()
 
-VMMWTACircuit = VMMWTA(Top,[16,16],decoderPlace=False)
+VMMWTACircuit = VMMWTA(Top,[24,8],decoderPlace=True)
 
 
 design_limits = [1e6, 6.1e5]

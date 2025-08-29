@@ -860,9 +860,6 @@ class StandardCell:
     def markCABDevice(self):
         self.cabDevice = True
 
-    def markChipFrame(self):
-        self.ChipFrame = True
-
     def markAbut(self):
         self.Abut = True
 
@@ -894,13 +891,6 @@ class StandardCell:
     def isCABDevice(self):
         try:
             if self.cabDevice == True:
-                return True
-        except:
-            return False
-    
-    def isChipFrame(self):
-        try:
-            if self.ChipFrame == True:
                 return True
         except:
             return False
@@ -944,15 +934,9 @@ class StandardCell:
 
         if self.isCABDevice() == True:
             instancePrefix = "cab_device"
-        
 
         #TODO Remove process prefix from auto-generated class library
-        if self.isChipFrame() == True:
-            instancePrefix = "frame"
-            text = self.name + " " + instancePrefix + " ("
-        else:
-            text = self.name + " " + instancePrefix +"_" + str(instanceNum) + " ("
-        
+        text = self.name + " " + instancePrefix +"_" + str(instanceNum) + " ("
         text += ".island_num(" + str(islandNum) + "), "
         text += ".row(" + str(row) + "), "
         text += ".col(" + str(col) + ")"
