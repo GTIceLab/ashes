@@ -82,20 +82,7 @@ from ashes_fg.asic.asic_systems import *
 
 
 def IndirectVMM(circuit,dim=[16,4], island=None,decoderPlace=True,loc=[0,0], inputs = None, islandLoc = [0,0]):
-    
-    Top = Circuit()
-    
-    MacroIsland = Island(Top)
-    macro = Macro(Top,MacroIsland,[1,1])
-    macro.place([0,0])
 
-# Frame
-# -------------------------------------------------------------------------------
-    FrameIsland = Island(Top)
-    chipframe = ChipFrame(Top,FrameIsland,[1,1])
-    chipframe.place([0,0])
-    chipframe.markChipFrame()
-    
     if (dim[0] % 4) != 0:
             raise Exception("Error: VMM rows must be divisible by 4")
     if (dim[1] % 2) != 0:
@@ -163,13 +150,25 @@ def IndirectVMM(circuit,dim=[16,4], island=None,decoderPlace=True,loc=[0,0], inp
     #location_islands = ((0,0),(210000,0),(210000,50000)) #successful for 8 x 8 = m x n
     #location_islands = ((0,0),(1920000,0),(1920000,100000)) #successful for 8 x 120 = m x n 
 
-    location_islands = ((0,0),(X_val,0),(X_val,Y_val),(250600, 4500000), (20600, 20000))
+    MacroIsland = Island(Top)
+    macro = Macro(Top,MacroIsland,[1,1])
+    macro.place([0,0])
+
+    # Frame
+    # -------------------------------------------------------------------------------
+    FrameIsland = Island(Top)
+    chipframe = ChipFrame(Top,FrameIsland,[1,1])
+    chipframe.place([0,0])
+    chipframe.markChipFrame()
+
+    #location_islands = ((0,0),(X_val,0),(X_val,Y_val))
+    location_islands = ((0,0),(X_val,0),(X_val,Y_val), (250600, 4500000), (20600, 20000))
 
     return location_islands
 
 
 Top = Circuit()
- 
+
 design_limits = [8e6, 8e6]
 
 location_islands = IndirectVMM(Top, dim=[20,2], island=None, decoderPlace=True, loc=[0,0], inputs=None, islandLoc=[0,0])
