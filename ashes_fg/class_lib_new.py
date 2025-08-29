@@ -1082,7 +1082,45 @@ class TSMC350nm_Termination_bot(StandardCell):
 
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)		
-		
+
+class DelayLine(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),Vsel=None, Vg=None, VTUN=None, VINJ=None, PROG=None, VDD=None, GND=None, VD_P=None, V_NW=None, VD_R=None, V_SW=None, V_NE=None, V_SE=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'DelayLine'
+		self.Vsel = Port(circuit,self,'Vsel','N',2*self.dim[1])
+		self.Vg = Port(circuit,self,'Vg','N',2*self.dim[1])
+		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
+		self.PROG = Port(circuit,self,'PROG','N',1*self.dim[1])
+		self.VDD = Port(circuit,self,'VDD','N',1*self.dim[1])
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+
+		self.VD_P = Port(circuit,self,'VD_P','W',4*self.dim[0])
+		self.V_NW = Port(circuit,self,'V_NW','W',1*self.dim[0])
+		self.VD_R = Port(circuit,self,'VD_R','W',2*self.dim[0])
+		self.V_SW = Port(circuit,self,'V_SW','W',1*self.dim[0])
+
+		self.V_NE = Port(circuit,self,'V_NE','E',1*self.dim[0])
+		self.V_SE = Port(circuit,self,'V_SE','E',1*self.dim[0])
+
+		# Initialize ports with given values
+		portsInit = [Vsel, Vg, VTUN, VINJ, PROG, VDD, GND, VD_P, V_NW, VD_R, V_SW, V_NE, V_SE]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
 
 		
 class SHblock1:
