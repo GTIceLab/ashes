@@ -1095,7 +1095,7 @@ class DelayLine(StandardCell):
 
 
 		# Define cell information
-		self.name = 'TSMC350nm_DelayLine'
+		self.name = 'DelayLine'
 		self.Vsel = Port(circuit,self,'Vsel','N',2*self.dim[1])
 		self.Vg = Port(circuit,self,'Vg','N',2*self.dim[1])
 		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])

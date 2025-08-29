@@ -11,7 +11,7 @@ class TSMC350nm_AnalogBuffer(StandardCell):
 
 
         # Define cell information
-        self.name = 'TSMC350nm_AnalogBuffer'
+        self.name = 'AnalogBuffer'
         self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
         self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
         self.VDD = Port(circuit,self,'VDD','N',1*self.dim[1])
