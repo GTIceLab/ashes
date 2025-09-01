@@ -1112,13 +1112,13 @@ class DelayLine(StandardCell):
 		self.V_NE = Port(circuit,self,'V_NE','E',1*self.dim[0])
 		self.V_SE = Port(circuit,self,'V_SE','E',1*self.dim[0])
 
-		self.Vsel_b = Port(circuit,self,'Vsel','S',2*self.dim[1])
-		self.Vg_b = Port(circuit,self,'Vg','S',2*self.dim[1])
-		self.VTUN_b = Port(circuit,self,'VTUN','S',1*self.dim[1])
-		self.VINJ_b = Port(circuit,self,'VINJ','S',1*self.dim[1])
-		self.PROG_b = Port(circuit,self,'PROG','S',1*self.dim[1])
-		self.VDD_b = Port(circuit,self,'VDD','S',1*self.dim[1])
-		self.GND_b = Port(circuit,self,'GND','S',1*self.dim[1])
+		self.Vsel_b = Port(circuit,self,'Vsel_b','S',2*self.dim[1])
+		self.Vg_b = Port(circuit,self,'Vg_b','S',2*self.dim[1])
+		self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
+		self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
+		self.PROG_b = Port(circuit,self,'PROG_b','S',1*self.dim[1])
+		self.VDD_b = Port(circuit,self,'VDD_b','S',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
 
 		# Initialize ports with given values
 		portsInit = [Vsel, Vg, VTUN, VINJ, PROG, VDD, GND, VD_P, V_NW, VD_R, V_SW, V_NE, V_SE, Vsel_b,Vg_b,VTUN_b,VINJ_b,PROG_b,VDD_b,GND_b]
