@@ -2,6 +2,7 @@ module TOP(port1);
 
 
 	/* Island 0 */
+<<<<<<< HEAD
 	TSMC350nm_Amplifier9T_FGInputs_Bias I__0 (.island_num(0), .row(0), .col(0), .matrix_row(5), .matrix_col(1), .VDDrow_0(net136[0]), .VINJrow_0(net150[0]), .GNDrow_0(net151[0]), .VTUNrow_0(net137[0]), .Vg_0_row_0(net114[0]), .Vg_1_row_0(net115[0]), .Vg_b_0_row_4(net116[0]), .Vd_P_0_col_0(net92[0:5]), .Vd_P_1_col_0(net93[0:5]), .Vd_Rcol_0(net94[0:5]), .Vsel_0_row_0(net112[0]), .Vsel_1_row_0(net113[0]), .Progrow_0(net138[0]), .VIN_PLUScol_0(net118[0:5]), .VIN_MINUScol_0(net117), .Voutcol_0(net117));
 
  	/*Programming Mux */ 
@@ -15,10 +16,26 @@ module TOP(port1);
 	/* Island 1 */
 	EPOT I__0 (.island_num(1), .row(0), .col(0), .matrix_row(1), .matrix_col(1), .Vg_0_row_0(net116[0]), .VD_P_0_row_0(net107[0]), .VD_P_1_row_0(net108[0]), .VIN_PLUSrow_0(net136[0]), .Voutrow_0(net123));
 	EPOT I__1 (.island_num(1), .row(1), .col(0), .matrix_row(1), .matrix_col(1), .VDD_brow_0(net132), .VINJ_brow_0(net142), .GND_brow_0(net131), .VTUN_brow_0(net133), .Vg_b_0_row_0(net135), .Vsel_b_0_row_0(net134), .VD_P_0_row_0(net109[0]), .VD_P_1_row_0(net110[0]), .VIN_PLUSrow_0(net136[0]), .Voutrow_0(net124));
+=======
+	EPOT I__0 (.island_num(0), .row(0), .col(0), .matrix_row(8), .matrix_col(1), .VDDrow_0(net137[0:1]), .VINJrow_0(net162[0:1]), .VINJ_brow_7(net154[0:1]), .GNDrow_0(net163[0:1]), .GND_brow_7(net155[0:1]), .Progrow_0(net133[0:1]), .Vg_0_row_0(net134[0:1]), .Vg_1_row_0(net135[0:1]), .VD_P_0_col_0(net138[0:8]), .VD_P_1_col_0(net139[0:8]), .Voutcol_0(net18[0:8]));
+	AnalogBuffer I__1 (.island_num(0), .row(9), .col(0), .VDD(net137[0]), .GND(net155[0]), .Vout(net132));
+
+ 	/*Programming Mux */ 
+	TSMC350nm_VinjDecode2to4_htile decoder(.island_num(0), .direction(horizontal), .bits(2), .decode_n0_ENABLE(net164), .decode_n0_VINJV(net162[0]), .decode_n0_GNDV(net163[0]), .decode_n0_n0_IN_1_(net166), .decode_n0_n0_IN_0_(net165));
+	TSMC350nm_IndirectSwitches switch(.island_num(0), .direction(horizontal), .num(1), .switch_n0_GND_T(net163[0]), .switch_n0_VINJ_T(net162[0]), .switch_n0_GND(net155[0]), .switch_n0_CTRL_B_0_(net134[0]), .switch_n0_CTRL_B_1_(net135[0]), .switch_n0_VINJ(net162[0]), .switch_n0_PROG(net133[0]));
+	TSMC350nm_VinjDecode2to4_vtile decoder(.island_num(0), .direction(vertical), .bits(5), .decode_n0_VINJ(net154[0]), .decode_n0_GND(net155[0]), .decode_n0_IN_0_(net160), .decode_n2_IN_1_(net159), .decode_n2_IN_0_(net158), .decode_n4_IN_1_(net157), .decode_n4_IN_0_(net156), .decode_n0_ENABLE(net161));
+	TSMC350nm_drainSelect_progrundrains switch(.island_num(0), .direction(vertical), .num(5), .type(drain_select));
+	TSMC350nm_4TGate_ST_draincutoff switch(.island_num(0), .direction(vertical), .num(5), .type(prog_switch), .switch_n0_PR_0_(net138[0]), .switch_n0_PR_1_(net139[0]), .switch_n0_PR_2_(net138[1]), .switch_n0_PR_3_(net139[1]), .switch_n1_PR_0_(net138[2]), .switch_n1_PR_1_(net139[2]), .switch_n1_PR_2_(net138[3]), .switch_n1_PR_3_(net139[3]), .switch_n2_PR_0_(net138[4]), .switch_n2_PR_1_(net139[4]), .switch_n2_PR_2_(net138[5]), .switch_n2_PR_3_(net139[5]), .switch_n3_PR_0_(net138[6]), .switch_n3_PR_1_(net139[6]), .switch_n3_PR_2_(net138[7]), .switch_n3_PR_3_(net139[7]), .switch_n0_VDD(net137[0]), .switch_n0_GND(net163[0]), .switch_n0_RUN(net136));
+
+
+	/* Island 1 */
+	TGate_DT I__0 (.island_num(1), .row(0), .col(1), .matrix_row(8), .matrix_col(1), .Acol_0(net18[0:8]), .Bcol_0(net18[0:8]));
+>>>>>>> 2836072 (test)
 
  	/*Programming Mux */ 
 
 
+<<<<<<< HEAD
 	/* Island 2 */
 	AnalogBuffer I__0 (.island_num(2), .row(0), .col(0), .matrix_row(1), .matrix_col(1), .VTUNrow_0(net133), .VDDrow_0(net132), .GNDrow_0(net131), .VINJrow_0(net142), .Vgrow_0(net135), .Vd_Prow_0(net111[0]), .Vselrow_0(net134), .Vinrow_0(net117), .Voutrow_0(net130));
 
@@ -33,4 +50,8 @@ module TOP(port1);
 
 	/* Frame */ 
 	tile_analog_frame cab_frame(.pin_layer(METAL3), .N_n_Prog(net138[0]), .N_n_Run(net141), .N_n_VGRUN(net139), .N_n_VGPROG(net140), .N_n_VTUN(net137[0]), .N_n_avdd(net136[0]), .S_s_avdd(net132), .N_n_gnd(net151[0]), .S_s_gnd(net131), .N_n_vinj(net150[0]), .S_s_vinj(net142), .W_w_DrainB_0_(net145), .W_w_DrainB_1_(net146), .W_w_DrainB_2_(net147), .W_w_DrainB_3_(net148), .W_w_DrainEnable(net149), .W_w_GateB_0_(net153), .W_w_GateB_1_(net154), .N_n_GateEnable(net152), .S_s_Run_Drainline(net144), .S_s_Prog_Drainline(net143), .S_s_Vout(net130), .E_e_Code_0_(net125[0]), .E_e_Code_1_(net125[1]), .E_e_Code_2_(net125[2]), .E_e_Code_3_(net125[3]), .E_e_Code_4_(net125[4]));
+=======
+	/* Frame */ 
+	tile_analog_frame cab_frame(.pin_layer(METAL3), .N_n_Prog(net133[0]), .N_n_Run(net136), .N_n_AVDD(net137[0]), .N_n_gnd(net163[0]), .S_s_gnd(net155[0]), .N_n_vinj(net162[0]), .S_s_vinj(net154[0]), .W_w_DrainB_0_(net156), .W_w_DrainB_1_(net157), .W_w_DrainB_2_(net158), .W_w_DrainB_3_(net159), .W_w_DrainB_4_(net160), .W_w_DrainEnable(net161), .W_w_GateB_0_(net165), .W_w_GateB_1_(net166), .W_w_GateEnable(net164), .S_s_Vout(net132));
+>>>>>>> 2836072 (test)
  endmodule
