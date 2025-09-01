@@ -681,8 +681,9 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     if should_update_layout: update_output_layout(cell_text, text_layout_path)  
                 total_outputs = 2**bit_width
                 #decoder_cols = int(math.ceil(math.log2(bit_width))+ math.ceil(math.log2(bit_width))-1)
-                decoder_cols = int(math.ceil(bit_width/2)+ math.ceil(bit_width/2)-1)
+                decoder_cols = int(math.ceil(bit_width/2)+math.ceil(bit_width/2)-1)
                 decoder_rows = int(math.ceil(total_outputs/4))
+                
                 # Compute as though vertical, transpose at the end if horizontal 
                 bridge_cnt = 0
                 for row in range(decoder_rows):

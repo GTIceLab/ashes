@@ -140,7 +140,7 @@ def IndirectVMM(circuit,dim=[16,4], island=None,decoderPlace=True,loc=[0,0], inp
         X_val = ((numCols-1)*27000) + 115000
         Y_val = numRows*23000
     else:
-        X_val = ((numCols-1)*27000) + 115000 + 27000
+        X_val = ((numCols-1)*27000) + 115000 + 57000
         Y_val = (numRows*22000) + 750
     
     #location_islands = ((0,0),(150000,0),(150000,50000)) #successful for 8 x 4 = m x n

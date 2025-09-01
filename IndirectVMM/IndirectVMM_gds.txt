@@ -25544,19 +25544,27 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 0
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 0
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 0
 ENDEL
 SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+XY: 72660, 0
+ENDEL
+SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 0
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 0, 22000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
 XY: 20120, 22000
 ENDEL
 SREF
@@ -25572,6 +25580,14 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 52540, 22000
 ENDEL
 SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+XY: 72660, 22000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 22000
+ENDEL
+SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 0, 44000
 ENDEL
@@ -25584,12 +25600,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 44000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 44000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 44000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+XY: 72660, 44000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 44000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25604,12 +25628,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 66000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 66000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 66000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+XY: 72660, 66000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 66000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25624,32 +25656,48 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 88000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 88000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 88000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+XY: 72660, 88000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 88000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 0, 110000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 20120, 110000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 110000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
 XY: 46390, 110000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 52540, 110000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+XY: 72660, 110000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 110000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25664,12 +25712,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 132000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 132000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 132000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+XY: 72660, 132000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 132000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25684,12 +25740,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 154000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 154000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 154000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+XY: 72660, 154000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 154000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25704,32 +25768,48 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 176000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 176000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 176000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+XY: 72660, 176000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 176000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 0, 198000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 20120, 198000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 198000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
 XY: 46390, 198000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 52540, 198000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+XY: 72660, 198000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 198000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25744,12 +25824,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 220000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 220000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 220000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+XY: 72660, 220000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 220000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25764,12 +25852,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 242000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 242000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 242000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+XY: 72660, 242000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 242000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25784,23 +25880,31 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 264000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 264000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 264000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+XY: 72660, 264000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 264000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 0, 286000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 20120, 286000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 286000
 ENDEL
 SREF
@@ -25810,6 +25914,14 @@ ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 52540, 286000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+XY: 72660, 286000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 286000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25824,12 +25936,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 308000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 308000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 308000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+XY: 72660, 308000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 308000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25844,12 +25964,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 330000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 330000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 330000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+XY: 72660, 330000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 330000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25864,19 +25992,27 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 352000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 352000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 352000
 ENDEL
 SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+XY: 72660, 352000
+ENDEL
+SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 352000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 0, 374000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
 XY: 20120, 374000
 ENDEL
 SREF
@@ -25884,12 +26020,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 26270, 374000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
 XY: 46390, 374000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 52540, 374000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+XY: 72660, 374000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 374000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25904,12 +26048,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 396000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 396000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 396000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+XY: 72660, 396000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 396000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25924,12 +26076,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 418000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 418000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 418000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+XY: 72660, 418000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 418000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25944,32 +26104,48 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 440000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 440000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 440000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+XY: 72660, 440000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 440000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 0, 462000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 20120, 462000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 462000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
 XY: 46390, 462000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 52540, 462000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+XY: 72660, 462000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 462000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -25984,12 +26160,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 484000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 484000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 484000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+XY: 72660, 484000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 484000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26004,12 +26188,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 506000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 506000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 506000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+XY: 72660, 506000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 506000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26024,23 +26216,31 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 528000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 528000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 528000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+XY: 72660, 528000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 528000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 0, 550000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 20120, 550000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 550000
 ENDEL
 SREF
@@ -26050,6 +26250,14 @@ ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 52540, 550000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+XY: 72660, 550000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 550000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26064,12 +26272,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 572000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 572000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 572000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+XY: 72660, 572000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 572000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26084,12 +26300,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 594000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 594000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 594000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+XY: 72660, 594000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 594000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26104,32 +26328,48 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 616000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 616000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 616000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+XY: 72660, 616000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 616000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 0, 638000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 20120, 638000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 638000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
 XY: 46390, 638000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 52540, 638000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+XY: 72660, 638000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 638000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26144,12 +26384,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 660000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 660000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 660000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+XY: 72660, 660000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 660000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26164,12 +26412,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 682000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 682000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 682000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+XY: 72660, 682000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 682000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26184,19 +26440,27 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 704000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 704000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 704000
 ENDEL
 SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+XY: 72660, 704000
+ENDEL
+SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 704000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 0, 726000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
 XY: 20120, 726000
 ENDEL
 SREF
@@ -26204,12 +26468,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 26270, 726000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
 XY: 46390, 726000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 52540, 726000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+XY: 72660, 726000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 726000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26224,12 +26496,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 748000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 748000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 748000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+XY: 72660, 748000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 748000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26244,12 +26524,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 770000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 770000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 770000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+XY: 72660, 770000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 770000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26264,23 +26552,31 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 792000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 792000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 792000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+XY: 72660, 792000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 792000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 0, 814000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 20120, 814000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 814000
 ENDEL
 SREF
@@ -26290,6 +26586,14 @@ ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 52540, 814000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+XY: 72660, 814000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 814000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26304,12 +26608,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 836000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 836000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 836000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+XY: 72660, 836000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 836000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26324,12 +26636,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 858000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 858000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 858000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+XY: 72660, 858000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 858000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26344,32 +26664,48 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 880000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 880000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 880000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+XY: 72660, 880000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 880000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 0, 902000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 20120, 902000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 902000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
 XY: 46390, 902000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 52540, 902000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+XY: 72660, 902000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 902000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26384,12 +26720,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 924000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 924000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 924000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+XY: 72660, 924000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 924000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26404,12 +26748,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 946000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 946000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 946000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+XY: 72660, 946000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 946000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26424,32 +26776,48 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 968000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 968000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 968000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+XY: 72660, 968000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 968000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 0, 990000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 20120, 990000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 990000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
 XY: 46390, 990000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 52540, 990000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+XY: 72660, 990000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 990000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26464,12 +26832,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 1012000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 1012000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 1012000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_D_bridge"
+XY: 72660, 1012000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 1012000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26484,12 +26860,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 1034000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 1034000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 1034000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_C_bridge"
+XY: 72660, 1034000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 1034000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
@@ -26504,12 +26888,20 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 26270, 1056000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_bridge_spacing"
 XY: 46390, 1056000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_spacing"
 XY: 52540, 1056000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
+XY: 72660, 1056000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 1056000
 ENDEL
 SREF
 SNAME: "TSMC350nm_VinjDecode2to4_vtile"
@@ -26524,7 +26916,7 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 26270, 1078000
 ENDEL
 SREF
-SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_B_bridge"
 XY: 46390, 1078000
 ENDEL
 SREF
@@ -26532,427 +26924,439 @@ SNAME: "TSMC350nm_VinjDecode2to4_vtile"
 XY: 52540, 1078000
 ENDEL
 SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 0
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 0
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 22000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 22000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 44000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 44000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 66000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 66000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 88000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 88000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 110000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 110000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 132000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 132000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 154000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 154000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 176000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 176000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 198000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 198000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 220000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 220000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 242000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 242000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 264000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 264000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 286000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 286000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 308000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 308000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 330000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 330000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 352000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 352000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 374000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 374000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 396000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 396000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 418000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 418000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 440000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 440000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 462000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 462000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 484000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 484000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 506000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 506000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 528000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 528000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 550000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 550000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 572000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 572000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 594000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 594000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 616000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 616000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 638000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 638000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 660000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 660000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 682000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 682000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 704000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 704000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 726000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 726000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 748000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 748000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 770000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 770000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 792000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 792000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 814000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 814000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 836000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 836000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 858000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 858000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 880000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 880000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 902000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 902000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 924000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 924000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 946000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 946000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 968000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 968000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 990000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 990000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 1012000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 1012000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 1034000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 1034000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
-XY: 72660, 1056000
-ENDEL
-SREF
-SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 1056000
-ENDEL
-SREF
-SNAME: "TSMC350nm_drainSelect01d3"
+SNAME: "TSMC350nm_VinjDecode2to4_vtile_A_bridge"
 XY: 72660, 1078000
 ENDEL
 SREF
+SNAME: "TSMC350nm_VinjDecode2to4_vtile"
+XY: 78810, 1078000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 0
+ENDEL
+SREF
 SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
-XY: 89320, 1078000
+XY: 115590, 0
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 22000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 22000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 44000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 44000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 66000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 66000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 88000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 88000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 110000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 110000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 132000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 132000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 154000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 154000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 176000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 176000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 198000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 198000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 220000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 220000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 242000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 242000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 264000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 264000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 286000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 286000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 308000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 308000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 330000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 330000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 352000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 352000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 374000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 374000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 396000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 396000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 418000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 418000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 440000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 440000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 462000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 462000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 484000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 484000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 506000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 506000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 528000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 528000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 550000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 550000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 572000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 572000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 594000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 594000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 616000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 616000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 638000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 638000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 660000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 660000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 682000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 682000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 704000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 704000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 726000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 726000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 748000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 748000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 770000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 770000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 792000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 792000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 814000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 814000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 836000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 836000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 858000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 858000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 880000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 880000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 902000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 902000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 924000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 924000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 946000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 946000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 968000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 968000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 990000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 990000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 1012000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 1012000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 1034000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 1034000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 1056000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 1056000
+ENDEL
+SREF
+SNAME: "TSMC350nm_drainSelect01d3"
+XY: 98930, 1078000
+ENDEL
+SREF
+SNAME: "TSMC350nm_FourTgate_ThickOx_FG_MEM"
+XY: 115590, 1078000
 ENDEL
 AREF
 SNAME: "TSMC350nm_4x2_Indirect"
 COLROW: 1, 50
-XY: 99630, 0, 127090, 0, 99630, 1100000
+XY: 125900, 0, 153360, 0, 125900, 1100000
 ENDEL
 AREF
 SNAME: "TSMC350nm_4TGate_ST_BMatrix"
 COLROW: 1, 50
-XY: 127090, 0, 139090, 0, 127090, 1100000
+XY: 153360, 0, 165360, 0, 153360, 1100000
 ENDEL
 SREF
 SNAME: "TSMC350nm_IndirectSwitches"
-XY: 99630, 1100000
+XY: 125900, 1100000
+ENDEL
+SREF
+SNAME: "TSMC350nm_VinjDecode2to4_htile"
+XY: 125900, 1130400
 ENDEL
 AREF
 SNAME: "TSMC350nm_NeuralNetworkProgActFunc"
 COLROW: 1, 50
-XY: 142000, 0, 183190, 0, 142000, 1100000
+XY: 172000, 0, 213190, 0, 172000, 1100000
 ENDEL
 SREF
 SNAME: "TSMC350nm_Termination_bot"
-XY: 162500, 1100750
+XY: 192500, 1100750
 ENDEL
 ENDSTR
 ENDLIB
