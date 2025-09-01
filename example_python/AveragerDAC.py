@@ -11,6 +11,7 @@ import ashes_fg.asic.asic_systems as algs
 import numpy as np
 
 
+<<<<<<< HEAD
 def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     Top = circuit
 
@@ -39,10 +40,24 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     Buffer = lib_dc.TSMC350nm_AnalogBuffer(Top,AvgDACIsland)
     Buffer.place([numStages+3,0])
 >>>>>>> 2836072 (test)
+=======
+def AvgDAC(circuit,numStages=1,AvgDACIsland=None,islandLoc=[0,0]):
+    Top = circuit
+
+    AvgDACIsland = ac.Island(Top)
+    # 1 EPOT per bit, and 2 more for shifting digital input to TA linear range
+    EPOTs= lib_dc.TSMC350nm_EPOT(Top,AvgDACIsland,dim=[numStages+2,1])
+    EPOTs.place([0,0])
+
+    # 1 analog buffer per DAC
+    Buffer = lib_dc.TSMC350nm_AnalogBuffer(Top,AvgDACIsland)
+    Buffer.place([numStages+3,0])
+>>>>>>> c3f31e5 (Averager DAC routing)
 
 
     # 1 Tgate per bit
     TgateIsland = ac.Island(Top)
+<<<<<<< HEAD
 <<<<<<< HEAD
     Tgates = lib_dc.TSMC350nm_TGate_DT(Top,TgateIsland,dim=[numBits,1])
     Tgates.place([0,0])
@@ -84,6 +99,23 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     GateSwitches.Vg += TAs.Vg
 
     TAs.Vg_b[0] += EPOTA.Vg[0]
+=======
+    Tgates = lib_dc.TSMC350nm_TGate_DT(Top,TgateIsland,dim=[numStages+2,1])
+    Tgates.place([0,1])
+
+    # FG Programming
+    #-----------------------------------------------------------------------------
+    GateDecoder = lib_mux.STD_IndirectGateDecoder(Top,AvgDACIsland,2)
+    GateSwitches = lib_mux.STD_IndirectGateSwitch(Top,AvgDACIsland,1)
+
+    drainLineNum = (numStages+2)*2+1
+    drainBits = int(np.ceil(np.log2(drainLineNum)))
+
+    DrainDecoder = lib_mux.STD_DrainDecoder(Top,AvgDACIsland,bits=drainBits)
+    DrainSelect = lib_mux.RunDrainSwitch(Top,AvgDACIsland,num=int(np.ceil(drainLineNum/4)))
+    DrainSwitch = lib_cab.DrainCutoff(Top,AvgDACIsland,num=int(np.ceil(drainLineNum/4)))
+
+>>>>>>> c3f31e5 (Averager DAC routing)
 
 
     # Pins
@@ -96,11 +128,15 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     VGPROG = outerPins.createPort("N","VGPROG")
     VTUN = outerPins.createPort("N","VTUN")
 <<<<<<< HEAD
+<<<<<<< HEAD
     AVDD_N = outerPins.createPort("N","avdd")
     AVDD_S = outerPins.createPort("S","avdd")
 =======
     AVDD = outerPins.createPort("N","AVDD")
 >>>>>>> 2836072 (test)
+=======
+    AVDD = outerPins.createPort("N","AVDD")
+>>>>>>> c3f31e5 (Averager DAC routing)
     GND_N = outerPins.createPort("N","gnd")
     GND_S = outerPins.createPort("S","gnd")
     VINJ_N = outerPins.createPort("N","vinj")
@@ -110,6 +146,7 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     DrainEnable = outerPins.createPort("W","DrainEnable")
     GateBits = outerPins.createPort("W","GateB",dimension=2)
 <<<<<<< HEAD
+<<<<<<< HEAD
     GateEnable = outerPins.createPort("N","GateEnable")
 
     Run_Drainline = outerPins.createPort("S","Run_Drainline")
@@ -118,15 +155,21 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     VOUT = outerPins.createPort("S","Vout")
     Code = outerPins.createPort("E","Code",dimension=numBits)
 =======
+=======
+>>>>>>> c3f31e5 (Averager DAC routing)
     GateEnable = outerPins.createPort("W","GateEnable")
     
     VOUT = outerPins.createPort("S","Vout")
     TGATES = outerPins.createPort("N","Tgates",dimension=numStages)
+<<<<<<< HEAD
 >>>>>>> 2836072 (test)
+=======
+>>>>>>> c3f31e5 (Averager DAC routing)
 
     # Connections
     #----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     TAs.Vout += Buffer.Vin[0]
     TAs.VIN_MINUS += Buffer.Vin[0]
@@ -176,6 +219,8 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     DrainSelect.VINJ += VINJ_N
 
 =======
+=======
+>>>>>>> c3f31e5 (Averager DAC routing)
     EPOTs.VDD += AVDD
     EPOTs.VINJ += VINJ_N
     EPOTs.VINJ_b += VINJ_S
@@ -217,7 +262,10 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
 
     DrainDecoder.VINJ += VINJ_S
     DrainDecoder.GND += GND_S
+<<<<<<< HEAD
 >>>>>>> 2836072 (test)
+=======
+>>>>>>> c3f31e5 (Averager DAC routing)
     DrainDecoder.IN += DrainBits
     DrainDecoder.ENABLE += DrainEnable
 
@@ -228,13 +276,19 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
 
     # Island Placement
     #----------------------------------------------------------------------------
+<<<<<<< HEAD
     XStart = islandLoc[0]
     YStart = islandLoc[1]
+=======
+    XFGs = islandLoc[0]
+    YFGs = islandLoc[1]
+>>>>>>> c3f31e5 (Averager DAC routing)
 
     EPOTWidth = 85000
     TGateWidth = 10000
     XSpace = 1000
     Pitch = 22000
+<<<<<<< HEAD
 
 <<<<<<< HEAD
    # DrainCutoffWidth + ProgRunDrainWidth + 4to1Width 
@@ -263,11 +317,21 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
  
 
     location_islands = (loc_OTA,loc_EPOT,loc_Buffer,loc_Tgates)
+=======
+    DecoderWidth = int(43000 + ((drainBits/2)*25000))
+
+    XTgate = (EPOTWidth+25*XSpace+XFGs+DecoderWidth) + 45000
+    YTgate = YFGs+(2*Pitch)
+
+    location_islands = ((XFGs,YFGs),(XTgate,YTgate)) 
+
+>>>>>>> c3f31e5 (Averager DAC routing)
 
     return location_islands
 
 Top = ac.Circuit()
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 location_islands = AvgDAC(Top,5,islandLoc=[5000,1500])
 
@@ -282,3 +346,10 @@ ac.compile_asic(Top,process="TSMC350nm",fileName="AveragerDAC",design_limits = d
 =======
 ac.compile_asic(Top,process="TSMC350nm",fileName="AveragerDAC",design_limits = design_limits, location_islands = location_islands, drainSpaceIdx=0,drainSpace=50,gateSpaceIdx=0,gateSpace=15)
 >>>>>>> 2836072 (test)
+=======
+location_islands = AvgDAC(Top,6,islandLoc=[60000,22000])
+
+design_limits = [8e5, 6e5]
+
+ac.compile_asic(Top,process="TSMC350nm",fileName="AveragerDAC",design_limits = design_limits, location_islands = location_islands, drainSpaceIdx=0,drainSpace=50,gateSpaceIdx=0,gateSpace=15)
+>>>>>>> c3f31e5 (Averager DAC routing)

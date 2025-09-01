@@ -3,6 +3,7 @@ module TOP(port1);
 
 	/* Island 0 */
 <<<<<<< HEAD
+<<<<<<< HEAD
 	TSMC350nm_Amplifier9T_FGInputs_Bias I__0 (.island_num(0), .row(0), .col(0), .matrix_row(5), .matrix_col(1), .VDDrow_0(net136[0]), .VINJrow_0(net150[0]), .GNDrow_0(net151[0]), .VTUNrow_0(net137[0]), .Vg_0_row_0(net114[0]), .Vg_1_row_0(net115[0]), .Vg_b_0_row_4(net116[0]), .Vd_P_0_col_0(net92[0:5]), .Vd_P_1_col_0(net93[0:5]), .Vd_Rcol_0(net94[0:5]), .Vsel_0_row_0(net112[0]), .Vsel_1_row_0(net113[0]), .Progrow_0(net138[0]), .VIN_PLUScol_0(net118[0:5]), .VIN_MINUScol_0(net117), .Voutcol_0(net117));
 
  	/*Programming Mux */ 
@@ -17,6 +18,8 @@ module TOP(port1);
 	EPOT I__0 (.island_num(1), .row(0), .col(0), .matrix_row(1), .matrix_col(1), .Vg_0_row_0(net116[0]), .VD_P_0_row_0(net107[0]), .VD_P_1_row_0(net108[0]), .VIN_PLUSrow_0(net136[0]), .Voutrow_0(net123));
 	EPOT I__1 (.island_num(1), .row(1), .col(0), .matrix_row(1), .matrix_col(1), .VDD_brow_0(net132), .VINJ_brow_0(net142), .GND_brow_0(net131), .VTUN_brow_0(net133), .Vg_b_0_row_0(net135), .Vsel_b_0_row_0(net134), .VD_P_0_row_0(net109[0]), .VD_P_1_row_0(net110[0]), .VIN_PLUSrow_0(net136[0]), .Voutrow_0(net124));
 =======
+=======
+>>>>>>> c3f31e5 (Averager DAC routing)
 	EPOT I__0 (.island_num(0), .row(0), .col(0), .matrix_row(8), .matrix_col(1), .VDDrow_0(net137[0:1]), .VINJrow_0(net162[0:1]), .VINJ_brow_7(net154[0:1]), .GNDrow_0(net163[0:1]), .GND_brow_7(net155[0:1]), .Progrow_0(net133[0:1]), .Vg_0_row_0(net134[0:1]), .Vg_1_row_0(net135[0:1]), .VD_P_0_col_0(net138[0:8]), .VD_P_1_col_0(net139[0:8]), .Voutcol_0(net18[0:8]));
 	AnalogBuffer I__1 (.island_num(0), .row(9), .col(0), .VDD(net137[0]), .GND(net155[0]), .Vout(net132));
 
@@ -30,11 +33,15 @@ module TOP(port1);
 
 	/* Island 1 */
 	TGate_DT I__0 (.island_num(1), .row(0), .col(1), .matrix_row(8), .matrix_col(1), .Acol_0(net18[0:8]), .Bcol_0(net18[0:8]));
+<<<<<<< HEAD
 >>>>>>> 2836072 (test)
+=======
+>>>>>>> c3f31e5 (Averager DAC routing)
 
  	/*Programming Mux */ 
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/* Island 2 */
 	AnalogBuffer I__0 (.island_num(2), .row(0), .col(0), .matrix_row(1), .matrix_col(1), .VTUNrow_0(net133), .VDDrow_0(net132), .GNDrow_0(net131), .VINJrow_0(net142), .Vgrow_0(net135), .Vd_Prow_0(net111[0]), .Vselrow_0(net134), .Vinrow_0(net117), .Voutrow_0(net130));
@@ -54,4 +61,8 @@ module TOP(port1);
 	/* Frame */ 
 	tile_analog_frame cab_frame(.pin_layer(METAL3), .N_n_Prog(net133[0]), .N_n_Run(net136), .N_n_AVDD(net137[0]), .N_n_gnd(net163[0]), .S_s_gnd(net155[0]), .N_n_vinj(net162[0]), .S_s_vinj(net154[0]), .W_w_DrainB_0_(net156), .W_w_DrainB_1_(net157), .W_w_DrainB_2_(net158), .W_w_DrainB_3_(net159), .W_w_DrainB_4_(net160), .W_w_DrainEnable(net161), .W_w_GateB_0_(net165), .W_w_GateB_1_(net166), .W_w_GateEnable(net164), .S_s_Vout(net132));
 >>>>>>> 2836072 (test)
+=======
+	/* Frame */ 
+	tile_analog_frame cab_frame(.pin_layer(METAL3), .N_n_Prog(net133[0]), .N_n_Run(net136), .N_n_AVDD(net137[0]), .N_n_gnd(net163[0]), .S_s_gnd(net155[0]), .N_n_vinj(net162[0]), .S_s_vinj(net154[0]), .W_w_DrainB_0_(net156), .W_w_DrainB_1_(net157), .W_w_DrainB_2_(net158), .W_w_DrainB_3_(net159), .W_w_DrainB_4_(net160), .W_w_DrainEnable(net161), .W_w_GateB_0_(net165), .W_w_GateB_1_(net166), .W_w_GateEnable(net164), .S_s_Vout(net132));
+>>>>>>> c3f31e5 (Averager DAC routing)
  endmodule
