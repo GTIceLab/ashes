@@ -29,7 +29,7 @@ class TSMC350nm_AnalogBuffer(StandardCell):
         self.Vout = Port(circuit,self,'Vout','E',1*self.dim[1])
 
         # Initialize ports with given values
-        portsInit = []
+        portsInit = [VTUN,VTUN_b,VDD,VDD_b,GND,GND_b,VINJ,VINJ_b,Vg,Vg_b,Vd_P,Vsel,Vsel_b,Vin,Vout]
         i=0
         for p in self.ports:
             self.assignPort(p,portsInit[i])
