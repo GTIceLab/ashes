@@ -322,6 +322,27 @@ def AvgDAC(circuit,numStages=1,AvgDACIsland=None,islandLoc=[0,0]):
 
     XTgate = (EPOTWidth+25*XSpace+XFGs+DecoderWidth) + 45000
     YTgate = YFGs+(2*Pitch)
+>>>>>>> 2836072 (test)
+
+    EPOTIslandX = XStart + DecoderWidth+15000+1400
+    EPOTIslandY = OTAIslandY - 2*Pitch 
+    loc_EPOT = (EPOTIslandX,EPOTIslandY)
+    
+    BufferIslandX = EPOTIslandX
+    BufferIslandY = EPOTIslandY - Pitch - Pitch/2
+    loc_Buffer = (BufferIslandX,BufferIslandY)
+
+    TgateIslandX = (EPOTWidth+25*XSpace+XStart+DecoderWidth) + 1000
+    TgateIslandY = YStart+(2*Pitch)
+    loc_Tgates = (TgateIslandX,TgateIslandY)
+ 
+
+    location_islands = (loc_OTA,loc_EPOT,loc_Buffer,loc_Tgates)
+=======
+    DecoderWidth = int(43000 + ((drainBits/2)*25000))
+
+    XTgate = (EPOTWidth+25*XSpace+XFGs+DecoderWidth) + 25000
+    YTgate = YFGs+(2*Pitch)
 
     location_islands = ((XFGs,YFGs),(XTgate,YTgate)) 
 
@@ -349,7 +370,7 @@ ac.compile_asic(Top,process="TSMC350nm",fileName="AveragerDAC",design_limits = d
 =======
 location_islands = AvgDAC(Top,6,islandLoc=[60000,22000])
 
-design_limits = [8e5, 6e5]
+design_limits = [4.5e5, 6e5]
 
 ac.compile_asic(Top,process="TSMC350nm",fileName="AveragerDAC",design_limits = design_limits, location_islands = location_islands, drainSpaceIdx=0,drainSpace=50,gateSpaceIdx=0,gateSpace=15)
 >>>>>>> c3f31e5 (Averager DAC routing)
