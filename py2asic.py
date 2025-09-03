@@ -35,5 +35,5 @@ from ashes_fg.asic.asic_systems import *
 
 #exec(open("./example_python/VMMsig.py").read())
 
-exec(open("./example_python/AveragerDAC.py").read())
+exec(open("./example_python/VMMsig.py").read())
 

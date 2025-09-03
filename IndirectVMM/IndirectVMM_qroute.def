@@ -26,7 +26,8 @@ TRACKS Y 1 DO 5714 STEP 1400 LAYER METAL2 ;
 TRACKS X 0 DO 5714 STEP 1400 LAYER METAL1 ;
 TRACKS Y 0 DO 5714 STEP 1400 LAYER METAL1 ;
 
-COMPONENTS 553 ;
+COMPONENTS 554 ;
+- cab_frame tile_analog_frame + PLACED ( 0 0 ) N ;
 - I_0_0 TSMC350nm_VinjDecode2to4_vtile_spacing + PLACED ( 0 0 ) N ;
 - I_0_1 TSMC350nm_VinjDecode2to4_vtile_bridge_spacing + PLACED ( 20120 0 ) N ;
 - I_0_2 TSMC350nm_VinjDecode2to4_vtile_spacing + PLACED ( 26270 0 ) N ;
@@ -49353,6 +49354,166 @@ BLOCKAGES 9754 ;
     RECT ( 193500 1099750 ) ( 194300 1101750 ) ;
   END
 
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 0 0 ) ( 1000 1152400 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 212190 0 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 0 1151400 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 0 0 ) ( 213190 1000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 0 0 ) ( 1000 1152400 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 212190 0 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 0 1151400 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 0 0 ) ( 213190 1000 ) ;
+  END
+
+  - METAL3
+    LAYER METAL3 ;
+    RECT ( 0 0 ) ( 1000 1152400 ) ;
+  END
+
+  - METAL3
+    LAYER METAL3 ;
+    RECT ( 212190 0 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL3
+    LAYER METAL3 ;
+    RECT ( 0 1151400 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL3
+    LAYER METAL3 ;
+    RECT ( 0 0 ) ( 213190 1000 ) ;
+  END
+
+  - METAL4
+    LAYER METAL4 ;
+    RECT ( 0 0 ) ( 1000 1152400 ) ;
+  END
+
+  - METAL4
+    LAYER METAL4 ;
+    RECT ( 212190 0 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL4
+    LAYER METAL4 ;
+    RECT ( 0 1151400 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL4
+    LAYER METAL4 ;
+    RECT ( 0 0 ) ( 213190 1000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 0 0 ) ( 1000 1152400 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 212190 0 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 0 1151400 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 0 0 ) ( 213190 1000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 0 0 ) ( 1000 1152400 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 212190 0 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 0 1151400 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 0 0 ) ( 213190 1000 ) ;
+  END
+
+  - METAL3
+    LAYER METAL3 ;
+    RECT ( 0 0 ) ( 1000 1152400 ) ;
+  END
+
+  - METAL3
+    LAYER METAL3 ;
+    RECT ( 212190 0 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL3
+    LAYER METAL3 ;
+    RECT ( 0 1151400 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL3
+    LAYER METAL3 ;
+    RECT ( 0 0 ) ( 213190 1000 ) ;
+  END
+
+  - METAL4
+    LAYER METAL4 ;
+    RECT ( 0 0 ) ( 1000 1152400 ) ;
+  END
+
+  - METAL4
+    LAYER METAL4 ;
+    RECT ( 212190 0 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL4
+    LAYER METAL4 ;
+    RECT ( 0 1151400 ) ( 213190 1152400 ) ;
+  END
+
+  - METAL4
+    LAYER METAL4 ;
+    RECT ( 0 0 ) ( 213190 1000 ) ;
+  END
+
 END BLOCKAGES
 
 NETS 209 ;
@@ -50174,7 +50335,7 @@ NETS 209 ;
   ( I_0_452 VPWR<1> ) ( I_0_453 RUN_OUT<1> ) 
 
 + ROUTED METAL2 ( 148400 1121700 ) ( * 1122800 ) ( * 1124200 ) ( 141400 * ) ( * 1125600 ) ( 140000 * ) ( * 1129800 ) ( * 1130700 ) ;
-- net2096_0
+- net2118_0
   ( I_1_0_0_0 VC ) ( I_2_0 GATE ) 
 
 + ROUTED METAL2 ( 186200 1099700 ) ( * 1100400 ) M2_M1_0 
@@ -50558,7 +50719,7 @@ SPECIALNETS 170 ;
 ;
 - isle0_swc_net3
 ;
-- net2096_0
+- net2118_0
 + ROUTED METAL2 900 ( 186200 1099400 ) ( * 1100700 ) ;
 END SPECIALNETS
 

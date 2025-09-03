@@ -14,14 +14,17 @@ module TOP(port1);
 
 
 	/* Island 1 */
-	TSMC350nm_NeuralNetworkProgActFunc I__0 (.island_num(1), .row(50), .col(4), .matrix_row(50), .matrix_col(1), .I1_Pcol_0(net1222[0:50]), .I1_Ncol_0(net1223[0:50]), .I3_Pcol_0(net1224[0:50]), .I3_Ncol_0(net1225[0:50]), .VCrow_0(net2096[0:1]));
+	TSMC350nm_NeuralNetworkProgActFunc I__0 (.island_num(1), .row(50), .col(4), .matrix_row(50), .matrix_col(1), .I1_Pcol_0(net1222[0:50]), .I1_Ncol_0(net1223[0:50]), .I3_Pcol_0(net1224[0:50]), .I3_Ncol_0(net1225[0:50]), .VCrow_0(net2118[0:1]));
 
  	/*Programming Mux */ 
 
 
 	/* Island 2 */
-	TSMC350nm_Termination_bot I__0 (.island_num(2), .row(0), .col(5), .GATE(net2096[0]));
+	TSMC350nm_Termination_bot I__0 (.island_num(2), .row(0), .col(5), .GATE(net2118[0]));
 
  	/*Programming Mux */ 
 
+
+	/* Frame */ 
+	tile_analog_frame cab_frame(.pin_layer(METAL3));
  endmodule

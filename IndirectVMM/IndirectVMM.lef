@@ -900,6 +900,156 @@ MACRO TSMC350nm_Termination_bot
   END GND
 END TSMC350nm_Termination_bot
 
+MACRO tile_analog_frame
+END tile_analog_frame
+
+MACRO TSMC350nm_4TGate_ST_BMatrix
+  PIN In<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 17.5 0.27 18.0 ;
+    END
+  END In<0>
+  PIN In<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 14.7 0.38 15.2 ;
+    END
+  END In<1>
+  PIN In<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 7.0 0.36 7.5 ;
+    END
+  END In<2>
+  PIN In<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 3.5 0.3 4.0 ;
+    END
+  END In<3>
+  PIN A<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 10.6 17.6 12.0 18.9 ;
+    END
+  END A<0>
+  PIN A<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 10.6 14.9 12.0 16.2 ;
+    END
+  END A<1>
+  PIN A<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 10.6 6.8 12.0 8.1 ;
+    END
+  END A<2>
+  PIN A<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 10.6 4.1 12.0 5.4 ;
+    END
+  END A<3>
+  PIN P<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 10.6 20.3 12.0 21.6 ;
+    END
+  END P<0>
+  PIN P<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 10.6 12.2 12.0 13.5 ;
+    END
+  END P<1>
+  PIN P<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 10.6 9.5 12.0 10.8 ;
+    END
+  END P<2>
+  PIN P<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 10.6 1.4 12.0 2.7 ;
+    END
+  END P<3>
+  PIN GND_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 6.35 0.0 7.25 0.88 ;
+    END
+  END GND_b
+  PIN Prog_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 4.1 0.0 4.7 0.78 ;
+    END
+  END Prog_b
+  PIN VDD_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 1.81 0.0 2.71 0.71 ;
+    END
+  END VDD_b
+  PIN Prog
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 4.1 21.3 4.7 22.0 ;
+    END
+  END Prog
+  PIN VDD
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 1.81 21.3 2.71 22.0 ;
+    END
+  END VDD
+  PIN GND
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 6.35 21.3 7.25 22.0 ;
+    END
+  END GND
+END TSMC350nm_4TGate_ST_BMatrix
+
 MACRO TSMC350nm_NeuralNetworkProgActFunc
   PIN V4
     DIRECTION INOUT ;
@@ -1401,152 +1551,5 @@ MACRO TSMC350nm_4x2_Indirect
     END
   END Vd_R<2>
 END TSMC350nm_4x2_Indirect
-
-MACRO TSMC350nm_4TGate_ST_BMatrix
-  PIN In<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 17.5 0.27 18.0 ;
-    END
-  END In<0>
-  PIN In<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 14.7 0.38 15.2 ;
-    END
-  END In<1>
-  PIN In<2>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 7.0 0.36 7.5 ;
-    END
-  END In<2>
-  PIN In<3>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 3.5 0.3 4.0 ;
-    END
-  END In<3>
-  PIN A<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 10.6 17.6 12.0 18.9 ;
-    END
-  END A<0>
-  PIN A<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 10.6 14.9 12.0 16.2 ;
-    END
-  END A<1>
-  PIN A<2>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 10.6 6.8 12.0 8.1 ;
-    END
-  END A<2>
-  PIN A<3>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 10.6 4.1 12.0 5.4 ;
-    END
-  END A<3>
-  PIN P<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 10.6 20.3 12.0 21.6 ;
-    END
-  END P<0>
-  PIN P<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 10.6 12.2 12.0 13.5 ;
-    END
-  END P<1>
-  PIN P<2>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 10.6 9.5 12.0 10.8 ;
-    END
-  END P<2>
-  PIN P<3>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 10.6 1.4 12.0 2.7 ;
-    END
-  END P<3>
-  PIN GND_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 6.35 0.0 7.25 0.88 ;
-    END
-  END GND_b
-  PIN Prog_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 4.1 0.0 4.7 0.78 ;
-    END
-  END Prog_b
-  PIN VDD_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 1.81 0.0 2.71 0.71 ;
-    END
-  END VDD_b
-  PIN Prog
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 4.1 21.3 4.7 22.0 ;
-    END
-  END Prog
-  PIN VDD
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 1.81 21.3 2.71 22.0 ;
-    END
-  END VDD
-  PIN GND
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 6.35 21.3 7.25 22.0 ;
-    END
-  END GND
-END TSMC350nm_4TGate_ST_BMatrix
 
 END LIBRARY
