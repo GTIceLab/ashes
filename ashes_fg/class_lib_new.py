@@ -2539,4 +2539,26 @@ class FakeCell(FakeStandardCell):
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
+class FakeCellGateDecoder(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1)):
 
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'FakeCellGateDecoder'
+
+		# Initialize ports with given values
+		portsInit = []
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
