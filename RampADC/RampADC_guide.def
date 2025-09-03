@@ -26,9 +26,27 @@ TRACKS Y 1 DO 357 STEP 1400 LAYER METAL2 ;
 TRACKS X 0 DO 357 STEP 1400 LAYER METAL1 ;
 TRACKS Y 0 DO 357 STEP 1400 LAYER METAL1 ;
 
-COMPONENTS 3 ;
-- I_0_0 TSMC350nm_Amplifier9T_FGBias + PLACED ( 20500 0 ) N ;
-- I_0_1 TSMC350nm_Amplifier9T_FGBias + PLACED ( 20500 22000 ) N ;
-- I_1_0 TGate_DT + PLACED ( 105500 0 ) N ;
+COMPONENTS 21 ;
+- cab_frame tile_analog_frame + PLACED ( 0 0 ) N ;
+- I_0_0 TSMC350nm_VinjDecode2to4_vtile + PLACED ( 0 33000 ) N ;
+- I_0_1 TSMC350nm_drainSelect_progrundrains + PLACED ( 20120 33000 ) N ;
+- I_0_2 TSMC350nm_4TGate_ST_draincutoff + PLACED ( 51980 33000 ) N ;
+- I_0_5 TSMC350nm_IndirectSwitches + PLACED ( 77580 87000 ) N ;
+- I_0_6 TSMC350nm_VinjDecode2to4_htile + PLACED ( 77580 117400 ) N ;
+- I_1_0 Capacitor_80ff + PLACED ( 157440 33000 ) N ;
+- I_1_1 Capacitor_80ff + PLACED ( 199250 33000 ) N ;
+- I_1_2 Capacitor_80ff + PLACED ( 241060 33000 ) N ;
+- I_1_3 TGate_DT + PLACED ( 282870 33000 ) N ;
+- I_1_4 Capacitor_80ff + PLACED ( 157440 55000 ) N ;
+- I_1_5 Capacitor_80ff + PLACED ( 199250 55000 ) N ;
+- I_1_6 Capacitor_80ff + PLACED ( 241060 55000 ) N ;
+- I_2_0_0_0 RippleCounter + PLACED ( 0 5000 ) N ;
+- I_2_0_0_1 RippleCounter + PLACED ( 36680 5000 ) N ;
+- I_2_0_0_2 RippleCounter + PLACED ( 73360 5000 ) N ;
+- I_2_0_0_3 RippleCounter + PLACED ( 110040 5000 ) N ;
+- I_2_0_0_4 RippleCounter + PLACED ( 146720 5000 ) N ;
+- I_2_0_0_5 RippleCounter + PLACED ( 183400 5000 ) N ;
+- I_2_0_0_6 RippleCounter + PLACED ( 220080 5000 ) N ;
+- I_2_0_0_7 RippleCounter + PLACED ( 256760 5000 ) N ;
 END COMPONENTS
 

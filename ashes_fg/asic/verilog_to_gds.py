@@ -29,7 +29,7 @@ from ashes_fg.asic.utils import *
 # Qs:
 # - Why are island numbers zero indexed but row and cols are 1 indexed?
 
-verbose = False
+verbose = True 
 pypath = sys.executable
 
 
