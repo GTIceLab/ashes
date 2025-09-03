@@ -1,5 +1,38 @@
 from ashes_fg.asic.asic_compile import *
 
+class TSMC350nm_RippleCounter(StandardCell):
+    def __init__(self,circuit,island=None,dim=(1,1),Count=None,Count_B=None,RST=None,RST_L=None,CLK=None,GND=None,GND_L = None,VDD=None,VDD_L=None):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+
+        # Define cell information
+        self.name = 'RippleCounter'
+        self.Count = Port(circuit,self,"Count",'N',1*self.dim[1])
+        self.Count_B = Port(circuit,self,"Count",'S',1*self.dim[1])
+        self.RST = Port(circuit,self,"RST",'E',1)
+        self.RST_L = Port(circuit,self,"RST_L",'W',1)
+        self.CLK = Port(circuit,self,"CLK",'W',1)
+        self.GND = Port(circuit,self,"GND",'E',1)
+        self.GND_L = Port(circuit,self,"GND_L",'W',1)
+        self.VDD = Port(circuit,self,"VDD",'E',1)
+        self.VDD_L = Port(circuit,self,"VDD_L",'W',1)
+
+        # Initialize ports with given values
+        portsInit = [Count,Count_B,RST,RST_L,CLK,GND,GND_L,VDD,VDD_L]
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+
 class TSMC350nm_AnalogBuffer(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),VTUN=None,VTUN_b=None,VDD=None,VDD_b=None,GND=None,GND_b=None,VINJ=None,VINJ_b=None,Vg=None,Vg_b=None,Vd_P=None,Vsel=None,Vsel_b=None,Vin=None,Vout=None):
         # Define variables
