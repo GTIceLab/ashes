@@ -56,7 +56,7 @@ def IndirectVMM(circuit,dim=[16,4], island=None,decoderPlace=True,loc=[0,0], inp
 
     # Pins -----------------------------------------------------------------------
 
-    outerPins = lib_mux.frame(Top)
+    '''outerPins = lib_mux.frame(Top)
 
     PROG = outerPins.createPort("N","Prog")
     RUN = outerPins.createPort("N","Run")
@@ -72,14 +72,14 @@ def IndirectVMM(circuit,dim=[16,4], island=None,decoderPlace=True,loc=[0,0], inp
     DrainBits = outerPins.createPort("W","DrainB",dimension=drainBits)
     DrainEnable = outerPins.createPort("W","DrainEnable")
     GateBits = outerPins.createPort("W","GateB",dimension=2)
-    GateEnable = outerPins.createPort("W","GateEnable")
+    GateEnable = outerPins.createPort("W","GateEnable")'''
 
     # Connections --------------------------------------------------------------
 
     #VMM.VINJ += VINJ_N
-    VMM.VINJ_b += VINJ_S
-    VMM.GND += GND_N
-    VMM.GND_b += GND_S
+    #VMM.VINJ_b += VINJ_S
+    #VMM.GND += GND_N
+    #VMM.GND_b += GND_S
     #VMM.Prog += PROG
     #VMM.Run += RUN
     #VMM.VGRUN += VGRUN
@@ -113,6 +113,6 @@ Top = Circuit()
 
 design_limits = [8e5, 8e5]
 
-location_islands = IndirectVMM(Top, dim=[8,2], island=None, decoderPlace=True, loc=[0,0], inputs=None, islandLoc=[0,0])
+location_islands = IndirectVMM(Top, dim=[8,10], island=None, decoderPlace=True, loc=[0,0], inputs=None, islandLoc=[0,0])
 
 compile_asic(Top,process="TSMC350nm",fileName="IndirectVMM",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=0,drainSpace=0,gateSpaceIdx=0,gateSpace=0)
