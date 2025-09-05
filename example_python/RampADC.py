@@ -15,7 +15,7 @@ Top = ac.Circuit()
 RampIsland = ac.Island(Top)
 
 # ADC Bit Number
-B = 8;
+B = 14
 
 # Generates ramp current
 RampBias = lib_dc.TSMC350nm_Amplifier9T_FGBias(Top,RampIsland)
@@ -53,7 +53,7 @@ Counter.place([0,0])
 # FG Programming
 
 GateDecoder = lib_mux.STD_IndirectGateDecoder(Top,RampIsland,2)
-GateSwitches0 = lib_mux.STD_IndirectGateSwitch(Top,RampIsland,1)
+GateSwitches = lib_mux.STD_IndirectGateSwitch(Top,RampIsland,1)
 
 
 DrainDecoder = lib_mux.STD_DrainDecoder(Top,RampIsland,bits=2)
@@ -80,21 +80,78 @@ VINJ_S = outerPins.createPort("S","vinj")
 DrainBits = outerPins.createPort("W","DrainB",dimension=2)
 DrainEnable = outerPins.createPort("W","DrainEnable")
 GateBits = outerPins.createPort("W","GateB",dimension=2)
-GateEnable = outerPins.createPort("W","GateEnable")
+GateEnable = outerPins.createPort("N","GateEnable")
 
 Code = outerPins.createPort("S","Code",dimension=B)
+CLK = outerPins.createPort("W","CLK")
+RST = outerPins.createPort("W","RST")
+
+VIN = outerPins.createPort("W","Vin")
 
 # Pin Connections
+#----------------------------------------------------------------------------
 Counter.Count_B += Code
+Counter.CLK += CLK
+Counter.RST_L += RST
+Counter.VDD += AVDD
+Counter.GND += GND_S
 
-design_limits = [5e5, 5e5]
 
+DrainSwitch.In[0] += RampBias.VD_R 
+DrainSwitch.In[1] += Comparator.VD_R
+DrainSwitch.PR[0] += RampBias.VD_P
+DrainSwitch.PR[1] += Comparator.VD_P
+DrainDecoder.IN += DrainBits
+DrainDecoder.GND += GND_S
+DrainDecoder.VINJ += VINJ_S
+
+GateDecoder.ENABLE += GateEnable
+GateDecoder.IN += GateBits
+GateDecoder.VINJV += VINJ_N
+GateDecoder.GND_b[1] += GND_N
+
+GateSwitches.VINJ += RampBias.VINJ
+GateSwitches.GND += RampBias.GND
+
+RampBias.Vg += GateSwitches.Vg[0]
+RampBias.Vsel += GateSwitches.CTRL_B[0]
+RampBias.VTUN += VTUN
+RampBias.PROG += PROG
+RampBias.GND += GND_N
+
+RampBias.VIN_MINUS += RST
+RampBias.VIN_PLUS += AVDD
+
+CapTop = ac.Wire(Top)
+CapBot = ac.Wire(Top)
+
+for i in range(numCapColumns):
+    for j in range(2):
+        capArray[j][i].Top+=CapTop
+        capArray[j][i].Bot+=CapBot
+
+CapBot += GND_N
+CapTop += RampBias.Vout
+CapTop += Comparator.VIN_PLUS
+
+RampRST.A += CapTop
+RampRST.C += CapBot
+RampRST.SELA += RST
+RampRST.VDD += AVDD
+RampRST.GND += CapBot
+
+VIN += Comparator.VIN_MINUS
+
+# -----------------------------------------------------------------------------------------------
+
+design_limits = [6e5, 5e5]
+XPadding = 5000
 YPadding = 5000
 FGWidth = 68940 
 Pitch = 22000
 DecoderWidth = int(43000 + ((2/2)*25000))
 
-location_islands = ( (0,int(1.5*Pitch)) , (DecoderWidth+FGWidth,int(1.5*Pitch)) , (0,YPadding) )
+location_islands = ( (XPadding,int(1.5*Pitch)) , (XPadding+DecoderWidth+FGWidth,int(1.5*Pitch)) , (XPadding,YPadding) )
 
 ac.compile_asic(Top,process="TSMC350nm",fileName="RampADC",p_and_r = True,design_limits = design_limits, location_islands = location_islands, drainSpaceIdx=0,drainSpace=15,gateSpaceIdx=0,gateSpace=10)
 
