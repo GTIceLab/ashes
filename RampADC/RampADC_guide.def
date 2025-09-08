@@ -26,7 +26,7 @@ TRACKS Y 1 DO 357 STEP 1400 LAYER METAL2 ;
 TRACKS X 0 DO 429 STEP 1400 LAYER METAL1 ;
 TRACKS Y 0 DO 357 STEP 1400 LAYER METAL1 ;
 
-COMPONENTS 29 ;
+COMPONENTS 23 ;
 - cab_frame tile_analog_frame + PLACED ( 0 0 ) N ;
 - I_0_0 TSMC350nm_VinjDecode2to4_vtile + PLACED ( 5000 33000 ) N ;
 - I_0_1 TSMC350nm_drainSelect_progrundrains + PLACED ( 25120 33000 ) N ;
@@ -50,11 +50,5 @@ COMPONENTS 29 ;
 - I_2_0_0_5 RippleCounter + PLACED ( 188400 5000 ) N ;
 - I_2_0_0_6 RippleCounter + PLACED ( 225080 5000 ) N ;
 - I_2_0_0_7 RippleCounter + PLACED ( 261760 5000 ) N ;
-- I_2_0_0_8 RippleCounter + PLACED ( 298440 5000 ) N ;
-- I_2_0_0_9 RippleCounter + PLACED ( 335120 5000 ) N ;
-- I_2_0_0_10 RippleCounter + PLACED ( 371800 5000 ) N ;
-- I_2_0_0_11 RippleCounter + PLACED ( 408480 5000 ) N ;
-- I_2_0_0_12 RippleCounter + PLACED ( 445160 5000 ) N ;
-- I_2_0_0_13 RippleCounter + PLACED ( 481840 5000 ) N ;
 END COMPONENTS
 

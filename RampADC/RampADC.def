@@ -26,7 +26,7 @@ TRACKS Y 1 DO 357 STEP 1400 LAYER METAL2 ;
 TRACKS X 0 DO 429 STEP 1400 LAYER METAL1 ;
 TRACKS Y 0 DO 357 STEP 1400 LAYER METAL1 ;
 
-COMPONENTS 29 ;
+COMPONENTS 23 ;
 - cab_frame tile_analog_frame + PLACED ( 0 0 ) N ;
 - I_0_0 TSMC350nm_VinjDecode2to4_vtile + PLACED ( 5000 33000 ) N ;
 - I_0_1 TSMC350nm_drainSelect_progrundrains + PLACED ( 25120 33000 ) N ;
@@ -50,15 +50,9 @@ COMPONENTS 29 ;
 - I_2_0_0_5 RippleCounter + PLACED ( 188400 5000 ) N ;
 - I_2_0_0_6 RippleCounter + PLACED ( 225080 5000 ) N ;
 - I_2_0_0_7 RippleCounter + PLACED ( 261760 5000 ) N ;
-- I_2_0_0_8 RippleCounter + PLACED ( 298440 5000 ) N ;
-- I_2_0_0_9 RippleCounter + PLACED ( 335120 5000 ) N ;
-- I_2_0_0_10 RippleCounter + PLACED ( 371800 5000 ) N ;
-- I_2_0_0_11 RippleCounter + PLACED ( 408480 5000 ) N ;
-- I_2_0_0_12 RippleCounter + PLACED ( 445160 5000 ) N ;
-- I_2_0_0_13 RippleCounter + PLACED ( 481840 5000 ) N ;
 END COMPONENTS
 
-BLOCKAGES 584 ;
+BLOCKAGES 476 ;
   - METAL1
     LAYER METAL1 ;
     RECT ( 6000 34000 ) ( 24120 54000 ) ;
@@ -886,7 +880,7 @@ BLOCKAGES 584 ;
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 6000 6000 ) ( 517520 26000 ) ;
+    RECT ( 6000 6000 ) ( 297440 26000 ) ;
   END
 
   - METAL1
@@ -1247,276 +1241,6 @@ BLOCKAGES 584 ;
   - METAL1
     LAYER METAL1 ;
     RECT ( 262760 4000 ) ( 293860 6000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 297440 8740 ) ( 299440 8390 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 297440 12690 ) ( 299440 12440 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 297440 15840 ) ( 299440 18590 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 297440 22890 ) ( 299440 26000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 299440 26000 ) ( 330540 28000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 334120 22890 ) ( 336120 26000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 334120 12690 ) ( 336120 18590 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 334120 8740 ) ( 336120 8390 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 299440 4000 ) ( 330540 6000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 334120 8740 ) ( 336120 8390 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 334120 12690 ) ( 336120 12440 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 334120 15840 ) ( 336120 18590 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 334120 22890 ) ( 336120 26000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 336120 26000 ) ( 367220 28000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 370800 22890 ) ( 372800 26000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 370800 12690 ) ( 372800 18590 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 370800 8740 ) ( 372800 8390 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 336120 4000 ) ( 367220 6000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 370800 8740 ) ( 372800 8390 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 370800 12690 ) ( 372800 12440 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 370800 15840 ) ( 372800 18590 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 370800 22890 ) ( 372800 26000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 372800 26000 ) ( 403900 28000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 407480 22890 ) ( 409480 26000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 407480 12690 ) ( 409480 18590 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 407480 8740 ) ( 409480 8390 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 372800 4000 ) ( 403900 6000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 407480 8740 ) ( 409480 8390 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 407480 12690 ) ( 409480 12440 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 407480 15840 ) ( 409480 18590 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 407480 22890 ) ( 409480 26000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 409480 26000 ) ( 440580 28000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 444160 22890 ) ( 446160 26000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 444160 12690 ) ( 446160 18590 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 444160 8740 ) ( 446160 8390 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 409480 4000 ) ( 440580 6000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 444160 8740 ) ( 446160 8390 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 444160 12690 ) ( 446160 12440 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 444160 15840 ) ( 446160 18590 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 444160 22890 ) ( 446160 26000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 446160 26000 ) ( 477260 28000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 480840 22890 ) ( 482840 26000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 480840 12690 ) ( 482840 18590 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 480840 8740 ) ( 482840 8390 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 446160 4000 ) ( 477260 6000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 480840 8740 ) ( 482840 8390 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 480840 12690 ) ( 482840 12440 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 480840 15840 ) ( 482840 18590 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 480840 22890 ) ( 482840 26000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 482840 26000 ) ( 513940 28000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 517520 22890 ) ( 519520 26000 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 517520 12690 ) ( 519520 18590 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 517520 8740 ) ( 519520 8390 ) ;
-  END
-
-  - METAL1
-    LAYER METAL1 ;
-    RECT ( 482840 4000 ) ( 513940 6000 ) ;
   END
 
   - METAL2
@@ -2346,7 +2070,7 @@ BLOCKAGES 584 ;
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 6000 6000 ) ( 517520 26000 ) ;
+    RECT ( 6000 6000 ) ( 297440 26000 ) ;
   END
 
   - METAL2
@@ -2709,284 +2433,14 @@ BLOCKAGES 584 ;
     RECT ( 262760 4000 ) ( 293860 6000 ) ;
   END
 
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 297440 8740 ) ( 299440 8390 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 297440 12690 ) ( 299440 12440 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 297440 15840 ) ( 299440 18590 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 297440 22890 ) ( 299440 26000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 299440 26000 ) ( 330540 28000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 334120 22890 ) ( 336120 26000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 334120 12690 ) ( 336120 18590 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 334120 8740 ) ( 336120 8390 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 299440 4000 ) ( 330540 6000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 334120 8740 ) ( 336120 8390 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 334120 12690 ) ( 336120 12440 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 334120 15840 ) ( 336120 18590 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 334120 22890 ) ( 336120 26000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 336120 26000 ) ( 367220 28000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 370800 22890 ) ( 372800 26000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 370800 12690 ) ( 372800 18590 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 370800 8740 ) ( 372800 8390 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 336120 4000 ) ( 367220 6000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 370800 8740 ) ( 372800 8390 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 370800 12690 ) ( 372800 12440 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 370800 15840 ) ( 372800 18590 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 370800 22890 ) ( 372800 26000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 372800 26000 ) ( 403900 28000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 407480 22890 ) ( 409480 26000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 407480 12690 ) ( 409480 18590 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 407480 8740 ) ( 409480 8390 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 372800 4000 ) ( 403900 6000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 407480 8740 ) ( 409480 8390 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 407480 12690 ) ( 409480 12440 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 407480 15840 ) ( 409480 18590 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 407480 22890 ) ( 409480 26000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 409480 26000 ) ( 440580 28000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 444160 22890 ) ( 446160 26000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 444160 12690 ) ( 446160 18590 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 444160 8740 ) ( 446160 8390 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 409480 4000 ) ( 440580 6000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 444160 8740 ) ( 446160 8390 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 444160 12690 ) ( 446160 12440 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 444160 15840 ) ( 446160 18590 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 444160 22890 ) ( 446160 26000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 446160 26000 ) ( 477260 28000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 480840 22890 ) ( 482840 26000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 480840 12690 ) ( 482840 18590 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 480840 8740 ) ( 482840 8390 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 446160 4000 ) ( 477260 6000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 480840 8740 ) ( 482840 8390 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 480840 12690 ) ( 482840 12440 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 480840 15840 ) ( 482840 18590 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 480840 22890 ) ( 482840 26000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 482840 26000 ) ( 513940 28000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 517520 22890 ) ( 519520 26000 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 517520 12690 ) ( 519520 18590 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 517520 8740 ) ( 519520 8390 ) ;
-  END
-
-  - METAL2
-    LAYER METAL2 ;
-    RECT ( 482840 4000 ) ( 513940 6000 ) ;
+  - METAL4
+    LAYER METAL4 ;
+    RECT ( 258840 0 ) ( 262640 144400 ) ;
   END
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 478920 0 ) ( 482720 144400 ) ;
-  END
-
-  - METAL4
-    LAYER METAL4 ;
-    RECT ( 492920 0 ) ( 496720 144400 ) ;
+    RECT ( 272840 0 ) ( 276640 144400 ) ;
   END
 
   - METAL3
@@ -3001,17 +2455,17 @@ BLOCKAGES 584 ;
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 522520 0 ) ( 523520 144400 ) ;
+    RECT ( 302440 0 ) ( 303440 144400 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 0 143400 ) ( 523520 144400 ) ;
+    RECT ( 0 143400 ) ( 303440 144400 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 0 0 ) ( 523520 1000 ) ;
+    RECT ( 0 0 ) ( 303440 1000 ) ;
   END
 
   - METAL2
@@ -3021,17 +2475,17 @@ BLOCKAGES 584 ;
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 522520 0 ) ( 523520 144400 ) ;
+    RECT ( 302440 0 ) ( 303440 144400 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 0 143400 ) ( 523520 144400 ) ;
+    RECT ( 0 143400 ) ( 303440 144400 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 0 0 ) ( 523520 1000 ) ;
+    RECT ( 0 0 ) ( 303440 1000 ) ;
   END
 
   - METAL3
@@ -3041,17 +2495,17 @@ BLOCKAGES 584 ;
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 522520 0 ) ( 523520 144400 ) ;
+    RECT ( 302440 0 ) ( 303440 144400 ) ;
   END
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 0 143400 ) ( 523520 144400 ) ;
+    RECT ( 0 143400 ) ( 303440 144400 ) ;
   END
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 0 0 ) ( 523520 1000 ) ;
+    RECT ( 0 0 ) ( 303440 1000 ) ;
   END
 
   - METAL4
@@ -3061,17 +2515,17 @@ BLOCKAGES 584 ;
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 522520 0 ) ( 523520 144400 ) ;
+    RECT ( 302440 0 ) ( 303440 144400 ) ;
   END
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 0 143400 ) ( 523520 144400 ) ;
+    RECT ( 0 143400 ) ( 303440 144400 ) ;
   END
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 0 0 ) ( 523520 1000 ) ;
+    RECT ( 0 0 ) ( 303440 1000 ) ;
   END
 
   - METAL1
@@ -3081,17 +2535,17 @@ BLOCKAGES 584 ;
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 522520 0 ) ( 523520 144400 ) ;
+    RECT ( 302440 0 ) ( 303440 144400 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 0 143400 ) ( 523520 144400 ) ;
+    RECT ( 0 143400 ) ( 303440 144400 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 0 0 ) ( 523520 1000 ) ;
+    RECT ( 0 0 ) ( 303440 1000 ) ;
   END
 
   - METAL2
@@ -3101,17 +2555,17 @@ BLOCKAGES 584 ;
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 522520 0 ) ( 523520 144400 ) ;
+    RECT ( 302440 0 ) ( 303440 144400 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 0 143400 ) ( 523520 144400 ) ;
+    RECT ( 0 143400 ) ( 303440 144400 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 0 0 ) ( 523520 1000 ) ;
+    RECT ( 0 0 ) ( 303440 1000 ) ;
   END
 
   - METAL3
@@ -3121,17 +2575,17 @@ BLOCKAGES 584 ;
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 522520 0 ) ( 523520 144400 ) ;
+    RECT ( 302440 0 ) ( 303440 144400 ) ;
   END
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 0 143400 ) ( 523520 144400 ) ;
+    RECT ( 0 143400 ) ( 303440 144400 ) ;
   END
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 0 0 ) ( 523520 1000 ) ;
+    RECT ( 0 0 ) ( 303440 1000 ) ;
   END
 
   - METAL4
@@ -3141,74 +2595,74 @@ BLOCKAGES 584 ;
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 522520 0 ) ( 523520 144400 ) ;
+    RECT ( 302440 0 ) ( 303440 144400 ) ;
   END
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 0 143400 ) ( 523520 144400 ) ;
+    RECT ( 0 143400 ) ( 303440 144400 ) ;
   END
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 0 0 ) ( 523520 1000 ) ;
+    RECT ( 0 0 ) ( 303440 1000 ) ;
   END
 
 END BLOCKAGES
 
-NETS 45 ;
-- net121
+NETS 39 ;
+- net109
   ( I_0_0 VINJ ) ( cab_frame s_vinj ) 
 ;
-- net120_0
-  ( I_0_0 GND ) ( I_2_0_0_13 GND ) ( cab_frame s_gnd ) 
+- net108_0
+  ( I_0_0 GND ) ( I_2_0_0_7 GND ) ( cab_frame s_gnd ) 
 ;
-- net119
+- net107
   ( I_0_0 IN<1> ) ( cab_frame w_DrainB<1> ) 
 ;
-- net118
+- net106
   ( I_0_0 IN<0> ) ( cab_frame w_DrainB<0> ) 
 ;
-- net116
+- net104
   ( I_0_2 PR<0> ) ( I_0_4_0_0 VD_P ) 
 ;
-- net117
+- net105
   ( I_0_2 PR<1> ) ( I_0_3_0_0 VD_P ) 
 ;
-- net114
+- net102
   ( I_0_2 In<0> ) ( I_0_4_0_0 VD_R ) 
 ;
-- net115
+- net103
   ( I_0_2 In<1> ) ( I_0_3_0_0 VD_R ) 
 ;
-- net131
+- net119
   ( I_0_3_0_0 VIN_PLUS ) ( I_0_4_0_0 Vout ) ( I_1_0 Top ) ( I_1_1 Top ) ( I_1_2 Top ) ( I_1_3 A ) ( I_1_4 Top ) ( I_1_5 Top ) ( I_1_6 Top ) 
 ;
-- net135
+- net123
   ( I_0_3_0_0 VIN_MINUS ) ( cab_frame w_Vin ) 
 ;
-- net126
+- net114
   ( I_0_4_0_0 VINJ ) ( I_0_5 VINJ ) 
 ;
-- net134
+- net122
   ( I_0_4_0_0 GND ) ( I_0_5 GND ) ( I_0_6 GND_b<1> ) ( I_1_0 Bot ) ( I_1_1 Bot ) ( I_1_2 Bot ) ( I_1_3 GND ) ( I_1_3 C ) ( I_1_4 Bot ) ( I_1_5 Bot ) ( I_1_6 Bot ) ( cab_frame n_gnd ) 
 ;
-- net129
+- net117
   ( I_0_4_0_0 VTUN ) ( cab_frame n_VTUN ) 
 ;
-- net127
+- net115
   ( I_0_4_0_0 Vg ) ( I_0_5 Vg<0> ) 
 ;
-- net128
+- net116
   ( I_0_4_0_0 Vsel ) ( I_0_5 CTRL_B<0> ) 
 ;
-- net130
+- net118
   ( I_0_4_0_0 PROG ) ( cab_frame n_Prog ) 
 ;
-- net133_0
-  ( I_0_4_0_0 VIN_PLUS ) ( I_1_3 VDD ) ( I_2_0_0_13 VDD ) ( cab_frame n_AVDD ) 
+- net121_0
+  ( I_0_4_0_0 VIN_PLUS ) ( I_1_3 VDD ) ( I_2_0_0_7 VDD ) ( cab_frame n_AVDD ) 
 ;
-- net132_0
+- net120_0
   ( I_0_4_0_0 VIN_MINUS ) ( I_1_3 SELA ) ( I_2_0_0_0 RST_L ) ( cab_frame w_RST ) 
 ;
 - isle0_swc_net0
@@ -3223,62 +2677,44 @@ NETS 45 ;
 - isle0_swc_net3
   ( I_0_5 VPWR<1> ) ( I_0_6 RUN_OUT<1> ) 
 ;
-- net122
+- net110
   ( I_0_6 ENABLE ) ( cab_frame n_GateEnable ) 
 ;
-- net125
+- net113
   ( I_0_6 VINJV ) ( cab_frame n_vinj ) 
 ;
-- net124
+- net112
   ( I_0_6 IN<1> ) ( cab_frame w_GateB<1> ) 
 ;
-- net123
+- net111
   ( I_0_6 IN<0> ) ( cab_frame w_GateB<0> ) 
 ;
-- net99_0
+- net93_0
   ( I_2_0_0_0 Count ) ( cab_frame s_Code<0> ) 
 ;
-- net113_0
+- net101_0
   ( I_2_0_0_0 CLK ) ( cab_frame w_CLK ) 
 ;
-- net99_1
+- net93_1
   ( I_2_0_0_1 Count ) ( cab_frame s_Code<1> ) 
 ;
-- net99_2
+- net93_2
   ( I_2_0_0_2 Count ) ( cab_frame s_Code<2> ) 
 ;
-- net99_3
+- net93_3
   ( I_2_0_0_3 Count ) ( cab_frame s_Code<3> ) 
 ;
-- net99_4
+- net93_4
   ( I_2_0_0_4 Count ) ( cab_frame s_Code<4> ) 
 ;
-- net99_5
+- net93_5
   ( I_2_0_0_5 Count ) ( cab_frame s_Code<5> ) 
 ;
-- net99_6
+- net93_6
   ( I_2_0_0_6 Count ) ( cab_frame s_Code<6> ) 
 ;
-- net99_7
+- net93_7
   ( I_2_0_0_7 Count ) ( cab_frame s_Code<7> ) 
-;
-- net99_8
-  ( I_2_0_0_8 Count ) ( cab_frame s_Code<8> ) 
-;
-- net99_9
-  ( I_2_0_0_9 Count ) ( cab_frame s_Code<9> ) 
-;
-- net99_10
-  ( I_2_0_0_10 Count ) ( cab_frame s_Code<10> ) 
-;
-- net99_11
-  ( I_2_0_0_11 Count ) ( cab_frame s_Code<11> ) 
-;
-- net99_12
-  ( I_2_0_0_12 Count ) ( cab_frame s_Code<12> ) 
-;
-- net99_13
-  ( I_2_0_0_13 Count ) ( cab_frame s_Code<13> ) 
 ;
 END NETS
 

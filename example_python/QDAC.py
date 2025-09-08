@@ -178,7 +178,7 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
 
 Top = ac.Circuit()
 
-location_islands = QDAC(Top,5,islandLoc=[50000,25000])
+location_islands = QDAC(Top,5,islandLoc=[5000,2500])
 
 design_limits = [5e5, 5e5]
 
