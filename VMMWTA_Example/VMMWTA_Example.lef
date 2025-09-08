@@ -155,6 +155,9 @@ END M4_M3
 MACRO TSMC350nm_VinjDecode2to4_vtile_spacing
 END TSMC350nm_VinjDecode2to4_vtile_spacing
 
+MACRO TSMC350nm_VinjDecode2to4_vtile_bridge_spacing
+END TSMC350nm_VinjDecode2to4_vtile_bridge_spacing
+
 MACRO TSMC350nm_VinjDecode2to4_vtile_D_bridge
 END TSMC350nm_VinjDecode2to4_vtile_D_bridge
 
@@ -1028,6 +1031,41 @@ MACRO TSMC350nm_VinjDecode2to4_htile_spacing
     END
   END VGRUN<3>
 END TSMC350nm_VinjDecode2to4_htile_spacing
+
+MACRO TSMC350nm_VinjDecode2to4_htile_bridge_spacing
+  PIN VGRUN<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 9.1 9.52 9.7 9.99 ;
+    END
+  END VGRUN<0>
+  PIN VGRUN<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.2 9.51 11.8 9.99 ;
+    END
+  END VGRUN<1>
+  PIN VGRUN<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 28.7 9.41 29.3 9.99 ;
+    END
+  END VGRUN<2>
+  PIN VGRUN<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 33.6 9.47 34.2 9.99 ;
+    END
+  END VGRUN<3>
+END TSMC350nm_VinjDecode2to4_htile_bridge_spacing
 
 MACRO TSMC350nm_4x2_Indirect
   PIN Vg<1>

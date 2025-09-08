@@ -181,10 +181,10 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
 
 Top = Circuit()
 #C4_Ampdet(Top,16)
-Delayline_stages(Top,rows=32,columns=3)
+Delayline_stages(Top,rows=128,columns=3)
 
-design_limits = [5e6, 5e6]
-location_islands = ((50000,25000),(240000,740000))
+design_limits = [1e6, 3e6]
+location_islands = ((50000,25000),(240000,22000*130))
 
 
 compile_asic(Top,process="TSMC350nm",fileName="Delayline_stages",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=0,drainSpace = 0,gateSpaceIdx=0,gateSpace=10)

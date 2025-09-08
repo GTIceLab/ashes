@@ -10,10 +10,10 @@ from ashes_fg.asic.asic_systems import *
 
 Top = Circuit()
 
-VMMWTACircuit = VMMWTA(Top,[16,16])
+VMMWTACircuit = VMMWTA(Top,[720,240])
 
 
-design_limits = [1e6, 6.1e5]
+design_limits = [6e7, 6.1e7]
 location_islands=None
 
 compile_asic(Top,process="TSMC350nm",fileName="VMMWTA_Example",p_and_r = True,design_limits = design_limits, location_islands = location_islands)
