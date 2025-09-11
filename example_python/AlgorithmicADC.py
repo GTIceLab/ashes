@@ -49,13 +49,23 @@ InvAmp.place([1,0])
 InvAmp.markAbut()
 
 TgateIsland = ac.Island(Top)
-Tgates = lib_dc.TSMC350nm_TGate_DT(Top,TgateIsland,dim=[6,1])
-Tgates.place([0,0])
+
+Tgates = [0]*6
+for i in range(6):
+    Tgates[i] = lib_dc.TSMC350nm_TGate_DT(Top,TgateIsland)
+    Tgates[i].place([i,0])
+    Tgates[i].markAbut()
+
 
 
 CapIsland = ac.Island(Top)
-Caps = lib_dc.TSMC350nm_Capacitor_80ff(Top,CapIsland,dim=[5,1])
-Caps.place([0,0])
+Cin = lib_dc.TSMC350nm_Capacitor_80ff(Top,CapIsland,dim=[2,1])
+Cin.place([0,0])
+Csub = lib_dc.TSMC350nm_Capacitor_80ff(Top,CapIsland,dim=[2,1])
+Csub.place([2,0])
+Cfb = lib_dc.TSMC350nm_Capacitor_80ff(Top,CapIsland)
+Cfb.place([4,0])
+Cfb.markAbut()
 
 # FG Programming
 # ----------------------------------------------------------------------
@@ -78,31 +88,79 @@ outerPins = lib_mux.frame(Top)
 PROG = outerPins.createPort("N","PROG")
 RUN = outerPins.createPort("N","RUN")
 
+VGRUN = outerPins.createPort("N","VGRUN")
+VGPROG = outerPins.createPort("N","VGPROG")
+
+VTUN = outerPins.createPort("N","VTUN")
+AVDD = outerPins.createPort("N","AVDD")
+
+GND_N = outerPins.createPort("N","gnd")
+GND_S = outerPins.createPort("S","gnd")
+
+VINJ_N = outerPins.createPort("N","vinj")
+VINJ_S = outerPins.createPort("S","vinj")
 
 DrainBits = outerPins.createPort("W","DrainB",dimension=drainBits)
 DrainEnable = outerPins.createPort("W","DrainEnable")
 GateBits = outerPins.createPort("W","GateB",dimension=2)
-GateEnable = outerPins.createPort("W","GateEnable")
+GateEnable = outerPins.createPort("N","GateEnable")
+
+Drainline_Prog = outerPins.createPort("S","Drainline_Prog")
+Drainline_Run= outerPins.createPort("S","Drainline_Run")
 
 VIN = outerPins.createPort("W","VIN")
 CLK_Sample = outerPins.createPort("E","CLK_Sample")
 CLK_Amp = outerPins.createPort("E","CLK_Amp")
-CLK_RST = outerPins.createPort("E","CLK_RST")
+CLK_RST = outerPins.createPort("S","CLK_RST")
+CLK_Load = outerPins.createPort("E","CLK_Load")
+VOUT = outerPins.createPort("S","VOUT")
 
 
 # Pin Connections
 # --------------------------------------------------------------------
+DrainSelect.prog_drainrail += Drainline_Prog
+DrainSelect.run_drainrail += Drainline_Run
+DrainSelect.VINJ += VINJ_S
+DrainSelect.GND += GND_S
+
 GateSwitches.PROG += PROG
 GateSwitches.RUN += RUN
 DrainSwitch.RUN += RUN
-Comparator.PROG += PROG
+
+CompThreshold.Vg += GateSwitches.Vg
+CompThreshold.Vsel += GateSwitches.CTRL_B
+CompThreshold.GND += GND_N
+
+
+Comparator.PROG += Vreset.Prog_b
 CompThreshold.Prog += PROG
+
+Comparator.VTUN += Vreset.VTUN_b
+Comparator.Vsel += Vreset.Vsel_b[0]
+Comparator.GND += Vreset.GND_b
+Comparator.VINJ += Vreset.VINJ_b
+CompThreshold.VTUN += VTUN
+
+Buffer.VTUN += InvAmp.VTUN_b
+Buffer.Vg += InvAmp.Vg_b
+Buffer.Vsel += InvAmp.Vsel_b
+Buffer.VINJ += InvAmp.VINJ_b
+Buffer.VDD += InvAmp.VPWR_b
+Buffer.GND += InvAmp.GND_b
+
+
+GateSwitches.GND_T += GND_N
+GateSwitches.VINJ += CompThreshold.VINJ
+GateSwitches.VINJ_T += GateDecoder.VINJ_b[0]
 
 DrainDecoder.IN += DrainBits
 DrainDecoder.ENABLE += DrainEnable
+DrainDecoder.GND += GND_S
 
 GateDecoder.ENABLE += GateEnable
 GateDecoder.IN += GateBits
+GateDecoder.VINJV += VINJ_N
+GateDecoder.GNDV += GND_N
 
 CompThreshold.VD_P += DrainSwitch.PR[0:2]
 CapSwitch0.VD_P += DrainSwitch.PR[2:4]
@@ -115,38 +173,57 @@ InvAmp.VD_P += DrainSwitch.PR[7]
 InvAmp.VD_R += DrainSwitch.In[7]
 
 Buffer.Vd_P += DrainSwitch.PR[8]
+Buffer.VINJ_b += VINJ_S
 
-VIN += Tgates.A[0]
-Buffer.Vin += Tgates.C[0]
-CLK_Sample += Tgates.SELA[0]
+VIN += Tgates[0].A
+Buffer.Vin += Tgates[0].C
+CLK_Sample += Tgates[0].SELA
 
+Vx = ac.Wire(Top)
 CinTop = ac.Wire(Top)
-Caps.Top[0] += CinTop
-Caps.Top[1] += CinTop
-CinBot = ac.Wire(Top)
-Caps.Bot[0] += CinBot
-Caps.Bot[1] += CinBot
 
-Buffer.Vout += Tgates.A[1]
-Tgates.C[1] += CinTop
-Tgates.SELA[1] += CLK_Amp
 
-Tgates.A[2] += CinTop
-Tgates.C[2] += CinBot
-Tgates.SELA[2] += CLK_RST
+Cin.Top[0] += CinTop
+Cin.Top[1] += CinTop
 
-CsubTop = ac.Wire(Top)
-Caps.Top[2] += CsubTop 
-Caps.Top[3] += CsubTop 
-CsubTop += CinBot
+Cin.Bot[0] += Vx
+Cin.Bot[1] += Vx
+
+Buffer.Vout += Tgates[1].A
+Tgates[1].C += CinTop
+Tgates[1].SELA += CLK_Amp
+Tgates[2].A += CinTop
+Tgates[2].C += Vx
+Tgates[2].SELA += CLK_RST
+
+Csub.Top[0] += Vx
+Csub.Top[1] += Vx
+
+
 CsubBot = ac.Wire(Top)
-Caps.Bot[2] += CsubBot
-Caps.Bot[3] += CsubBot 
+Csub.Bot[0] += CsubBot
+Csub.Bot[1] += CsubBot
 
-CsubTop += InvAmp.VIN_MINUS
+CsubBot += Tgates[4].C
+#Tgates.A[5] += GND
+Tgates[4].B += CapSwitch0.Vout
+Tgates[4].SELA += Comparator.Vout
 
+Comparator.VIN_MINUS += CompThreshold.Vout
 
+Comparator.VIN_PLUS += Vx
+InvAmp.VIN_MINUS += Vx
+Cfb.Top += Vx
+Tgates[3].C += Vx
 
+InvAmp.VIN_PLUS += Vreset.Vout
+
+VOUT += InvAmp.Vout
+VOUT += Cfb.Bot
+
+VOUT += Tgates[5].A
+Tgates[5].C += Buffer.Vin
+Tgates[5].SELA += CLK_Load
 
 
 # Placement
@@ -155,10 +232,10 @@ EPOTWidth = 85000
 Pitch = 22000
 DecoderWidth = int(43000 + ((drainBits/2)*25000))+15000
 xoffset = 5000
-yoffset = 0
+yoffset = 5000
 
-location_islands= ( (xoffset,4*Pitch) , (xoffset+DecoderWidth-4000,yoffset) , (xoffset+DecoderWidth-4000,1.5*Pitch), (xoffset+DecoderWidth+EPOTWidth+5000,yoffset), (xoffset+DecoderWidth+EPOTWidth+20000,yoffset) )
+location_islands= ( (xoffset,4*Pitch) , (xoffset+DecoderWidth-5000,yoffset) , (xoffset+DecoderWidth-5000,1.5*Pitch), (xoffset+DecoderWidth+EPOTWidth+5000,yoffset+2000), (xoffset+DecoderWidth+EPOTWidth+28000,yoffset+15000) )
 
-design_limits = [5e5, 6e5]
+design_limits = [4e5, 4e5]
 
 ac.compile_asic(Top,process="TSMC350nm",fileName="AlgorithmicADC",design_limits = design_limits, location_islands = location_islands, drainSpaceIdx=0,drainSpace=15,gateSpaceIdx=0,gateSpace=10)

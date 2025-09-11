@@ -27,7 +27,7 @@ def AvgDAC(circuit,numStages=1,AvgDACIsland=None,islandLoc=[0,0]):
 
     # 1 Tgate per bit
     TgateIsland = ac.Island(Top)
-    Tgates = lib_dc.TSMC350nm_TGate_DT(Top,TgateIsland,dim=[numStages+2,1])
+    Tgates = lib_dc.TSMC350nm_TGate_DT(Top,TgateIsland,dim=[numStages,1])
     Tgates.place([0,1])
 
     # FG Programming

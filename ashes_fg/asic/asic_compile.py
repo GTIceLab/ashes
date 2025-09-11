@@ -171,13 +171,15 @@ class Circuit:
                 if net.containsVector() == True:
                     largestDim = 0
                     largestPin = None
+                    
                     # Find the dominant pin
                     for pin in net.pins:
-                        # Ignore decoder cells (because they print flat, so their vector doesn't count)
-                        if pin.cell.isDecoder() == False:
-                            if pin.getVectorSize() > largestDim:
-                                largestDim = pin.getVectorSize()
-                                largestPin = pin
+                        if pin.cell != None:
+                            # Ignore decoder cells (because they print flat, so their vector doesn't count)
+                            if pin.cell.isDecoder() == False:
+                                if pin.getVectorSize() > largestDim:
+                                    largestDim = pin.getVectorSize()
+                                    largestPin = pin
                             
                     # If the net only contain a decoder, it will mistakenly trigger containsVector() but 
                     # will never pick up a largestPin because of the decoder ignore check
