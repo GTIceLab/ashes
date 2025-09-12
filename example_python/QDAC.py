@@ -100,7 +100,7 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
         EPOTs.VIN_PLUS[i] += AVDD_N
 
     Vref = ac.Wire(Top)
-    EPOTs.Vout[numStages-1] += Vref
+    EPOTs.Vout[numStages] += Vref
 
     EPOTs.Vout[0:numStages-2] += SEL_Code.A
 
@@ -109,7 +109,6 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     SEL_Code.GND_b += GND_S
     SEL_Code.C += SEL_RST.B
     SEL_Code.SELA += Code
-    SEL_Code.A += EPOTs.Vout[0:numStages]
     SEL_Code.B += Vref
 
     SEL_RST.VDD += AVDD_N
@@ -119,13 +118,12 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     SEL_RST.A += Vref
     
     for i in range(numStages):
-        EPOTCap.Bot[i] += InvertingAmp.VIN_PLUS
+        EPOTCap.Bot[i] += InvertingAmp.VIN_MINUS
 
     Amp_RST.VDD += AVDD_N
     Amp_RST.GND += GND_N
     Amp_RST.SELA += RST[0]
     Amp_RST.C += VOUT[0]
-    Amp_RST.A += InvertingAmp.VIN_PLUS 
 
     InvertingAmp.VINJ += EPOTs.VINJ_b
     InvertingAmp.VPWR += EPOTs.VDD_b
@@ -140,6 +138,7 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     InvertingAmp.VIN_MINUS += CapFB.Top
     InvertingAmp.Vout += CapFB.Bot
     InvertingAmp.Vout += VOUT
+    InvertingAmp.VIN_PLUS += Vref
 
     GateSwitches.VINJ_T += VINJ_N[0]
     GateSwitches.VINJ[0] += EPOTs.VINJ
@@ -168,6 +167,9 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     GateDecoder.GNDV += GND_N
     GateDecoder.ENABLE += GateEnable
     GateDecoder.IN += GateBits
+
+
+
 
     # Island Placement
     # -------------------------------------------------------------------------------
