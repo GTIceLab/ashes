@@ -1229,7 +1229,7 @@ MACRO tile_analog_frame
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 13.3 240.6 14.7 243.4 ;
+        RECT 13.3 246.7 14.7 249.5 ;
     END
   END n_Prog
   PIN n_Run
@@ -1237,23 +1237,39 @@ MACRO tile_analog_frame
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 27.3 240.6 28.7 243.4 ;
+        RECT 27.3 246.7 28.7 249.5 ;
     END
   END n_Run
-  PIN n_AVDD
+  PIN n_VGPROG
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 41.3 240.6 42.7 243.4 ;
+        RECT 41.3 246.7 42.7 249.5 ;
     END
-  END n_AVDD
+  END n_VGPROG
+  PIN n_VTUN
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 55.3 246.7 56.7 249.5 ;
+    END
+  END n_VTUN
+  PIN n_avdd
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 219.41 246.7 220.81 249.5 ;
+    END
+  END n_avdd
   PIN n_gnd
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 223.91 240.6 225.31 243.4 ;
+        RECT 205.41 246.7 206.81 249.5 ;
     END
   END n_gnd
   PIN n_vinj
@@ -1261,15 +1277,23 @@ MACRO tile_analog_frame
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 209.91 240.6 211.31 243.4 ;
+        RECT 191.41 246.7 192.81 249.5 ;
     END
   END n_vinj
+  PIN n_GateEnable
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 69.3 246.7 70.7 249.5 ;
+    END
+  END n_GateEnable
   PIN n_RST
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 55.3 240.6 56.7 243.4 ;
+        RECT 83.3 246.7 84.7 249.5 ;
     END
   END n_RST
   PIN n_Code<0>
@@ -1277,7 +1301,7 @@ MACRO tile_analog_frame
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 69.3 240.6 70.7 243.4 ;
+        RECT 97.3 246.7 98.7 249.5 ;
     END
   END n_Code<0>
   PIN n_Code<1>
@@ -1285,7 +1309,7 @@ MACRO tile_analog_frame
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 83.3 240.6 84.7 243.4 ;
+        RECT 111.3 246.7 112.7 249.5 ;
     END
   END n_Code<1>
   PIN n_Code<2>
@@ -1293,7 +1317,7 @@ MACRO tile_analog_frame
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 97.3 240.6 98.7 243.4 ;
+        RECT 125.3 246.7 126.7 249.5 ;
     END
   END n_Code<2>
   PIN n_Code<3>
@@ -1301,7 +1325,7 @@ MACRO tile_analog_frame
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 111.3 240.6 112.7 243.4 ;
+        RECT 139.3 246.7 140.7 249.5 ;
     END
   END n_Code<3>
   PIN n_Code<4>
@@ -1309,15 +1333,23 @@ MACRO tile_analog_frame
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 125.3 240.6 126.7 243.4 ;
+        RECT 153.3 246.7 154.7 249.5 ;
     END
   END n_Code<4>
+  PIN s_avdd
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 219.41 0.0 220.81 2.8 ;
+    END
+  END s_avdd
   PIN s_gnd
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 223.91 0.0 225.31 2.8 ;
+        RECT 205.41 0.0 206.81 2.8 ;
     END
   END s_gnd
   PIN s_vinj
@@ -1325,63 +1357,39 @@ MACRO tile_analog_frame
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 209.91 0.0 211.31 2.8 ;
+        RECT 191.41 0.0 192.81 2.8 ;
     END
   END s_vinj
-  PIN s_Vout
+  PIN s_Run_Drainline
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
         RECT 13.3 0.0 14.7 2.8 ;
     END
+  END s_Run_Drainline
+  PIN s_Prog_Drainline
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 27.3 0.0 28.7 2.8 ;
+    END
+  END s_Prog_Drainline
+  PIN s_Vout
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 41.3 0.0 42.7 2.8 ;
+    END
   END s_Vout
-  PIN w_DrainB<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL3 ;
-        RECT 0.0 228.0 2.8 229.4 ;
-    END
-  END w_DrainB<0>
-  PIN w_DrainB<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL3 ;
-        RECT 0.0 214.0 2.8 215.4 ;
-    END
-  END w_DrainB<1>
-  PIN w_DrainB<2>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL3 ;
-        RECT 0.0 200.0 2.8 201.4 ;
-    END
-  END w_DrainB<2>
-  PIN w_DrainB<3>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL3 ;
-        RECT 0.0 186.0 2.8 187.4 ;
-    END
-  END w_DrainB<3>
-  PIN w_DrainEnable
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL3 ;
-        RECT 0.0 172.0 2.8 173.4 ;
-    END
-  END w_DrainEnable
   PIN w_GateB<0>
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 0.0 158.0 2.8 159.4 ;
+        RECT 0.0 234.1 2.8 235.5 ;
     END
   END w_GateB<0>
   PIN w_GateB<1>
@@ -1389,20 +1397,60 @@ MACRO tile_analog_frame
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 0.0 144.0 2.8 145.4 ;
+        RECT 0.0 220.1 2.8 221.5 ;
     END
   END w_GateB<1>
-  PIN w_GateEnable
+  PIN w_DrainB<0>
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 0.0 130.0 2.8 131.4 ;
+        RECT 0.0 206.1 2.8 207.5 ;
     END
-  END w_GateEnable
+  END w_DrainB<0>
+  PIN w_DrainB<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 0.0 192.1 2.8 193.5 ;
+    END
+  END w_DrainB<1>
+  PIN w_DrainB<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 0.0 178.1 2.8 179.5 ;
+    END
+  END w_DrainB<2>
+  PIN w_DrainB<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 0.0 164.1 2.8 165.5 ;
+    END
+  END w_DrainB<3>
+  PIN w_DrainEnable
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 0.0 150.1 2.8 151.5 ;
+    END
+  END w_DrainEnable
 END tile_analog_frame
 
 MACRO EPOT
+  PIN VIN_PLUS
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 13.78 1.4 15.08 ;
+    END
+  END VIN_PLUS
   PIN Vout
     DIRECTION INOUT ;
     USE SIGNAL ;
@@ -1427,14 +1475,6 @@ MACRO EPOT
         RECT 0.0 18.35 1.4 19.65 ;
     END
   END Vd_P<0>
-  PIN Vin+
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 13.78 1.4 15.08 ;
-    END
-  END Vin+
   PIN GND_b
     DIRECTION INOUT ;
     USE SIGNAL ;

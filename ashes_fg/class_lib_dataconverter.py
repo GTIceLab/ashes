@@ -104,7 +104,7 @@ class TSMC350nm_EPOT(StandardCell):
 
         self.VD_P = Port(circuit,self,'VD_P','W',2*self.dim[0])
 
-        self.VINPLUS = Port(circuit,self,'Vin+','W',1*self.dim[0])
+        self.VIN_PLUS = Port(circuit,self,'VIN_PLUS','W',1*self.dim[0])
         self.Vout = Port(circuit,self,'Vout','E',1*self.dim[0])
 
 		

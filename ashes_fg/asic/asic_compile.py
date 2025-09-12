@@ -175,7 +175,7 @@ class Circuit:
                     # Find the dominant pin
                     for pin in net.pins:
                         if pin.cell != None:
-                            # Ignore decoder cells (because they print flat, so their vector doesn't count)
+                        # Ignore decoder cells (because they print flat, so their vector doesn't count)
                             if pin.cell.isDecoder() == False:
                                 if pin.getVectorSize() > largestDim:
                                     largestDim = pin.getVectorSize()
@@ -189,7 +189,7 @@ class Circuit:
                         idxNum = self.Nets.index(net)
                         idx = 0
                         physicalPinIdx = largestPin.getPhysicalPin()
-
+                        
             
                         for i in range(port.getVectorSize()):
                             p = port.pins[physicalPinIdx + i*port.numPins()]
@@ -673,7 +673,7 @@ class Port:
                 for i in range(0,len(connection)):
                     self.assignPin(i,connection[i])
             else:
-                raise Exception("Mismatched net sizes assigned together")
+                raise Exception("Mismatched net sizes assigned together: "+connection.cell.name+" "+connection.name+" <-> "+self.cell.name + " " + self.name )
         # Short Pin <-> Port
         elif isinstance(connection,Pin):
             self.shortPins(connection.net)

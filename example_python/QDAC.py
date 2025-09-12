@@ -44,8 +44,7 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     # FG Programming
     # -------------------------------------------------------------------------------
     GateDecoder = lib_mux.STD_IndirectGateDecoder(Top,QDACIsland,2)
-    GateSwitches0 = lib_mux.STD_IndirectGateSwitch(Top,QDACIsland,1)
-    GateSwitches = lib_mux.STD_IndirectGateSwitch(Top,QDACIsland,1,col=0)
+    GateSwitches = lib_mux.STD_IndirectGateSwitch(Top,QDACIsland,1)
 
     drainLineNum = (numStages+1)*2+1
     drainBits = int(np.ceil(np.log2(drainLineNum)))
@@ -67,19 +66,23 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
 
     PROG = outerPins.createPort("N","Prog")
     RUN = outerPins.createPort("N","Run")
-    VGRUN = outerPins.createPort("N","VGRUN")
     VGPROG = outerPins.createPort("N","VGPROG")
     VTUN = outerPins.createPort("N","VTUN")
-    AVDD = outerPins.createPort("N","AVDD")
+    AVDD_N = outerPins.createPort("N","avdd")
+    AVDD_S = outerPins.createPort("S","avdd")
     GND_N = outerPins.createPort("N","gnd")
     GND_S = outerPins.createPort("S","gnd")
     VINJ_N = outerPins.createPort("N","vinj")
     VINJ_S = outerPins.createPort("S","vinj")
 
+    GateBits = outerPins.createPort("W","GateB",dimension=2)
+    GateEnable = outerPins.createPort("N","GateEnable")
+
     DrainBits = outerPins.createPort("W","DrainB",dimension=drainBits)
     DrainEnable = outerPins.createPort("W","DrainEnable")
-    GateBits = outerPins.createPort("W","GateB",dimension=2)
-    GateEnable = outerPins.createPort("W","GateEnable")
+    Run_Drainline = outerPins.createPort("S","Run_Drainline")
+    Prog_Drainline = outerPins.createPort("S","Prog_Drainline")
+
     
     VOUT = outerPins.createPort("S","Vout")
     RST = outerPins.createPort("N","RST")
@@ -87,20 +90,21 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
 
     # Pin Connections
     # -------------------------------------------------------------------------------
-    EPOTs.VDD += AVDD
+    EPOTs.VDD += AVDD_N
     EPOTs.VINJ += VINJ_N
     EPOTs.VINJ_b += VINJ_S
     EPOTs.GND += GND_N
-    EPOTs.GND_b += GND_S
     EPOTs.Prog += PROG
+    EPOTs.VTUN += VTUN
+    for i in range(numStages+1):
+        EPOTs.VIN_PLUS[i] += AVDD_N
 
     Vref = ac.Wire(Top)
     EPOTs.Vout[numStages-1] += Vref
 
     EPOTs.Vout[0:numStages-2] += SEL_Code.A
 
-    SEL_Code.VDD += VINJ_N
-    SEL_Code.VDD_b += VINJ_S
+    SEL_Code.VDD += AVDD_N 
     SEL_Code.GND += GND_N
     SEL_Code.GND_b += GND_S
     SEL_Code.C += SEL_RST.B
@@ -108,23 +112,28 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     SEL_Code.A += EPOTs.Vout[0:numStages]
     SEL_Code.B += Vref
 
-    SEL_RST.VDD_b += VINJ_S
+    SEL_RST.VDD += AVDD_N
     SEL_RST.GND += GND_N
     SEL_RST.C += EPOTCap.Top
     SEL_RST.SELA += RST[0]
     SEL_RST.A += Vref
+    
+    for i in range(numStages):
+        EPOTCap.Bot[i] += InvertingAmp.VIN_PLUS
 
-    EPOTCap.Bot += InvertingAmp.VIN_PLUS[0]
-
-    Amp_RST.VDD_b += VINJ_S
-    Amp_RST.GND_b += GND_S
+    Amp_RST.VDD += AVDD_N
+    Amp_RST.GND += GND_N
     Amp_RST.SELA += RST[0]
     Amp_RST.C += VOUT[0]
-    Amp_RST.A += Vref
+    Amp_RST.A += InvertingAmp.VIN_PLUS 
 
     InvertingAmp.VINJ += EPOTs.VINJ_b
     InvertingAmp.VPWR += EPOTs.VDD_b
+    InvertingAmp.VPWR += AVDD_S
+    InvertingAmp.GND += EPOTs.GND_b
+    InvertingAmp.GND += GND_S
     InvertingAmp.PROG += EPOTs.Prog_b
+    InvertingAmp.VTUN += EPOTs.VTUN_b
     InvertingAmp.Vg += EPOTs.Vg_b[0]
     InvertingAmp.Vsel += EPOTs.Vsel_b[0]
     InvertingAmp.VIN_MINUS += Amp_RST.A
@@ -133,20 +142,29 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     InvertingAmp.Vout += VOUT
 
     GateSwitches.VINJ_T += VINJ_N[0]
-    GateSwitches.VINJ += EPOTs.VINJ
+    GateSwitches.VINJ[0] += EPOTs.VINJ
     GateSwitches.PROG += PROG
+    GateSwitches.RUN += RUN
     GateSwitches.GND_T += GND_N[0]
-    GateSwitches.GND += GND_S[0]
-    GateSwitches.CTRL_B += EPOTs.Vg
+    GateSwitches.CTRL_B += EPOTs.Vsel
+    GateSwitches.Vg += EPOTs.Vg
+    GateSwitches.Vgsel += VGPROG
+    GateSwitches.RUN_IN[0] += AVDD_N
+    GateSwitches.RUN_IN[1] += AVDD_N
 
     DrainSwitch.RUN += RUN
+    DrainSwitch.GND += GND_S
+    DrainSwitch.VDD += VINJ_S
 
-    DrainDecoder.VINJ += VINJ_S
-    DrainDecoder.GND += GND_S
+    DrainSelect.prog_drainrail += Prog_Drainline
+    DrainSelect.run_drainrail += Run_Drainline
+    DrainSelect.GND += GND_N
+    DrainSelect.VINJ += VINJ_N
+
     DrainDecoder.IN += DrainBits
     DrainDecoder.ENABLE += DrainEnable
 
-    GateDecoder.VINJV += VINJ_N
+    GateDecoder.VINJ_b[0] += VINJ_N
     GateDecoder.GNDV += GND_N
     GateDecoder.ENABLE += GateEnable
     GateDecoder.IN += GateBits
@@ -178,12 +196,12 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
 
 Top = ac.Circuit()
 
-location_islands = QDAC(Top,5,islandLoc=[5000,2500])
+location_islands = QDAC(Top,5,islandLoc=[2750,3050])
 
-design_limits = [5e5, 5e5]
+design_limits = [4e5, 4e5]
 
 
-ac.compile_asic(Top,process="TSMC350nm",fileName="QDAC",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=0,drainSpace = 15,gateSpaceIdx=0,gateSpace=10)
+ac.compile_asic(Top,process="TSMC350nm",fileName="QDAC",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=0,drainSpace = 15,gateSpaceIdx=0,gateSpace=15)
 
 
 
