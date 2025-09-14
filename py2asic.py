@@ -31,3 +31,6 @@ from ashes_fg.asic.asic_systems import *
 
 exec(open("./example_python/QDAC.py").read())
 
+
+#exec(open("./example_python/AlgorithmicADC.py").read())
+

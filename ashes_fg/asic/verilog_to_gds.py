@@ -1090,8 +1090,8 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
     if isle_loc:
         for idx, value in cell_order_in_island.items():
             array = np.array(value['coords'])
-            x_loc = isle_loc[idx][0]
-            y_loc = isle_loc[idx][1]
+            x_loc = int(isle_loc[idx][0])
+            y_loc = int(isle_loc[idx][1])
             array[:, 0] += x_loc
             array[:, 2] += x_loc
             array[:, 1] += y_loc
