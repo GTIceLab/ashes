@@ -15,8 +15,14 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     Top = circuit
 
     QDACIsland = ac.Island(Top)
-    EPOTs = lib_dc.TSMC350nm_EPOT(Top,QDACIsland,dim=[numStages+1,1])
+
+
+    EPOTs = lib_dc.TSMC350nm_EPOT(Top,QDACIsland,dim=[numStages,1])
     EPOTs.place([0,0])
+
+    EPOTRST = lib_dc.TSMC350nm_EPOT(Top,QDACIsland)
+    EPOTRST.markAbut()
+    EPOTRST.place([numStages,0])
 
     InvertingAmp = lib_dc.TSMC350nm_Amplifier9T_FGBias(Top,QDACIsland)
     InvertingAmp.place([numStages+2,0])
@@ -53,12 +59,17 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     DrainSelect = lib_mux.RunDrainSwitch(Top,QDACIsland,num=int(np.ceil(drainLineNum/4)))
     DrainSwitch = lib_cab.DrainCutoff(Top,QDACIsland,num=int(np.ceil(drainLineNum/4)))
 
-    for i in range(numStages+1):
+    for i in range(numStages):
         DrainSwitch.PR[2*i] += EPOTs.VD_P[2*i]
         DrainSwitch.PR[2*i+1] += EPOTs.VD_P[2*i+1]
 
+    DrainSwitch.PR[2*(numStages)] += EPOTRST.VD_P[0]
+    DrainSwitch.PR[2*(numStages)+1] += EPOTRST.VD_P[1]
+
     DrainSwitch.PR[2*(numStages+1)] += InvertingAmp.VD_P
     DrainSwitch.In[2*(numStages+1)] += InvertingAmp.VD_R 
+
+
 
     # Pins
     # -------------------------------------------------------------------------------
@@ -92,17 +103,19 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     # -------------------------------------------------------------------------------
     EPOTs.VDD += AVDD_N
     EPOTs.VINJ += VINJ_N
-    EPOTs.VINJ_b += VINJ_S
+    EPOTRST.VINJ_b += VINJ_S
     EPOTs.GND += GND_N
     EPOTs.Prog += PROG
     EPOTs.VTUN += VTUN
-    for i in range(numStages+1):
+    for i in range(numStages):
         EPOTs.VIN_PLUS[i] += AVDD_N
 
-    Vref = ac.Wire(Top)
-    EPOTs.Vout[numStages] += Vref
+    EPOTRST.VIN_PLUS += AVDD_N
 
-    EPOTs.Vout[0:numStages-2] += SEL_Code.A
+    Vref = ac.Wire(Top)
+    EPOTRST.Vout += Vref
+
+    EPOTs.Vout += SEL_Code.A
 
     SEL_Code.VDD += AVDD_N 
     SEL_Code.GND += GND_N
@@ -125,22 +138,22 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     Amp_RST.SELA += RST[0]
     Amp_RST.C += VOUT[0]
 
-    InvertingAmp.VINJ += EPOTs.VINJ_b
-    InvertingAmp.VPWR += EPOTs.VDD_b
+    InvertingAmp.VINJ += EPOTRST.VINJ_b
+    InvertingAmp.VPWR_b += EPOTRST.VDD_b
     InvertingAmp.VPWR += AVDD_S
-    InvertingAmp.GND += EPOTs.GND_b
+    InvertingAmp.GND += EPOTRST.GND_b
     InvertingAmp.GND += GND_S
-    InvertingAmp.PROG += EPOTs.Prog_b
-    InvertingAmp.VTUN += EPOTs.VTUN_b
-    InvertingAmp.Vg += EPOTs.Vg_b[0]
-    InvertingAmp.Vsel += EPOTs.Vsel_b[0]
+    InvertingAmp.PROG += EPOTRST.Prog_b
+    InvertingAmp.VTUN += EPOTRST.VTUN_b
+    InvertingAmp.Vg += EPOTRST.Vg_b[0]
+    InvertingAmp.Vsel += EPOTRST.Vsel_b[0]
     InvertingAmp.VIN_MINUS += Amp_RST.A
     InvertingAmp.VIN_MINUS += CapFB.Top
     InvertingAmp.Vout += CapFB.Bot
     InvertingAmp.Vout += VOUT
     InvertingAmp.VIN_PLUS += Vref
 
-    GateSwitches.VINJ_T += VINJ_N[0]
+    GateSwitches.VINJ_T += VINJ_N
     GateSwitches.VINJ[0] += EPOTs.VINJ
     GateSwitches.PROG += PROG
     GateSwitches.RUN += RUN
@@ -182,7 +195,7 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
 
     XEPOT = islandLoc[0]
     XTGate0 = DecoderWidth+15000+XEPOT+EPOTWidth+5*XSpace
-    XTGate1 = XTGate0 + TGateWidth + 2*XSpace
+    XTGate1 = XTGate0 + TGateWidth + 3*XSpace
     XEPOTCap = XTGate1 + TGateWidth + 2*XSpace
     XAmpRST = DecoderWidth+15000+XEPOT+75000
     XCap = XAmpRST+2*XSpace+TGateWidth

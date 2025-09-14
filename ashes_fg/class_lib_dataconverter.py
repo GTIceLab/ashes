@@ -130,8 +130,8 @@ class TSMC350nm_Amplifier9T_FGBias(StandardCell):
 
         # Define cell information
         self.name = 'TSMC350nm_Amplifier9T_FGBias'
-        self.VPWR = Port(circuit,self,'VDD','N',1*self.dim[1])
-        self.VPWR_b = Port(circuit,self,'VDD_b','S',1*self.dim[1])
+        self.VPWR = Port(circuit,self,'VPWR','N',1*self.dim[1])
+        self.VPWR_b = Port(circuit,self,'VPWR_b','S',1*self.dim[1])
         self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
         self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
         self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
