@@ -120,7 +120,7 @@ class TSMC350nm_EPOT(StandardCell):
 
 class  TSMC350nm_Amplifier9T_FGInputs_Bias(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),VDD=None,VDD_b=None,VINJ=None,VINJ_b=None,GND=None,GND_b=None,VTUN=None,VTUN_b=None,Vg=None,Vg_b=None,Vd_P=None,Vd_R=None,Vsel=None,Vsel_b=None,Prog=None,Prog_b=None,VIN_PLUS=None,VIN_MINUS=None,Vout=None):
-:
+
         # Define variables
         self.circuit = circuit
         self.pins = []
@@ -130,8 +130,8 @@ class  TSMC350nm_Amplifier9T_FGInputs_Bias(StandardCell):
 
         # Define cell information
         self.name = 'TSMC350nm_Amplifier9T_FGInputs_Bias'
-        self.VPWR = Port(circuit,self,'VDD','N',1*self.dim[1])
-        self.VPWR_b = Port(circuit,self,'VDD_b','S',1*self.dim[1])
+        self.VDD = Port(circuit,self,'VDD','N',1*self.dim[1])
+        self.VDD_b = Port(circuit,self,'VDD_b','S',1*self.dim[1])
         self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
         self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
         self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
@@ -143,14 +143,14 @@ class  TSMC350nm_Amplifier9T_FGInputs_Bias(StandardCell):
         self.Vg = Port(circuit,self,'Vg','N',2*self.dim[1])
         self.Vg_b = Port(circuit,self,'Vg_b','S',2*self.dim[1])
 
-        self.VD_P = Port(circuit,self,'Vd_P','W',2*self.dim[0])
-        self.VD_R = Port(circuit,self,'Vd_R','W',1*self.dim[0])
+        self.Vd_P = Port(circuit,self,'Vd_P','W',2*self.dim[0])
+        self.Vd_R = Port(circuit,self,'Vd_R','W',1*self.dim[0])
 
         self.Vsel = Port(circuit,self,'Vsel','N',2*self.dim[1])
         self.Vsel_b = Port(circuit,self,'Vsel_b','S',2*self.dim[1])
 
-        self.PROG = Port(circuit,self,'Prog','N',1*self.dim[1])
-        self.PROG_b = Port(circuit,self,'Prog_b','S',1*self.dim[1])
+        self.Prog= Port(circuit,self,'Prog','N',1*self.dim[1])
+        self.Prog_b= Port(circuit,self,'Prog_b','S',1*self.dim[1])
 
         self.VIN_PLUS = Port(circuit,self,'VIN_PLUS','W',1*self.dim[0])
         self.VIN_MINUS = Port(circuit,self,'VIN_MINUS','W',1*self.dim[0])
