@@ -106,6 +106,9 @@ def AvgDAC(circuit,numStages=1,AvgDACIsland=None,islandLoc=[0,0]):
         DrainSwitch.PR[2*i+1] += EPOTs.VD_P[2*i+1]
 
 
+    DrainSwitch.PR[2*(numStages+2)] += Buffer.Vd_P
+
+
     #DrainSelect.VINJ_b += VINJ_S
     #DrainSelect.GND_b += GND_S
 
@@ -130,7 +133,7 @@ def AvgDAC(circuit,numStages=1,AvgDACIsland=None,islandLoc=[0,0]):
     Pitch = 22000
     DecoderWidth = int(43000 + ((drainBits/2)*25000))
 
-    XTgate = (EPOTWidth+25*XSpace+XFGs+DecoderWidth) + 45000
+    XTgate = (EPOTWidth+25*XSpace+XFGs+DecoderWidth) + 1000
     YTgate = YFGs+(2*Pitch)
 
     location_islands = ((XFGs,YFGs),(XTgate,YTgate)) 
@@ -140,8 +143,8 @@ def AvgDAC(circuit,numStages=1,AvgDACIsland=None,islandLoc=[0,0]):
 
 Top = ac.Circuit()
 
-location_islands = AvgDAC(Top,6,islandLoc=[5000,5000])
+location_islands = AvgDAC(Top,5,islandLoc=[5000,5000])
 
 design_limits = [8e5, 6e5]
 
-ac.compile_asic(Top,process="TSMC350nm",fileName="AveragerDAC",design_limits = design_limits, location_islands = location_islands, drainSpaceIdx=0,drainSpace=50,gateSpaceIdx=0,gateSpace=15)
+ac.compile_asic(Top,process="TSMC350nm",fileName="AveragerDAC",design_limits = design_limits, location_islands = location_islands, drainSpaceIdx=0,drainSpace=15,gateSpaceIdx=0,gateSpace=15)
