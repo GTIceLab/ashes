@@ -1,0 +1,14 @@
+site_name: ASHES Docs
+
+theme:
+  name: "material"
+
+plugins:
+  - mkdocstrings
+
+nav:
+  - ASHES Docs: index.md
+  - Tutorials: tutorials.md
+  - How-to Guides: how-to-guides.md
+  - Reference: reference.md
+  - Explanation: explanation.md
