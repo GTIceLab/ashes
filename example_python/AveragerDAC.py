@@ -73,6 +73,8 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     GateSwitches.CTRL_B += TAs.Vsel
     GateSwitches.Vg += TAs.Vg
 
+    TAs.Vg_b[0] += EPOTA.Vg[0]
+
 
     # Pins
     #-----------------------------------------------------------------------------
@@ -93,7 +95,7 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     DrainBits = outerPins.createPort("W","DrainB",dimension=drainBits)
     DrainEnable = outerPins.createPort("W","DrainEnable")
     GateBits = outerPins.createPort("W","GateB",dimension=2)
-    GateEnable = outerPins.createPort("W","GateEnable")
+    GateEnable = outerPins.createPort("N","GateEnable")
 
     Run_Drainline = outerPins.createPort("S","Run_Drainline")
     Prog_Drainline = outerPins.createPort("S","Prog_Drainline")
@@ -103,7 +105,6 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
 
     # Connections
     #----------------------------------------------------------------------------
-
 
     TAs.Vout += Buffer.Vin[0]
     TAs.VIN_MINUS += Buffer.Vin[0]
@@ -115,6 +116,10 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     Tgates.VDD += AVDD_N
     Tgates.GND += GND_N
 
+    EPOTB.VINJ_b += VINJ_S
+    EPOTB.VIN_PLUS += AVDD_N
+    EPOTA.VIN_PLUS += AVDD_N
+
     VOUT += Buffer.Vout
     Buffer.VDD += EPOTB.VDD_b
     Buffer.GND += EPOTB.GND_b 
@@ -122,8 +127,8 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     Buffer.VDD += AVDD_S
     Buffer.VTUN += EPOTB.VTUN_b
     Buffer.VINJ += EPOTB.VINJ_b
-    Buffer.Vsel += EPOTB.Vsel[0]
-    Buffer.Vg += EPOTB.Vg[0]
+    Buffer.Vsel += EPOTB.Vsel_b[0]
+    Buffer.Vg += EPOTB.Vg_b[0]
 
     TAs.VDD += AVDD_N 
     TAs.GND += GND_N
@@ -137,19 +142,17 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     GateSwitches.RUN += RUN
     GateSwitches.GND_T += GND_N[0]
     GateSwitches.RUN_IN += VGRUN[0]
+    GateSwitches.Vgsel += VGPROG
 
     DrainSwitch.RUN += RUN
     DrainSwitch.GND += TAs.GND
-    DrainSwitch.VDD += AVDD_S 
+    DrainSwitch.VDD += VINJ_S
 
     DrainSelect.prog_drainrail += Prog_Drainline
     DrainSelect.run_drainrail += Run_Drainline
     DrainSelect.GND += GND_N
     DrainSelect.VINJ += VINJ_N
 
-
-    DrainDecoder.VINJ += VINJ_S
-    DrainDecoder.GND += GND_S
     DrainDecoder.IN += DrainBits
     DrainDecoder.ENABLE += DrainEnable
 
@@ -195,8 +198,9 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
 
 Top = ac.Circuit()
 
-location_islands = AvgDAC(Top,5,islandLoc=[5000,1000])
+location_islands = AvgDAC(Top,5,islandLoc=[5000,1500])
 
-design_limits = [8e5, 6e5]
 
-ac.compile_asic(Top,process="TSMC350nm",fileName="AveragerDAC",design_limits = design_limits, location_islands = location_islands, drainSpaceIdx=0,drainSpace=15,gateSpaceIdx=0,gateSpace=15)
+design_limits = [5e5, 5e5]
+
+ac.compile_asic(Top,process="TSMC350nm",fileName="AveragerDAC",design_limits = design_limits, location_islands = location_islands, drainSpaceIdx=0,drainSpace=15,gateSpaceIdx=0,gateSpace=11)
