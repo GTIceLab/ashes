@@ -14,7 +14,11 @@ from ashes_fg.asic.asic_systems import *
 #------------------------------cd .., comment line 17 and 18, uncomment line 20, "python py2asic.py" (place Fabric.py to make a final fabric)
 
 
-exec(open("./example_python/AlgorithmicADC.py").read())
+#exec(open("./example_python/AlgorithmicADC.py").read())
+
+
+exec(open("./example_python/CHIP_DataConverter.py").read())
+
 
 
 

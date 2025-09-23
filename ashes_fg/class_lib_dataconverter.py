@@ -1,5 +1,130 @@
 from ashes_fg.asic.asic_compile import *
 
+class AveragerDAC(StandardCell):
+    def __init__(self,circuit,island=None,dim=(1,1),AVDD_N=None,AVDD_S=None,VINJ_N=None,VINJ_S=None,GND_N=None,GND_S=None,VTUN=None):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+
+        # Define cell information
+        self.name = 'AveragerDAC_synth'
+        self.AVDD_N = Port(circuit,self,"n_avdd",'N',1)
+        self.AVDD_S = Port(circuit,self,"s_avdd",'S',1)
+        self.VINJ_N = Port(circuit,self,"n_vinj",'N',1)
+        self.VINJ_S = Port(circuit,self,"s_vinj",'S',1)
+        self.GND_N = Port(circuit,self,"n_gnd",'N',1)
+        self.GND_S = Port(circuit,self,"s_gnd",'S',1)
+        self.VTUN = Port(circuit,self,"n_VTUN",'N',1)
+
+        # Initialize ports with given values
+        portsInit = [AVDD_N,AVDD_S,VINJ_N,VINJ_S,GND_N,GND_S,VTUN]
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+
+
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+class AlgorithmicADC(StandardCell):
+    def __init__(self,circuit,island=None,dim=(1,1),AVDD_N=None,AVDD_S=None,VINJ_N=None,VINJ_S=None,GND_N=None,GND_S=None,VTUN=None):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+
+        # Define cell information
+        self.name = 'AlgorithmicADC_synth'
+        self.AVDD_N = Port(circuit,self,"n_avdd",'N',1)
+        self.AVDD_S = Port(circuit,self,"s_avdd",'S',1)
+        self.VINJ_N = Port(circuit,self,"n_vinj",'N',1)
+        self.VINJ_S = Port(circuit,self,"s_vinj",'S',1)
+        self.GND_N = Port(circuit,self,"n_gnd",'N',1)
+        self.GND_S = Port(circuit,self,"s_gnd",'S',1)
+        self.VTUN = Port(circuit,self,"n_VTUN",'N',1)
+
+        # Initialize ports with given values
+        portsInit = [AVDD_N,AVDD_S,VINJ_N,VINJ_S,GND_N,GND_S,VTUN]
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+class RampADC(StandardCell):
+    def __init__(self,circuit,island=None,dim=(1,1),AVDD_N=None,AVDD_S=None,VINJ_N=None,VINJ_S=None,GND_N=None,GND_S=None,VTUN=None):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+
+        # Define cell information
+        self.name = 'RampADC_synth'
+        self.AVDD_N = Port(circuit,self,"n_avdd",'N',1)
+        self.AVDD_S = Port(circuit,self,"s_avdd",'S',1)
+        self.VINJ_N = Port(circuit,self,"n_vinj",'N',1)
+        self.VINJ_S = Port(circuit,self,"s_vinj",'S',1)
+        self.GND_N = Port(circuit,self,"n_gnd",'N',1)
+        self.GND_S = Port(circuit,self,"s_gnd",'S',1)
+        self.VTUN = Port(circuit,self,"n_VTUN",'N',1)
+
+        # Initialize ports with given values
+        portsInit = [AVDD_N,AVDD_S,VINJ_N,VINJ_S,GND_N,GND_S,VTUN]
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+class QDAC(StandardCell):
+    def __init__(self,circuit,island=None,dim=(1,1),AVDD_N=None,AVDD_S=None,VINJ_N=None,VINJ_S=None,GND_N=None,GND_S=None,VTUN=None):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+
+        # Define cell information
+        self.name = 'QDAC_synth'
+        self.AVDD_N = Port(circuit,self,"n_avdd",'N',1)
+        self.AVDD_S = Port(circuit,self,"s_avdd",'S',1)
+        self.VINJ_N = Port(circuit,self,"n_vinj",'N',1)
+        self.VINJ_S = Port(circuit,self,"s_vinj",'S',1)
+        self.GND_N = Port(circuit,self,"n_gnd",'N',1)
+        self.GND_S = Port(circuit,self,"s_gnd",'S',1)
+        self.VTUN = Port(circuit,self,"n_VTUN",'N',1)
+
+        # Initialize ports with given values
+        portsInit = [AVDD_N,AVDD_S,VINJ_N,VINJ_S,GND_N,GND_S,VTUN]
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+
 class TSMC350nm_RippleCounter(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),Count=None,Count_B=None,RST=None,RST_L=None,CLK=None,GND=None,GND_L = None,VDD=None,VDD_L=None):
         # Define variables
