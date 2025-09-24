@@ -89,21 +89,16 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
             VD_R1[i] = DelayLine_instances[0][i].VD_R[1]
     
  
-    
     for i in range(columns):
         GateSwitches.Vg[i*2] += DelayLine_instances[i][0].Vg[0]
         GateSwitches.Vg[i*2+1] += DelayLine_instances[i][0].Vg[1]
         GateSwitches.CTRL_B[i*2] += DelayLine_instances[i][0].Vsel[0]
         GateSwitches.CTRL_B[i*2+1] += DelayLine_instances[i][0].Vsel[1]
     
-        GateSwitches.VINJ[j] += DelayLine_instances[i][0].VINJ
-        GateSwitches.VINJ[j+1] += DelayLine_instances[i][0].VINJ
-        GateSwitches.GND[j] += DelayLine_instances[i][0].GND
-        GateSwitches.GND[j+1] += DelayLine_instances[i][0].GND
+        GateSwitches.VINJ[i] += DelayLine_instances[i][0].VINJ
+        GateSwitches.GND[i] += DelayLine_instances[i][0].GND
         GateSwitches.VTUN[i] += DelayLine_instances[i][0].VTUN
-        GateSwitches.VDD[j] += DelayLine_instances[i][0].VDD
-        GateSwitches.VDD[j+1] += DelayLine_instances[i][0].VDD
-    
+        GateSwitches.VDD[i] += DelayLine_instances[i][0].VDD
 
     #Outerpins
     
@@ -119,7 +114,7 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
     #VGRUN = outerPins.createPort("N","VGRUN")
     #VGPROG = outerPins.createPort("N","VGPROG")
 
-    #VTUN = outerPins.createPort("N","VTUN")
+    VTUN = outerPins.createPort("N","VTUN")
     AVDD = outerPins.createPort("N","AVDD")
     GND_N = outerPins.createPort("N","gnd")
     GND_S = outerPins.createPort("S","gnd")
@@ -145,7 +140,7 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
     #GateSwitches.VINJ_T[1] += GateDecoder.VINJ_b[1]
     
     GateSwitches.GND_T[0] += GND_N
-    GateSwitches.GND_T[1] += GND_N
+    #GateSwitches.GND_T[1] += GND_N
     #GateSwitches.Vgsel += VGPROG
     #GateSwitches.PROG += PROG
     #GateSwitches.RUN += RUN
@@ -200,8 +195,8 @@ Top = Circuit()
 #C4_Ampdet(Top,16)
 Delayline_stages(Top,rows=32,columns=9)
 
-design_limits = [1e6, 3e6]
-location_islands = ((50000,25000),(240000,22000*32+90000))
+design_limits = [9e6, 9e6]
+location_islands = ((50000,25000),(240000,(22000*32)+90000))
 
 
 compile_asic(Top,process="TSMC350nm",fileName="Delayline_stages",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=0,drainSpace = 0,gateSpaceIdx=0,gateSpace=10)

@@ -823,6 +823,30 @@ MACRO DelayLine
 END DelayLine
 
 MACRO TSMC350nm_IndirectSwitches
+  PIN GND_B<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 15.41 0.0 16.01 0.85 ;
+    END
+  END GND_B<1>
+  PIN GND_B<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.2 0.0 11.8 0.85 ;
+    END
+  END GND_B<0>
+  PIN GND
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.2 3.21 11.8 3.6 ;
+    END
+  END GND
   PIN GND_T
     DIRECTION INOUT ;
     USE SIGNAL ;
@@ -855,22 +879,6 @@ MACRO TSMC350nm_IndirectSwitches
         RECT 13.3 0.0 13.9 0.82 ;
     END
   END VTUN
-  PIN GND<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 11.2 0.0 11.8 0.85 ;
-    END
-  END GND<0>
-  PIN GNDV<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 15.47 0.0 15.95 1.0 ;
-    END
-  END GNDV<1>
   PIN VINJ
     DIRECTION INOUT ;
     USE SIGNAL ;
@@ -975,14 +983,6 @@ MACRO TSMC350nm_IndirectSwitches
         RECT 12.6 21.12 13.7 22.0 ;
     END
   END VTUN_T
-  PIN vtun_l
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 0.9 1.31 1.88 ;
-    END
-  END vtun_l
   PIN vtun_r
     DIRECTION INOUT ;
     USE SIGNAL ;
@@ -1039,6 +1039,14 @@ MACRO TSMC350nm_IndirectSwitches
         RECT 0.0 3.72 0.91 4.45 ;
     END
   END Vgsel
+  PIN vtun_l
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 0.9 1.31 1.88 ;
+    END
+  END vtun_l
 END TSMC350nm_IndirectSwitches
 
 MACRO TSMC350nm_VinjDecode2to4_htile
@@ -1298,6 +1306,76 @@ MACRO TSMC350nm_VinjDecode2to4_htile_B_bridge
   END VGRUN<3>
 END TSMC350nm_VinjDecode2to4_htile_B_bridge
 
+MACRO TSMC350nm_VinjDecode2to4_htile_C_bridge
+  PIN VGRUN<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 9.1 9.54 9.7 10.0 ;
+    END
+  END VGRUN<0>
+  PIN VGRUN<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.2 9.57 11.8 10.0 ;
+    END
+  END VGRUN<1>
+  PIN VGRUN<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 28.7 9.59 29.3 10.0 ;
+    END
+  END VGRUN<2>
+  PIN VGRUN<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 33.6 9.57 34.2 10.0 ;
+    END
+  END VGRUN<3>
+END TSMC350nm_VinjDecode2to4_htile_C_bridge
+
+MACRO TSMC350nm_VinjDecode2to4_htile_D_bridge
+  PIN VGRUN<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 9.1 9.58 9.7 10.0 ;
+    END
+  END VGRUN<0>
+  PIN VGRUN<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.2 9.55 11.8 10.0 ;
+    END
+  END VGRUN<1>
+  PIN VGRUN<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 28.7 9.58 29.3 10.0 ;
+    END
+  END VGRUN<2>
+  PIN VGRUN<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 33.6 9.57 34.2 10.0 ;
+    END
+  END VGRUN<3>
+END TSMC350nm_VinjDecode2to4_htile_D_bridge
+
 MACRO TSMC350nm_VinjDecode2to4_htile_spacing
   PIN VGRUN<0>
     DIRECTION INOUT ;
@@ -1333,7 +1411,93 @@ MACRO TSMC350nm_VinjDecode2to4_htile_spacing
   END VGRUN<3>
 END TSMC350nm_VinjDecode2to4_htile_spacing
 
+MACRO TSMC350nm_VinjDecode2to4_htile_bridge_spacing
+  PIN VGRUN<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 9.1 9.52 9.7 9.99 ;
+    END
+  END VGRUN<0>
+  PIN VGRUN<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.2 9.51 11.8 9.99 ;
+    END
+  END VGRUN<1>
+  PIN VGRUN<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 28.7 9.41 29.3 9.99 ;
+    END
+  END VGRUN<2>
+  PIN VGRUN<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 33.6 9.47 34.2 9.99 ;
+    END
+  END VGRUN<3>
+END TSMC350nm_VinjDecode2to4_htile_bridge_spacing
+
 MACRO FakeCellGateDecoder
 END FakeCellGateDecoder
+
+MACRO tile_analog_frame
+  PIN n_VTUN
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 13.3 964.591 14.7 967.391 ;
+    END
+  END n_VTUN
+  PIN n_AVDD
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 27.3 964.591 28.7 967.391 ;
+    END
+  END n_AVDD
+  PIN n_gnd
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1579.55 964.591 1580.95 967.391 ;
+    END
+  END n_gnd
+  PIN n_vinj
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1565.55 964.591 1566.95 967.391 ;
+    END
+  END n_vinj
+  PIN s_gnd
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1579.55 0.0 1580.95 2.8 ;
+    END
+  END s_gnd
+  PIN s_vinj
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1565.55 0.0 1566.95 2.8 ;
+    END
+  END s_vinj
+END tile_analog_frame
 
 END LIBRARY
