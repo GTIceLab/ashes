@@ -78,6 +78,7 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     PROG = outerPins.createPort("N","Prog")
     RUN = outerPins.createPort("N","Run")
     VGPROG = outerPins.createPort("N","VGPROG")
+    VGRUN = outerPins.createPort("N","VGRUN")
     VTUN = outerPins.createPort("N","VTUN")
     AVDD_N = outerPins.createPort("N","avdd")
     AVDD_S = outerPins.createPort("S","avdd")
@@ -161,8 +162,7 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     GateSwitches.CTRL_B += EPOTs.Vsel
     GateSwitches.Vg += EPOTs.Vg
     GateSwitches.Vgsel += VGPROG
-    GateSwitches.RUN_IN[0] += AVDD_N
-    GateSwitches.RUN_IN[1] += AVDD_N
+    GateSwitches.RUN_IN += VGRUN[0]
 
     DrainSwitch.RUN += RUN
     DrainSwitch.GND += GND_S

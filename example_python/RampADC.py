@@ -45,7 +45,12 @@ def RampADC(Top,B,Vin=None):
 
     # TGate for ramp reset
     RampRST = lib_dc.TSMC350nm_TGate_DT(Top,NonFGIsland)
-    RampRST.place([1,numCapColumns+1])
+    RampRST.place([0,numCapColumns+1])
+
+    # TGate for comp output
+    CompGate = lib_dc.TSMC350nm_TGate_DT(Top,NonFGIsland)
+    CompGate.place([1,numCapColumns+1])
+    
 
     # Ripple Counter
     CounterIsland = ac.Island(Top)
@@ -72,17 +77,20 @@ def RampADC(Top,B,Vin=None):
     VGRUN = outerPins.createPort("N","VGRUN")
     VGPROG = outerPins.createPort("N","VGPROG")
     VTUN = outerPins.createPort("N","VTUN")
-    AVDD = outerPins.createPort("N","AVDD")
     GND_N = outerPins.createPort("N","gnd")
     GND_S = outerPins.createPort("S","gnd")
     VINJ_N = outerPins.createPort("N","vinj")
     VINJ_S = outerPins.createPort("S","vinj")
+    AVDD_N = outerPins.createPort("N","avdd")
+    AVDD_S = outerPins.createPort("S","avdd")
 
 
     DrainBits = outerPins.createPort("W","DrainB",dimension=2)
     DrainEnable = outerPins.createPort("W","DrainEnable")
     GateBits = outerPins.createPort("W","GateB",dimension=2)
     GateEnable = outerPins.createPort("N","GateEnable")
+    Run_Drainline = outerPins.createPort("S","Run_Drainline")
+    Prog_Drainline = outerPins.createPort("S","Prog_Drainline")
 
     Code = outerPins.createPort("S","Code",dimension=B)
     CLK = outerPins.createPort("W","CLK")
@@ -93,35 +101,49 @@ def RampADC(Top,B,Vin=None):
     # Pin Connections
     #----------------------------------------------------------------------------
     Counter.Count_B += Code
-    Counter.CLK += CLK
     Counter.RST_L += RST
-    Counter.VDD += AVDD
+    Counter.VDD += AVDD_S
     Counter.GND += GND_S
 
     DrainSwitch.In[0] += RampBias.VD_R 
     DrainSwitch.In[1] += Comparator.VD_R
     DrainSwitch.PR[0] += RampBias.VD_P
     DrainSwitch.PR[1] += Comparator.VD_P
+    DrainSwitch.RUN += RUN
+    DrainSwitch.GND += GND_S
+    DrainSwitch.VDD += VINJ_S
+
+    DrainSelect.prog_drainrail += Prog_Drainline
+    DrainSelect.run_drainrail += Run_Drainline
+    DrainSelect.GND += GND_N
+    DrainSelect.VINJ += VINJ_N
+
     DrainDecoder.IN += DrainBits
-    DrainDecoder.GND += GND_S
-    DrainDecoder.VINJ += VINJ_S
+    DrainDecoder.ENABLE += DrainEnable
 
     GateDecoder.ENABLE += GateEnable
     GateDecoder.IN += GateBits
-    GateDecoder.VINJV += VINJ_N
-    GateDecoder.GND_b[1] += GND_N
+    GateDecoder.VINJ_b[0] += VINJ_N
+    GateDecoder.GNDV += GND_N
 
-    GateSwitches.VINJ += RampBias.VINJ
-    GateSwitches.GND += RampBias.GND
+    GateSwitches.VINJ_T += RampBias.VINJ
+    GateSwitches.GND[0] += RampBias.GND
+    GateSwitches.RUN_IN += VGRUN[0]
+    GateSwitches.Vgsel += VGPROG[0]
+    GateSwitches.RUN += RUN
+    GateSwitches.PROG += PROG
+
 
     RampBias.Vg += GateSwitches.Vg[0]
     RampBias.Vsel += GateSwitches.CTRL_B[0]
     RampBias.VTUN += VTUN
     RampBias.PROG += PROG
     RampBias.GND += GND_N
+    RampBias.VPWR += AVDD_N
+    RampBias.VINJ += VINJ_N
 
     RampBias.VIN_MINUS += RST
-    RampBias.VIN_PLUS += AVDD
+    RampBias.VIN_PLUS += AVDD_N
 
     CapTop = ac.Wire(Top)
     CapBot = ac.Wire(Top)
@@ -138,10 +160,20 @@ def RampADC(Top,B,Vin=None):
     RampRST.A += CapTop
     RampRST.C += CapBot
     RampRST.SELA += RST
-    RampRST.VDD += AVDD
+    RampRST.VDD += AVDD_N
     RampRST.GND += CapBot
+    RampRST.GND += GND_S
+
+    CompGate.SELA += Comparator.Vout
+    CompGate.A += GND_N
+    CompGate.B += CLK
+    CompGate.C += Counter.CLK
 
     VIN += Comparator.VIN_MINUS
+
+    Comparator.GND_b += GND_S
+    Comparator.VPWR_b += AVDD_S
+    Comparator.VINJ_b += VINJ_S
 
     # -----------------------------------------------------------------------------------------------
     XPadding = 5000
