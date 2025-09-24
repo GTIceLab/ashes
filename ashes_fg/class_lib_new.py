@@ -1176,7 +1176,7 @@ class DelayLine(StandardCell):
 		circuit.addInstance(self,self.island)
 		
 
-class TSMC350nm_AnalogBuffer(StandardCell):
+class AnalogBuffer(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),VTUN=None,VTUN_b=None,VDD=None,VDD_b=None,GND=None,GND_b=None,VINJ=None,VINJ_b=None,Vg=None,Vg_b=None,Vd_P=None,Vsel=None,Vsel_b=None,Vin=None,Vout=None):
         # Define variables
         self.circuit = circuit
@@ -1187,7 +1187,7 @@ class TSMC350nm_AnalogBuffer(StandardCell):
 
 
         # Define cell information
-        self.name = 'TSMC350nm_AnalogBuffer'
+        self.name = 'AnalogBuffer'
         self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
         self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
         self.VDD = Port(circuit,self,'VDD','N',1*self.dim[1])
