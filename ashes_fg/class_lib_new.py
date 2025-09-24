@@ -2550,8 +2550,8 @@ class Macro(StandardCell):
 
 
 		# Define cell information
-		#self.name = 'Full_Macro_Edit'
-		self.name = 'Full_Macro_Corner'
+		self.name = 'Full_Macro_Edit'
+		#self.name = 'Full_Macro_Corner'
 		
 		self.cpu_en = Port(circuit,self, 'cpu_en' ,'N',1*self.dim[1])
 		self.dbg_en = Port(circuit,self, 'dbg_en' ,'N',1*self.dim[1])

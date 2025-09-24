@@ -1602,8 +1602,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 block_y1 = loc[1] + pin_const*dbu
                 block_x2 = loc[2] - pin_const*dbu
                 block_y2 = loc[3] - pin_const*dbu
-
-                m1_m2_except = ['Full_Macro_Edit']
+                rect_string.append(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n')
+                '''m1_m2_except = ['Full_Macro_Edit']
                 # macro rectilinear blockage exception
                 if item['name'] in m1_m2_except:
                     dis_x1 = 1460*dbu
@@ -1614,7 +1614,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     rect_string.append(f'    RECT ( {block_x1} {block_y3} ) ( {block_x2} {block_y2} )\n')
                     rect_string.append(f'    RECT ( {block_x3} {block_y1} ) ( {block_x2} {block_y3} )\n')
                 else:
-                    rect_string.append(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n')
+                    rect_string.append(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n')'''
                 insts_list = ['placeholder']
             if item['type'] == 'matrix':
                 insts_list = item['insts'].keys()
@@ -1796,8 +1796,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     poly_mlayer = metal_layers[stop_layer]
                     def_file.write(f'  - {poly_mlayer}\n')
                     def_file.write(f'    LAYER {poly_mlayer} ;\n')
-                    
-                    macro_except = ['Full_Macro_Edit']
+                    def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                    '''macro_except = ['Full_Macro_Edit']
                     # macro rectilinear blockage exception
                     if item['name'] in macro_except:
                         dis_x1 = 1460*dbu
@@ -1808,9 +1808,9 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                         rect_string.append(f'    RECT ( {block_x1} {block_y3} ) ( {block_x2} {block_y2} )\n')
                         rect_string.append(f'    RECT ( {block_x3} {block_y1} ) ( {block_x2} {block_y3} )\n')
                     else:
-                        def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                        def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')'''
                     def_file.write(f'  END\n\n')
-        m4_except = ['Full_Macro_Edit']
+        m4_except = ['Full_Macro_Edit', 'Full_Macro_Corner']
         for val, island in cell_order_in_island.items():
             for idx, item in island['items'].items():
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m4_except:
@@ -1823,8 +1823,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     poly_mlayer = metal_layers[stop_layer+1]
                     def_file.write(f'  - {poly_mlayer}\n')
                     def_file.write(f'    LAYER {poly_mlayer} ;\n')
-    
-                    # macro rectilinear blockage exception
+                    def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                    '''# macro rectilinear blockage exception
                     if item['name'] in macro_except:
                         dis_x1 = 1460*dbu
                         dis_y1 = 200*dbu
@@ -1834,7 +1834,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                         rect_string.append(f'    RECT ( {block_x1} {block_y3} ) ( {block_x2} {block_y2} )\n')
                         rect_string.append(f'    RECT ( {block_x3} {block_y1} ) ( {block_x2} {block_y3} )\n')
                     else:
-                        def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                        def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')'''
                     def_file.write(f'  END\n\n')
         # Write blockages for the frame to keep routes internal
         if frame_module:
