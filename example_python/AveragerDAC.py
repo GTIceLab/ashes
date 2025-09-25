@@ -11,7 +11,7 @@ import ashes_fg.asic.asic_systems as algs
 import numpy as np
 
 
-def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
+def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0],debug=False):
     Top = circuit
 
     OTAIsland = ac.Island(Top)
@@ -103,6 +103,11 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     VOUT = outerPins.createPort("S","Vout")
     Code = outerPins.createPort("E","Code",dimension=numBits)
 
+    if debug == True:
+        DEBUG = outerPins.createPort("S","DEBUG",dimension=2)
+        DEBUG[0] += EPOTA.Vout
+        DEBUG[1] += EPOTB.Vout
+
     # Connections
     #----------------------------------------------------------------------------
 
@@ -156,7 +161,7 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
     DrainDecoder.IN += DrainBits
     DrainDecoder.ENABLE += DrainEnable
 
-    GateDecoder.VINJV += VINJ_N
+    GateDecoder.VINJ_b[0] += VINJ_N
     GateDecoder.GNDV += GND_N
     GateDecoder.ENABLE += GateEnable
     GateDecoder.IN += GateBits
@@ -198,9 +203,9 @@ def AvgDAC(circuit,numBits=1,AvgDACIsland=None,islandLoc=[0,0]):
 
 Top = ac.Circuit()
 
-location_islands = AvgDAC(Top,5,islandLoc=[5000,1500])
+location_islands = AvgDAC(Top,5,islandLoc=[5100,2000],debug=True)
 
 
 design_limits = [5e5, 5e5]
 
-ac.compile_asic(Top,process="TSMC350nm",fileName="AveragerDAC",design_limits = design_limits, location_islands = location_islands, drainSpaceIdx=0,drainSpace=15,gateSpaceIdx=0,gateSpace=11)
+ac.compile_asic(Top,process="TSMC350nm",fileName="AveragerDAC",design_limits = design_limits, location_islands = location_islands, drainSpaceIdx=0,drainSpace=15,gateSpaceIdx=0,gateSpace=15)

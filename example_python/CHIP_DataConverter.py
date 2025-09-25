@@ -101,7 +101,12 @@ macro.AVDD_AM += chipframe.avdd_N[2]
 macro.VINJ += chipframe.VINJ_N[2]
 macro.DVDD += chipframe.DVDD_N[2]
 
-
+# Supporting Circuitry
+# ---------------------------------------------------------------------
+DebugScannerIsland = ac.Island(Top)
+DebugScanner = lib_new.TSMC350nm_VerticalScanner(Top,DebugScannerIsland,dim=(4,1))
+DebugScanner.place([0,0])
+DebugScannerLocation = (2000e3,250e3)
 
 # Data Converters
 #----------------------------------------------------------------------
@@ -116,6 +121,7 @@ QDAC.AVDD_S += chipframe.avdd_S[0]
 QDAC.GND_S += chipframe.gnd_S[0]
 QDAC.VINJ_S += chipframe.VINJ_S[0]
 QDAC.VTUN += chipframe.IO_E_RES[0]
+QDAC.VGRUN += macro.VGRUN
 
 # Ramp ADC
 RampADCIsland = ac.Island(Top)
@@ -127,6 +133,7 @@ RampADC.AVDD_S += chipframe.avdd_S[0]
 RampADC.GND_S += chipframe.gnd_S[0]
 RampADC.VINJ_S += chipframe.VINJ_S[0]
 RampADC.VTUN += chipframe.IO_W_RES[0]
+RampADC.VGRUN += macro.VGRUN
 
 # Algorithcmic ADC
 AlgorithmicADCIsland = ac.Island(Top)
@@ -138,6 +145,7 @@ AlgorithmicADC.AVDD_S += chipframe.avdd_S[0]
 AlgorithmicADC.GND_S += chipframe.gnd_S[0]
 AlgorithmicADC.VINJ_S += chipframe.VINJ_S[0]
 AlgorithmicADC.VTUN += chipframe.IO_W_RES[0]
+AlgorithmicADC.VGRUN += macro.VGRUN
 
 # Averager DAC
 AveragerDACIsland = ac.Island(Top)
@@ -149,13 +157,14 @@ AveragerDAC.AVDD_S += chipframe.avdd_S[0]
 AveragerDAC.GND_S += chipframe.gnd_S[0]
 AveragerDAC.VINJ_S += chipframe.VINJ_S[0]
 AveragerDAC.VTUN += chipframe.IO_W_RES[0]
+AveragerDAC.VGRUN += macro.VGRUN
 
 
 # Compilation
 #-------------------------------------------------------------------------------
 design_limits = [7e6, 6.21e6]
-location_islands = ((210600, 410000), (20600, 20000), QDAC_location, RampADC_location, AlgorithmicADC_location, AveragerDAC_location)
+location_islands = ((210600, 410000), (20600, 20000), DebugScannerLocation, QDAC_location, RampADC_location, AlgorithmicADC_location, AveragerDAC_location)
 # location_islands = ((250600, 4600000), (20600, 20000), (300000, 250600))
 # location_islands = None
 
-ac.compile_asic(Top,process="TSMC350nm",fileName="CHIP_DataConverter",p_and_r = True,design_limits = design_limits, location_islands = location_islands,route=True)
+ac.compile_asic(Top,process="TSMC350nm",fileName="CHIP_DataConverter",p_and_r = True,design_limits = design_limits, location_islands = location_islands,route=False)

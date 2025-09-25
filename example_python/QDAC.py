@@ -12,7 +12,7 @@ import ashes_fg.asic.asic_systems as algs
 import numpy as np
 
 
-def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
+def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0],debug=False):
     Top = circuit
 
     QDACIsland = ac.Island(Top)
@@ -101,6 +101,9 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     RST = outerPins.createPort("N","RST")
     Code = outerPins.createPort("N","Code",dimension=numStages)
 
+    if debug == True:
+        DEBUG = outerPins.createPort("E","DEBUG",dimension=numStages)
+
     # Pin Connections
     # -------------------------------------------------------------------------------
     EPOTs.VDD += AVDD_N
@@ -111,6 +114,9 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
     EPOTs.VTUN += VTUN
     for i in range(numStages):
         EPOTs.VIN_PLUS[i] += AVDD_N
+
+    if debug == True:
+        DEBUG += EPOTs.Vout
 
     EPOTRST.VIN_PLUS += AVDD_N
 
@@ -212,7 +218,7 @@ def QDAC(circuit,numStages=1,QDACIsland=None,islandLoc = [0,0]):
 
 Top = ac.Circuit()
 
-location_islands = QDAC(Top,5,islandLoc=[2750,3050])
+location_islands = QDAC(Top,5,islandLoc=[2750,3050],debug=True)
 
 design_limits = [4e5, 4e5]
 
