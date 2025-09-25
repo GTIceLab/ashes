@@ -93,7 +93,10 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
         GateSwitches.VDD[i] += DelayLine_instances[i][0].VDD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 74afe98 (Delayline stages pin updates)
 =======
 >>>>>>> parent of 74afe98 (Delayline stages pin updates)
     
@@ -115,6 +118,7 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     VTUN = outerPins.createPort("N","VTUN")
     AVDD = outerPins.createPort("N","AVDD")
     GND_N = outerPins.createPort("N","gnd")
@@ -124,6 +128,8 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
 =======
 =======
 >>>>>>> parent of 74afe98 (Delayline stages pin updates)
+=======
+>>>>>>> parent of 74afe98 (Delayline stages pin updates)
     #VTUN = outerPins.createPort("N","VTUN")
     #AVDD = outerPins.createPort("N","AVDD")
     #GND_N = outerPins.createPort("N","gnd")
@@ -131,6 +137,9 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
     #VINJ_N = outerPins.createPort("N","vinj")
     #VINJ_S = outerPins.createPort("S","vinj")
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 74afe98 (Delayline stages pin updates)
+=======
 >>>>>>> parent of 74afe98 (Delayline stages pin updates)
 =======
 >>>>>>> parent of 74afe98 (Delayline stages pin updates)
@@ -155,7 +164,11 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
     
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     GateSwitches.GND_T[0] += GND_N
+=======
+    #GateSwitches.GND_T[0] += GND_N
+>>>>>>> parent of 74afe98 (Delayline stages pin updates)
 =======
     #GateSwitches.GND_T[0] += GND_N
 >>>>>>> parent of 74afe98 (Delayline stages pin updates)
@@ -218,6 +231,9 @@ location_islands = ((50000,25000),(240000,(22000*32)+90000))
 design_limits = [1e6, 3e6]
 location_islands = ((50000,25000),(240000,22000*130))
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 74afe98 (Delayline stages pin updates)
+=======
 >>>>>>> parent of 74afe98 (Delayline stages pin updates)
 =======
 >>>>>>> parent of 74afe98 (Delayline stages pin updates)
