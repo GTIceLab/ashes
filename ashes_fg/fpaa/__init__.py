@@ -8,9 +8,10 @@ import ashes_fg.fpaa.program_fpaa as pf
 from ashes_fg.fpaa.Make_ProgramList_CompileAssembly import compile as ca
 
 import os
+ASHESPATH = os.getenv("ASHESPATH", "/home/ubuntu/ashes")
 
 def compile(system, project_name, chip_num, board_type = '3.0a'):
-    out_path = os.path.join('.', project_name)
+    out_path = os.path.join(ASHESPATH, project_name)
     if not os.path.exists(out_path): os.mkdir(out_path)
     verilog = nc.fpaa_compile(system)
     vb.v2blif(verilog, out_path)

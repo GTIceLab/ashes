@@ -1,5 +1,8 @@
 import pdb, copy
 import sys
+import os
+
+RASPPATH = os.getenv("RASPPATH", "/home/ubuntu/rasp30")
 
 def recStrExpand0(x):
 	""" takes a string like: x[0:1].y[0:1] and returns a list: ['x[0].y[0]', 'x[0].y[1]', 'x[1].y[0]', 'x[1].y[1]'] """
@@ -264,7 +267,7 @@ class complexBlock(pblock):
 		# create a set for exceptions from routing
 		routing_exception = set()
 		try:
-			ex_file = open('/home/ubuntu/rasp30/vpr2swcs/routing_exception_list', 'r')
+			ex_file = open(f'{RASPPATH}/vpr2swcs/routing_exception_list', 'r')
 			for line in ex_file:
 				routing_exception.add(line.rstrip())
 			ex_file.close()
