@@ -1,5 +1,214 @@
 from ashes_fg.asic.asic_compile import *
 
+class AveragerDAC(StandardCell):
+    def __init__(self,circuit,island=None,dim=(1,1),AVDD_N=None,AVDD_S=None,VINJ_N=None,VINJ_S=None,GND_N=None,GND_S=None,VTUN=None,DrainB=None,DrainEnable=None,GateEnable=None,GateB=None,Prog=None,Run=None,Code=None,DEBUG=None,Vout=None,Drainline_Prog=None,Drainline_Run=None,VGRUN=None,VGPROG=None):
+
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+
+        # Define cell information
+        self.name = 'AveragerDAC_synth'
+        self.AVDD_N = Port(circuit,self,"n_avdd",'N',1)
+        self.AVDD_S = Port(circuit,self,"s_avdd",'S',1)
+        self.VINJ_N = Port(circuit,self,"n_vinj",'N',1)
+        self.VINJ_S = Port(circuit,self,"s_vinj",'S',1)
+        self.GND_N = Port(circuit,self,"n_gnd",'N',1)
+        self.GND_S = Port(circuit,self,"s_gnd",'S',1)
+        self.VTUN = Port(circuit,self,"n_VTUN",'N',1)
+
+        self.DrainB = Port(circuit,self,"w_DrainB",'W',4)
+        self.DrainEnable = Port(circuit,self,"w_DrainEnable",'W',1)
+        self.GateEnable = Port(circuit,self,"n_GateEnable",'N',1)
+        self.GateB = Port(circuit,self,"w_GateB",'W',2)
+
+        self.Prog= Port(circuit,self,"n_Prog",'N',1)
+        self.Run = Port(circuit,self,"n_Run",'N',1)
+        
+        self.Code = Port(circuit,self,"n_Code",'E',5)
+
+        self.DEBUG = Port(circuit,self,"e_DEBUG",'S',2)
+
+        self.Vout = Port(circuit,self,"s_Vout",'S',1)
+        self.Drainline_Prog = Port(circuit,self,"s_Prog_Drainline",'S',1)
+        self.Drainline_Run = Port(circuit,self,"s_Prog_Drainline",'S',1)
+
+        self.VGRUN  = Port(circuit,self,"n_VGRUN",'N',1)
+        self.VGPROG = Port(circuit,self,"n_VGPROG",'N',1)
+        # Initialize ports with given values
+        portsInit = [AVDD_N,AVDD_S,VINJ_N,VINJ_S,GND_N,GND_S,VTUN,DrainB,DrainEnable,GateEnable,GateB,Prog,Run,Code,DEBUG,Vout,Drainline_Prog,Drainline_Run,VGRUN,VGPROG]
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+class AlgorithmicADC(StandardCell):
+    def __init__(self,circuit,island=None,dim=(1,1),AVDD_N=None,AVDD_S=None,VINJ_N=None,VINJ_S=None,GND_N=None,GND_S=None,VTUN=None,DrainB=None,DrainEnable=None,GateEnable=None,GateB=None,Prog=None,Run=None,Vin=None,Code=None,CLK_Sample=None,CLK_Amp=None,CLK_Load=None,CLK_RST=None,VRES=None,DEBUG=None,Drainline_Prog=None,Drainline_Run=None,VGRUN=None,VGPROG=None):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+
+        # Define cell information
+        self.name = 'AlgorithmicADC_synth'
+        self.AVDD_N = Port(circuit,self,"n_avdd",'N',1)
+        self.AVDD_S = Port(circuit,self,"s_avdd",'S',1)
+        self.VINJ_N = Port(circuit,self,"n_vinj",'N',1)
+        self.VINJ_S = Port(circuit,self,"s_vinj",'S',1)
+        self.GND_N = Port(circuit,self,"n_gnd",'N',1)
+        self.GND_S = Port(circuit,self,"s_gnd",'S',1)
+        self.VTUN = Port(circuit,self,"n_VTUN",'N',1)
+
+        self.DrainB = Port(circuit,self,"w_DrainB",'W',4)
+        self.DrainEnable = Port(circuit,self,"w_DrainEnable",'W',1)
+        self.GateEnable = Port(circuit,self,"n_GateEnable",'N',1)
+        self.GateB = Port(circuit,self,"w_GateB",'W',2)
+
+        self.Prog= Port(circuit,self,"n_PROG",'N',1)
+        self.Run = Port(circuit,self,"n_RUN",'N',1)
+        
+        self.Vin = Port(circuit,self,"w_Vin",'W',1)
+        self.Code = Port(circuit,self,"s_Code",'S',1)
+
+        self.CLK_Sample = Port(circuit,self,"e_CLK_Sample",'E',1)
+        self.CLK_Amp = Port(circuit,self,"e_CLK_Amp",'E',1)
+        self.CLK_Load = Port(circuit,self,"e_CLK_Load",'E',1)
+        self.CLK_RST = Port(circuit,self,"s_CLK_RST",'S',1)
+
+        self.VRES = Port(circuit,self,"s_VRES",'S',1)
+        self.DEBUG = Port(circuit,self,"e_DEBUG",'E',3)
+
+        self.Drainline_Prog = Port(circuit,self,"s_Prog_Drainline",'S',1)
+        self.Drainline_Run = Port(circuit,self,"s_Prog_Drainline",'S',1)
+
+        self.VGRUN  = Port(circuit,self,"n_VGRUN",'N',1)
+        self.VGPROG = Port(circuit,self,"n_VGPROG",'N',1)
+
+        # Initialize ports with given values
+        portsInit = [AVDD_N,AVDD_S,VINJ_N,VINJ_S,GND_N,GND_S,VTUN,DrainB,DrainEnable,GateEnable,GateB,Prog,Run,Vin,Code,CLK_Sample,CLK_Amp,CLK_Load,CLK_RST,VRES,DEBUG,Drainline_Prog,Drainline_Run,VGRUN,VGPROG]
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+class RampADC(StandardCell):
+    def __init__(self,circuit,island=None,dim=(1,1),AVDD_N=None,AVDD_S=None,VINJ_N=None,VINJ_S=None,GND_N=None,GND_S=None,VTUN=None,DrainB=None,DrainEnable=None,GateEnable=None,GateB=None,Prog=None,Run=None,RST=None,CLK=None,Vin=None,Code=None,DEBUG=None,Vout=None,Drainline_Prog=None,Drainline_Run=None,VGRUN=None,VGPROG=None):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+
+        # Define cell information
+        self.name = 'RampADC_synth'
+        self.AVDD_N = Port(circuit,self,"n_avdd",'N',1)
+        self.AVDD_S = Port(circuit,self,"s_avdd",'S',1)
+        self.VINJ_N = Port(circuit,self,"n_vinj",'N',1)
+        self.VINJ_S = Port(circuit,self,"s_vinj",'S',1)
+        self.GND_N = Port(circuit,self,"n_gnd",'N',1)
+        self.GND_S = Port(circuit,self,"s_gnd",'S',1)
+        self.VTUN = Port(circuit,self,"n_VTUN",'N',1)
+
+        self.DrainB = Port(circuit,self,"w_DrainB",'W',2)
+        self.DrainEnable = Port(circuit,self,"w_DrainEnable",'W',1)
+        self.GateEnable = Port(circuit,self,"n_GateEnable",'N',1)
+        self.GateB = Port(circuit,self,"w_GateB",'W',2)
+
+        self.Prog= Port(circuit,self,"n_Prog",'N',1)
+        self.Run = Port(circuit,self,"n_Run",'N',1)
+        
+        self.RST = Port(circuit,self,"w_RST",'W',1)
+        self.CLK = Port(circuit,self,"w_CLK",'W',1)
+        self.Vin = Port(circuit,self,"w_Vin",'W',1)
+        self.Code = Port(circuit,self,"s_Code",'S',8)
+
+        self.DEBUG = Port(circuit,self,"e_DEBUG",'E',2)
+
+        self.Vout = Port(circuit,self,"s_Vout",'S',1)
+        self.Drainline_Prog = Port(circuit,self,"s_Prog_Drainline",'S',1)
+        self.Drainline_Run = Port(circuit,self,"s_Prog_Drainline",'S',1)
+
+        self.VGRUN  = Port(circuit,self,"n_VGRUN",'N',1)
+        self.VGPROG = Port(circuit,self,"n_VGPROG",'N',1)
+
+        # Initialize ports with given values
+        portsInit = [AVDD_N,AVDD_S,VINJ_N,VINJ_S,GND_N,GND_S,VTUN,DrainB,DrainEnable,GateEnable,GateB,Prog,Run,RST,CLK,Vin,Code,DEBUG,Vout,Drainline_Prog,Drainline_Run,VGRUN,VGPROG]
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+class QDAC(StandardCell):
+    def __init__(self,circuit,island=None,dim=(1,1),AVDD_N=None,AVDD_S=None,VINJ_N=None,VINJ_S=None,GND_N=None,GND_S=None,VTUN=None,DrainB=None,DrainEnable=None,GateEnable=None,GateB=None,Prog=None,Run=None,RST=None,Code=None,DEBUG=None,Vout=None,Drainline_Prog=None,Drainline_Run=None,VGRUN=None,VGPROG=None):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+
+        # Define cell information
+        self.name = 'QDAC_synth'
+        self.AVDD_N = Port(circuit,self,"n_avdd",'N',1)
+        self.AVDD_S = Port(circuit,self,"s_avdd",'S',1)
+        self.VINJ_N = Port(circuit,self,"n_vinj",'N',1)
+        self.VINJ_S = Port(circuit,self,"s_vinj",'S',1)
+        self.GND_N = Port(circuit,self,"n_gnd",'N',1)
+        self.GND_S = Port(circuit,self,"s_gnd",'S',1)
+        self.VTUN = Port(circuit,self,"n_VTUN",'N',1)
+
+        self.DrainB = Port(circuit,self,"w_DrainB",'W',4)
+        self.DrainEnable = Port(circuit,self,"w_DrainEnable",'W',1)
+        self.GateEnable = Port(circuit,self,"n_GateEnable",'N',1)
+        self.GateB = Port(circuit,self,"w_GateB",'W',2)
+
+        self.Prog= Port(circuit,self,"n_Prog",'N',1)
+        self.Run = Port(circuit,self,"n_Run",'N',1)
+        
+        self.RST = Port(circuit,self,"n_RST",'N',1)
+        self.Code = Port(circuit,self,"n_Code",'N',5)
+
+        self.DEBUG = Port(circuit,self,"e_DEBUG",'E',5)
+
+        self.Vout = Port(circuit,self,"s_Vout",'S',1)
+        self.Drainline_Prog = Port(circuit,self,"s_Prog_Drainline",'S',1)
+        self.Drainline_Run = Port(circuit,self,"s_Prog_Drainline",'S',1)
+
+        self.VGRUN  = Port(circuit,self,"n_VGRUN",'N',1)
+        self.VGPROG = Port(circuit,self,"n_VGPROG",'N',1)
+
+        # Initialize ports with given values
+        portsInit = [AVDD_N,AVDD_S,VINJ_N,VINJ_S,GND_N,GND_S,VTUN,DrainB,DrainEnable,GateEnable,GateB,Prog,Run,RST,Code,DEBUG,Vout,Drainline_Prog,Drainline_Run,VGRUN,VGPROG]
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+
 class TSMC350nm_RippleCounter(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),Count=None,Count_B=None,RST=None,RST_L=None,CLK=None,GND=None,GND_L = None,VDD=None,VDD_L=None):
         # Define variables

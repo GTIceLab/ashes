@@ -14,7 +14,7 @@ import numpy as np
 Top = ac.Circuit()
 
 
-def AlgorithmicADC(circuit,numBits=1,islandLoc= [0,0]):
+def AlgorithmicADC(circuit,numBits=1,islandLoc= [0,0],debug=False):
     Top = circuit
     ADCIsland = ac.Island(Top)
 
@@ -119,6 +119,14 @@ def AlgorithmicADC(circuit,numBits=1,islandLoc= [0,0]):
     CLK_RST = outerPins.createPort("S","CLK_RST")
     CLK_Load = outerPins.createPort("E","CLK_Load")
     VRES = outerPins.createPort("S","VRES")
+
+    Code = outerPins.createPort("S","Code")
+
+    if debug == True:
+        DEBUG = outerPins.createPort("E","DEBUG",dimension=3)
+        DEBUG[0] += CompThreshold.Vout
+        DEBUG[1] += CapSwitch0.Vout
+        DEBUG[2] += Vreset.Vout
 
 
     # Pin Connections
@@ -250,6 +258,8 @@ def AlgorithmicADC(circuit,numBits=1,islandLoc= [0,0]):
     Tgates[0].VDD += AVDD_N
     Tgates[0].GND += GND_N
 
+    Comparator.Vout += Code
+
 
     # Placement
     # ------------------------------------------------------------------
@@ -264,7 +274,7 @@ def AlgorithmicADC(circuit,numBits=1,islandLoc= [0,0]):
     return location_islands
 
 Top = ac.Circuit()
-location_islands = AlgorithmicADC(Top,5,islandLoc=[5000,4000])
+location_islands = AlgorithmicADC(Top,5,islandLoc=[5000,4000],debug=True)
 
 design_limits = [8e5, 8e5]
 
