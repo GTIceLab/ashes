@@ -1451,6 +1451,7 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
 
     # Copy the technology lef for the design
     tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '.lef')
+    tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '_toplevelroute.lef')
     if os.path.exists(tech_lef_path): shutil.copy(tech_lef_path, file_path)
     else: raise CellNotFound(f'Could not find the technology lef file {tech_process}.lef. Is it in the ./lib/tech_lef/ directory?')
 
@@ -1602,8 +1603,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 block_y1 = loc[1] + pin_const*dbu
                 block_x2 = loc[2] - pin_const*dbu
                 block_y2 = loc[3] - pin_const*dbu
-
-                m1_m2_except = ['Full_Macro_Edit']
+                rect_string.append(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n')
+                '''m1_m2_except = ['Full_Macro_Edit']
                 # macro rectilinear blockage exception
                 if item['name'] in m1_m2_except:
                     dis_x1 = 1460*dbu
@@ -1614,7 +1615,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     rect_string.append(f'    RECT ( {block_x1} {block_y3} ) ( {block_x2} {block_y2} )\n')
                     rect_string.append(f'    RECT ( {block_x3} {block_y1} ) ( {block_x2} {block_y3} )\n')
                 else:
-                    rect_string.append(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n')
+                    rect_string.append(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n')'''
                 insts_list = ['placeholder']
             if item['type'] == 'matrix':
                 insts_list = item['insts'].keys()
@@ -1783,7 +1784,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
                     def_file.write(f'  END\n\n')
         # Write blockages for any manually specified cells or islands
-        m3_except = ['TSMC350nm_drainSelect_progrundrains', 'S_BLOCK_SEC1_PINS', 'S_BLOCK_BUFFER', 'S_BLOCK_SPACE_UP_PINS', 'S_BLOCK_CONN_PINS', 'S_BLOCK_SPACE_DOWN_PINS', 'S_BLOCK_SEC2_PINS', 'S_BLOCK_23CONN', 'S_BLOCK_SEC3_PINS', 'TSMC350nm_Cap_Bank', 'Full_Macro_Edit']
+        m3_except = ['TSMC350nm_drainSelect_progrundrains', 'S_BLOCK_SEC1_PINS', 'S_BLOCK_BUFFER', 'S_BLOCK_SPACE_UP_PINS', 'S_BLOCK_CONN_PINS', 'S_BLOCK_SPACE_DOWN_PINS', 'S_BLOCK_SEC2_PINS', 'S_BLOCK_23CONN', 'S_BLOCK_SEC3_PINS', 'TSMC350nm_Cap_Bank', 'Full_Macro_Edit','QDAC_synth']
         for val, island in cell_order_in_island.items():
             for idx, item in island['items'].items():
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m3_except:
@@ -1796,8 +1797,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     poly_mlayer = metal_layers[stop_layer]
                     def_file.write(f'  - {poly_mlayer}\n')
                     def_file.write(f'    LAYER {poly_mlayer} ;\n')
-                    
-                    macro_except = ['Full_Macro_Edit']
+                    def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                    '''macro_except = ['Full_Macro_Edit']
                     # macro rectilinear blockage exception
                     if item['name'] in macro_except:
                         dis_x1 = 1460*dbu
@@ -1808,9 +1809,10 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                         rect_string.append(f'    RECT ( {block_x1} {block_y3} ) ( {block_x2} {block_y2} )\n')
                         rect_string.append(f'    RECT ( {block_x3} {block_y1} ) ( {block_x2} {block_y3} )\n')
                     else:
-                        def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                        def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')'''
                     def_file.write(f'  END\n\n')
-        m4_except = ['Full_Macro_Edit']
+
+        m4_except = ['Full_Macro_Edit', 'Full_Macro_Corner','QDAC_synth']
         for val, island in cell_order_in_island.items():
             for idx, item in island['items'].items():
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m4_except:
@@ -1823,8 +1825,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     poly_mlayer = metal_layers[stop_layer+1]
                     def_file.write(f'  - {poly_mlayer}\n')
                     def_file.write(f'    LAYER {poly_mlayer} ;\n')
-    
-                    # macro rectilinear blockage exception
+                    def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                    '''# macro rectilinear blockage exception
                     if item['name'] in macro_except:
                         dis_x1 = 1460*dbu
                         dis_y1 = 200*dbu
@@ -1834,7 +1836,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                         rect_string.append(f'    RECT ( {block_x1} {block_y3} ) ( {block_x2} {block_y2} )\n')
                         rect_string.append(f'    RECT ( {block_x3} {block_y1} ) ( {block_x2} {block_y3} )\n')
                     else:
-                        def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                        def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')'''
                     def_file.write(f'  END\n\n')
         # Write blockages for the frame to keep routes internal
         if frame_module:

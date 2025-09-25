@@ -12,7 +12,7 @@ import numpy as np
 
 
 
-def RampADC(Top,B,Vin=None):
+def RampADC(Top,B,Vin=None,debug=False):
 
     if Vin == None:
         Vin = Wire(Top)
@@ -98,6 +98,9 @@ def RampADC(Top,B,Vin=None):
 
     VIN = outerPins.createPort("W","Vin")
     VIN += Vin
+
+    if debug == True:
+        DEBUG = outerPins.createPort("E","DEBUG",dimension=2)
     # Pin Connections
     #----------------------------------------------------------------------------
     Counter.Count_B += Code
@@ -175,6 +178,10 @@ def RampADC(Top,B,Vin=None):
     Comparator.VPWR_b += AVDD_S
     Comparator.VINJ_b += VINJ_S
 
+    if debug == True:
+        DEBUG[0] += Comparator.Vout
+        DEBUG[1] += CapTop
+
     # -----------------------------------------------------------------------------------------------
     XPadding = 5000
     YPadding = 5000
@@ -187,7 +194,7 @@ def RampADC(Top,B,Vin=None):
 
 
 Top = ac.Circuit()
-location_islands = RampADC(Top,8)
+location_islands = RampADC(Top,8,debug=True)
 design_limits = [6e5, 5e5]
 
 ac.compile_asic(Top,process="TSMC350nm",fileName="RampADC",p_and_r = True,design_limits = design_limits, location_islands = location_islands, drainSpaceIdx=0,drainSpace=15,gateSpaceIdx=0,gateSpace=10)
