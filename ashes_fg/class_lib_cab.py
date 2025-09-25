@@ -209,7 +209,6 @@ class ST_BMatrix(StandardCell):
         self.VDD = Port(circuit,self,"VDD","N",1*self.dim[1])
         self.GND = Port(circuit,self,"GND","N",1*self.dim[1])
         
-
         # Add cell to circuit
         circuit.addInstance(self,self.island)
        
