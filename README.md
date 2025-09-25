@@ -111,4 +111,6 @@ The following instructions details how to setup and build a local site for the A
 3. Execute `source .env/bin/activate` to activate the environment.
 4. Execute `python -m pip install -r requirements.txt` to install necessary dependencies for mkdocs.
 5. Execute `mkdocs build` to build the documentation site after any updates to the docstrings or markdown files under `docs/`.
-6. Execute `mkdocs serve` to setup a site on you local machine.
+6. Now, you have two options
+    - Execute `mkdocs serve` to setup a locally hosted site on you local machine.
+    - Execute `mkdocs gh-deploy` to upload your changes to the deployed documentation page [here](https://gticelab.github.io/ashes/)
