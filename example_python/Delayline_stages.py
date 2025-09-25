@@ -91,22 +91,6 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
         GateSwitches.GND[i] += DelayLine_instances[i][0].GND
         GateSwitches.VTUN[i] += DelayLine_instances[i][0].VTUN
         GateSwitches.VDD[i] += DelayLine_instances[i][0].VDD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-    
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
 
     #Outerpins
     
@@ -122,45 +106,18 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
     #VGRUN = outerPins.createPort("N","VGRUN")
     #VGPROG = outerPins.createPort("N","VGPROG")
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     VTUN = outerPins.createPort("N","VTUN")
     AVDD = outerPins.createPort("N","AVDD")
     GND_N = outerPins.createPort("N","gnd")
     GND_S = outerPins.createPort("S","gnd")
     VINJ_N = outerPins.createPort("N","vinj")
     VINJ_S = outerPins.createPort("S","vinj")
-=======
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
     #VTUN = outerPins.createPort("N","VTUN")
     #AVDD = outerPins.createPort("N","AVDD")
     #GND_N = outerPins.createPort("N","gnd")
     #GND_S = outerPins.createPort("S","gnd")
     #VINJ_N = outerPins.createPort("N","vinj")
     #VINJ_S = outerPins.createPort("S","vinj")
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
 
     #Drainline = outerPins.createPort("W","Drainline_Prog")
 
@@ -180,27 +137,8 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
     #GateSwitches.VINJ_T[0] += GateDecoder.VINJ_b[0]
     #GateSwitches.VINJ_T[1] += GateDecoder.VINJ_b[1]
     
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     GateSwitches.GND_T[0] += GND_N
-=======
     #GateSwitches.GND_T[0] += GND_N
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
-    #GateSwitches.GND_T[0] += GND_N
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
-    #GateSwitches.GND_T[0] += GND_N
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
-    #GateSwitches.GND_T[0] += GND_N
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
-    #GateSwitches.GND_T[0] += GND_N
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
     #GateSwitches.GND_T[1] += GND_N
     #GateSwitches.Vgsel += VGPROG
     #GateSwitches.PROG += PROG
@@ -250,25 +188,11 @@ Top = Circuit()
 #C4_Ampdet(Top,16)
 Delayline_stages(Top,rows=128,columns=3)
 
-<<<<<<< HEAD
 design_limits = [9e6, 9e6]
 location_islands = ((50000,25000),(240000,(22000*32)+90000))
-=======
-design_limits = [1e6, 3e6]
-location_islands = ((50000,25000),(240000,22000*130))
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
-=======
->>>>>>> parent of 74afe98 (Delayline stages pin updates)
+
+#design_limits = [1e6, 3e6]
+#location_islands = ((50000,25000),(240000,22000*130))
 
 
 compile_asic(Top,process="TSMC350nm",fileName="Delayline_stages",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=0,drainSpace = 0,gateSpaceIdx=0,gateSpace=10)
