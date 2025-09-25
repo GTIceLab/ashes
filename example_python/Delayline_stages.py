@@ -1,11 +1,3 @@
-import ashes_fg as af
-
-from ashes_fg.asic.asic_compile import *
-from ashes_fg.class_lib_new import *
-from ashes_fg.class_lib_mux import *
-from ashes_fg.class_lib_cab import *
-from ashes_fg.asic.asic_systems import *
-
 def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD_P2=None,VD_P3=None,VD_R0=None, VD_R1=None,DrainDecoder=True,DelayLineIsland=None):
 
     Top = circuit
@@ -99,10 +91,14 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
         GateSwitches.GND[i] += DelayLine_instances[i][0].GND
         GateSwitches.VTUN[i] += DelayLine_instances[i][0].VTUN
         GateSwitches.VDD[i] += DelayLine_instances[i][0].VDD
+<<<<<<< HEAD
+=======
+    
+>>>>>>> parent of 74afe98 (Delayline stages pin updates)
 
     #Outerpins
     
-    outerPins = frame(Top)
+    #outerPins = frame(Top)
     #Vin = outerPins.createPort("W","Vin")
     #Vref = outerPins.createPort("W","Vref")
     #for i in range(numStages):
@@ -114,12 +110,21 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
     #VGRUN = outerPins.createPort("N","VGRUN")
     #VGPROG = outerPins.createPort("N","VGPROG")
 
+<<<<<<< HEAD
     VTUN = outerPins.createPort("N","VTUN")
     AVDD = outerPins.createPort("N","AVDD")
     GND_N = outerPins.createPort("N","gnd")
     GND_S = outerPins.createPort("S","gnd")
     VINJ_N = outerPins.createPort("N","vinj")
     VINJ_S = outerPins.createPort("S","vinj")
+=======
+    #VTUN = outerPins.createPort("N","VTUN")
+    #AVDD = outerPins.createPort("N","AVDD")
+    #GND_N = outerPins.createPort("N","gnd")
+    #GND_S = outerPins.createPort("S","gnd")
+    #VINJ_N = outerPins.createPort("N","vinj")
+    #VINJ_S = outerPins.createPort("S","vinj")
+>>>>>>> parent of 74afe98 (Delayline stages pin updates)
 
     #Drainline = outerPins.createPort("W","Drainline_Prog")
 
@@ -139,27 +144,31 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
     #GateSwitches.VINJ_T[0] += GateDecoder.VINJ_b[0]
     #GateSwitches.VINJ_T[1] += GateDecoder.VINJ_b[1]
     
+<<<<<<< HEAD
     GateSwitches.GND_T[0] += GND_N
+=======
+    #GateSwitches.GND_T[0] += GND_N
+>>>>>>> parent of 74afe98 (Delayline stages pin updates)
     #GateSwitches.GND_T[1] += GND_N
     #GateSwitches.Vgsel += VGPROG
     #GateSwitches.PROG += PROG
     #GateSwitches.RUN += RUN
 
-    GateDecoder.VINJV += VINJ_N
-    GateDecoder.GNDV += GND_N
+    #GateDecoder.VINJV += VINJ_N
+    #GateDecoder.GNDV += GND_N
     #GateDecoder.ENABLE += GateEnable
     #GateDecoder.IN += GateB
 
-    DrainSwitch.VDD += VINJ_S
-    DrainSwitch.GND += GND_S
+    #DrainSwitch.VDD += VINJ_S
+    #DrainSwitch.GND += GND_S
     #DrainSwitch.RUN += RUN
 
-    DrainSelect.VINJ_b += VINJ_S
-    DrainSelect.GND_b += GND_S
+    #DrainSelect.VINJ_b += VINJ_S
+    #DrainSelect.GND_b += GND_S
     #DrainSelect.prog_drainrail += Drainline
 
-    DrainDecoder.VINJ += VINJ_S
-    DrainDecoder.GND += GND_S
+    #DrainDecoder.VINJ += VINJ_S
+    #DrainDecoder.GND += GND_S
     #for i in range(drainBits):
     #    DrainDecoder.IN[i] += DrainB[i]
     #DrainDecoder.IN += DrainB
@@ -167,12 +176,6 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
 
     #C4_instances[0].PROG += PROG
     #C4_instances[0].RUN += RUN
-
-    for i in range(columns):
-        GateSwitches.VINJ[i] += VINJ_N
-        GateSwitches.GND[i] += GND_N
-        GateSwitches.VTUN[i] += VTUN
-        GateSwitches.VDD[i] += AVDD
 
     if V_NW==None:
 	    V_NW = [0]*rows
@@ -193,10 +196,15 @@ def Delayline_stages(circuit,rows=1,columns=1,V_NW=None,VD_P0=None,VD_P1=None,VD
 
 Top = Circuit()
 #C4_Ampdet(Top,16)
-Delayline_stages(Top,rows=32,columns=9)
+Delayline_stages(Top,rows=128,columns=3)
 
+<<<<<<< HEAD
 design_limits = [9e6, 9e6]
 location_islands = ((50000,25000),(240000,(22000*32)+90000))
+=======
+design_limits = [1e6, 3e6]
+location_islands = ((50000,25000),(240000,22000*130))
+>>>>>>> parent of 74afe98 (Delayline stages pin updates)
 
 
 compile_asic(Top,process="TSMC350nm",fileName="Delayline_stages",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=0,drainSpace = 0,gateSpaceIdx=0,gateSpace=10)
