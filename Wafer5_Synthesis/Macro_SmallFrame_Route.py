@@ -17,7 +17,7 @@ chipframe = SmallPadFrame(Top,FrameIsland,[1,1])
 chipframe.place([0,0])
 chipframe.markChipFrame()
 
-# Macro <--> Frame Connections
+'''# Macro <--> Frame Connections
 # --------------------------------------------------------------------------------
 # ___ IO Pins ___
 # north
@@ -92,7 +92,7 @@ macro.fast_ADC_clk += chipframe.IO_N_CLK[3]
 macro.GND += chipframe.gnd_N[8]
 macro.AVDD_AM += chipframe.avdd_N[2]
 macro.VINJ += chipframe.VINJ_N[2]
-macro.DVDD += chipframe.DVDD_N[2]
+macro.DVDD += chipframe.DVDD_N[2]'''
 
 
 # Compilation

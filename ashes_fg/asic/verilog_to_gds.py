@@ -9,6 +9,8 @@ import time
 import sys
 import tracemalloc
 from pathlib import Path
+from shapely.geometry import Polygon, LineString
+from shapely.ops import polygonize
 
 # make sure our local fork of gdsii is added to system path
 path_root = Path(__file__).parents[0]
@@ -261,7 +263,6 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                             track_pins = False
                             cell_pins = assign_pins_to_polygon(cell_pin_names, cell_pin_boxes, layer_map, pin_list[0][1])
                             cell_info[sub_cell_name]['cell_pins'] = cell_pins
-                        
                     # Inidicate a text record
                     if rec.tag_name == 'TEXT' and track_pins:
                         check_pin_text_layer = True
@@ -1588,6 +1589,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     def_file = open(file_path, 'a')
     #rect_string[-1] = rect_string[-1][:-1] + ' ;\n'
 
+    m1_m2_except = ['Full_Macro_Corner']
+
     # Place blockages in def file
     pin_const = 1 # this is for amount of distance between blockage edge and true cell edge
     pin_spacing = 1*dbu # this is for space from pin block to pin
@@ -1596,7 +1599,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     for val, island in cell_order_in_island.items():
         for idx, item in island['items'].items():
             insts_list = []
-            if item['type'] == 'cell' or item['type'] == 'matrix':
+            if item['type'] == 'cell' or item['type'] == 'matrix' and item['name'] not in m1_m2_except:
                 array = island['coords']
                 loc = array[idx]
                 block_x1 = loc[0] + pin_const*dbu
@@ -1627,7 +1630,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 mat_row = item['mat_info']['mat_row']
 
             # Insert blockages between pins around the edges
-            pin_exclusion = ['TSMC350nm_4x2_Indirect']
+            pin_exclusion = ['TSMC350nm_4x2_Indirect', 'Full_Macro_Corner']
+            rectilinear = ['Full_Macro_Corner']
             if 'pin_blockage' in item and item['pin_blockage'] and item['name'] not in pin_exclusion:
                 # Added a number of times to loop for matrices
                 for inst_idx in insts_list:
@@ -1640,7 +1644,29 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                         block_y1 = loc[1] + pin_const*dbu
                         block_x2 = loc[2] - pin_const*dbu
                         block_y2 = loc[3] - pin_const*dbu
+                    # -----------------
+                    '''if item['name'] in rectilinear:
+                        print('Into rectilinear function')
+                        cell_pins = cell_info[item['name']]['cell_pins']
+                        step_threshold = 10*dbu # the minimum distance to be considered a step offset
+                        # The minimum distance along the axis perpendicular to the side that must be exceeded for consecutive pins to be considered on separate steps.
+                        # First, sort pins into sides
+                        sides = sort_pins_and_detect_steps(cell_pins, loc, step_threshold)
 
+                        # Then generate blockages for all sides
+                        blockages = generate_side_blockages_with_pin_dist(
+                                    sides=sides,
+                                    loc=loc,
+                                    block_ext_len=block_ext_len,
+                                    pin_spacing=pin_spacing,
+                                    pin_threshold=pin_threshold
+                                )
+      
+                        # Append to your existing cell output
+                        for rect in blockages:
+                            rect_string.append(rect)
+                    # -----------------------
+                    else:'''
                     # Split ports into sides
                     left_side, top_side, right_side, bot_side = [], [], [], []
                     cell_pins = cell_info[item['name']]['cell_pins']
@@ -1656,6 +1682,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                             right_side.append([pin_left, pin_bot, pin_right,pin_top])
                         elif index_min == 3:
                             top_side.append([pin_left, pin_bot, pin_right,pin_top])
+                    if verbose == True:
+                        print(f'PIN SORTING - Left: {left_side}, Right: {right_side}, Bottom: {bot_side}, Top: {top_side}')
                     # For each side, insert a new rect blockage if theres space around the pins
                     left_side.sort(key=lambda x:x[1])
                     prev_coord, pin_dist = None, None
@@ -1748,7 +1776,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     # check if there were no pins on bot side
                     if prev_coord == None:
                         rect_string.append(f'    RECT ( {block_x1} {loc[1] - block_ext_len} ) ( {block_x2} {block_y1} )\n')
-    
+
     # Change blockages syntax based on router. Qrouter accepts an older DEF syntax i believe.
     if router_tool != 'qrouter':
         def_file.write(f'BLOCKAGES {stop_layer} ;\n')
@@ -1825,19 +1853,180 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     poly_mlayer = metal_layers[stop_layer+1]
                     def_file.write(f'  - {poly_mlayer}\n')
                     def_file.write(f'    LAYER {poly_mlayer} ;\n')
+
                     def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
-                    '''# macro rectilinear blockage exception
-                    if item['name'] in macro_except:
-                        dis_x1 = 1460*dbu
-                        dis_y1 = 200*dbu
-                        block_x3 = block_x1 + dis_x1
-                        block_y3 = block_y1 + dis_y1
-                        # Define two rectangles instead of one
-                        rect_string.append(f'    RECT ( {block_x1} {block_y3} ) ( {block_x2} {block_y2} )\n')
-                        rect_string.append(f'    RECT ( {block_x3} {block_y1} ) ( {block_x2} {block_y3} )\n')
-                    else:
-                        def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')'''
                     def_file.write(f'  END\n\n')
+        # Write blockages for the rectilinear macro to keep routes internal
+        if item['name'] in rectilinear:
+            # print(f"\n\n frame-module-blockages for loop now \n\n")
+            frame_name = item['name']
+            frame_origin = cell_info[frame_name]['origin']
+            frame_w, frame_h = cell_info[frame_name]['width'], cell_info[frame_name]['height']
+            frame_blockage_size = int(1*dbu) # specify in micron, convert to database units (nm)
+            num_metals = len(metal_layers)  
+            # ---------------------------
+            # ----- -- my changes -- ----
+            cutouts = [(0,0), (40, 60)]
+            print(f'cutouts: {cutouts}')
+            ref_left_pin_name = 'IO_W<0>'
+            ref_bot_pin_name = 'IO_S<0>'
+            frame_ref_pin = cell_info[frame_name]['cell_pins']
+
+            '''def rectangle_from_origin(origin, width, height):
+                """
+                Return rectangle as shapely Polygon from origin (x,y), width, and height.
+                """
+                x, y = origin
+                return Polygon([
+                    (x, y),
+                    (x + width, y),
+                    (x + width, y + height),
+                    (x, y + height)
+                ])
+            def rectangle_from_vertices(origin, vert2):
+                """
+                Return rectangle as shapely Polygon from origin (x,y), width, and height.
+                """
+                x1, y1 = origin
+                x2, y2 = vert2
+                return Polygon([
+                    (x1, y1),
+                    (x2, y1),
+                    (x2, y2),
+                    (x1, y2)
+                ])
+
+            # Large rectangle
+            origin_large = frame_origin
+            width_large, height_large = frame_w, frame_h
+            large_rect = rectangle_from_origin(origin_large, width_large, height_large)
+
+            # Small rectangle inside
+            origin_small = cutouts[0]
+            vert2_small = cutouts[1]
+            small_rect = rectangle_from_vertices(origin_small, vert2_small)
+
+            # Subtract
+            result = large_rect.difference(small_rect)
+
+            # Result may be MultiPolygon if cut splits into pieces
+            if result.geom_type == 'Polygon':
+                polygons = [result]
+            else:
+                polygons = list(result)
+
+            # Extract vertices
+            for i, poly in enumerate(polygons, start=1):
+                print(f"Polygon {i} vertices:")
+                print(list(poly.exterior.coords))'''
+
+            from shapely.geometry import Polygon
+
+            def rectangle(origin = None, vert2 = None, size = None):
+                if size != None:
+                    x1, y1 = origin
+                    w, h = size
+                    return Polygon([(x1, y1), (x1+w, y1), (x1+w, y1+h), (x1, y1+h)])
+                elif vert2 != None:
+                    x1, y1 = origin
+                    x2, y2 = vert2
+                    return Polygon([(x1, y1), (x2, y1), (x2, y2), (x1, y2)])
+                else:
+                    return(print(f"Undefined Shape"))
+
+
+
+            def subtract_and_polygonize(large: Polygon, small: Polygon):
+                # Subtract small from large
+                diff = large.difference(small)
+
+                # Collect boundary lines: exterior + interiors
+                lines = [LineString(diff.exterior.coords)]
+                for interior in diff.interiors:
+                    lines.append(LineString(interior.coords))
+
+                # Polygonize the boundary lines
+                pieces = list(polygonize(lines))
+                return pieces  # list of polygons (should usually be one L-shaped polygon)
+
+            # Example
+            large = Polygon([(0,0), (6314000,0), (6314000,1415400), (0,1415400)])
+            small = Polygon([(0,0),(40,0),(40,60),(0,60)])
+
+            pieces = subtract_and_polygonize(large, small)
+
+            for i, poly in enumerate(pieces, start=1):
+                print(f"Polygon {i}:")
+                print(list(poly.exterior.coords))
+
+            '''large = rectangle(frame_origin, (frame_w, frame_h))
+            small = rectangle(cutouts[0], cutouts[1])
+
+            result = large.difference(small)
+
+            print(result.geom_type)           # Polygon
+            print(list(result.exterior.coords))'''
+
+
+            # print(f"pins: {frame_ref_pin.values()}")
+            if ref_left_pin_name and ref_bot_pin_name in frame_ref_pin:
+                pin_left_name_int = frame_ref_pin[ref_left_pin_name]
+                pin_bot_name_int = frame_ref_pin[ref_bot_pin_name]
+                print(f"Left: {int(pin_left_name_int['RECT'][0])}\n Loc: {loc[0]}")
+                pin_ref_left = int(pin_left_name_int['RECT'][0]) - 10000            
+                pin_ref_bot  = int(pin_bot_name_int['RECT'][1]) - 10000
+                # print(f'\n\nleft side: {pin_ref_left}\n bottom side: {pin_ref_bot}\n')
+                # frame_blockage_size = int(1*dbu+pin_ref_left) # specify in micron, convert to database units (nm)
+                frame_blockage_W_E = pin_ref_left
+                frame_blockage_N_S = pin_ref_bot
+            else:
+                print(f"Pin {ref_left_pin_name} or {ref_bot_pin_name} not found.")
+                frame_blockage_size = int(1*dbu) # specify in micron, convert to database units (nm)
+                frame_blockage_N_S = frame_blockage_size
+                frame_blockage_W_E = frame_blockage_size    
+
+            for num in range(num_metals):
+                # West blockage
+                block_x1 = frame_origin[0]
+                block_y1 = frame_origin[1]
+                block_x2 = frame_origin[0] + frame_blockage_W_E
+                block_y2 = frame_h
+                poly_mlayer = metal_layers[num]
+                def_file.write(f'  - {poly_mlayer}\n')
+                def_file.write(f'    LAYER {poly_mlayer} ;\n')
+                def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                def_file.write(f'  END\n\n')
+                # East blockage
+                block_x1 = frame_w - frame_blockage_W_E
+                block_y1 = frame_origin[1]
+                block_x2 = frame_w
+                block_y2 = frame_h
+                poly_mlayer = metal_layers[num]
+                def_file.write(f'  - {poly_mlayer}\n')
+                def_file.write(f'    LAYER {poly_mlayer} ;\n')
+                def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                def_file.write(f'  END\n\n')
+                # North blockage
+                block_x1 = frame_origin[0]
+                block_y1 = frame_h - frame_blockage_N_S
+                block_x2 = frame_w
+                block_y2 = frame_h
+                poly_mlayer = metal_layers[num]
+                def_file.write(f'  - {poly_mlayer}\n')
+                def_file.write(f'    LAYER {poly_mlayer} ;\n')
+                def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                def_file.write(f'  END\n\n')
+                # South blockage
+                block_x1 = frame_origin[0]
+                block_y1 = frame_origin[1]
+                block_x2 = frame_w
+                block_y2 = frame_origin[1] + frame_blockage_N_S
+                poly_mlayer = metal_layers[num]
+                def_file.write(f'  - {poly_mlayer}\n')
+                def_file.write(f'    LAYER {poly_mlayer} ;\n')
+                def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
+                def_file.write(f'  END\n\n')
+        
         # Write blockages for the frame to keep routes internal
         if frame_module:
             # print(f"\n\n frame-module-blockages for loop now \n\n")
