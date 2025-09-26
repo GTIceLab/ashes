@@ -1460,7 +1460,7 @@ class TSMC350nm_LVLShift_x16(StandardCell):
 		circuit.addInstance(self,self.island)
 		
 class TSMC350nm_DigBuffer_x2(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),Vin=None,GND=None,VINJ=None,OUT=None):
+	def __init__(self,circuit,island=None,dim=(1,1),In=None,GND=None,VINJ=None,Out=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -1475,11 +1475,11 @@ class TSMC350nm_DigBuffer_x2(StandardCell):
 		self.In = Port(circuit,self,'In','N',2*self.dim[1])
 		self.GND = Port(circuit,self,'GND','S',1*self.dim[1])
 		self.VINJ = Port(circuit,self,'VINJ','S',1*self.dim[1])
-		self.OUT = Port(circuit,self,'Out','S',2*self.dim[1])
+		self.Out = Port(circuit,self,'Out','S',2*self.dim[1])
 		
 		
 		# Initialize ports with given values
-		portsInit = [Vin,GND,VINJ,OUT]
+		portsInit = [In,GND,VINJ,Out]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
