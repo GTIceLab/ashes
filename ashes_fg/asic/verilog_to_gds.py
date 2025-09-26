@@ -9,8 +9,8 @@ import time
 import sys
 import tracemalloc
 from pathlib import Path
-from shapely.geometry import Polygon, LineString
-from shapely.ops import polygonize
+from shapely.geometry import Polygon, LineString, box, GeometryCollection
+from shapely.ops import polygonize, unary_union
 
 # make sure our local fork of gdsii is added to system path
 path_root = Path(__file__).parents[0]
@@ -1630,8 +1630,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 mat_row = item['mat_info']['mat_row']
 
             # Insert blockages between pins around the edges
-            pin_exclusion = ['TSMC350nm_4x2_Indirect', 'Full_Macro_Corner']
-            rectilinear = ['Full_Macro_Corner']
+            pin_exclusion = ['TSMC350nm_4x2_Indirect', 'Full_Macro_Corner', 'Full_Macro_2p0']
+            rectilinear = ['Full_Macro_Corner', 'Full_Macro_2p0']
             if 'pin_blockage' in item and item['pin_blockage'] and item['name'] not in pin_exclusion:
                 # Added a number of times to loop for matrices
                 for inst_idx in insts_list:
@@ -1866,61 +1866,9 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
             num_metals = len(metal_layers)  
             # ---------------------------
             # ----- -- my changes -- ----
-            cutouts = [(0,0), (40, 60)]
-            print(f'cutouts: {cutouts}')
             ref_left_pin_name = 'IO_W<0>'
             ref_bot_pin_name = 'IO_S<0>'
             frame_ref_pin = cell_info[frame_name]['cell_pins']
-
-            '''def rectangle_from_origin(origin, width, height):
-                """
-                Return rectangle as shapely Polygon from origin (x,y), width, and height.
-                """
-                x, y = origin
-                return Polygon([
-                    (x, y),
-                    (x + width, y),
-                    (x + width, y + height),
-                    (x, y + height)
-                ])
-            def rectangle_from_vertices(origin, vert2):
-                """
-                Return rectangle as shapely Polygon from origin (x,y), width, and height.
-                """
-                x1, y1 = origin
-                x2, y2 = vert2
-                return Polygon([
-                    (x1, y1),
-                    (x2, y1),
-                    (x2, y2),
-                    (x1, y2)
-                ])
-
-            # Large rectangle
-            origin_large = frame_origin
-            width_large, height_large = frame_w, frame_h
-            large_rect = rectangle_from_origin(origin_large, width_large, height_large)
-
-            # Small rectangle inside
-            origin_small = cutouts[0]
-            vert2_small = cutouts[1]
-            small_rect = rectangle_from_vertices(origin_small, vert2_small)
-
-            # Subtract
-            result = large_rect.difference(small_rect)
-
-            # Result may be MultiPolygon if cut splits into pieces
-            if result.geom_type == 'Polygon':
-                polygons = [result]
-            else:
-                polygons = list(result)
-
-            # Extract vertices
-            for i, poly in enumerate(polygons, start=1):
-                print(f"Polygon {i} vertices:")
-                print(list(poly.exterior.coords))'''
-
-            from shapely.geometry import Polygon
 
             def rectangle(origin = None, vert2 = None, size = None):
                 if size != None:
@@ -1934,11 +1882,13 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 else:
                     return(print(f"Undefined Shape"))
 
+            def subtract_and_polygonize(large, cutouts):
+                # merge all cutouts into one geometry
+                all_cutouts = unary_union(cutouts)
+                print(f'Cutout Union: {all_cutouts}')
 
-
-            def subtract_and_polygonize(large: Polygon, small: Polygon):
                 # Subtract small from large
-                diff = large.difference(small)
+                diff = large.difference(all_cutouts)
 
                 # Collect boundary lines: exterior + interiors
                 lines = [LineString(diff.exterior.coords)]
@@ -1947,85 +1897,131 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
 
                 # Polygonize the boundary lines
                 pieces = list(polygonize(lines))
-                return pieces  # list of polygons (should usually be one L-shaped polygon)
-
+                return pieces, diff  # list of polygons (should usually be one L-shaped polygon)
+            
+            def shrink_polygon(diff, margin):
+                """Shrink an L-shaped or axis-aligned polygon by margin using sharp corners."""
+                shrinked = diff.buffer(-margin, join_style=2)  # join_style=2 => sharp corners
+                # If shrinked is MultiPolygon, unify it
+                if shrinked.is_empty:
+                    return None
+                elif shrinked.geom_type == 'Polygon':
+                    return shrinked
+                elif shrinked.geom_type == 'MultiPolygon':
+                    return unary_union(shrinked)
+                else:
+                    return None
+    
             # Example
-            large = Polygon([(0,0), (6314000,0), (6314000,1415400), (0,1415400)])
-            small = Polygon([(0,0),(40,0),(40,60),(0,60)])
+            macro_rect = rectangle(frame_origin, size = (frame_w, frame_h))
+            print(f"Macro rectangle: {macro_rect} \n")
+            cutouts = [(0,44.9627), (1411.2, 195), 
+                       (1410.96, 44.9743), (4779.6, 82.4844), 
+                       (6237, 45), (6294.4, 293.789)]
+            # print(f'cutouts: {cutouts}')
+            scaled_cutouts = [(x * dbu, y * dbu) for (x, y) in cutouts]
 
-            pieces = subtract_and_polygonize(large, small)
+            cutouts_rects = []       
+            for i in range(0, len(scaled_cutouts), 2):  # step size 2
+                p1 = scaled_cutouts[i]
+                p2 = scaled_cutouts[i+1]
+                rect = rectangle(origin=p1, vert2=p2)
+                cutouts_rects.append(rect)
+            print(f'Cutout Rects: {cutouts_rects}\n')
+            pieces, diff = subtract_and_polygonize(macro_rect, cutouts_rects)
 
             for i, poly in enumerate(pieces, start=1):
                 print(f"Polygon {i}:")
                 print(list(poly.exterior.coords))
+                final_poly = list(poly.exterior.coords)
+            
+            def extract_polygons(geom):
+                """Return a list of Polygon objects from any geometry."""
+                if geom.is_empty:
+                    return []
+                if geom.geom_type == 'Polygon':
+                    return [geom]
+                elif geom.geom_type == 'MultiPolygon':
+                    return list(geom.geoms)
+                elif geom.geom_type == 'GeometryCollection':
+                    polygons = []
+                    for g in geom.geoms:
+                        if g.geom_type == 'Polygon':
+                            polygons.append(g)
+                        elif g.geom_type == 'MultiPolygon':
+                            polygons.extend(list(g.geoms))
+                    return polygons
+                else:
+                    return []
 
-            '''large = rectangle(frame_origin, (frame_w, frame_h))
-            small = rectangle(cutouts[0], cutouts[1])
+            def generate_rectangles(diff_polygon, vertical_splits):
+                rectangles = []
 
-            result = large.difference(small)
+                # Ensure vertical splits are sorted and unique
+                vertical_splits = sorted(set(vertical_splits))
 
-            print(result.geom_type)           # Polygon
-            print(list(result.exterior.coords))'''
+                for i in range(len(vertical_splits) - 1):
+                    x_left = vertical_splits[i]
+                    x_right = vertical_splits[i + 1]
 
+                    # Skip zero-width strips
+                    if x_left >= x_right:
+                        continue
 
-            # print(f"pins: {frame_ref_pin.values()}")
-            if ref_left_pin_name and ref_bot_pin_name in frame_ref_pin:
-                pin_left_name_int = frame_ref_pin[ref_left_pin_name]
-                pin_bot_name_int = frame_ref_pin[ref_bot_pin_name]
-                print(f"Left: {int(pin_left_name_int['RECT'][0])}\n Loc: {loc[0]}")
-                pin_ref_left = int(pin_left_name_int['RECT'][0]) - 10000            
-                pin_ref_bot  = int(pin_bot_name_int['RECT'][1]) - 10000
-                # print(f'\n\nleft side: {pin_ref_left}\n bottom side: {pin_ref_bot}\n')
-                # frame_blockage_size = int(1*dbu+pin_ref_left) # specify in micron, convert to database units (nm)
-                frame_blockage_W_E = pin_ref_left
-                frame_blockage_N_S = pin_ref_bot
-            else:
-                print(f"Pin {ref_left_pin_name} or {ref_bot_pin_name} not found.")
-                frame_blockage_size = int(1*dbu) # specify in micron, convert to database units (nm)
-                frame_blockage_N_S = frame_blockage_size
-                frame_blockage_W_E = frame_blockage_size    
+                    # Create a tall rectangle covering full polygon Y-range
+                    miny, maxy = diff_polygon.bounds[1], diff_polygon.bounds[3]
+                    strip = box(x_left, miny, x_right, maxy)
 
-            for num in range(num_metals):
-                # West blockage
-                block_x1 = frame_origin[0]
-                block_y1 = frame_origin[1]
-                block_x2 = frame_origin[0] + frame_blockage_W_E
-                block_y2 = frame_h
-                poly_mlayer = metal_layers[num]
-                def_file.write(f'  - {poly_mlayer}\n')
-                def_file.write(f'    LAYER {poly_mlayer} ;\n')
-                def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
-                def_file.write(f'  END\n\n')
-                # East blockage
-                block_x1 = frame_w - frame_blockage_W_E
-                block_y1 = frame_origin[1]
-                block_x2 = frame_w
-                block_y2 = frame_h
-                poly_mlayer = metal_layers[num]
-                def_file.write(f'  - {poly_mlayer}\n')
-                def_file.write(f'    LAYER {poly_mlayer} ;\n')
-                def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
-                def_file.write(f'  END\n\n')
-                # North blockage
-                block_x1 = frame_origin[0]
-                block_y1 = frame_h - frame_blockage_N_S
-                block_x2 = frame_w
-                block_y2 = frame_h
-                poly_mlayer = metal_layers[num]
-                def_file.write(f'  - {poly_mlayer}\n')
-                def_file.write(f'    LAYER {poly_mlayer} ;\n')
-                def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
-                def_file.write(f'  END\n\n')
-                # South blockage
-                block_x1 = frame_origin[0]
-                block_y1 = frame_origin[1]
-                block_x2 = frame_w
-                block_y2 = frame_origin[1] + frame_blockage_N_S
-                poly_mlayer = metal_layers[num]
-                def_file.write(f'  - {poly_mlayer}\n')
-                def_file.write(f'    LAYER {poly_mlayer} ;\n')
-                def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
-                def_file.write(f'  END\n\n')
+                    # Intersect strip with the polygon
+                    intersection = diff_polygon.intersection(strip)
+
+                    # Extract polygons from intersection
+                    polys = extract_polygons(intersection)
+                    for poly in polys:
+                        ys = [pt[1] for pt in poly.exterior.coords]
+                        rectangles.append((x_left, min(ys), x_right, max(ys)))
+
+                return rectangles
+
+            # --- Example usage ---
+
+            # Suppose you already have your diff polygon
+            # pieces, diff = subtract_and_polygonize(large, cutouts)
+            # And your vertical split x-values
+            # vertical_splits = [0, 1411200, 4779600, 6237000, 6294400]
+
+            '''x_values = [x for x, y in scaled_cutouts]      # Extract all x-values
+            vertical_splits = sorted(x_values)'''
+            # x_values[1::2]
+            x_values = sorted({x for x, y in scaled_cutouts})  # use a set to remove duplicates
+            print(f"vertical splits: {x_values}")
+
+            margin = pin_const*dbu
+
+            shrinked_diff = shrink_polygon(diff, margin)
+            rectangles = generate_rectangles(shrinked_diff, x_values)
+
+            array = island['coords']
+            loc = array[idx]
+            offsetx = loc[0]
+            offsety = loc[1]
+            # pin_const*dbu
+            # --- Write rectangles to file ---
+            '''with open("rectangles.def", "w") as def_file:'''
+            for block_x1, block_y1, block_x2, block_y2 in rectangles:
+                block_x1_loc = block_x1 + offsetx
+                block_y1_loc = block_y1 + offsety
+                block_x2_loc = block_x2 + offsetx
+                block_y2_loc = block_y2 + offsety
+                for num in range(num_metals): 
+                    poly_mlayer = metal_layers[num]   
+                    def_file.write(f'  - {poly_mlayer}\n')
+                    def_file.write(f'    LAYER {poly_mlayer} ;\n')
+                    def_file.write(f'    RECT ( {block_x1_loc} {block_y1_loc} ) ( {block_x2_loc} {block_y2_loc} ) ;\n')
+                    def_file.write(f'  END\n\n')
+
+            print(f"{len(rectangles)} rectangles generated.")
+            print(f"Blockages: {rectangles}")
         
         # Write blockages for the frame to keep routes internal
         if frame_module:
