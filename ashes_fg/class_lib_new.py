@@ -1428,6 +1428,66 @@ class ALICE(StandardCell):
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 		
+		
+class TSMC350nm_LVLShift_x16(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),Vin=None,DVDD=None,GND=None,VINJ=None,OUT=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_LVLShift_x16'
+		self.Vin = Port(circuit,self,'Vin','N',16*self.dim[1])
+		self.DVDD = Port(circuit,self,'DVDD','W',1*self.dim[0])
+		self.GND = Port(circuit,self,'GND','W',1*self.dim[0])
+		self.VINJ = Port(circuit,self,'VINJ','W',1*self.dim[0])
+		self.OUT = Port(circuit,self,'OUT','S',16*self.dim[1])
+		
+		
+		# Initialize ports with given values
+		portsInit = [Vin,DVDD,GND,VINJ,OUT]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+		
+class TSMC350nm_DigBuffer_x2(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),Vin=None,GND=None,VINJ=None,OUT=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_DigBuffer_x2'
+		self.In = Port(circuit,self,'In','N',2*self.dim[1])
+		self.GND = Port(circuit,self,'GND','S',1*self.dim[1])
+		self.VINJ = Port(circuit,self,'VINJ','S',1*self.dim[1])
+		self.OUT = Port(circuit,self,'Out','S',2*self.dim[1])
+		
+		
+		# Initialize ports with given values
+		portsInit = [Vin,GND,VINJ,OUT]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+		
 class SHblock1:
 	def __init__(self,input,num_instances='1',type='FPAA',board=['3.0', '3.0a'],SHblock1_ls='0',SHblock1_Ibias='3e-06',SHblock1_cap0_1x_cs='1'):
 		self.input=input
