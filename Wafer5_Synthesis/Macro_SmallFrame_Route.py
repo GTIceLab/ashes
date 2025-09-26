@@ -7,7 +7,7 @@ from ashes_fg.asic.asic_systems import *
 Top = Circuit()
 
 MacroIsland = Island(Top)
-macro = Macro(Top,MacroIsland,[1,1])
+macro = Macro_test(Top,MacroIsland,[1,1])
 macro.place([0,0])
 
 # Frame

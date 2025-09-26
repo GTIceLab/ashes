@@ -3489,6 +3489,117 @@ class NN_cab2(StandardCell):
 		circuit.addInstance(self,self.island)
 
 class Macro(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1), AVDD=None, Cal_IO=None, VINJ=None, ADC_Trim=None, Bias_Trim=None, Cal_Vin=None, Debug_IO=None, I_IO=None, VD_IO=None, VGPROG=None, VGPROG_IO=None, VGRUN=None, VG_IO=None, VTUN_AM=None, V_IO=None, SystemDrainline=None, pulse_fr_drain=None, Signal_DAC_out=None, Signal_RampADC_inp=None, GND=None, VTUN_fgmem=None, DVDD=None, mmio_reg_5_vinj=None, unused_AN_MUX=None, smclk_per_ext=None, mmio_reg_9_bout=None, mmio_reg_10_bout=None, puc_rst_bout=None, per_en_bout=None, per_we_bout=None, per_din_bout=None, per_addr_bout=None, per_dout_ext=None, irq=None, prog_lv=None, PROG_HV=None, RUN_HV=None, sram_CS_VBIAS=None, peri_use_uP=None, peri_spi_cpu_clk=None, peri_spi_slave_clk=None, peri_spi_mstr_miso=None, peri_spi_slave_mosi=None, peri_spi_slave_cs_n=None, peri_spi_mstr_spiclk=None, peri_spi_slave_miso=None, peri_spi_mstr_mosi=None, peri_spi_mstr_cs_n_0=None, peri_spi_mstr_cs_n_1=None, peri_spi_mstr_cs_n_2=None, peri_spi_mstr_cs_n_3=None, mmio_reg_7_bout=None, Macro_dbg_Scan_Vout=None, Macro_dbg_Scan_CLK=None, Macro_dbg_Scan_Din=None, Macro_dbg_Scan_RST=None, dbg_freeze_bout=None, dco_enable_bout=None, dco_wkup_bout=None, lfxt_enable_bout=None, lfxt_wkup_bout=None, scan_out2_bout=None, scan_out1_bout=None, fgmem_CS_VBIAS=None, mmio_reg_in_5=None, mmio_reg_3_vinj_b0=None, lfxt_clk=None, fast_clk=None, cpu_en=None, dbg_en=None, dbg_uart_rxd=None, nmi=None, reset_n=None, scan_enable=None, dbg_uart_txd=None, scan_mode=None, wkup=None, scan_in1=None, scan_in2=None, dco_clk=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'Full_Macro_2p0'
+		
+		self.lfxt_clk = Port(circuit,self, 'lfxt_clk' ,'N',1*self.dim[1])
+		self.fast_clk = Port(circuit,self, 'fast_clk' ,'N',1*self.dim[1])
+		# self.irq = Port(circuit,self, 'irq' ,'N',2*self.dim[1]) # Combined with south listing
+		self.cpu_en = Port(circuit,self, 'cpu_en' ,'N',1*self.dim[1])
+		self.dbg_en = Port(circuit,self, 'dbg_en' ,'N',1*self.dim[1])
+		self.dbg_uart_rxd = Port(circuit,self, 'dbg_uart_rxd' ,'N',1*self.dim[1])
+		self.nmi = Port(circuit,self, 'nmi' ,'N',1*self.dim[1])
+		self.reset_n = Port(circuit,self, 'reset_n' ,'N',1*self.dim[1])
+		self.scan_enable = Port(circuit,self, 'scan_enable' ,'N',1*self.dim[1])
+		self.dbg_uart_txd = Port(circuit,self, 'dbg_uart_txd' ,'N',1*self.dim[1])
+		self.scan_mode = Port(circuit,self, 'scan_mode' ,'N',1*self.dim[1])
+		self.wkup = Port(circuit,self, 'wkup' ,'N',1*self.dim[1])
+		self.scan_in1 = Port(circuit,self, 'scan_in1' ,'N',1*self.dim[1])
+		self.scan_in2 = Port(circuit,self, 'scan_in2' ,'N',1*self.dim[1])
+		self.dco_clk = Port(circuit,self, 'dco_clk' ,'N',1*self.dim[1])
+
+
+		self.AVDD = Port(circuit,self, 'AVDD' ,'S',1*self.dim[1])
+		self.Cal_IO = Port(circuit,self, 'Cal_IO' ,'S',1*self.dim[1])
+		self.VINJ = Port(circuit,self, 'VINJ' ,'S',1*self.dim[1])
+		self.ADC_Trim = Port(circuit,self, 'ADC_Trim' ,'S',1*self.dim[1])
+		self.Bias_Trim = Port(circuit,self, 'Bias_Trim' ,'S',1*self.dim[1])
+		self.Cal_Vin = Port(circuit,self, 'Cal_Vin' ,'S',1*self.dim[1])
+		self.Debug_IO = Port(circuit,self, 'Debug_IO' ,'S',1*self.dim[1])
+		self.I_IO = Port(circuit,self, 'I_IO' ,'S',1*self.dim[1])
+		self.VD_IO = Port(circuit,self, 'VD_IO' ,'S',1*self.dim[1])
+		self.VGPROG = Port(circuit,self, 'VGPROG' ,'S',1*self.dim[1])
+		self.VGPROG_IO = Port(circuit,self, 'VGPROG_IO' ,'S',1*self.dim[1])
+		self.VGRUN = Port(circuit,self, 'VGRUN' ,'S',1*self.dim[1])
+		self.VG_IO = Port(circuit,self, 'VG_IO' ,'S',1*self.dim[1])
+		self.VTUN_AM = Port(circuit,self, 'VTUN_AM' ,'S',1*self.dim[1])
+		self.V_IO = Port(circuit,self, 'V_IO' ,'S',1*self.dim[1])
+		self.SystemDrainline = Port(circuit,self, 'SystemDrainline' ,'S',3*self.dim[1])
+		self.pulse_fr_drain = Port(circuit,self, 'pulse_fr_drain' ,'S',1*self.dim[1])
+		self.Signal_DAC_out = Port(circuit,self, 'Signal_DAC_out' ,'S',3*self.dim[1])
+		self.Signal_RampADC_inp = Port(circuit,self, 'Signal_RampADC_inp' ,'S',6*self.dim[1])
+		self.GND = Port(circuit,self, 'GND' ,'S',1*self.dim[1])
+		self.VTUN_fgmem = Port(circuit,self, 'VTUN_fgmem' ,'S',1*self.dim[1])
+		self.DVDD = Port(circuit,self, 'DVDD' ,'S',1*self.dim[1])
+		self.mmio_reg_5_vinj = Port(circuit,self, 'mmio_reg_5_vinj' ,'S',10*self.dim[1]) # all are along the south edge
+		self.unused_AN_MUX = Port(circuit,self, 'unused_AN_MUX' ,'S',1*self.dim[1])
+		self.smclk_per_ext = Port(circuit,self, 'smclk_per_ext' ,'S',1*self.dim[1])
+		self.mmio_reg_9_bout = Port(circuit,self, 'mmio_reg_9_bout' ,'S',16*self.dim[1])
+		self.mmio_reg_10_bout = Port(circuit,self, 'mmio_reg_10_bout' ,'S',16*self.dim[1])
+		self.puc_rst_bout = Port(circuit,self, 'puc_rst_bout' ,'S',1*self.dim[1])
+		self.per_en_bout = Port(circuit,self, 'per_en_bout' ,'S',1*self.dim[1])
+		self.per_we_bout = Port(circuit,self, 'per_we_bout' ,'S',2*self.dim[1])
+		self.per_din_bout = Port(circuit,self, 'per_din_bout' ,'S',16*self.dim[1])
+		self.per_addr_bout = Port(circuit,self, 'per_addr_bout' ,'S',14*self.dim[1]) # all along south edge
+		self.per_dout_ext = Port(circuit,self, 'per_dout_ext' ,'S',16*self.dim[1])
+		self.irq = Port(circuit,self, 'irq' ,'S',5*self.dim[1]) # combined with north listing
+		self.prog_lv = Port(circuit,self, 'prog_lv' ,'S',1*self.dim[1])
+		self.PROG_HV = Port(circuit,self, 'PROG_HV' ,'S',1*self.dim[1])
+		self.RUN_HV = Port(circuit,self, 'RUN_HV' ,'S',1*self.dim[1])
+
+
+		self.sram_CS_VBIAS = Port(circuit,self, 'sram_CS_VBIAS' ,'W',1*self.dim[0])
+		self.peri_use_uP = Port(circuit,self, 'peri_use_uP' ,'W',1*self.dim[0])
+		self.peri_spi_cpu_clk = Port(circuit,self, 'peri_spi_cpu_clk' ,'W',1*self.dim[0])
+		self.peri_spi_slave_clk = Port(circuit,self, 'peri_spi_slave_clk' ,'W',1*self.dim[0])
+		self.peri_spi_mstr_miso = Port(circuit,self, 'peri_spi_mstr_miso' ,'W',1*self.dim[0])
+		self.peri_spi_slave_mosi = Port(circuit,self, 'peri_spi_slave_mosi' ,'W',1*self.dim[0])
+		self.peri_spi_slave_cs_n = Port(circuit,self, 'peri_spi_slave_cs_n' ,'W',1*self.dim[0])
+		self.peri_spi_mstr_spiclk = Port(circuit,self, 'peri_spi_mstr_spiclk' ,'W',1*self.dim[0])
+		self.peri_spi_slave_miso = Port(circuit,self, 'peri_spi_slave_miso' ,'W',1*self.dim[0])
+		self.peri_spi_mstr_mosi = Port(circuit,self, 'peri_spi_mstr_mosi' ,'W',1*self.dim[0])
+		self.peri_spi_mstr_cs_n_0 = Port(circuit,self, 'peri_spi_mstr_cs_n_0' ,'W',1*self.dim[0])
+		self.peri_spi_mstr_cs_n_1 = Port(circuit,self, 'peri_spi_mstr_cs_n_1' ,'W',1*self.dim[0])
+		self.peri_spi_mstr_cs_n_2 = Port(circuit,self, 'peri_spi_mstr_cs_n_2' ,'W',1*self.dim[0])
+		self.peri_spi_mstr_cs_n_3 = Port(circuit,self, 'peri_spi_mstr_cs_n_3' ,'W',1*self.dim[0])
+		self.mmio_reg_7_bout = Port(circuit,self, 'mmio_reg_7_bout' ,'W',15*self.dim[0])
+		self.Macro_dbg_Scan_Vout = Port(circuit,self, 'Macro_dbg_Scan_Vout' ,'W',1*self.dim[0])
+		self.Macro_dbg_Scan_CLK = Port(circuit,self, 'Macro_dbg_Scan_CLK' ,'W',1*self.dim[0])
+		self.Macro_dbg_Scan_Din = Port(circuit,self, 'Macro_dbg_Scan_Din' ,'W',1*self.dim[0])
+		self.Macro_dbg_Scan_RST = Port(circuit,self, 'Macro_dbg_Scan_RST' ,'W',1*self.dim[0])
+		self.dbg_freeze_bout = Port(circuit,self, 'dbg_freeze_bout' ,'W',1*self.dim[0])
+		self.dco_enable_bout = Port(circuit,self, 'dco_enable_bout' ,'W',1*self.dim[0])
+		self.dco_wkup_bout = Port(circuit,self, 'dco_wkup_bout' ,'W',1*self.dim[0])
+		self.lfxt_enable_bout = Port(circuit,self, 'lfxt_enable_bout' ,'W',1*self.dim[0])
+		self.lfxt_wkup_bout = Port(circuit,self, 'lfxt_wkup_bout' ,'W',1*self.dim[0])
+		self.scan_out2_bout = Port(circuit,self, 'scan_out2_bout' ,'W',1*self.dim[0])
+		self.scan_out1_bout = Port(circuit,self, 'scan_out1_bout' ,'W',1*self.dim[0])
+		self.fgmem_CS_VBIAS = Port(circuit,self, 'fgmem_CS_VBIAS' ,'W',1*self.dim[0])
+		self.mmio_reg_in_5 = Port(circuit,self, 'mmio_reg_in_5' ,'W',16*self.dim[0])
+		self.mmio_reg_3_vinj_b0 = Port(circuit,self, 'mmio_reg_3_vinj_b0' ,'W',1*self.dim[0])
+
+
+		# Initialize ports with given values
+		portsInit = [AVDD,Cal_IO,VINJ,ADC_Trim,Bias_Trim,Cal_Vin,Debug_IO,I_IO,VD_IO,VGPROG,VGPROG_IO,VGRUN,VG_IO,VTUN_AM,V_IO,SystemDrainline,pulse_fr_drain,Signal_DAC_out,Signal_RampADC_inp,GND,VTUN_fgmem,DVDD,mmio_reg_5_vinj,unused_AN_MUX,smclk_per_ext,mmio_reg_9_bout,mmio_reg_10_bout,puc_rst_bout,per_en_bout,per_we_bout,per_din_bout,per_addr_bout,per_addr_bout,per_dout_ext,irq,prog_lv,PROG_HV,RUN_HV,sram_CS_VBIAS,peri_use_uP,peri_spi_cpu_clk,peri_spi_slave_clk,peri_spi_mstr_miso,peri_spi_slave_mosi,peri_spi_slave_cs_n,peri_spi_mstr_spiclk,peri_spi_slave_miso,peri_spi_mstr_mosi,peri_spi_mstr_cs_n_0,peri_spi_mstr_cs_n_1,peri_spi_mstr_cs_n_2,peri_spi_mstr_cs_n_3,mmio_reg_7_bout,Macro_dbg_Scan_Vout,Macro_dbg_Scan_CLK,Macro_dbg_Scan_Din,Macro_dbg_Scan_RST,dbg_freeze_bout,dco_enable_bout,dco_wkup_bout,lfxt_enable_bout,lfxt_wkup_bout,scan_out2_bout,scan_out1_bout,fgmem_CS_VBIAS,mmio_reg_in_5,mmio_reg_3_vinj_b0,lfxt_clk,fast_clk,cpu_en,dbg_en,dbg_uart_rxd,nmi,reset_n,scan_enable,dbg_uart_txd,scan_mode,wkup,scan_in1,scan_in2,dco_clk]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+class Macro_test(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1), cpu_en=None, dbg_en=None, dbg_uart_rxd=None, dbg_uart_txd=None, dco_clk=None, lfxt_clk=None, nmi=None, reset_n=None, scan_enable=None, scan_mode=None, wkup=None, scan_in1=None, scan_in2=None, scan_out1=None, scan_out2=None, aclk=None, aclk_en=None, dbg_freeze=None, dco_enable=None, dco_wkup=None, lfxt_enable=None, lfxt_wkup=None, mclk=None, smclk=None, smclk_en=None, DVDD=None, GND=None, AVDD_AM=None, VINJ=None, VTUN_AM=None, VTUN_fgmem=None, VGPROG_IO=None, fgmem_CS_VBIAS=None, prog=None, run=None, Signal_ADC_inp=None, Signal_DAC_out=None, ADC_Trim=None, Bias_Trim=None, Cal_IO=None, Cal_Vin=None, Debug_IO=None, I_IO=None, VD_IO=None, VGRUN=None, VG_IO=None, V_IO=None, mmio_reg_10=None, mmio_reg_in_5=None, mmio_reg_1_out=None, mmio_reg_9_out_b15=None, mmio_reg_2_out_b15=None, mmio_reg_3_vinj_out=None, mmio_reg_4_vinj_out=None, irq_acc=None, irq=None, puc_rst_dbg=None, sram_CS_VBIAS=None, peri_use_uP=None, peri_spi_rst=None, peri_spi_cpu_clk=None, peri_spi_slave_clk=None, peri_spi_slave_miso=None, peri_spi_slave_mosi=None, peri_spi_slave_cs_n=None, peri_spi_mstr_spiclk=None, peri_spi_mstr_miso=None, peri_spi_mstr_mosi=None, peri_spi_mstr_cs_n_0=None, peri_spi_mstr_cs_n_1=None, peri_spi_mstr_cs_n_2=None, peri_spi_mstr_cs_n_3=None, peri_spi_mstr_TX_Ready=None, peri_spi_mstr_RX_DV=None, peri_spi_slave_RX_DV=None, SystemDrainline=None, fast_ADC_clk=None, drain_pulse_rst=None):
 
 		# Define variables
