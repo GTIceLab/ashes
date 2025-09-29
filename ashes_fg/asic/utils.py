@@ -1,6 +1,8 @@
 import numpy as np
 from collections import defaultdict
 import bisect
+from shapely.geometry import Polygon, LineString, box, GeometryCollection
+from shapely.ops import polygonize, unary_union
 
 def update_output_layout(text, file_path):
     '''
@@ -446,3 +448,95 @@ def generate_side_blockages_with_pin_dist(sides, loc, block_ext_len, pin_spacing
                     rect_string.append(f"RECT ({prev_coord[2]+pin_spacing} {block_y1}) ({loc[2]} {loc[3]+block_ext_len})\n")
 
     return rect_string
+
+# Rectilinear Blockages Functions
+
+def rectangle(origin = None, vert2 = None, size = None):
+    if size != None:
+        x1, y1 = origin
+        w, h = size
+        return Polygon([(x1, y1), (x1+w, y1), (x1+w, y1+h), (x1, y1+h)])
+    elif vert2 != None:
+        x1, y1 = origin
+        x2, y2 = vert2
+        return Polygon([(x1, y1), (x2, y1), (x2, y2), (x1, y2)])
+    else:
+        return(print(f"Undefined Shape"))
+
+def subtract_and_polygonize(large, cutouts):
+    # merge all cutouts into one geometry
+    all_cutouts = unary_union(cutouts)
+    print(f'Cutout Union: {all_cutouts}')
+
+    # Subtract small from large
+    diff = large.difference(all_cutouts)
+
+    # Collect boundary lines: exterior + interiors
+    lines = [LineString(diff.exterior.coords)]
+    for interior in diff.interiors:
+        lines.append(LineString(interior.coords))
+
+    # Polygonize the boundary lines
+    pieces = list(polygonize(lines))
+    return pieces, diff  # list of polygons (should usually be one L-shaped polygon)
+
+def shrink_polygon(diff, margin):
+    """Shrink an L-shaped or axis-aligned polygon by margin using sharp corners."""
+    shrinked = diff.buffer(-margin, join_style=2)  # join_style=2 => sharp corners
+    # If shrinked is MultiPolygon, unify it
+    if shrinked.is_empty:
+        return None
+    elif shrinked.geom_type == 'Polygon':
+        return shrinked
+    elif shrinked.geom_type == 'MultiPolygon':
+        return unary_union(shrinked)
+    else:
+        return None
+    
+def extract_polygons(geom):
+    """Return a list of Polygon objects from any geometry."""
+    if geom.is_empty:
+        return []
+    if geom.geom_type == 'Polygon':
+        return [geom]
+    elif geom.geom_type == 'MultiPolygon':
+        return list(geom.geoms)
+    elif geom.geom_type == 'GeometryCollection':
+        polygons = []
+        for g in geom.geoms:
+            if g.geom_type == 'Polygon':
+                polygons.append(g)
+            elif g.geom_type == 'MultiPolygon':
+                polygons.extend(list(g.geoms))
+        return polygons
+    else:
+        return []
+
+def generate_rectangles(diff_polygon, vertical_splits):
+    rectangles = []
+
+    # Ensure vertical splits are sorted and unique
+    vertical_splits = sorted(set(vertical_splits))
+
+    for i in range(len(vertical_splits) - 1):
+        x_left = vertical_splits[i]
+        x_right = vertical_splits[i + 1]
+
+        # Skip zero-width strips
+        if x_left >= x_right:
+            continue
+
+        # Create a tall rectangle covering full polygon Y-range
+        miny, maxy = diff_polygon.bounds[1], diff_polygon.bounds[3]
+        strip = box(x_left, miny, x_right, maxy)
+
+        # Intersect strip with the polygon
+        intersection = diff_polygon.intersection(strip)
+
+        # Extract polygons from intersection
+        polys = extract_polygons(intersection)
+        for poly in polys:
+            ys = [pt[1] for pt in poly.exterior.coords]
+            rectangles.append((x_left, min(ys), x_right, max(ys)))
+
+    return rectangles
