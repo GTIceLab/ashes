@@ -272,6 +272,94 @@ class TSMC350nm_4WTA_IndirectProg_noncab(StandardCell):
 		circuit.addInstance(self,self.island)
 
 
+class TSMC350nm_4SoftWTA_IndirectProg(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,Iin=None,Vout=None,Vmid=None,Vbias=None,Vsel=None,Vs=None,VINJ=None,Vg=None,VTUN=None,GND=None,PROG=None,Vsel_b=None,Vs_b=None,VINJ_b=None,Vg_b=None,VTUN_b=None,GND_b=None,PROG_b=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_4SoftWTA_IndirectProg'
+		self.VD_P = Port(circuit,self,'VD_P','W',4*self.dim[0])
+		self.Iin = Port(circuit,self,'Iin','W',4*self.dim[0])
+		self.Vout = Port(circuit,self,'Vout','E',4*self.dim[0])
+		self.Vmid = Port(circuit,self,'Vmid','E',1*self.dim[0])
+		self.Vbias = Port(circuit,self,'Vbias','E',1*self.dim[0])
+		self.Vsel = Port(circuit,self,'Vsel','N',1*self.dim[1])
+		self.Vs = Port(circuit,self,'Vs','N',1*self.dim[1])
+		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
+		self.Vg = Port(circuit,self,'Vg','N',1*self.dim[1])
+		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.PROG = Port(circuit,self,'PROG','N',1*self.dim[1])
+		self.Vsel_b = Port(circuit,self,'Vsel_b','S',1*self.dim[1])
+		self.Vs_b = Port(circuit,self,'Vs_b','S',1*self.dim[1])
+		self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
+		self.Vg_b = Port(circuit,self,'Vg_b','S',1*self.dim[1])
+		self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
+		self.PROG_b = Port(circuit,self,'PROG_b','S',1*self.dim[1])
+
+
+		# Initialize ports with given values
+		portsInit = [VD_P,Iin,Vout,Vmid,Vbias,Vsel,Vs,VINJ,Vg,VTUN,GND,PROG,Vsel_b,Vs_b,VINJ_b,Vg_b,VTUN_b,GND_b,PROG_b]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+class TSMC350nm_4SoftWTA_IndirectProg_Vertical(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,Iin=None,Vout=None,Vmid=None,Vbias=None,Vsel=None,Vs=None,VINJ=None,Vg=None,VTUN=None,GND=None,PROG=None,Vsel_b=None,Vs_b=None,VINJ_b=None,Vg_b=None,VTUN_b=None,GND_b=None,PROG_b=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_4SoftWTA_IndirectProg_Vertical'
+		self.VD_P = Port(circuit,self,'VD_P','S',4*self.dim[1])
+		self.Iin = Port(circuit,self,'Iin','S',4*self.dim[1])
+		self.Vout = Port(circuit,self,'Vout','N',4*self.dim[1])
+		self.Vmid = Port(circuit,self,'Vmid','N',1*self.dim[1])
+		self.Vbias = Port(circuit,self,'Vbias','N',1*self.dim[1])
+		self.Vsel = Port(circuit,self,'Vsel','W',1*self.dim[0])
+		self.Vs = Port(circuit,self,'Vs','W',1*self.dim[0])
+		self.VINJ = Port(circuit,self,'VINJ','W',1*self.dim[0])
+		self.Vg = Port(circuit,self,'Vg','W',1*self.dim[0])
+		self.VTUN = Port(circuit,self,'VTUN','W',1*self.dim[0])
+		self.GND = Port(circuit,self,'GND','W',1*self.dim[0])
+		self.PROG = Port(circuit,self,'PROG','W',1*self.dim[0])
+		self.Vsel_b = Port(circuit,self,'Vsel_b','E',1*self.dim[0])
+		self.Vs_b = Port(circuit,self,'Vs_b','E',1*self.dim[0])
+		self.VINJ_b = Port(circuit,self,'VINJ_b','E',1*self.dim[0])
+		self.Vg_b = Port(circuit,self,'Vg_b','E',1*self.dim[0])
+		self.VTUN_b = Port(circuit,self,'VTUN_b','E',1*self.dim[0])
+		self.GND_b = Port(circuit,self,'GND_b','E',1*self.dim[0])
+		self.PROG_b = Port(circuit,self,'PROG_b','E',1*self.dim[0])
+
+
+		# Initialize ports with given values
+		portsInit = [VD_P,Iin,Vout,Vmid,Vbias,Vsel,Vs,VINJ,Vg,VTUN,GND,PROG,Vsel_b,Vs_b,VINJ_b,Vg_b,VTUN_b,GND_b,PROG_b]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+		
 class TSMC350nm_Ampdet_NoFG(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN=None,OUTPUT=None,VTUN=None,Vg=None,Vsel=None,VINJ=None,GND=None,VPWR=None,VTUN_b=None,Vg_b=None,Vsel_b=None,VINJ_b=None,GND_b=None,VPWR_b=None):
 

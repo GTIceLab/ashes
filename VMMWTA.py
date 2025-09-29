@@ -10,10 +10,10 @@ from ashes_fg.asic.asic_systems import *
 
 Top = Circuit()
 
-VMMWTACircuit = VMMWTA(Top,[24,8],decoderPlace=True)
+IndirectVMMWTACircuit = Indirect_VMMWTA(Top,[8,4],decoderPlace=True,soft=False)
 
 
-design_limits = [1e6, 6.1e5]
+design_limits = [2e6, 5e6]
 location_islands=None
 
-compile_asic(Top,process="TSMC350nm",fileName="VMMWTA_Example",p_and_r = True,design_limits = design_limits, location_islands = location_islands)
+compile_asic(Top,process="TSMC350nm",fileName="Indirect_VMMWTA",p_and_r = True,design_limits = design_limits, location_islands = location_islands, drainSpaceIdx=0,drainSpace=0,gateSpaceIdx=0,gateSpace=5) #keep gateSpace=5!

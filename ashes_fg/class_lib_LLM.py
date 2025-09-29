@@ -15,8 +15,8 @@ class dotproduct_L(StandardCell):
         self.phi2 = Port(circuit,self,'phi2','N',1*self.dim[1])
         self.out1 = Port(circuit,self,'out1','N',1*self.dim[1])
         self.out2 = Port(circuit,self,'out2','N',1*self.dim[1])
-        self.Q = Port(circuit,self,'Q','W',4*self.dim[1])
-        self.K = Port(circuit,self,'K','E',4*self.dim[1])
+        self.Q = Port(circuit,self,'Q','W',4*self.dim[0])
+        self.K = Port(circuit,self,'K','E',4*self.dim[0])
         self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
         
         
@@ -47,8 +47,8 @@ class dotproduct_R(StandardCell):
         self.phi2 = Port(circuit,self,'phi2','N',1*self.dim[1])
         self.out1 = Port(circuit,self,'out1','N',1*self.dim[1])
         self.out2 = Port(circuit,self,'out2','N',1*self.dim[1])
-        self.Q = Port(circuit,self,'Q','W',4*self.dim[1])
-        self.K = Port(circuit,self,'K','E',4*self.dim[1])
+        self.Q = Port(circuit,self,'Q','W',4*self.dim[0])
+        self.K = Port(circuit,self,'K','E',4*self.dim[0])
         self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
         
         
@@ -79,8 +79,8 @@ class dotproduct_mid(StandardCell):
         self.phi2 = Port(circuit,self,'phi2','N',1*self.dim[1])
         self.out1 = Port(circuit,self,'out1','N',1*self.dim[1])
         self.out2 = Port(circuit,self,'out2','N',1*self.dim[1])
-        self.Q = Port(circuit,self,'Q','W',4*self.dim[1])
-        self.K = Port(circuit,self,'K','E',4*self.dim[1])
+        self.Q = Port(circuit,self,'Q','W',4*self.dim[0])
+        self.K = Port(circuit,self,'K','E',4*self.dim[0])
         self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
         
         
@@ -95,8 +95,6 @@ class dotproduct_mid(StandardCell):
         # Add cell to circuit
         circuit.addInstance(self,self.island)
 
-
-
 class K_layer_output(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),K=None,GND=None):
         # Define variables
@@ -109,13 +107,45 @@ class K_layer_output(StandardCell):
         
         # Define cell information
         self.name = 'K_layer_output'
-        self.K = Port(circuit,self,'K','E',4*self.dim[1])
+        self.K = Port(circuit,self,'K','E',4*self.dim[0])
         self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
         
         
         
         # Initialize ports with given values
         portsInit = [K,GND]
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+        
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+        
+class Q_layer_output(StandardCell):
+    def __init__(self,circuit,island=None,dim=(1,1),VPWR=None,Vdbias=None,Vbias=None,Vgbias=None,Q_in=None,Q_out=None,GND=None):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+        
+        
+        # Define cell information
+        self.name = 'Q_layer_output'
+        self.VPWR = Port(circuit,self,'VPWR','N',2*self.dim[1])
+        self.Vdbias = Port(circuit,self,'Vdbias','N',2*self.dim[1])
+        self.Vbias = Port(circuit,self,'Vbias','N',2*self.dim[1])
+        self.Vgbias = Port(circuit,self,'Vgbias','N',1*self.dim[1])
+        self.Q_in = Port(circuit,self,'Q_in','W',4*self.dim[0])
+        self.Q_out = Port(circuit,self,'Q_out','E',4*self.dim[0])
+        self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+        
+        
+        
+        # Initialize ports with given values
+        portsInit = [VPWR,Vdbias,Vbias,Vgbias,Q_in,Q_out,GND]
         i=0
         for p in self.ports:
             self.assignPort(p,portsInit[i])
