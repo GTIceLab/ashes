@@ -1840,7 +1840,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                         def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')'''
                     def_file.write(f'  END\n\n')
 
-        m4_except = ['Full_Macro_Edit', 'Full_Macro_Corner','QDAC_synth',,'TILE_analog','ALICE_separate','NN_cab1','NN_cab2','optimized_cab2','optimized_cab1','PDE_cab1', 'sensor_cab1','sensor_cab2']
+        m4_except = ['Full_Macro_Edit', 'Full_Macro_Corner','QDAC_synth','TILE_analog','ALICE_separate','NN_cab1','NN_cab2','optimized_cab2','optimized_cab1','PDE_cab1', 'sensor_cab1','sensor_cab2']
         for val, island in cell_order_in_island.items():
             for idx, item in island['items'].items():
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m4_except:
