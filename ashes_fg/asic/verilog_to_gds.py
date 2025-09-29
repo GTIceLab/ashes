@@ -1589,7 +1589,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     def_file = open(file_path, 'a')
     #rect_string[-1] = rect_string[-1][:-1] + ' ;\n'
 
-    m1_m2_except = ['Full_Macro_Corner']
+    m1_m2_except = ['Full_Macro_Corner', 'Full_Macro_2p0']
 
     # Place blockages in def file
     pin_const = 1 # this is for amount of distance between blockage edge and true cell edge
@@ -1599,7 +1599,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     for val, island in cell_order_in_island.items():
         for idx, item in island['items'].items():
             insts_list = []
-            if item['type'] == 'cell' or item['type'] == 'matrix' and item['name'] not in m1_m2_except:
+            if (item['type'] == 'cell' or item['type'] == 'matrix') and item['name'] not in m1_m2_except:
                 array = island['coords']
                 loc = array[idx]
                 block_x1 = loc[0] + pin_const*dbu
@@ -1607,7 +1607,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 block_x2 = loc[2] - pin_const*dbu
                 block_y2 = loc[3] - pin_const*dbu
                 rect_string.append(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n')
-                '''m1_m2_except = ['Full_Macro_Edit']
+                '''m1_m2_except = ['Full_Macro_Edit', 'Full_Macro_2p0']
                 # macro rectilinear blockage exception
                 if item['name'] in m1_m2_except:
                     dis_x1 = 1460*dbu
@@ -1915,9 +1915,9 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
             # Example
             macro_rect = rectangle(frame_origin, size = (frame_w, frame_h))
             print(f"Macro rectangle: {macro_rect} \n")
-            cutouts = [(0,44.9627), (1411.2, 195), 
-                       (1410.96, 44.9743), (4779.6, 82.4844), 
-                       (6237, 45), (6294.4, 293.789)]
+            cutouts = [(0,45), (1411, 195), 
+                       (1411, 45), (4779.6, 82.4844), 
+                       (6237, 45), (6294.4, 293.6)]
             # print(f'cutouts: {cutouts}')
             scaled_cutouts = [(x * dbu, y * dbu) for (x, y) in cutouts]
 
@@ -1994,12 +1994,22 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
             vertical_splits = sorted(x_values)'''
             # x_values[1::2]
             x_values = sorted({x for x, y in scaled_cutouts})  # use a set to remove duplicates
-            print(f"vertical splits: {x_values}")
-
+            
             margin = pin_const*dbu
+            vertical_splits=[]
 
+            # add spacing for pins
+            for i in range(len(x_values)):
+                if i < 3:
+                    vertical_splits.append(x_values[i] + margin)
+                else: 
+                    vertical_splits.append(x_values[i] - margin)
+            
+            print(f"Original vertical splits: {x_values}")
+            print(f"Offset vertical splits: {vertical_splits}")
+            
             shrinked_diff = shrink_polygon(diff, margin)
-            rectangles = generate_rectangles(shrinked_diff, x_values)
+            rectangles = generate_rectangles(shrinked_diff, vertical_splits)
 
             array = island['coords']
             loc = array[idx]
