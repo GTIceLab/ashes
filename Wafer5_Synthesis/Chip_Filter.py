@@ -17,6 +17,55 @@ chipframe = SmallPadFrame(Top,FrameIsland,[1,1])
 chipframe.place([0,0])
 chipframe.markChipFrame()
 
+DelayIsland = Island(Top)
+LPF_Delay = Top_DelayLPF(Top,DelayIsland,[1,1])
+LPF_Delay.place([0,0])
+
+MeadIsland = Island(Top)
+Mead = Top_MeadSOS(Top,MeadIsland,[1,1])
+Mead.place([0,0])
+
+# LPF Delay Algorithm connections
+# ---------------------------
+'''LPF_Delay.n_Prog += macro.mmio_reg_3_vinj_out[14]
+LPF_Delay.n_GateEnable += macro.mmio_reg_3_vinj_out[14]
+LPF_Delay.s_Drainline_Prog += macro.mmio_reg_3_vinj_out[13]
+LPF_Delay.s_Drainline_Run += macro.mmio_reg_3_vinj_out[12]
+LPF_Delay.w_GateB[0] += macro.mmio_reg_3_vinj_out[11]
+LPF_Delay.w_GateB[1] += macro.mmio_reg_3_vinj_out[10]'''
+#LPF_Delay.w_DrainB[0:5] += macro.mmio_reg_4_vinj_out[0:5]
+
+LPF_Delay.n_VGPROG += macro.VGPROG_IO
+LPF_Delay.n_VGRUN += macro.VTUN_AM
+LPF_Delay.n_AVDD += macro.AVDD_AM
+#LPF_Delay.n_gnd += chipframe.gnd_N[2]
+#LPF_Delay.n_vinj += chipframe.VINJ_N[2]
+#LPF_Delay.s_gnd += chipframe.gnd_S[2]
+#LPF_Delay.s_vinj += chipframe.VINJ_S[2]
+
+LPF_Delay.w_Vin += macro.Signal_DAC_out[4]
+LPF_Delay.e_Vout += macro.Signal_ADC_inp[5]
+
+# Mead SOS Algorithm connections
+# ---------------------------
+'''Mead.n_Prog += macro.mmio_reg_3_vinj_out[15]
+Mead.n_GateEnable += macro.mmio_reg_3_vinj_out[14]
+Mead.s_Drainline_Prog += macro.mmio_reg_3_vinj_out[13]
+Mead.w_GateB[0] += macro.mmio_reg_3_vinj_out[11]
+Mead.w_GateB[1] += macro.mmio_reg_3_vinj_out[10]'''
+#Mead.w_DrainB += macro.mmio_reg_4_vinj_out[0:4]
+
+Mead.n_VGPROG += macro.VGPROG_IO
+Mead.n_VGRUN += macro.VTUN_AM
+Mead.n_AVDD += macro.AVDD_AM
+#Mead.n_gnd += chipframe.gnd_N[2]
+#Mead.n_vinj += chipframe.VINJ_N[2]
+#Mead.s_gnd += chipframe.gnd_S[2]
+#Mead.s_vinj += chipframe.VINJ_S[2]
+
+Mead.w_Vin += macro.Signal_DAC_out[4]
+Mead.e_Vout += macro.Signal_ADC_inp[5]
+
 # Macro <--> Frame Connections
 # --------------------------------------------------------------------------------
 # ___ IO Pins ___
@@ -98,8 +147,8 @@ macro.DVDD += chipframe.DVDD_N[2]
 # Compilation
 #-------------------------------------------------------------------------------
 design_limits = [7e6, 6.21e6]
-location_islands = ((210600, 410000), (20600, 20000))
+location_islands = ((210600, 410000), (20600, 20000), (400000, 250000), (1000000, 250000))
 # location_islands = ((250600, 4600000), (20600, 20000), (300000, 250600))
 # location_islands = None
 
-compile_asic(Top,process="TSMC350nm",fileName="Macro_SmallFrame",p_and_r = True,design_limits = design_limits, location_islands = location_islands)
+compile_asic(Top,process="TSMC350nm",fileName="Chip_Filter",p_and_r = True,design_limits = design_limits, location_islands = location_islands)

@@ -1,6 +1,8 @@
 import numpy as np
 from collections import defaultdict
 import bisect
+from shapely.geometry import Polygon, LineString, box, GeometryCollection
+from shapely.ops import polygonize, unary_union
 
 def update_output_layout(text, file_path):
     '''
@@ -251,3 +253,290 @@ class HoleDetector:
                 if hole[0][0] != hole[1][0] and hole[0][1] != hole[1][1]:
                     holes.append(hole)
         return holes
+    
+
+
+def sort_pins_and_detect_steps(cell_pins, loc, pin_threshold):
+    """
+    Sort pins into sides and detect steps along each side.
+    
+    Parameters:
+        cell_pins : dict
+            Dictionary of pins with 'RECT' info: {pin_name: {'RECT': [x1,y1,x2,y2]}}
+        loc : list or tuple
+            Cell bounding box: [x_min, y_min, x_max, y_max]
+        pin_threshold : float
+            Minimum distance between pins to consider a step
+    
+    Returns:
+        sides : dict
+            Each side has 'pins' and 'steps'. Steps are (start_coord, end_coord) along the side.
+            keys: 'left', 'right', 'top', 'bottom'
+    """
+    left_side, right_side, top_side, bottom_side = [], [], [], []
+
+    # Assign pins to sides
+    for pin_item in cell_pins.values():
+        pin_left, pin_bot, pin_right, pin_top = (
+            loc[0] + int(pin_item['RECT'][0]),
+            loc[1] + int(pin_item['RECT'][1]),
+            loc[0] + int(pin_item['RECT'][2]),
+            loc[1] + int(pin_item['RECT'][3])
+        )
+        # distance to each side
+        extension_dirs = [
+            abs(loc[0] - pin_left),   # left
+            abs(loc[1] - pin_bot),    # bottom
+            abs(loc[2] - pin_right),  # right
+            abs(loc[3] - pin_top)     # top
+        ]
+        index_min = min(range(len(extension_dirs)), key=extension_dirs.__getitem__)
+        if index_min == 0:
+            left_side.append([pin_left, pin_bot, pin_right, pin_top])
+        elif index_min == 1:
+            bottom_side.append([pin_left, pin_bot, pin_right, pin_top])
+        elif index_min == 2:
+            right_side.append([pin_left, pin_bot, pin_right, pin_top])
+        elif index_min == 3:
+            top_side.append([pin_left, pin_bot, pin_right, pin_top])
+
+    sides = {}
+
+    # Helper function for step detection
+    def detect_steps(sorted_pins, side, axis_start, axis_end):
+        steps = []
+        prev_end = axis_start
+        for pin in sorted_pins:
+            start_coord = pin[1] if side in ['left','right'] else pin[0]
+            end_coord = pin[3] if side in ['left','right'] else pin[2]
+            if (start_coord - prev_end) > pin_threshold:
+                steps.append((prev_end, start_coord))
+            prev_end = end_coord
+        # gap from last pin to edge
+        if (axis_end - prev_end) > pin_threshold:
+            steps.append((prev_end, axis_end))
+        return steps
+
+    # Sort and detect steps
+    sides['left'] = {'pins': sorted(left_side, key=lambda x: x[1]), 
+                     'steps': detect_steps(sorted(left_side, key=lambda x: x[1]), 'left', loc[1], loc[3])}
+
+    sides['right'] = {'pins': sorted(right_side, key=lambda x: x[1]), 
+                      'steps': detect_steps(sorted(right_side, key=lambda x: x[1]), 'right', loc[1], loc[3])}
+
+    sides['bottom'] = {'pins': sorted(bottom_side, key=lambda x: x[0]), 
+                       'steps': detect_steps(sorted(bottom_side, key=lambda x: x[0]), 'bottom', loc[0], loc[2])}
+
+    sides['top'] = {'pins': sorted(top_side, key=lambda x: x[0]), 
+                    'steps': detect_steps(sorted(top_side, key=lambda x: x[0]), 'top', loc[0], loc[2])}
+
+    return sides
+
+def generate_side_blockages_with_pin_dist(sides, loc, block_ext_len, pin_spacing, pin_threshold):
+    """
+    Generate rectilinear blockages along all sides of a cell and update pin_dist for each gap.
+
+    Args:
+        sides (dict): output from sort_pins_and_detect_steps, 
+                      each side has 'pins' (sorted list) and 'steps' (list of gaps)
+        loc (tuple): cell bounding box (x_min, y_min, x_max, y_max)
+        block_ext_len (float): extension length beyond cell boundary for large blockage
+        pin_spacing (float): spacing to keep around pins for small blockages
+        pin_threshold (float): minimum distance to be considered a step
+
+    Returns:
+        List of RECT strings defining blockages
+    """
+    rect_string = []
+
+    for side_name, side_info in sides.items():
+        pin_list = side_info['pins']
+        step_list = side_info['steps']
+
+        # Initialize previous coordinate and pin_dist
+        prev_coord = None
+        pin_dist = None
+
+        # If no pins on this side → one large rectangle covering the side
+        if not pin_list:
+            if side_name in ['left', 'right']:
+                rect_string.append(
+                    f"RECT ({loc[0]-block_ext_len if side_name=='left' else loc[2]+block_ext_len} {loc[1]}) "
+                    f"({loc[0] if side_name=='left' else loc[2]} {loc[3]})\n"
+                )
+            else:
+                rect_string.append(
+                    f"RECT ({loc[0]} {loc[1]-block_ext_len if side_name=='bottom' else loc[3]+block_ext_len}) "
+                    f"({loc[2]} {loc[1] if side_name=='bottom' else loc[3]})\n"
+                )
+            continue
+
+        # Determine the bounding rectangle for large blockage spanning the side
+        if side_name == 'left':
+            block_x1 = loc[0] - block_ext_len
+            block_x2 = min(pin[0] for pin in pin_list) - pin_spacing
+            rect_y1 = pin_list[0][1]
+            rect_y2 = pin_list[-1][3]
+            rect_string.append(f"RECT ({block_x1} {rect_y1}) ({block_x2} {rect_y2})\n")
+
+        elif side_name == 'right':
+            block_x1 = max(pin[2] for pin in pin_list) + pin_spacing
+            block_x2 = loc[2] + block_ext_len
+            rect_y1 = pin_list[0][1]
+            rect_y2 = pin_list[-1][3]
+            rect_string.append(f"RECT ({block_x1} {rect_y1}) ({block_x2} {rect_y2})\n")
+
+        elif side_name == 'bottom':
+            block_y1 = loc[1] - block_ext_len
+            block_y2 = min(pin[1] for pin in pin_list) - pin_spacing
+            rect_x1 = pin_list[0][0]
+            rect_x2 = pin_list[-1][2]
+            rect_string.append(f"RECT ({rect_x1} {block_y1}) ({rect_x2} {block_y2})\n")
+
+        elif side_name == 'top':
+            block_y1 = max(pin[3] for pin in pin_list) + pin_spacing
+            block_y2 = loc[3] + block_ext_len
+            rect_x1 = pin_list[0][0]
+            rect_x2 = pin_list[-1][2]
+            rect_string.append(f"RECT ({rect_x1} {block_y1}) ({rect_x2} {block_y2})\n")
+
+        # Generate smaller blockages between pins and edges, updating pin_dist
+        for ind, pin_coord in enumerate(pin_list):
+            if prev_coord is None:
+                # First pin → distance from edge
+                if side_name in ['left', 'right']:
+                    pin_dist = abs(pin_coord[1] - loc[1])
+                    temp_start = loc[1]
+                else:
+                    pin_dist = abs(pin_coord[0] - loc[0])
+                    temp_start = loc[0]
+            else:
+                if side_name in ['left', 'right']:
+                    pin_dist = abs(pin_coord[1] - prev_coord[3])
+                    temp_start = prev_coord[3] + pin_spacing
+                else:
+                    pin_dist = abs(pin_coord[0] - prev_coord[2])
+                    temp_start = prev_coord[2] + pin_spacing
+
+            prev_coord = pin_coord
+
+            # Only insert small blockage if distance exceeds threshold
+            if pin_dist > pin_threshold:
+                if side_name == 'left':
+                    rect_string.append(f"RECT ({loc[0]-block_ext_len} {temp_start}) ({block_x2} {pin_coord[1]-pin_spacing})\n")
+                elif side_name == 'right':
+                    rect_string.append(f"RECT ({block_x1} {temp_start}) ({loc[2]+block_ext_len} {pin_coord[1]-pin_spacing})\n")
+                elif side_name == 'bottom':
+                    rect_string.append(f"RECT ({temp_start} {loc[1]-block_ext_len}) ({pin_coord[0]-pin_spacing} {block_y2})\n")
+                elif side_name == 'top':
+                    rect_string.append(f"RECT ({temp_start} {block_y1}) ({pin_coord[0]-pin_spacing} {loc[3]+block_ext_len})\n")
+
+        # Handle gap from last pin to edge
+        if side_name in ['left', 'right']:
+            pin_dist = abs(loc[3] - prev_coord[3])
+            if pin_dist > pin_threshold:
+                if side_name == 'left':
+                    rect_string.append(f"RECT ({loc[0]-block_ext_len} {prev_coord[3]+pin_spacing}) ({block_x2} {loc[3]})\n")
+                else:
+                    rect_string.append(f"RECT ({block_x1} {prev_coord[3]+pin_spacing}) ({loc[2]+block_ext_len} {loc[3]})\n")
+        else:
+            pin_dist = abs(loc[2] - prev_coord[2])
+            if pin_dist > pin_threshold:
+                if side_name == 'bottom':
+                    rect_string.append(f"RECT ({prev_coord[2]+pin_spacing} {loc[1]-block_ext_len}) ({loc[2]} {block_y2})\n")
+                else:
+                    rect_string.append(f"RECT ({prev_coord[2]+pin_spacing} {block_y1}) ({loc[2]} {loc[3]+block_ext_len})\n")
+
+    return rect_string
+
+# Rectilinear Blockages Functions
+
+def rectangle(origin = None, vert2 = None, size = None):
+    if size != None:
+        x1, y1 = origin
+        w, h = size
+        return Polygon([(x1, y1), (x1+w, y1), (x1+w, y1+h), (x1, y1+h)])
+    elif vert2 != None:
+        x1, y1 = origin
+        x2, y2 = vert2
+        return Polygon([(x1, y1), (x2, y1), (x2, y2), (x1, y2)])
+    else:
+        return(print(f"Undefined Shape"))
+
+def subtract_and_polygonize(large, cutouts):
+    # merge all cutouts into one geometry
+    all_cutouts = unary_union(cutouts)
+    print(f'Cutout Union: {all_cutouts}')
+
+    # Subtract small from large
+    diff = large.difference(all_cutouts)
+
+    # Collect boundary lines: exterior + interiors
+    lines = [LineString(diff.exterior.coords)]
+    for interior in diff.interiors:
+        lines.append(LineString(interior.coords))
+
+    # Polygonize the boundary lines
+    pieces = list(polygonize(lines))
+    return pieces, diff  # list of polygons (should usually be one L-shaped polygon)
+
+def shrink_polygon(diff, margin):
+    """Shrink an L-shaped or axis-aligned polygon by margin using sharp corners."""
+    shrinked = diff.buffer(-margin, join_style=2)  # join_style=2 => sharp corners
+    # If shrinked is MultiPolygon, unify it
+    if shrinked.is_empty:
+        return None
+    elif shrinked.geom_type == 'Polygon':
+        return shrinked
+    elif shrinked.geom_type == 'MultiPolygon':
+        return unary_union(shrinked)
+    else:
+        return None
+    
+def extract_polygons(geom):
+    """Return a list of Polygon objects from any geometry."""
+    if geom.is_empty:
+        return []
+    if geom.geom_type == 'Polygon':
+        return [geom]
+    elif geom.geom_type == 'MultiPolygon':
+        return list(geom.geoms)
+    elif geom.geom_type == 'GeometryCollection':
+        polygons = []
+        for g in geom.geoms:
+            if g.geom_type == 'Polygon':
+                polygons.append(g)
+            elif g.geom_type == 'MultiPolygon':
+                polygons.extend(list(g.geoms))
+        return polygons
+    else:
+        return []
+
+def generate_rectangles(diff_polygon, vertical_splits):
+    rectangles = []
+
+    # Ensure vertical splits are sorted and unique
+    vertical_splits = sorted(set(vertical_splits))
+
+    for i in range(len(vertical_splits) - 1):
+        x_left = vertical_splits[i]
+        x_right = vertical_splits[i + 1]
+
+        # Skip zero-width strips
+        if x_left >= x_right:
+            continue
+
+        # Create a tall rectangle covering full polygon Y-range
+        miny, maxy = diff_polygon.bounds[1], diff_polygon.bounds[3]
+        strip = box(x_left, miny, x_right, maxy)
+
+        # Intersect strip with the polygon
+        intersection = diff_polygon.intersection(strip)
+
+        # Extract polygons from intersection
+        polys = extract_polygons(intersection)
+        for poly in polys:
+            ys = [pt[1] for pt in poly.exterior.coords]
+            rectangles.append((x_left, min(ys), x_right, max(ys)))
+
+    return rectangles

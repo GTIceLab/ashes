@@ -15,7 +15,7 @@ macro.place([0,0])
 # Frame
 # -------------------------------------------------------------------------------
 FrameIsland = Island(Top)
-chipframe = ChipFrame(Top,FrameIsland,[1,1])
+chipframe = SmallPadFrame(Top,FrameIsland,[1,1])
 chipframe.place([0,0])
 chipframe.markChipFrame()
 
@@ -109,7 +109,7 @@ macro.DVDD += chipframe.DVDD_N[2]
 # Compilation
 #-------------------------------------------------------------------------------
 design_limits = [7e6, 6.21e6]
-location_islands = ((250600, 4500000), (20600, 20000))
+location_islands = ((210600, 410000), (20600, 20000))
 # location_islands = ((250600, 4600000), (20600, 20000), (300000, 250600))
 # location_islands = None
 

@@ -16,7 +16,7 @@ from ashes_fg.asic.asic_systems import *
 
 
 
-exec(open("./example_python/CHIP_DataConverter.py").read())
+exec(open("./Wafer5_Synthesis/Macro_SmallFrame_Route.py").read())
 
 
 
