@@ -264,11 +264,11 @@ class TSMC350nm_AnalogBuffer(StandardCell):
         self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
         self.Vg = Port(circuit,self,'Vg','N',1*self.dim[1])
         self.Vg_b = Port(circuit,self,'Vg_b','S',1*self.dim[1])
-        self.Vd_P = Port(circuit,self,'Vd_P','W',1*self.dim[1])
+        self.Vd_P = Port(circuit,self,'Vd_P','W',1*self.dim[0])
         self.Vsel = Port(circuit,self,'Vsel','N',1*self.dim[1])
         self.Vsel_b = Port(circuit,self,'Vsel_b','S',1*self.dim[1])
-        self.Vin = Port(circuit,self,'Vin','W',1*self.dim[1])
-        self.Vout = Port(circuit,self,'Vout','E',1*self.dim[1])
+        self.Vin = Port(circuit,self,'Vin','W',1*self.dim[0])
+        self.Vout = Port(circuit,self,'Vout','E',1*self.dim[0])
 
         # Initialize ports with given values
         portsInit = [VTUN,VTUN_b,VDD,VDD_b,GND,GND_b,VINJ,VINJ_b,Vg,Vg_b,Vd_P,Vsel,Vsel_b,Vin,Vout]
