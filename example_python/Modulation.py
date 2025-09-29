@@ -39,7 +39,6 @@ def DemodVMM(circuit,dim=[16,4], island=None,decoderPlace=True,loc=[0,0], inputs
         GateSwitches = STD_IndirectGateSwitch(circuit,VMMIsland,numCols)
 
         drainBits = int(np.ceil(np.log2(dim[0])))
-        
         DrainDecoder = STD_DrainDecoder(circuit,VMMIsland,drainBits)
         DrainSel = RunDrainSwitch(Top,VMMIsland,num=numRows)
         DrainSwitches = DrainCutoff(Top,VMMIsland,num=numRows)
@@ -47,34 +46,88 @@ def DemodVMM(circuit,dim=[16,4], island=None,decoderPlace=True,loc=[0,0], inputs
     Mod = Island(circuit)
 
     Modualtion = TSMC350nm_Modulation(circuit,dim=(numRows,1),island=Mod)
-    Modualtion.place([numRows,numCols+3]) 
+    Modualtion.place([0,numCols+3]) 
 
     for i in range(numRows):
-        Tgate_4.A[4*i] += Modualtion.I1_P[i]
-        Tgate_4.A[4*i+1] += Modualtion.I1_N[i]
-        Tgate_4.A[4*i+2] += Modualtion.I3_P[i]
-        Tgate_4.A[4*i+3] += Modualtion.I3_N[i]
+        Tgate_4.A[i*4] += Modualtion.I1_P[i]
+        Tgate_4.A[i*4+1] += Modualtion.I1_N[i]
+        Tgate_4.A[i*4+2] += Modualtion.I3_P[i]
+        Tgate_4.A[i*4+3] += Modualtion.I3_N[i]
+
+    #outerPins = frame(Top)
 
     outerPins = frame(Top)
+    #Vin = outerPins.createPort("W","Vin")
+    #Vref = outerPins.createPort("W","Vref")
+    #for i in range(numStages):
+    #    Vin += C4_instances[i].VIN
+    #    Vref += C4_instances[i].VREF
+        
+    PROG = outerPins.createPort("N","Prog")
+    RUN = outerPins.createPort("N","Run")
+    VGRUN = outerPins.createPort("N","VGRUN")
+    VGPROG = outerPins.createPort("N","VGPROG")
 
-    '''VTUN = outerPins.createPort("N","VTUN")
-    AVDD = outerPins.createPort("N","AVDD")
+
+    VTUN = outerPins.createPort("N","VTUN")
+    #AVDD = outerPins.createPort("N","AVDD")
     GND_N = outerPins.createPort("N","gnd")
     GND_S = outerPins.createPort("S","gnd")
     VINJ_N = outerPins.createPort("N","vinj")
     VINJ_S = outerPins.createPort("S","vinj")
 
+    DrainlineP = outerPins.createPort("W","Drainline_Prog")
+    DrainlineR = outerPins.createPort("W","Drainline_Run")
+        
+    #gateBits = int(np.ceil(np.log2(numCols*2)))
+    GateEnable = outerPins.createPort("N","GateEnable")
+    #GateB = outerPins.createPort("N","GateB",dimension=gateBits)
+
+    DrainEnable = outerPins.createPort("W","DrainEnable")
+    #DrainB = outerPins.createPort("W","DrainB",dimension=drainBits)
+
+    '''V_NW = outerPins.createPort("N","V_NW", dimension=rows)
+    V_SW = outerPins.createPort("N","V_SW", dimension=rows)
+    V_NE = outerPins.createPort("N","V_NE", dimension=(rows*columns))
+    V_SE = outerPins.createPort("N","V_SE", dimension=(rows*columns))'''
+    #print(rows*columns)
+    
+    # Pin Connections
+    # -------------------------------------------------------------------------------
+    for i in range(2*numCols-1):
+        GateSwitches.RUN_IN[i] += VGRUN
+    #GateSwitches.VINJ_T[0] += GateDecoder.VINJ_b[0]
+    #GateSwitches.VINJ_T[1] += GateDecoder.VINJ_b[1]
+    
+    #GateSwitches.GND_T[0] += GND_N
+    #GateSwitches.GND_T[0] += GND_N
+    #GateSwitches.GND_T[1] += GND_N
+    GateSwitches.Vgsel += VGPROG
+    GateSwitches.PROG += PROG
+    GateSwitches.RUN += RUN
+    GateSwitches.vtun_l += VTUN
+
+
     GateDecoder.VINJV += VINJ_N
     GateDecoder.GNDV += GND_N
+    GateDecoder.ENABLE += GateEnable
+    #GateDecoder.IN += GateB
 
     DrainSwitches.VDD += VINJ_S
     DrainSwitches.GND += GND_S
+    DrainSwitches.RUN += RUN
 
-    DrainSel.VINJ_b += VINJ_N
-    DrainSel.GND_b += GND_N
+    DrainSel.VINJ += VINJ_N
+    DrainSel.GND += GND_N
+    DrainSel.prog_drainrail += DrainlineP
+    DrainSel.run_drainrail += DrainlineR
 
-    DrainDecoder.VINJ += VINJ_S
-    DrainDecoder.GND += GND_S'''
+    DrainDecoder.VINJ += VINJ_N
+    DrainDecoder.GND += GND_N
+    #for i in range(drainBits):
+    #    DrainDecoder.IN[i] += DrainB[i]
+    #DrainDecoder.IN += DrainB
+    DrainDecoder.ENABLE += DrainEnable
 
     if numRows < 5:
         X_val = ((numCols-1)*27000) + 125000
@@ -94,12 +147,11 @@ def DemodVMM(circuit,dim=[16,4], island=None,decoderPlace=True,loc=[0,0], inputs
     #location_islands = ((0,0),(210000,0),(210000,50000)) #successful for 8 x 8 = m x n
     #location_islands = ((0,0),(1920000,0),(1920000,100000)) #successful for 8 x 120 = m x n 
 
-
     return location_islands
 
 Top = Circuit()
  
-design_limits = [10e6, 10e6]
+design_limits = [6e6, 5e6]
 
 location_islands = DemodVMM(Top, dim=[300,320], island=None, decoderPlace=True, loc=[0,0], inputs=None, islandLoc=[0,0])
 
