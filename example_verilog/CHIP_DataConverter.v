@@ -14,7 +14,7 @@ module TOP(port1);
 
 
 	/* Island 2 */
-	TSMC350nm_VerticalScanner I__0 (.island_num(2), .row(0), .col(0), .matrix_row(4), .matrix_col(1), .In_0_col_0(net350[0:4]), .In_1_col_0(net230[0:4]), .In_2_col_0(net231[0:4]), .In_3_col_0(net232[0:4]), .Outrow_0(net262[0]), .Dinrow_0(net241[0]), .VDDrow_0(net328[0]), .GNDrow_0(net330[0]), .CLKrow_0(net239[0]), .RSTBarrow_0(net240[0]));
+	TSMC350nm_VerticalScanner_STD I__0 (.island_num(2), .row(0), .col(0), .matrix_row(4), .matrix_col(1), .In_0_col_0(net350[0:4]), .In_1_col_0(net230[0:4]), .In_2_col_0(net231[0:4]), .In_3_col_0(net232[0:4]), .Outrow_0(net262[0]), .Dinrow_0(net241[0]), .VDDrow_0(net328[0]), .GNDrow_0(net330[0]), .CLKrow_0(net239[0]), .RSTBarrow_0(net240[0]));
 
  	/*Programming Mux */ 
 
@@ -29,7 +29,7 @@ module TOP(port1);
 
 
 	/* Island 4 */
-	AnalogBuffer I__0 (.island_num(4), .row(0), .col(0), .matrix_row(4), .matrix_col(1), .VDD_brow_3(net294[0]), .GND_brow_3(net330[0]), .VINJrow_0(net295[0]), .VINJ_brow_3(net329[0]), .Vgrow_0(net296[0]), .Vd_Pcol_0(net298[0:4]), .Vselrow_0(net297[0]), .Vincol_0(net262[0:4]), .Voutcol_0(net302[0:4]));
+	TSMC350nm_AnalogBuffer I__0 (.island_num(4), .row(0), .col(0), .matrix_row(4), .matrix_col(1), .VDD_brow_3(net294[0]), .GND_brow_3(net330[0]), .VINJrow_0(net295[0]), .VINJ_brow_3(net329[0]), .Vgrow_0(net296[0]), .Vd_Pcol_0(net298[0:4]), .Vselrow_0(net297[0]), .Vincol_0(net262[0:4]), .Voutcol_0(net302[0:4]));
 
  	/*Programming Mux */ 
 	TSMC350nm_VinjDecode2to4_htile decoder(.island_num(4), .direction(horizontal), .bits(2), .decode_n0_ENABLE(net406), .decode_n0_n0_IN_1_(net404), .decode_n0_n0_IN_0_(net403));

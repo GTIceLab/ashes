@@ -10,8 +10,6 @@ MacroIsland = Island(Top)
 macro = Macro(Top,MacroIsland,[1,1])
 macro.place([0,0])
 
-# TODO Fix the instances pin names:[0] to <0> or add another parsing method
-
 # Frame
 # -------------------------------------------------------------------------------
 FrameIsland = Island(Top)

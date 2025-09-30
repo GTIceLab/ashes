@@ -1227,7 +1227,7 @@ class TSMC350nm_VerticalScanner(StandardCell):
 
 
 		# Define cell information
-		self.name = 'TSMC350nm_VerticalScanner'
+		self.name = 'TSMC350nm_VerticalScanner_STD'
 		self.In = Port(circuit,self,'In','W',4*self.dim[0])
 		self.Out = Port(circuit,self,'Out','N',1*self.dim[1])
 		self.Din = Port(circuit,self,'Din','N',1*self.dim[1])
