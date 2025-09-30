@@ -12,7 +12,7 @@ from pathlib import Path
 
 # make sure our local fork of gdsii is added to system path
 path_root = Path(__file__).parents[0]
-sys.path.append(str(path_root))__init
+sys.path.append(str(path_root))
 
 from verilog_parser.parser import parse_verilog 
 from gdsii import types, tags 

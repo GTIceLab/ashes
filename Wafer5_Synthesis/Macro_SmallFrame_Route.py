@@ -102,4 +102,4 @@ location_islands = ((210600, 410000), (20600, 20000))
 # location_islands = ((250600, 4600000), (20600, 20000), (300000, 250600))
 # location_islands = None
 
-compile_asic(Top,process="TSMC350nm",fileName="Macro_SmallFrame",p_and_r = True,design_limits = design_limits, location_islands = location_islands,route=False)
+compile_asic(Top,process="TSMC350nm",fileName="Macro_SmallFrame",p_and_r = True,design_limits = design_limits, location_islands = location_islands)
