@@ -94,8 +94,11 @@ def gds_synthesis(process_params, design_area, proj_name, isle_loc=None, routed_
             pattern = r'_(\d+)_'
             matches = re.search(pattern, p_key)
             if p_key not in excluded_ports and matches:
-                replacement = r'<\1>'
+                # Reverse to catch last _num_ pattern
+                p_key = p_key[::-1]
+                replacement = r'>\1<'
                 p_key = re.sub(pattern, replacement, p_key, count=1)
+                p_key = p_key[::-1]
             pattern = r'(?i)_PLUS_'
             matches = re.search(pattern, p_key)
             if p_key not in excluded_ports and matches:
@@ -1793,9 +1796,9 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m3_except:
                     array = island['coords']
                     loc = array[idx]
-                    block_x1 = loc[0]
-                    block_y1 = loc[1] 
-                    block_x2 = loc[2] 
+                    block_x1 = loc[0] + int(1*dbu)
+                    block_y1 = loc[1] + int(1*dbu)
+                    block_x2 = loc[2] - int(1*dbu)
                     block_y2 = loc[3] - int(1*dbu)
                     poly_mlayer = metal_layers[stop_layer]
                     def_file.write(f'  - {poly_mlayer}\n')
@@ -1809,9 +1812,9 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m4_except:
                     array = island['coords']
                     loc = array[idx]
-                    block_x1 = loc[0]
-                    block_y1 = loc[1] 
-                    block_x2 = loc[2] 
+                    block_x1 = loc[0] + int(1*dbu)
+                    block_y1 = loc[1] + int(1*dbu)
+                    block_x2 = loc[2] - int(1*dbu)
                     block_y2 = loc[3] - int(1*dbu)
                     poly_mlayer = metal_layers[stop_layer+1]
                     def_file.write(f'  - {poly_mlayer}\n')
@@ -1821,77 +1824,80 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     def_file.write(f'  END\n\n')
         # Write blockages for the rectilinear macro to keep routes from going over the top
         # TODO add blockages between pins
-        if item['name'] in rectilinear:
-            # print(f"\n\n frame-module-blockages for loop now \n\n")
-            frame_name = item['name']
-            frame_origin = cell_info[frame_name]['origin']
-            frame_w, frame_h = cell_info[frame_name]['width'], cell_info[frame_name]['height']
-            frame_blockage_size = int(1*dbu) # specify in micron, convert to database units (nm)
-            num_metals = len(metal_layers)  
-            # ---------------------------
-    
-            # Example
-            macro_rect = rectangle(frame_origin, size = (frame_w, frame_h))
-            # print(f"Macro rectangle: {macro_rect} \n")
-            cutouts = [(0,45), (1411, 195), 
-                       (1411, 45), (4779.6, 82.4844), 
-                       (6237, 45), (6294.4, 293.6)]
-            # print(f'cutouts: {cutouts}')
-            scaled_cutouts = [(x * dbu, y * dbu) for (x, y) in cutouts]
-
-            cutouts_rects = []       
-            for i in range(0, len(scaled_cutouts), 2):  # step size 2
-                p1 = scaled_cutouts[i]
-                p2 = scaled_cutouts[i+1]
-                rect = rectangle(origin=p1, vert2=p2)
-                cutouts_rects.append(rect)
-            # print(f'Cutout Rects: {cutouts_rects}\n')
-            pieces, diff = subtract_and_polygonize(macro_rect, cutouts_rects)
-
-            for i, poly in enumerate(pieces, start=1):
-                print(f"Polygon {i}:")
-                print(list(poly.exterior.coords))
-                final_poly = list(poly.exterior.coords)
-
-            # Defining final blockage rectangles based on cutouts 
-            x_values = sorted({x for x, y in scaled_cutouts})  # use a set to remove duplicates
+        for val,island in cell_order_in_island.items():
+            for idx, item in island['items'].items():
+                if item['name'] in rectilinear:
+                    #print(f"\n\n frame-module-blockages for loop now \n\n")
+                    frame_name = item['name']
+                    frame_origin = cell_info[frame_name]['origin']
+                    frame_w, frame_h = cell_info[frame_name]['width'], cell_info[frame_name]['height']
+                    frame_blockage_size = int(1*dbu) # specify in micron, convert to database units (nm)
+                    num_metals = len(metal_layers)  
+                    # ---------------------------
             
-            margin = pin_const*dbu
-            vertical_splits=[]
+                    # Example
+                    macro_rect = rectangle(frame_origin, size = (frame_w, frame_h))
+                    # print(f"Macro rectangle: {macro_rect} \n")
+                    cutouts = [(0,45), (1411, 195), 
+                               (1411, 45), (4779.6, 82.4844), 
+                               (6237, 45), (6294.4, 293.6)]
+                    # print(f'cutouts: {cutouts}')
+                    scaled_cutouts = [(x * dbu, y * dbu) for (x, y) in cutouts]
 
-            # add spacing for pins
-            for i in range(len(x_values)):
-                if i < 3:
-                    vertical_splits.append(x_values[i] + margin)
-                else: 
-                    vertical_splits.append(x_values[i] - margin)
+                    cutouts_rects = []       
+                    for i in range(0, len(scaled_cutouts), 2):  # step size 2
+                        p1 = scaled_cutouts[i]
+                        p2 = scaled_cutouts[i+1]
+                        rect = rectangle(origin=p1, vert2=p2)
+                        cutouts_rects.append(rect)
+                    # print(f'Cutout Rects: {cutouts_rects}\n')
+                    pieces, diff = subtract_and_polygonize(macro_rect, cutouts_rects)
+
+                    for i, poly in enumerate(pieces, start=1):
+                        print(f"Polygon {i}:")
+                        print(list(poly.exterior.coords))
+                        final_poly = list(poly.exterior.coords)
+
+                    # Defining final blockage rectangles based on cutouts 
+                    x_values = sorted({x for x, y in scaled_cutouts})  # use a set to remove duplicates
+                    
+                    margin = pin_const*dbu
+                    vertical_splits=[]
+
+                    # add spacing for pins
+                    for i in range(len(x_values)):
+                        if i < 3:
+                            vertical_splits.append(x_values[i] + margin)
+                        else: 
+                            vertical_splits.append(x_values[i] - margin)
+                    
+                    '''print(f"Original vertical splits: {x_values}")
+                    print(f"Offset vertical splits: {vertical_splits}")'''
+                    
+                    shrinked_diff = shrink_polygon(diff, margin)
+                    rectangles = generate_rectangles(shrinked_diff, vertical_splits)
+
+                    array = island['coords']
+                    loc = array[idx]
+                    offsetx = loc[0]
+                    offsety = loc[1]
+
+                    # --- Write rectangles to file ---
+                    for block_x1, block_y1, block_x2, block_y2 in rectangles:
+                        block_x1_loc = block_x1 + offsetx
+                        block_y1_loc = block_y1 + offsety
+                        block_x2_loc = block_x2 + offsetx
+                        block_y2_loc = block_y2 + offsety
+                        for num in range(num_metals): 
+                            poly_mlayer = metal_layers[num]   
+                            def_file.write(f'  - {poly_mlayer}\n')
+                            def_file.write(f'    LAYER {poly_mlayer} ;\n')
+                            def_file.write(f'    RECT ( {block_x1_loc} {block_y1_loc} ) ( {block_x2_loc} {block_y2_loc} ) ;\n')
+                            def_file.write(f'  END\n\n')
+
+                    '''print(f"{len(rectangles)} rectangles generated.")
+                    print(f"Blockages: {rectangles}")'''
             
-            '''print(f"Original vertical splits: {x_values}")
-            print(f"Offset vertical splits: {vertical_splits}")'''
-            
-            shrinked_diff = shrink_polygon(diff, margin)
-            rectangles = generate_rectangles(shrinked_diff, vertical_splits)
-
-            array = island['coords']
-            loc = array[idx]
-            offsetx = loc[0]
-            offsety = loc[1]
-
-            # --- Write rectangles to file ---
-            for block_x1, block_y1, block_x2, block_y2 in rectangles:
-                block_x1_loc = block_x1 + offsetx
-                block_y1_loc = block_y1 + offsety
-                block_x2_loc = block_x2 + offsetx
-                block_y2_loc = block_y2 + offsety
-                for num in range(num_metals): 
-                    poly_mlayer = metal_layers[num]   
-                    def_file.write(f'  - {poly_mlayer}\n')
-                    def_file.write(f'    LAYER {poly_mlayer} ;\n')
-                    def_file.write(f'    RECT ( {block_x1_loc} {block_y1_loc} ) ( {block_x2_loc} {block_y2_loc} ) ;\n')
-                    def_file.write(f'  END\n\n')
-
-            '''print(f"{len(rectangles)} rectangles generated.")
-            print(f"Blockages: {rectangles}")'''
         
         # Write blockages for the frame to keep routes internal
         if frame_module:

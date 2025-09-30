@@ -6,7 +6,7 @@ from ashes_fg.class_lib_mux import *
 from ashes_fg.class_lib_cab import *
 
 from ashes_fg.asic.asic_systems import *
-
+import re
 #------------------------------CAB merge procedure:
 #------------------------------cd into example_json and "python json2py.py" (to make cab1 and cab2 python files)
 #------------------------------cd .., uncomment line 17 and 18, comment line 20, "python py2asic.py" (to make cab1 and cab2 gds files)
@@ -19,6 +19,10 @@ from ashes_fg.asic.asic_systems import *
 #exec(open("./Wafer5_Synthesis/Macro_SmallFrame_Route.py").read())
 
 exec(open("./example_python/ALICEtoFrame.py").read())
+
+exec(open("./example_python/CHIP_DataConverter.py").read())
+
+#exec(open("./Wafer5_Synthesis/Macro2_SmallFrame_Route.py").read())
 
 
 
