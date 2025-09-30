@@ -16,7 +16,9 @@ from ashes_fg.asic.asic_systems import *
 
 
 
-exec(open("./Wafer5_Synthesis/Macro_SmallFrame_Route.py").read())
+#exec(open("./Wafer5_Synthesis/Macro_SmallFrame_Route.py").read())
+
+exec(open("./example_python/ALICEtoFrame.py").read())
 
 
 
