@@ -115,7 +115,7 @@ macro.DVDD += chipframe.DVDD_N[2]
 DebugScannerIsland = ac.Island(Top)
 DebugScanner = lib_new.TSMC350nm_VerticalScanner(Top,DebugScannerIsland,dim=(4,1))
 DebugScanner.place([0,0])
-DebugScannerLocation = (3500e3,250e3)
+DebugScannerLocation = (3500e3,350e3)
 
 DebugScanner.VDD += chipframe.DVDD_S[2]
 DebugScanner.GND += chipframe.gnd_S[2]
@@ -152,7 +152,7 @@ GateSwitches.Vgsel += macro.VGPROG
 GateSwitches.RUN_IN += macro.VGRUN[0]
 
 
-BufferLocation = (3250e3,250e3)
+BufferLocation = (3250e3,270e3)
 
 Buffers.VDD_b += chipframe.avdd_S[2]
 Buffers.GND_b += chipframe.gnd_S[2]
@@ -169,7 +169,7 @@ Buffers.Vout += chipframe.IO_S[14:18]
 LVLIsland = ac.Island(Top)
 LVLShift = TSMC350nm_LVLShift_x16(Top,LVLIsland)
 LVLShift.place([0,0])
-LVL_Location = (2750e3,250e3)
+LVL_Location = (2750e3,350e3)
 
 LVLShift.DVDD += chipframe.DVDD_S[2]
 LVLShift.VINJ += chipframe.VINJ_S[2]
@@ -192,7 +192,7 @@ DrainSelect.run_drainrail += macro.SystemDrainline[1]
 QDACIsland = ac.Island(Top)
 QDAC = lib_dc.QDAC(Top,QDACIsland)
 QDAC.place([0,0])
-QDAC_location = (300e3, 250e3)
+QDAC_location = (300e3, 300e3)
 
 QDAC.AVDD_S += chipframe.avdd_S[0]
 QDAC.GND_S += chipframe.gnd_S[0]
@@ -250,7 +250,7 @@ RampADC.Drainline_Run += DrainSwitch.In[1]
 AlgorithmicADCIsland = ac.Island(Top)
 AlgorithmicADC = lib_dc.AlgorithmicADC(Top,AlgorithmicADCIsland)
 AlgorithmicADC.place([0,0])
-AlgorithmicADC_location = (750e3,250e3)
+AlgorithmicADC_location = (700e3,300e3)
 
 AlgorithmicADC.AVDD_S += chipframe.avdd_S[0]
 AlgorithmicADC.GND_S += chipframe.gnd_S[0]
@@ -285,7 +285,7 @@ AlgorithmicADC.Drainline_Run += DrainSwitch.In[2]
 AveragerDACIsland = ac.Island(Top)
 AveragerDAC = lib_dc.AveragerDAC(Top,AveragerDACIsland)
 AveragerDAC.place([0,0])
-AveragerDAC_location = (1300e3,250e3)
+AveragerDAC_location = (1200e3,300e3)
 
 AveragerDAC.AVDD_S += chipframe.avdd_S[0]
 AveragerDAC.GND_S += chipframe.gnd_S[0]
@@ -313,7 +313,7 @@ AveragerDAC.Drainline_Run += DrainSwitch.In[3]
 
 # Compilation
 #-------------------------------------------------------------------------------
-design_limits = [9e6, 9e6]
-location_islands = ((250600, 410000), (20600, 20000), DebugScannerLocation,DrainSelLocation,BufferLocation,LVL_Location, QDAC_location, RampADC_location, AlgorithmicADC_location, AveragerDAC_location)
+design_limits = [7e6, 6.21e6]
+location_islands = ((210600, 410000), (20600, 20000), DebugScannerLocation,DrainSelLocation,BufferLocation,LVL_Location, QDAC_location, RampADC_location, AlgorithmicADC_location, AveragerDAC_location)
 
 ac.compile_asic(Top,process="TSMC350nm",fileName="CHIP_DataConverter",p_and_r = True,design_limits = design_limits, location_islands = location_islands,gateSpaceIdx=4,gateSpace=15,route=True)
