@@ -1198,11 +1198,11 @@ class AnalogBuffer(StandardCell):
         self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
         self.Vg = Port(circuit,self,'Vg','N',1*self.dim[1])
         self.Vg_b = Port(circuit,self,'Vg_b','S',1*self.dim[1])
-        self.Vd_P = Port(circuit,self,'Vd_P','W',1*self.dim[1])
+        self.Vd_P = Port(circuit,self,'Vd_P','W',1*self.dim[0])
         self.Vsel = Port(circuit,self,'Vsel','N',1*self.dim[1])
         self.Vsel_b = Port(circuit,self,'Vsel_b','S',1*self.dim[1])
-        self.Vin = Port(circuit,self,'Vin','W',1*self.dim[1])
-        self.Vout = Port(circuit,self,'Vout','E',1*self.dim[1])
+        self.Vin = Port(circuit,self,'Vin','W',1*self.dim[0])
+        self.Vout = Port(circuit,self,'Vout','E',1*self.dim[0])
 
         # Initialize ports with given values
         portsInit = [VTUN,VTUN_b,VDD,VDD_b,GND,GND_b,VINJ,VINJ_b,Vg,Vg_b,Vd_P,Vsel,Vsel_b,Vin,Vout]
@@ -1419,7 +1419,7 @@ class ALICE(StandardCell):
 		self.s_gnd = Port(circuit,self,'s_gnd','S',1*self.dim[1])
 
 		# Initialize ports with given values
-		portsInit = [w_Prog,w_Run,w_VGRUN,w_VGPROG,w_VTUN,w_AVDD,w_Drainline_Prog_VMM,w_Drainline_Run_VMM,w_DrainEnable,w_DrainEnable_VMMw_DrainB,e_WTA_out,e_Din,e_CLK, e_RSTBar,e_WTA_Vbias,e_AFE_out,n_Vin,n_Vref,n_Drainline_Prog_AFE,n_Drainline_Run_AFE,n_GateEnable,n_GateEnable_VMM,n_GateB,n_vinj,n_gnds_vinj,s_gnd]
+		portsInit = [w_Prog,w_Run,w_VGRUN,w_VGPROG,w_VTUN,w_AVDD,w_Drainline_Prog_VMM,w_Drainline_Run_VMM,w_DrainEnable,w_DrainEnable_VMM,w_DrainB,e_WTA_out,e_Din,e_CLK, e_RSTBar,e_WTA_Vbias,e_AFE_out,n_Vin,n_Vref,n_Drainline_Prog_AFE,n_Drainline_Run_AFE,n_GateEnable,n_GateEnable_VMM,n_GateB,n_vinj,n_gnd,s_vinj,s_gnd]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
