@@ -1,6 +1,11 @@
 import os
 import numpy as np
 
+def cp_command(dict,path,chip_num,brdtype):
+	for key in dict:
+		#hardcoded path?
+		os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/{key} {dict[key]}")
+
 def compile(project_name, board_type, chip_num):
 
 	path = os.path.join("/home/ubuntu/ashes/",project_name)
@@ -15,6 +20,7 @@ def compile(project_name, board_type, chip_num):
 		exit()
 	print(path)
 	
+	'''
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_debug.asm {path}/chip_para_debug.asm")
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_TR_chip{chip_num}{brdtype}.asm {path}/chip_para_TR.asm")
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_SP_chip{chip_num}{brdtype}.asm {path}/chip_para_SP.asm")
@@ -22,7 +28,17 @@ def compile(project_name, board_type, chip_num):
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_CP_chip{chip_num}{brdtype}.asm {path}/chip_para_CP.asm")
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_FP_chip{chip_num}{brdtype}.asm {path}/chip_para_FP.asm")
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/Vd_table/Vd_table_30mV_chip{chip_num}{brdtype} {path}/Vd_table_30mV")
-	
+	'''
+	cp_commands = {"chip_para_debug.asm":"{{path}}/chip_para_debug.asm",
+				   "chip_para_TR_chip{{chip_num}}{{brdtype}}.asm":"{{path}}/chip_para_TR.asm",
+				   "chip_para_SP_chip{{chip_num}}{{brdtype}}.asm":"{{path}}/chip_para_SP.asm",
+				   "chip_para_RI_chip{{chip_num}}{{brdtype}}.asm":"{{path}}/chip_para_RI.asm",
+				   "chip_para_CP_chip{{chip_num}}{{brdtype}}.asm":"{{path}}/chip_para_CP.asm",
+				   "chip_para_FP_chip{{chip_num}}{{brdtype}}.asm":"{{path}}/chip_para_FP.asm",
+				   }
+	cp_command(cp_commands,path,chip_num,brdtype)
+	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/Vd_table/Vd_table_30mV_chip{chip_num}{brdtype} {path}/Vd_table_30mV")
+
 	#//exec("~/rasp30/prog_assembly/libs/scilab_code/characterization/char_diodeADC.sce",-1);
 	
 	
@@ -663,6 +679,7 @@ def diodeADC_v2i(Vfg, chip_num, brdtype):
 	Offset_v2h=EKV_diodeADC_para[4]
 	Isat=Is*np.power((np.log(1+np.exp(kappa*((vdd-Vfg)-VT)/(2*0.0258)))),2)
 	return Isat
+
 def diodeADC_i2v(Isat, chip_num, brdtype):
 	vdd=2.5;
 	EKV_diodeADC_para = np.loadtxt(f"/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/EKV_diodeADC/EKV_diodeADC_chip{chip_num}{brdtype}", delimiter = ',')
@@ -673,6 +690,7 @@ def diodeADC_i2v(Isat, chip_num, brdtype):
 	Offset_v2h=EKV_diodeADC_para[4]
 	Vfg=vdd-(((np.log(np.exp(np.sqrt(Isat/Is))-1)*(2*0.0258)/kappa)+VT)*2)/2
 	return Vfg
+
 def diodeADC_v2h(Vfg, chip_num, brdtype):
 	vdd=2.5;
 	EKV_diodeADC_para = np.loadtxt(f"/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/EKV_diodeADC/EKV_diodeADC_chip{chip_num}{brdtype}", delimiter = ',')
@@ -683,6 +701,7 @@ def diodeADC_v2h(Vfg, chip_num, brdtype):
 	Offset_v2h=EKV_diodeADC_para[4]
 	hex=Slope_v2h*2*(vdd-Vfg) + Offset_v2h;
 	return hex
+
 def diodeADC_h2v(hex, chip_num, brdtype):
 	vdd=2.5;
 	EKV_diodeADC_para = np.loadtxt(f"/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/EKV_diodeADC/EKV_diodeADC_chip{chip_num}{brdtype}", delimiter = ',')
