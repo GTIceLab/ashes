@@ -1,16 +1,15 @@
 import os
 import numpy as np
 
-def cp_command(dict,path,chip_num,brdtype):
-	for key in dict:
-		#hardcoded path?
-		os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/{key} {dict[key]}")
+KAPPA_CONSTANT = 30 # relationship of target current between subVt and lowsubVt range.
 
 def compile(project_name, board_type, chip_num):
 
+	# set path
 	path = os.path.join("/home/ubuntu/ashes/",project_name)
 	extension = ".swcs"
 	
+	# set brdtype
 	if   board_type == '3.0a': brdtype = '_30a'
 	elif board_type == '3.0n': brdtype = '_30n'
 	elif board_type == '3.0h': brdtype = '_30h'
@@ -20,7 +19,7 @@ def compile(project_name, board_type, chip_num):
 		exit()
 	print(path)
 	
-	'''
+	# copy chip parameters (?) to local path
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_debug.asm {path}/chip_para_debug.asm")
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_TR_chip{chip_num}{brdtype}.asm {path}/chip_para_TR.asm")
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_SP_chip{chip_num}{brdtype}.asm {path}/chip_para_SP.asm")
@@ -28,33 +27,19 @@ def compile(project_name, board_type, chip_num):
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_CP_chip{chip_num}{brdtype}.asm {path}/chip_para_CP.asm")
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_FP_chip{chip_num}{brdtype}.asm {path}/chip_para_FP.asm")
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/Vd_table/Vd_table_30mV_chip{chip_num}{brdtype} {path}/Vd_table_30mV")
-	'''
-	cp_commands = {"chip_para_debug.asm":"{{path}}/chip_para_debug.asm",
-				   "chip_para_TR_chip{{chip_num}}{{brdtype}}.asm":"{{path}}/chip_para_TR.asm",
-				   "chip_para_SP_chip{{chip_num}}{{brdtype}}.asm":"{{path}}/chip_para_SP.asm",
-				   "chip_para_RI_chip{{chip_num}}{{brdtype}}.asm":"{{path}}/chip_para_RI.asm",
-				   "chip_para_CP_chip{{chip_num}}{{brdtype}}.asm":"{{path}}/chip_para_CP.asm",
-				   "chip_para_FP_chip{{chip_num}}{{brdtype}}.asm":"{{path}}/chip_para_FP.asm",
-				   }
-	cp_command(cp_commands,path,chip_num,brdtype)
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/Vd_table/Vd_table_30mV_chip{chip_num}{brdtype} {path}/Vd_table_30mV")
-
-	#//exec("~/rasp30/prog_assembly/libs/scilab_code/characterization/char_diodeADC.sce",-1);
-	
-	
+		
 	zip_list = ' ';
 
 	#########################################
 	## Make programm reverse program files ##
 	#########################################
 	os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh tunnel_revtun_SWC_CAB ~/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 16384 16384 16384 {path}")
-	zip_list = zip_list + "tunnel_revtun_SWC_CAB.elf ";
+	zip_list = zip_list + "tunnel_revtun_SWC_CAB.elf "; # run in program_fpaa.py
 	
 	###############################
 	## Make switch program files ##
 	###############################
-	switch_list_temp = np.loadtxt(f"{path}/{project_name}.swcs");
-	#print (switch_list_temp)
+	switch_list_temp = np.loadtxt(f"{path}/{project_name}.swcs"); # from blif->switchlist (?)
 	
 	## Make switch list (dec) which includes the information how many switches are. 
 	n = len(switch_list_temp)
@@ -64,7 +49,6 @@ def compile(project_name, board_type, chip_num):
 	    	switch_list.append([switch_list_temp[i][0],switch_list_temp[i][1],switch_list_temp[i][2]]); 
 	np.savetxt(f"{path}/switch_list", switch_list, "%5.15f", ' ')
 
-	
 	# Make switch info (hex) which will be uploaed to the sram. 
 	n=len(switch_list)
 
@@ -75,10 +59,9 @@ def compile(project_name, board_type, chip_num):
 		else:
 			temp = temp + f"0x{int(switch_list[i][0]):04x} " + f"0x{int(switch_list[i][1]):04x} " + f"0x{int(switch_list[i][2]):04x} "
 	
-	fd = open(f"{path}/switch_info", "w") 
+	fd = open(f"{path}/switch_info", "w") # switch definitions in hex -> loaded into sram
 	fd.write(temp)
 	fd.close()
-	
 	
 	os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh switch_program ~/rasp30/prog_assembly/libs/asm_code/switch_program_ver04.s43 16384 16384 16384 {path}")
 	zip_list = zip_list + "switch_program.elf "
@@ -87,17 +70,16 @@ def compile(project_name, board_type, chip_num):
 	if not os.path.isdir(hid_dir):
 		os.mkdir(hid_dir)
 	
-	
-	
+	# remove old files
 	os.system(f"rm {path}/{hid_dir}/switch_list_ble") 
 	os.system(f"rm {path}/{hid_dir}/switch_info_ble")
+
 	# Make switch list (dec) for ble switches.
 	n = len(switch_list_temp)
 	switch_list_ble=[]
 	for i in range(n):
-	    if switch_list_temp[i][3] == 0 and switch_list_temp[i][2] == 2: 
+	    if switch_list_temp[i][3] == 0 and switch_list_temp[i][2] == 2: # same conditions as switch_list and switch_info
 	    	switch_list_ble.append([switch_list_temp[i][0],switch_list_temp[i][1],switch_list_temp[i][2]])
-
 	
 	# Make switch info for ble (hex) which will be uploaed to the sram. 
 	n = len(switch_list_ble)
@@ -105,8 +87,7 @@ def compile(project_name, board_type, chip_num):
 	for i in range(n):
 	    temp = temp + f"0x{int(switch_list_ble[i][0]):04x} " + f"0x{int(switch_list_ble[i][1]):04x} " + f"0x{int(switch_list_ble[i][2]):04x} "
 
-
-	if switch_list_ble:
+	if switch_list_ble: # reason for different format compared to non-ble?
 	#maybe add the {hid_dir} to the path
 	    np.savetxt(f"{path}/switch_list_ble", switch_list_ble, "%5.15f", ' ')
 	    fd = open(f"{path}/switch_info_ble", "w") 
@@ -131,67 +112,8 @@ def compile(project_name, board_type, chip_num):
 	    	target_list[i][2] = 100e-09 # 100nA doesn't mean anything. I just put it since switches with 0 caused error. 
 	print(target_list)
 	
-	# Mismatch map compensation
-	b1 = os.system(f"ls ~/rasp30/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}")
 	
-	if b1 == 0: # 0 if no error occurred, 1 if error.
-		mismatch_map = np.loadtxt(fname = f"/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}", delimiter = ',', ndmin = 2)
-		#print(mismatch_map)
-		
-		r_size_mmap = len(mismatch_map)
-		#print(r_size_mmap)
-		
-		for i in range(n):
-			if target_list[i][3] != 0:   # Switch programming:0 , Target programming:1 ~ 6
-				for j in range(r_size_mmap):
-					if target_list[i][0] == mismatch_map[j][0]:
-						if target_list[i][1] == mismatch_map[j][1]:
-								target_list[i][2] = diodeADC_v2i(diodeADC_i2v(target_list[i][2],chip_num,brdtype) + mismatch_map[j][2],chip_num,brdtype)
-		np.savetxt(f"{path}/mismatch_mapped_swc_list", switch_list_ble, "%5.15f", ' ')
-	
-	
-	k=1; 
-	mmap_cal_list=[]; # Mismatch map calibration list.
-	for i in range(n):
-		if target_list[i][3] == 11 or target_list[i][3] == 12 or target_list[i][3] == 13 or target_list[i][3] == 14 or target_list[i][3] == 15: # Generate calibration list.
-			mmap_cal_list.append(target_list[i])
-			target_list[i][3].append(target_list[i][3]-10)
-			k=k+1;
-	
-	if mmap_cal_list:
-		np.savetxt(f"{path}/mmap_cal_list", mmap_cal_list, "%5.15f", ' ')
-		print(mmap_cal_list)
-
-	target_list_copy = np.array(target_list).copy()
-
-	#ADC_Current_copy = ADC_Current;
-	temp_size = len(target_list);
-	#temp_size2=size(ADC_Current_copy); n2=temp_size2(1,1);
-	kappa_constant = 30; # relationship of target current between subVt and lowsubVt range.
-	
-	
-	for i in range(n):
-		if target_list_copy[i][2] < 1e-9:
-			target_list_copy[i][2] = target_list_copy[i][2]*kappa_constant
-		if target_list_copy[i][2] > 10e-6:
-			target_list_copy[i][2] = target_list_copy[i][2]/kappa_constant
-	#print(target_list_copy)
-	
-	#disp(target_list_copy)
-
-	#for i=1:n
-	#    if target_list(i,4) ~= 0 then   // Switch programming:0 , Target programming:1 ~ 6
-	#        ADC_Current_copy(:,3)=abs(ADC_Current_copy(:,2)-target_list_copy(i,3));
-	#        min_value = min(ADC_Current_copy(:,3));
-	#        for j=1:n2
-	#            if ADC_Current_copy(j,3) == min_value then
-	#                target_list(i,5) = ADC_Current_copy(j,1);
-	#            end
-	#        end
-	#    end
-	#end
-	
-	
+	target_list_copy = mismatch_map_compensation(target_list, chip_num, brdtype)
 	
 	target_listArray = np.array(target_list)
 	
@@ -199,24 +121,22 @@ def compile(project_name, board_type, chip_num):
 	temp_array1 = np.array(diodeADC_v2h(diodeADC_i2v(target_list_copyArray[:,2],chip_num,brdtype),chip_num,brdtype))
 	temp_array2 = np.concatenate((target_listArray, temp_array1.reshape(-1, 1)), axis = 1)
 	target_listArray = temp_array2
-	#print(target_listArray);
 	
+	temp2_tunnel_revtun = temp2_highaboveVt_swc = temp2_highaboveVt_ota = temp2_aboveVt_swc = temp2_aboveVt_ota \
+		= temp2_aboveVt_otaref = temp2_aboveVt_mite = temp2_aboveVt_dirswc = temp2_subVt_swc = temp2_subVt_ota = \
+			temp2_subVt_otaref = temp2_subVt_mite = temp2_subVt_dirswc = temp2_lowsubVt_swc = temp2_lowsubVt_ota = \
+				temp2_lowsubVt_otaref = temp2_lowsubVt_mite = temp2_lowsubVt_dirswc = ' '
 	
-	temp2_tunnel_revtun=' '; 
-	temp2_highaboveVt_swc=' '
-	temp2_highaboveVt_ota=' '
-	temp2_aboveVt_swc=' '; temp2_aboveVt_ota=' '; temp2_aboveVt_otaref=' '; temp2_aboveVt_mite=' '; temp2_aboveVt_dirswc=' '
-	temp2_subVt_swc=' '; temp2_subVt_ota=' '; temp2_subVt_otaref=' '; temp2_subVt_mite=' '; temp2_subVt_dirswc=' '
-	temp2_lowsubVt_swc=' ';temp2_lowsubVt_ota=' ';temp2_lowsubVt_otaref=' ';temp2_lowsubVt_mite=' ';temp2_lowsubVt_dirswc=' '
-	n_target_tunnel_revtun=0
-	n_target_highaboveVt_swc=0;n_target_highaboveVt_ota=0
-	n_target_aboveVt_swc=0;n_target_aboveVt_ota=0;n_target_aboveVt_otaref=0;n_target_aboveVt_mite=0;n_target_aboveVt_dirswc=0
-	n_target_subVt_swc=0;n_target_subVt_ota=0;n_target_subVt_otaref=0;n_target_subVt_mite=0;n_target_subVt_dirswc=0
-	n_target_lowsubVt_swc=0;n_target_lowsubVt_ota=0;n_target_lowsubVt_otaref=0;n_target_lowsubVt_mite=0;n_target_lowsubVt_dirswc=0
-	target_l_highaboveVt_swc=np.empty(shape=(2, 3));target_l_highaboveVt_ota=np.empty(shape=(2, 3))
-	target_l_aboveVt_swc=np.empty(shape=(2, 3));target_l_aboveVt_ota=np.empty(shape=(2, 3));target_l_aboveVt_otaref=np.empty(shape=(0, 3));target_l_aboveVt_mite=np.empty(shape=(2, 3));target_l_aboveVt_dirswc=np.empty(shape=(2, 3))
-	target_l_subVt_swc=np.empty(shape=(2, 3));target_l_subVt_ota=np.empty(shape=(2, 3));target_l_subVt_otaref=np.empty(shape=(2, 3));target_l_subVt_mite=np.empty(shape=(2, 3));target_l_subVt_dirswc=np.empty(shape=(2, 3))
-	target_l_lowsubVt_swc=np.empty(shape=(2, 3));target_l_lowsubVt_ota=np.empty(shape=(2, 3));target_l_lowsubVt_otaref=np.empty(shape=(2, 3));target_l_lowsubVt_mite=np.empty(shape=(2, 3));target_l_lowsubVt_dirswc=np.empty(shape=(2, 3))
+	n_target_tunnel_revtun = n_target_highaboveVt_swc = n_target_highaboveVt_ota = n_target_aboveVt_swc = \
+		n_target_aboveVt_ota = n_target_aboveVt_otaref = n_target_aboveVt_mite = n_target_aboveVt_dirswc = \
+			n_target_subVt_swc = n_target_subVt_ota = n_target_subVt_otaref = n_target_subVt_mite = n_target_subVt_dirswc = \
+	n_target_lowsubVt_swc = n_target_lowsubVt_ota = n_target_lowsubVt_otaref = n_target_lowsubVt_mite = n_target_lowsubVt_dirswc=0
+
+
+	target_l_highaboveVt_swc = target_l_highaboveVt_ota = target_l_aboveVt_swc = target_l_aboveVt_ota = target_l_aboveVt_otaref = \
+		target_l_aboveVt_mite = target_l_aboveVt_dirswc = target_l_subVt_swc = target_l_subVt_ota = target_l_subVt_otaref = target_l_subVt_mite = \
+			target_l_subVt_dirswc = target_l_lowsubVt_swc = target_l_lowsubVt_ota = target_l_lowsubVt_otaref = target_l_lowsubVt_mite = \
+				target_l_lowsubVt_dirswc=np.empty(shape=(2, 3))
 	print(n)
 	print(target_listArray)
 	
@@ -316,7 +236,7 @@ def compile(project_name, board_type, chip_num):
 
 
 
-	target_list_info=[n_target_tunnel_revtun,n_target_highaboveVt_swc,n_target_highaboveVt_ota,n_target_aboveVt_swc,n_target_aboveVt_ota,n_target_aboveVt_otaref,n_target_aboveVt_mite,n_target_aboveVt_dirswc,n_target_subVt_swc,n_target_subVt_ota,n_target_subVt_otaref,n_target_subVt_mite,n_target_subVt_dirswc,n_target_lowsubVt_swc,n_target_lowsubVt_ota,n_target_lowsubVt_otaref,n_target_lowsubVt_mite,n_target_lowsubVt_dirswc,kappa_constant]
+	target_list_info=[n_target_tunnel_revtun,n_target_highaboveVt_swc,n_target_highaboveVt_ota,n_target_aboveVt_swc,n_target_aboveVt_ota,n_target_aboveVt_otaref,n_target_aboveVt_mite,n_target_aboveVt_dirswc,n_target_subVt_swc,n_target_subVt_ota,n_target_subVt_otaref,n_target_subVt_mite,n_target_subVt_dirswc,n_target_lowsubVt_swc,n_target_lowsubVt_ota,n_target_lowsubVt_otaref,n_target_lowsubVt_mite,n_target_lowsubVt_dirswc,KAPPA_CONSTANT]
 	#print(n_target_tunnel_revtun)
 	np.savetxt(f"{path}/target_list", target_list_info, "%5.15f", ' ')
 
@@ -712,5 +632,43 @@ def diodeADC_h2v(hex, chip_num, brdtype):
 	Offset_v2h=EKV_diodeADC_para[4]
 	Vfg=vdd-((hex-Offset_v2h)/Slope_v2h)/2;
 	return Vfg
+
+def mismatch_map_compensation(target_list, chip_num, brd_type):
+	    b1 = os.system(f"ls ~/rasp30/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}")
+
+		if b1 == 0: # 0 if no error occurred, 1 if error.
+			mismatch_map = np.loadtxt(fname = f"/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}", delimiter = ',', ndmin = 2)
+			r_size_mmap = len(mismatch_map)
+
+			for i in range(n):
+				if target_list[i][3] != 0:   # Switch programming:0 , Target programming:1 ~ 6
+					for j in range(r_size_mmap):
+						if target_list[i][0] == mismatch_map[j][0]:
+							if target_list[i][1] == mismatch_map[j][1]:
+									target_list[i][2] = diodeADC_v2i(diodeADC_i2v(target_list[i][2],chip_num,brdtype) + mismatch_map[j][2],chip_num,brdtype)
+			np.savetxt(f"{path}/mismatch_mapped_swc_list", switch_list_ble, "%5.15f", ' ')
+		
+	
+		k=1; 
+		mmap_cal_list=[]; # Mismatch map calibration list.
+		for i in range(n):
+			if target_list[i][3] == 11 or target_list[i][3] == 12 or target_list[i][3] == 13 or target_list[i][3] == 14 or target_list[i][3] == 15: # Generate calibration list.
+				mmap_cal_list.append(target_list[i])
+				target_list[i][3].append(target_list[i][3]-10)
+				k=k+1;
+	
+		if mmap_cal_list:
+			np.savetxt(f"{path}/mmap_cal_list", mmap_cal_list, "%5.15f", ' ')
+			print(mmap_cal_list)
+
+		target_list_copy = np.array(target_list).copy()
+		
+		for i in range(n):
+			if target_list_copy[i][2] < 1e-9:
+				target_list_copy[i][2] = target_list_copy[i][2]*KAPPA_CONSTANT
+			if target_list_copy[i][2] > 10e-6:
+				target_list_copy[i][2] = target_list_copy[i][2]/KAPPA_CONSTANT
+		
+		return target_list_copy
 	
 
