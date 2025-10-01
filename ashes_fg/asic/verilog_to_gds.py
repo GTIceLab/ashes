@@ -1826,7 +1826,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
         # TODO add blockages between pins
         for val,island in cell_order_in_island.items():
             for idx, item in island['items'].items():
-                if item['name'] in rectilinear:
+                if item['type'] in ['cell', 'matrix'] and item['name'] in rectilinear:
                     #print(f"\n\n frame-module-blockages for loop now \n\n")
                     frame_name = item['name']
                     frame_origin = cell_info[frame_name]['origin']
