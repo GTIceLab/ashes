@@ -8,6 +8,38 @@ import ashes_fg.class_lib_cab as lib_cab
 import ashes_fg.class_lib_dataconverter as lib_dc
 import ashes_fg.asic.asic_systems as algs
 
+import numpy as np
+
+
+def AnalogBuffers(circuit,island,numBuffers):
+    Top = circuit
+    BufferIsland = island
+    Buffers = lib_dc.TSMC350nm_AnalogBuffer(Top,BufferIsland,dim=(4,1))
+    Buffers.place([0,0])
+
+    GateDecoder = lib_mux.STD_IndirectGateDecoder(Top,BufferIsland,2)
+    GateSwitches = lib_mux.STD_IndirectGateSwitch(Top,BufferIsland,1)
+
+    drainLineNum = numBuffers
+    drainBits = int(np.ceil(np.log2(drainLineNum)))
+
+    DrainDecoder = lib_mux.STD_DrainDecoder(Top,BufferIsland,bits=drainBits)
+    DrainSelect = lib_mux.RunDrainSwitch(Top,BufferIsland,num=int(np.ceil(drainLineNum/4)))
+    DrainSwitch = lib_cab.DrainCutoff(Top,BufferIsland,num=int(np.ceil(drainLineNum/4)))
+
+    # Buffer to programming connections
+    Buffers.Vd_P += DrainSwitch.PR[0:numBuffers]
+    DrainSwitch.VDD += Buffers.VINJ
+    DrainSwitch.GND += Buffers.GND
+
+    Buffers.VINJ += GateSwitches.VINJ
+    Buffers.Vg += GateSwitches.Vg[0]
+    Buffers.Vsel += GateSwitches.CTRL_B[0]
+
+    # Return cell instances
+    return Buffers,GateDecoder,GateSwitches,DrainDecoder,DrainSelect,DrainSwitch
+
+
 def LargeChip(circuit):
     Top = circuit
     MacroIsland = ac.Island(Top)
@@ -188,7 +220,7 @@ def SmallChip(circuit):
     macro.I_IO += chipframe.IO_E[3]
     macro.VD_IO += chipframe.IO_E[4]
     macro.VGPROG_IO += chipframe.IO_E[5]
-    macro.VGPROG += chipframe.IO_E[6]
+    #macro.VGRUN_IO += chipframe.IO_E[6]
     macro.VG_IO += chipframe.IO_E[7]
     macro.pulse_fr_drain += chipframe.IO_E[8]
 
