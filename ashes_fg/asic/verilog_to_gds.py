@@ -973,11 +973,11 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     num_decoder_cols_needed = len(horz_switch_array[0]) - num_none_swcs
                     num_decoder_cols_needed = int(np.ceil(num_decoder_cols_needed/2))
                     horz_decoder_array = [row[:num_decoder_cols_needed] for row in horz_decoder_array]
-                gate_decoder_spacing = int(8.4*dbu) #previous value 15
+                gate_decoder_spacing = int(8*dbu) #previous value 15
                 height_accum += cell_height + gate_decoder_spacing
                 for row_idx, row in enumerate(reversed(horz_decoder_array)):
                     for idx, col in enumerate(row):
-                        if row_idx == 0:
+                        '''if row_idx == 0:
                             #Semi-Hardcode connecting net from switch to decoder
                             temp_net_num = idx*8
                             col['nets']['OUT<0>'] = f'isle{val}_swc_net{temp_net_num + 0}' if 'OUT<0>' not in col['nets'] else col['nets']['OUT<0>']
@@ -987,7 +987,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                             col['nets']['OUT<2>'] = f'isle{val}_swc_net{temp_net_num + 4}' if 'OUT<2>' not in col['nets'] else col['nets']['OUT<2>']
                             col['nets']['RUN_OUT<2>'] = f'isle{val}_swc_net{temp_net_num + 5}' if 'RUN_OUT<2>' not in col['nets'] else col['nets']['RUN_OUT<2>']
                             col['nets']['OUT<3>'] = f'isle{val}_swc_net{temp_net_num + 6}' if 'OUT<3>' not in col['nets'] else col['nets']['OUT<3>']
-                            col['nets']['RUN_OUT<3>'] = f'isle{val}_swc_net{temp_net_num + 7}' if 'RUN_OUT<3>' not in col['nets'] else col['nets']['RUN_OUT<3>']
+                            col['nets']['RUN_OUT<3>'] = f'isle{val}_swc_net{temp_net_num + 7}' if 'RUN_OUT<3>' not in col['nets'] else col['nets']['RUN_OUT<3>']'''
                         if cells_only_module and (idx*2) < len(cell_order):
                             x_loc = cell_order[idx*2][4][0]
                             y_loc = height_accum

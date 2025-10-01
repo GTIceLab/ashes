@@ -104,6 +104,7 @@ class STD_IndirectGateSwitch(MUX):
         self.RUN = Port(circuit,self,"RUN","W",1*self.dim[0])
         self.Vgsel = Port(circuit,self,"Vgsel","W",1*self.dim[0])
         self.vgsel_r = Port(circuit,self,"vgsel_r","E",1*self.dim[0])
+        self.vtun_l = Port(circuit,self,"vtun_l","W",1*self.dim[0])
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
