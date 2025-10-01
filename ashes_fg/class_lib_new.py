@@ -1236,7 +1236,7 @@ class AnalogBuffer(StandardCell):
 
 
         # Define cell information
-        self.name = 'AnalogBuffer'
+        self.name = 'TSMC350nm_AnalogBuffer'
         self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
         self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
         self.VDD = Port(circuit,self,'VDD','N',1*self.dim[1])
@@ -3720,7 +3720,7 @@ class Macro_abs(StandardCell):
 
 
 		# Define cell information
-		self.name = 'Full_Macro_2p0_abs'
+		self.name = 'Full_Macro_2p0_abstract'
 		
 		self.lfxt_clk = Port(circuit,self, 'lfxt_clk' ,'N',1*self.dim[1])
 		self.fast_clk = Port(circuit,self, 'fast_clk' ,'N',1*self.dim[1])
