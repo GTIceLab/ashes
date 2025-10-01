@@ -1,22 +1,23 @@
 import ashes_fg as af
-from ashes_fg.asic.asic_compile import *
-from ashes_fg.class_lib_new import *
-from ashes_fg.class_lib_mux import *
-from ashes_fg.class_lib_cab import *
-from ashes_fg.asic.asic_systems import *
+
+import ashes_fg.asic.asic_compile as ac
+
+import ashes_fg.class_lib_new as lib_new
+import ashes_fg.class_lib_mux as lib_mux
+import ashes_fg.class_lib_cab as lib_cab
+import ashes_fg.class_lib_dataconverter as lib_dc
+import ashes_fg.asic.asic_systems as algs
+import Wafer5_Synthesis.WaferCommon as wafer
+
+import numpy as np
+
+
+
 Top = Circuit()
+macro,chipframe,location_macro,location_chipframe = wafer.SmallChip(Top)
 
-MacroIsland = Island(Top)
-macro = Macro(Top,MacroIsland,[1,1])
-macro.place([0,0])
 
-# Frame
-# -------------------------------------------------------------------------------
-FrameIsland = Island(Top)
-chipframe = SmallPadFrame(Top,FrameIsland,[1,1])
-chipframe.place([0,0])
-chipframe.markChipFrame()
-
+# LPF Placement
 DelayIsland = Island(Top)
 LPF_Delay = Top_DelayLPF(Top,DelayIsland,[1,1])
 LPF_Delay.place([0,0])

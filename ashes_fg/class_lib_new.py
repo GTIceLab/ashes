@@ -20,6 +20,55 @@ class outpada(StandardCell):
 		self.input=input
 		self.pad_number=pad_number
 
+class Gate_Routing_NoVGRUN(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),VGRUN=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'Routes_GateDecodeSwc_NoVGRUN'
+		self.VGRUN = Port(circuit,self,'VGRUN','W',self.dim[0])
+
+		# Initialize ports with given values
+		portsInit = [VGRUN]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+
+class Gate_Routing(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),AVDD=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'Routes_GateDecodeSwc'
+		self.AVDD = Port(circuit,self,'AVDD','W',self.dim[0])
+
+		# Initialize ports with given values
+		portsInit = [AVDD]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
 class TSMC350nm_4x2_Direct(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),Vd=None,Vs=None,VINJ=None,Vg=None,GND=None,VTUN=None):
 
