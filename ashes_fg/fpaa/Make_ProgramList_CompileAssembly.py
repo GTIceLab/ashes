@@ -654,6 +654,7 @@ def mismatch_map_compensation(target_list, chip_num, brdtype, path, switch_list_
 	if b1 == 0: # 0 if no error occurred, 1 if error.
 		mismatch_map = np.loadtxt(fname = f"/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}", delimiter = ',', ndmin = 2)
 		r_size_mmap = len(mismatch_map)
+		n = len(target_list)
 
 		for i in range(n):
 			if target_list[i][3] != 0:   # Switch programming:0 , Target programming:1 ~ 6
@@ -663,7 +664,7 @@ def mismatch_map_compensation(target_list, chip_num, brdtype, path, switch_list_
 								target_list[i][2] = diodeADC_v2i(diodeADC_i2v(target_list[i][2],chip_num,brdtype) + mismatch_map[j][2],chip_num,brdtype)
 		np.savetxt(f"{path}/mismatch_mapped_swc_list", switch_list_ble, "%5.15f", ' ')
 		
-		n = len(target_list)
+		
 		k=1; 
 		mmap_cal_list=[]; # Mismatch map calibration list.
 		for i in range(n):
