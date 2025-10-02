@@ -28,7 +28,7 @@ def compile(project_name, board_type, chip_num):
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_FP_chip{chip_num}{brdtype}.asm {path}/chip_para_FP.asm")
 	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/Vd_table/Vd_table_30mV_chip{chip_num}{brdtype} {path}/Vd_table_30mV")
 		
-	zip_list = ' ';
+	zip_list = ' '
 
 	#########################################
 	## Make programm reverse program files ##
@@ -45,8 +45,8 @@ def compile(project_name, board_type, chip_num):
 	n = len(switch_list_temp)
 	switch_list=[]
 	for i in range(n):
-	    if switch_list_temp[i][3] == 0: 
-	    	switch_list.append([switch_list_temp[i][0],switch_list_temp[i][1],switch_list_temp[i][2]]); 
+		if switch_list_temp[i][3] == 0:
+			switch_list.append([switch_list_temp[i][0],switch_list_temp[i][1],switch_list_temp[i][2]])
 	np.savetxt(f"{path}/switch_list", switch_list, "%5.15f", ' ')
 
 	# Make switch info (hex) which will be uploaed to the sram. 
@@ -76,27 +76,35 @@ def compile(project_name, board_type, chip_num):
 
 	# Make switch list (dec) for ble switches.
 	n = len(switch_list_temp)
-	switch_list_ble=[]
+	switch_list_ble = []
 	for i in range(n):
-	    if switch_list_temp[i][3] == 0 and switch_list_temp[i][2] == 2: # same conditions as switch_list and switch_info
-	    	switch_list_ble.append([switch_list_temp[i][0],switch_list_temp[i][1],switch_list_temp[i][2]])
-	
-	# Make switch info for ble (hex) which will be uploaed to the sram. 
+		if switch_list_temp[i][3] == 0 and switch_list_temp[i][2] == 2:  # same conditions as switch_list and switch_info
+			switch_list_ble.append([switch_list_temp[i][0], switch_list_temp[i][1], switch_list_temp[i][2]])
+
+	# Make switch info for ble (hex) which will be uploaed to the sram.
+
 	n = len(switch_list_ble)
+
 	temp = f"0x{n:04x} "
 	for i in range(n):
-	    temp = temp + f"0x{int(switch_list_ble[i][0]):04x} " + f"0x{int(switch_list_ble[i][1]):04x} " + f"0x{int(switch_list_ble[i][2]):04x} "
+		temp = temp + f"0x{int(switch_list_ble[i][0]):04x} " \
+					  f"0x{int(switch_list_ble[i][1]):04x} " \
+					  f"0x{int(switch_list_ble[i][2]):04x}"
 
-	if switch_list_ble: # reason for different format compared to non-ble?
-	#maybe add the {hid_dir} to the path
-	    np.savetxt(f"{path}/switch_list_ble", switch_list_ble, "%5.15f", ' ')
-	    fd = open(f"{path}/switch_info_ble", "w") 
-	    fd.write(temp)
-	    fd.close()
-	    os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh tunnel_clb ~/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_CLB_ver00.s43 16384 16384 16384 {path}")
-	    os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh switch_program_ble ~/rasp30/prog_assembly/libs/asm_code/switch_program_ble_ver00.s43 16384 16384 16384 {path}")
-	    os.system(f"mv switch_list_ble switch_info_ble {hid_dir}");
-	
+	if switch_list_ble:  # note: not using BLEs
+		# maybe add the {hid_dir} to the path
+		np.savetxt(f"{path}/switch_list_ble", switch_list_ble, "%5.15f", ' ')
+		fd = open(f"{path}/switch_info_ble", "w")
+		fd.write(temp)
+		fd.close()
+		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh tunnel_clb "
+				  f"~/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_CLB_ver00.s43 "
+				  f"16384 16384 16384 {path}")
+		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh switch_program_ble "
+				  f"~/rasp30/prog_assembly/libs/asm_code/switch_program_ble_ver00.s43 "
+				  f"16384 16384 16384 {path}")
+		os.system(f"mv switch_list_ble switch_info_ble {hid_dir}")
+
 
 	
 	###############################
@@ -108,9 +116,9 @@ def compile(project_name, board_type, chip_num):
 	n = len(target_list)
 	print(n)
 	for i in range(n):
-	    if target_list[i][3] == 0:
-	    	target_list[i][2] = 100e-09 # 100nA doesn't mean anything. I just put it since switches with 0 caused error. 
-	print(target_list)
+		if target_list[i][3] == 0:
+			target_list[i][2] = 100e-09 # 100nA doesn't mean anything. I just put it since switches with 0 caused error.
+			print(target_list)
 	
 	
 	target_list_copy = mismatch_map_compensation(target_list, chip_num, brdtype, path, switch_list_ble)
@@ -144,6 +152,7 @@ def compile(project_name, board_type, chip_num):
 		# Switch programming <0>, Target programming <1> 
 		# 1:Switch FGs, 2:OTA_ref FGs(Bias), 3:OTA FGs, 4:MITE, 5:BLE, 6:Direct SWC FGs
 		if target_listArray[i][3] == 1 or target_listArray[i][3] == 5:
+
 			if target_listArray[i][2] > 10E-6:
 				temp2_highaboveVt_swc = temp2_highaboveVt_swc + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000 " + "0xffff " + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_highaboveVt_swc = np.append(target_l_highaboveVt_swc, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
@@ -163,6 +172,7 @@ def compile(project_name, board_type, chip_num):
 				temp2_lowsubVt_swc = temp2_lowsubVt_swc + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff " + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_lowsubVt_swc = np.append(target_l_lowsubVt_swc, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_lowsubVt_swc = n_target_lowsubVt_swc+1
+
 		if target_listArray[i][3] == 3:
 			if target_listArray[i][2] > 10E-6:
 				temp2_highaboveVt_ota = temp2_highaboveVt_ota + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
@@ -183,11 +193,13 @@ def compile(project_name, board_type, chip_num):
 				temp2_lowsubVt_ota = temp2_lowsubVt_ota + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_lowsubVt_ota = np.append(target_l_lowsubVt_ota, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_lowsubVt_ota= n_target_lowsubVt_ota+1
+
 		if target_listArray[i][3] == 2:
 			if target_listArray[i][2] > 1E-7:
 				temp2_aboveVt_otaref = temp2_aboveVt_otaref + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_aboveVt_otaref = np.append(target_l_aboveVt_otaref, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0)
 				n_target_aboveVt_otaref=n_target_aboveVt_otaref+1
+
 			if target_listArray[i][2] <= 1E-7 and target_listArray[i][2] >= 1E-9:
 				temp2_subVt_otaref = temp2_subVt_otaref + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				target_l_subVt_otaref = np.append(target_l_subVt_otaref, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
@@ -209,11 +221,13 @@ def compile(project_name, board_type, chip_num):
 				#target_l_subVt_mite[n_target_subVt_mite] = [target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]];
 				target_l_subVt_mite = np.append(target_l_subVt_mite, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_subVt_mite = n_target_subVt_mite +1
+
 			if target_listArray[i][2] < 1E-9:
 				temp2_lowsubVt_mite = temp2_lowsubVt_mite + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				#target_l_lowsubVt_mite[n_target_lowsubVt_mite] = [target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]];
 				target_l_lowsubVt_mite = np.append(target_l_lowsubVt_mite, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_lowsubVt_mite = n_target_lowsubVt_mite +1
+
 		if target_listArray[i][3] == 6:
 			if target_listArray[i][2] > 1E-7:
 				temp2_aboveVt_dirswc = temp2_aboveVt_dirswc + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
@@ -225,11 +239,13 @@ def compile(project_name, board_type, chip_num):
 				#target_l_subVt_dirswc[n_target_subVt_dirswc] = [target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]];
 				target_l_subVt_dirswc = np.append(target_l_subVt_dirswc, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_subVt_dirswc = n_target_subVt_dirswc + 1
+
 			if target_listArray[i][2] < 1E-9:
 				temp2_lowsubVt_dirswc = temp2_lowsubVt_dirswc + f"0x{(int(target_listArray[i][0])):04x}" + f"0x{(int(target_listArray[i][1])):04x}"  + f"0x{(int(target_listArray[i][4])):04x}" + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 				#target_l_lowsubVt_dirswc[n_target_lowsubVt_dirswc] = [target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]];
 				target_l_lowsubVt_dirswc = np.append(target_l_lowsubVt_dirswc, np.array([[target_listArray[i][0], target_listArray[i][1], target_listArray[i][2]]]), axis=0);
 				n_target_lowsubVt_dirswc = n_target_lowsubVt_dirswc + 1
+
 		if target_listArray[i][3] != 0:
 			temp2_tunnel_revtun = temp2_tunnel_revtun + f"0x{(int(target_listArray[i][0])):04x} " + f"0x{(int(target_listArray[i][1])):04x} "  + f"0x{(int(target_listArray[i][4])):04x} " + "0x0000" + " 0xffff" + " "; # Row, Col, target, diff, # of pulses (Start values should be 0xffff. 0x0000 means the coarse program is over)
 			n_target_tunnel_revtun=n_target_tunnel_revtun+1;
@@ -272,7 +288,6 @@ def compile(project_name, board_type, chip_num):
 		fd = open(f"{path}/target_info_aboveVt_swc", "w") 
 		fd.write(temp)
 		fd.close()
-		
 		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh recover_inject_aboveVt_SWC ~/rasp30/prog_assembly/libs/asm_code/recover_inject_SWC.s43 16384 16384 16384 {path}");
 		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh first_coarse_program_aboveVt_SWC ~/rasp30/prog_assembly/libs/asm_code/first_coarse_program_SWC.s43 16384 16384 16384 {path}");
 		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh measured_coarse_program_aboveVt_SWC ~/rasp30/prog_assembly/libs/asm_code/measured_coarse_program_aboveVt_SWC.s43 16384 16384 16384 {path}");
@@ -634,21 +649,21 @@ def diodeADC_h2v(hex, chip_num, brdtype):
 	return Vfg
 
 def mismatch_map_compensation(target_list, chip_num, brdtype, path, switch_list_ble):
-	    b1 = os.system(f"ls ~/rasp30/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}")
+	b1 = os.system(f"ls ~/rasp30/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}")
 
-		if b1 == 0: # 0 if no error occurred, 1 if error.
-			mismatch_map = np.loadtxt(fname = f"/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}", delimiter = ',', ndmin = 2)
-			r_size_mmap = len(mismatch_map)
+	if b1 == 0: # 0 if no error occurred, 1 if error.
+		mismatch_map = np.loadtxt(fname = f"/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}", delimiter = ',', ndmin = 2)
+		r_size_mmap = len(mismatch_map)
 
-			for i in range(n):
-				if target_list[i][3] != 0:   # Switch programming:0 , Target programming:1 ~ 6
-					for j in range(r_size_mmap):
-						if target_list[i][0] == mismatch_map[j][0]:
-							if target_list[i][1] == mismatch_map[j][1]:
-									target_list[i][2] = diodeADC_v2i(diodeADC_i2v(target_list[i][2],chip_num,brdtype) + mismatch_map[j][2],chip_num,brdtype)
-			np.savetxt(f"{path}/mismatch_mapped_swc_list", switch_list_ble, "%5.15f", ' ')
+		for i in range(n):
+			if target_list[i][3] != 0:   # Switch programming:0 , Target programming:1 ~ 6
+				for j in range(r_size_mmap):
+					if target_list[i][0] == mismatch_map[j][0]:
+						if target_list[i][1] == mismatch_map[j][1]:
+								target_list[i][2] = diodeADC_v2i(diodeADC_i2v(target_list[i][2],chip_num,brdtype) + mismatch_map[j][2],chip_num,brdtype)
+		np.savetxt(f"{path}/mismatch_mapped_swc_list", switch_list_ble, "%5.15f", ' ')
 		
-	
+		n = len(target_list)
 		k=1; 
 		mmap_cal_list=[]; # Mismatch map calibration list.
 		for i in range(n):
