@@ -26,7 +26,7 @@ chipframe.markChipFrame()
 macro.lfxt_enable_bout += chipframe.IO_N[0]
 macro.lfxt_wkup_bout += chipframe.IO_N[1]
 macro.scan_out2_bout += chipframe.IO_N[2]
-macro.scan_out2_bout += chipframe.IO_N[3]
+macro.scan_out1_bout += chipframe.IO_N[3]
 macro.fgmem_CS_VBIAS += chipframe.IO_N[4]
 macro.mmio_reg_in_5[1] += chipframe.IO_N[5] 
 macro.mmio_reg_in_5[0] += chipframe.IO_N[6]

@@ -7,7 +7,7 @@ from ashes_fg.asic.asic_systems import *
 Top = Circuit()
 
 MacroIsland = Island(Top)
-macro = Macro(Top,MacroIsland,[1,1])
+macro = Macro_abs(Top,MacroIsland,[1,1])
 macro.place([0,0])
 
 # TODO Fix the instances pin names:[0] to <0> or add another parsing method
@@ -23,16 +23,16 @@ chipframe.markChipFrame()
 # --------------------------------------------------------------------------------
 # ___ IO Pins ___
 # North IO Pins
-macro.lfxt_enable_bout += chipframe.IO_N[0]
-macro.lfxt_wkup_bout += chipframe.IO_N[1]
-macro.scan_out2_bout += chipframe.IO_N[2]
-macro.scan_out2_bout += chipframe.IO_N[3]
-macro.fgmem_CS_VBIAS += chipframe.IO_N[4]
-macro.mmio_reg_in_5[1] += chipframe.IO_N[5] 
-macro.mmio_reg_in_5[0] += chipframe.IO_N[6]
+macro.dco_wkup_bout += chipframe.IO_N[0]
+macro.dco_enable_bout += chipframe.IO_N[1]
+macro.lfxt_enable_bout += chipframe.IO_N[2]
+macro.lfxt_wkup_bout += chipframe.IO_N[3]
+macro.scan_out2_bout += chipframe.IO_N[4]
+macro.scan_out1_bout += chipframe.IO_N[5]
+macro.fgmem_CS_VBIAS += chipframe.IO_N[6]
+macro.mmio_reg_in_5[1] += chipframe.IO_N[7] 
+macro.mmio_reg_in_5[0] += chipframe.IO_N[8]
 
-macro.irq[0] += chipframe.IO_N[7]
-macro.irq[1] += chipframe.IO_N[8]
 macro.cpu_en += chipframe.IO_N[9]
 macro.dbg_en += chipframe.IO_N[10]
 macro.dbg_uart_rxd += chipframe.IO_N[11]
@@ -46,28 +46,26 @@ macro.scan_in1 += chipframe.IO_N[18]
 macro.scan_in2 += chipframe.IO_N[19] 
 
 # West IO pins
-macro.dco_wkup_bout += chipframe.IO_W[0]
-macro.dco_enable_bout += chipframe.IO_W[1]
-macro.dbg_freeze_bout += chipframe.IO_W[2]
-macro.Macro_dbg_Scan_RST += chipframe.IO_W[3]
-macro.Macro_dbg_Scan_Din += chipframe.IO_W[4]
-macro.Macro_dbg_Scan_CLK += chipframe.IO_W[5]
-macro.Macro_dbg_Scan_Vout += chipframe.IO_W[6]
-macro.mmio_reg_7_bout[1] += chipframe.IO_W[7] 
-macro.mmio_reg_7_bout[0] += chipframe.IO_W[8] 
+macro.dbg_freeze_bout += chipframe.IO_W[0]
+macro.Macro_dbg_Scan_RST += chipframe.IO_W[1]
+macro.Macro_dbg_Scan_Din += chipframe.IO_W[2]
+macro.Macro_dbg_Scan_CLK += chipframe.IO_W[3]
+macro.Macro_dbg_Scan_Vout += chipframe.IO_W[4]
+macro.mmio_reg_7_bout[1] += chipframe.IO_W[5] 
+macro.mmio_reg_7_bout[0] += chipframe.IO_W[6] 
 
-macro.peri_spi_mstr_cs_n_3 += chipframe.IO_W[9]
-macro.peri_spi_mstr_cs_n_2 += chipframe.IO_W[10]
-macro.peri_spi_mstr_cs_n_1 += chipframe.IO_W[11]
-macro.peri_spi_mstr_cs_n_0 += chipframe.IO_W[12]
-macro.peri_spi_mstr_mosi += chipframe.IO_W[13]
-macro.peri_spi_mstr_miso += chipframe.IO_W[14]
-macro.peri_spi_slave_cs_n += chipframe.IO_W[15]
-macro.peri_spi_slave_mosi += chipframe.IO_W[16]
-macro.peri_spi_slave_miso += chipframe.IO_W[17]
-macro.peri_spi_slave_clk += chipframe.IO_W[18]
-macro.peri_use_uP += chipframe.IO_W[19]
-macro.sram_CS_VBIAS += chipframe.IO_W[20]
+macro.peri_spi_mstr_cs_n_3 += chipframe.IO_W[7]
+macro.peri_spi_mstr_cs_n_2 += chipframe.IO_W[8]
+macro.peri_spi_mstr_cs_n_1 += chipframe.IO_W[9]
+macro.peri_spi_mstr_cs_n_0 += chipframe.IO_W[10]
+macro.peri_spi_mstr_mosi += chipframe.IO_W[11]
+macro.peri_spi_mstr_miso += chipframe.IO_W[12]
+macro.peri_spi_slave_cs_n += chipframe.IO_W[13]
+macro.peri_spi_slave_mosi += chipframe.IO_W[14]
+macro.peri_spi_slave_miso += chipframe.IO_W[15]
+macro.peri_spi_slave_clk += chipframe.IO_W[16]
+macro.peri_use_uP += chipframe.IO_W[17]
+macro.sram_CS_VBIAS += chipframe.IO_W[18]
 
 # East IO Pins
 # bottom right macro pins to east frame pins
@@ -77,8 +75,8 @@ macro.Debug_IO += chipframe.IO_E[2]
 macro.I_IO += chipframe.IO_E[3]
 macro.VD_IO += chipframe.IO_E[4]
 macro.VGPROG_IO += chipframe.IO_E[5]
-macro.VGPROG += chipframe.IO_E[6]
-macro.VG_IO += chipframe.IO_E[7]
+macro.VG_IO += chipframe.IO_E[6]
+macro.V_IO += chipframe.IO_E[7]
 macro.pulse_fr_drain += chipframe.IO_E[8]
 
 macro.puc_rst_bout += chipframe.IO_E[9]
