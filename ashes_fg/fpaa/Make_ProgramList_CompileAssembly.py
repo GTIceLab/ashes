@@ -113,7 +113,7 @@ def compile(project_name, board_type, chip_num):
 	print(target_list)
 	
 	
-	target_list_copy = mismatch_map_compensation(target_list, chip_num, brdtype)
+	target_list_copy = mismatch_map_compensation(target_list, chip_num, brdtype, path, switch_list_ble)
 	
 	target_listArray = np.array(target_list)
 	
@@ -633,7 +633,7 @@ def diodeADC_h2v(hex, chip_num, brdtype):
 	Vfg=vdd-((hex-Offset_v2h)/Slope_v2h)/2;
 	return Vfg
 
-def mismatch_map_compensation(target_list, chip_num, brd_type):
+def mismatch_map_compensation(target_list, chip_num, brdtype, path, switch_list_ble):
 	    b1 = os.system(f"ls ~/rasp30/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}")
 
 		if b1 == 0: # 0 if no error occurred, 1 if error.
