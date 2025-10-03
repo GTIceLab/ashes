@@ -80,6 +80,8 @@ macro.V_IO += chipframe.IO_E[7]
 macro.pulse_fr_drain += chipframe.IO_E[8]
 
 macro.puc_rst_bout += chipframe.IO_E[9]
+macro.irq[0] += chipframe.gnd_N[2]#####################could change
+macro.irq[1] += chipframe.gnd_N[2]#######################could change
 macro.irq[2] += chipframe.IO_E[10]
 macro.irq[3] += chipframe.IO_E[11]
 macro.irq[4] += chipframe.IO_E[12]
