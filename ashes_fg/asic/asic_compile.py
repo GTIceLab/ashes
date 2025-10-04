@@ -9,7 +9,8 @@ from ashes_fg.asic import compile
 
 # Functions
 # ---------------------------------------------------------------------------------------------------------------------------
-def compile_asic(circuit,process="Process",fileName = "compiled",path = "./example_verilog", p_and_r = True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,route=True):
+def compile_asic(circuit,process="Process",fileName = "compiled",path = "./example_verilog", p_and_r = True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,route=True,qparams=None):
+
     """
     Main ASIC compilation function
     - Makes Verilog netlist for a given Circuit
@@ -56,9 +57,8 @@ def compile_asic(circuit,process="Process",fileName = "compiled",path = "./examp
         drainmux_space = drainSpace,
         gatemux_space_isle_idx=gateSpaceIdx,
         gatemux_space = gateSpace,
-        route = route)
-
-
+        route = route,
+        qparams = qparams)
 
 
 def printPlacement(island,fileName = "island_placement",path = "./"):
