@@ -23,8 +23,8 @@ chipframe.markChipFrame()
 # --------------------------------------------------------------------------------
 # ___ IO Pins ___
 # North IO Pins
-macro.dco_wkup_bout += chipframe.IO_N[0]
-macro.dco_enable_bout += chipframe.IO_N[1]
+macro.dco_enable_bout += chipframe.IO_N[0]
+macro.dco_wkup_bout += chipframe.IO_N[1]
 macro.lfxt_enable_bout += chipframe.IO_N[2]
 macro.lfxt_wkup_bout += chipframe.IO_N[3]
 macro.scan_out2_bout += chipframe.IO_N[4]
