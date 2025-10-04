@@ -1854,8 +1854,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     pieces, diff = subtract_and_polygonize(macro_rect, cutouts_rects)
 
                     for i, poly in enumerate(pieces, start=1):
-                        print(f"Polygon {i}:")
-                        print(list(poly.exterior.coords))
+                        #print(f"Polygon {i}:")
+                        #print(list(poly.exterior.coords))
                         final_poly = list(poly.exterior.coords)
 
                     # Defining final blockage rectangles based on cutouts 

@@ -36,7 +36,7 @@ def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_
 		# Write qrouter parameters
 		for param in qrouterParams:
 			if qrouterParams[param] != None:
-				if param=="stage1"or param=="stage2" or param=="stage3":
+				if param=="stage1"or param=="stage2" or param=="stage3" or param=="passes":
 					q_params.write(param +" "+ str(qrouterParams[param])+"\n")
 				else:
 					q_params.write("cost " + param +" "+ str(qrouterParams[param])+"\n")
