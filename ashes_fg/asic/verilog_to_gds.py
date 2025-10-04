@@ -1590,7 +1590,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     def_file = open(file_path, 'a')
     #rect_string[-1] = rect_string[-1][:-1] + ' ;\n'
 
-    m1_m2_except = ['Full_Macro_Corner', 'Full_Macro_2p0']
+    m1_m2_except = ['Full_Macro_Corner', 'Full_Macro_2p0','Full_Macro_2p0_abstract']
 
     # Place blockages in def file
     pin_const = 1 # this is for amount of distance between blockage edge and true cell edge
@@ -1631,8 +1631,8 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 mat_row = item['mat_info']['mat_row']
 
             # Insert blockages between pins around the edges
-            pin_exclusion = ['TSMC350nm_4x2_Indirect', 'Full_Macro_Corner', 'Full_Macro_2p0']
-            rectilinear = ['Full_Macro_Corner', 'Full_Macro_2p0']
+            pin_exclusion = ['TSMC350nm_4x2_Indirect', 'Full_Macro_Corner', 'Full_Macro_2p0','Full_Macro_2p0_abstract']
+            rectilinear = ['Full_Macro_Corner', 'Full_Macro_2p0','Full_Macro_2p0_abstract']
             if 'pin_blockage' in item and item['pin_blockage'] and item['name'] not in pin_exclusion:
                 # Added a number of times to loop for matrices
                 for inst_idx in insts_list:
@@ -1796,10 +1796,10 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m3_except:
                     array = island['coords']
                     loc = array[idx]
-                    block_x1 = loc[0] + int(1*dbu)
-                    block_y1 = loc[1] + int(1*dbu)
-                    block_x2 = loc[2] - int(1*dbu)
-                    block_y2 = loc[3] - int(1*dbu)
+                    block_x1 = loc[0] + int(2*dbu)
+                    block_y1 = loc[1] + int(2*dbu)
+                    block_x2 = loc[2] - int(2*dbu)
+                    block_y2 = loc[3] - int(2*dbu)
                     poly_mlayer = metal_layers[stop_layer]
                     def_file.write(f'  - {poly_mlayer}\n')
                     def_file.write(f'    LAYER {poly_mlayer} ;\n')
@@ -1812,10 +1812,10 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m4_except:
                     array = island['coords']
                     loc = array[idx]
-                    block_x1 = loc[0] + int(1*dbu)
-                    block_y1 = loc[1] + int(1*dbu)
-                    block_x2 = loc[2] - int(1*dbu)
-                    block_y2 = loc[3] - int(1*dbu)
+                    block_x1 = loc[0] + int(2*dbu)
+                    block_y1 = loc[1] + int(2*dbu)
+                    block_x2 = loc[2] - int(2*dbu)
+                    block_y2 = loc[3] - int(2*dbu)
                     poly_mlayer = metal_layers[stop_layer+1]
                     def_file.write(f'  - {poly_mlayer}\n')
                     def_file.write(f'    LAYER {poly_mlayer} ;\n')
