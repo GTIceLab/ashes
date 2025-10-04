@@ -47,8 +47,8 @@ def LargeChip(circuit):
     macro.place([0,0])
     # Frame
     # -------------------------------------------------------------------------------
-    FrameIsland = Island(Top)
-    chipframe = ChipFrame(Top,FrameIsland,[1,1])
+    FrameIsland = ac.Island(Top)
+    chipframe = lib_new.ChipFrame_abs(Top,FrameIsland,[1,1])
     chipframe.place([0,0])
     chipframe.markChipFrame()
 
