@@ -19,7 +19,8 @@ import re
 
 #exec(open("./Wafer5_Synthesis/Macro_SmallFrame_Route.py").read())
 
-#exec(open("./example_python/FPAA_general.py").read())
+exec(open("./example_python/FPAA_general.py").read())
+
 
 #exec(open("./example_python/FPAA_Optimized.py").read())
 
@@ -37,7 +38,7 @@ import re
 
 #exec(open("./Wafer5_Synthesis/Macro2_SmallFrame_Route.py").read())
 
-exec(open("./Wafer5_Synthesis/11_SML_DataConverters.py").read())
+#exec(open("./Wafer5_Synthesis/11_SML_DataConverters.py").read())
 
 
 
