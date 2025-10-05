@@ -106,8 +106,11 @@ macro.DVDD += chipframe.DVDD_N[2]
 
 #Fabric
 FabricIsland = Island(Top)
-Fabric = TILE_analog(Top,FabricIsland,[7,7])
-Fabric.place([0,0])
+Fabric1 = NN_cab1(Top,FabricIsland,[7,1])
+Fabric1.place([0,0])
+
+Fabric2 = NN_cab2(Top,FabricIsland,[7,6])
+Fabric2.place([0,1])
 
 #LVL shifter
 LVLShifter1Island = Island(Top)
@@ -198,56 +201,68 @@ DrainDecoder_buf1.IN += LVLShifter3.OUT[4:8]
 
 #west and east non-IO Fabric Connections
 for i in range(6):
-	Fabric.e_vgrun[i] += macro.VGRUN
-	Fabric.w_drainbit0[i] += LVLShifter1.OUT[0]
-	Fabric.w_drainbit1[i] += LVLShifter1.OUT[1]
-	Fabric.w_drainbit2[i] += LVLShifter1.OUT[2]
-	Fabric.w_drainbit3[i] += LVLShifter1.OUT[3]
-	Fabric.w_drainbit4[i] += LVLShifter1.OUT[4]
-	Fabric.w_drainbit5[i] += LVLShifter1.OUT[5]
-	Fabric.w_drainbit6[i] += LVLShifter1.OUT[6]
-	Fabric.w_drainbit7[i] += LVLShifter1.OUT[7]
-	Fabric.w_drainbit8[i] += LVLShifter1.OUT[8]
-	Fabric.w_drainbit9[i] += LVLShifter1.OUT[9]
-	Fabric.w_drainbit10[i] += LVLShifter1.OUT[10]	
-Fabric.w_vtun[0] += chipframe.IO_W_RES[0]
-Fabric.s_vinj[0] += chipframe.VINJ_S[0]
-Fabric.s_gnd[0] += chipframe.gnd_S[0]
-Fabric.s_avdd[0] += chipframe.avdd_S[0]
-Fabric.w_drainEN += LVLShifter2.OUT[0:7]
+	Fabric2.e_vgrun[i] += macro.VGRUN
+	Fabric1.w_drainbit0[i] += LVLShifter1.OUT[0]
+	Fabric1.w_drainbit1[i] += LVLShifter1.OUT[1]
+	Fabric1.w_drainbit2[i] += LVLShifter1.OUT[2]
+	Fabric1.w_drainbit3[i] += LVLShifter1.OUT[3]
+	Fabric1.w_drainbit4[i] += LVLShifter1.OUT[4]
+	Fabric1.w_drainbit5[i] += LVLShifter1.OUT[5]
+	Fabric1.w_drainbit6[i] += LVLShifter1.OUT[6]
+	Fabric1.w_drainbit7[i] += LVLShifter1.OUT[7]
+	Fabric1.w_drainbit8[i] += LVLShifter1.OUT[8]
+	Fabric1.w_drainbit9[i] += LVLShifter1.OUT[9]
+	Fabric1.w_drainbit10[i] += LVLShifter1.OUT[10]	
+Fabric1.w_vtun[0] += chipframe.IO_W_RES[0]
+Fabric1.s_vinj += chipframe.VINJ_S[0]
+Fabric1.s_gnd += chipframe.gnd_S[0]
+Fabric1.s_avdd += chipframe.avdd_S[0]
+Fabric1.w_drainEN += LVLShifter2.OUT[0:7]
 
 #north non-IO fabric connections 
-Fabric.n_gateEN += LVLShifter2.OUT[7:14]
-for i in range(7):
-	Fabric.n_gatebit0[i] += LVLShifter1.OUT[11]
-	Fabric.n_gatebit1[i] += LVLShifter1.OUT[12]
-	Fabric.n_gatebit2[i] += LVLShifter1.OUT[13]
-	Fabric.n_gatebit3[i] += LVLShifter1.OUT[14]
-	Fabric.n_gatebit4[i] += LVLShifter1.OUT[15]
-	Fabric.n_gatebit5[i] += LVLShifter2.OUT[14]
-	Fabric.n_progdrain[i] += LVLShifter3.OUT[13]
-	Fabric.n_rundrain[i] += LVLShifter3.OUT[14]
-	Fabric.n_prog[i] += DigBuffer.Out[0]
-	Fabric.n_run[i] += DigBuffer.Out[1]
-	Fabric.n_vgsel[i] += macro.VGPROG
+Fabric1.n_gateEN += LVLShifter2.OUT[7]
+Fabric2.n_gateEN += LVLShifter2.OUT[8:14]
+
+Fabric1.n_gatebit0 += LVLShifter1.OUT[11]
+Fabric1.n_gatebit1 += LVLShifter1.OUT[12]
+Fabric1.n_gatebit2 += LVLShifter1.OUT[13]
+Fabric1.n_gatebit3 += LVLShifter1.OUT[14]
+Fabric1.n_gatebit4 += LVLShifter1.OUT[15]
+Fabric1.n_progdrain += LVLShifter3.OUT[13]
+Fabric1.n_rundrain += LVLShifter3.OUT[14]
+Fabric1.n_prog += DigBuffer.Out[0]
+Fabric1.n_run += DigBuffer.Out[1]
+Fabric1.n_vgsel += macro.VGPROG
+for i in range(6):
+	Fabric2.n_gatebit0[i] += LVLShifter1.OUT[11]
+	Fabric2.n_gatebit1[i] += LVLShifter1.OUT[12]
+	Fabric2.n_gatebit2[i] += LVLShifter1.OUT[13]
+	Fabric2.n_gatebit3[i] += LVLShifter1.OUT[14]
+	Fabric2.n_gatebit4[i] += LVLShifter1.OUT[15]
+	Fabric2.n_gatebit5[i] += LVLShifter2.OUT[14]
+	Fabric2.n_progdrain[i] += LVLShifter3.OUT[13]
+	Fabric2.n_rundrain[i] += LVLShifter3.OUT[14]
+	Fabric2.n_prog[i] += DigBuffer.Out[0]
+	Fabric2.n_run[i] += DigBuffer.Out[1]
+	Fabric2.n_vgsel[i] += macro.VGPROG
 
 #west and east buffered IO
-Fabric.e_s0[0] += AnalogBuffer1.Vin[0]
-Fabric.e_s1[0] += AnalogBuffer1.Vin[1]
-Fabric.e_s2[0] += AnalogBuffer1.Vin[2]
-Fabric.e_s3[0] += AnalogBuffer1.Vin[3]
-Fabric.e_s4[0] += AnalogBuffer1.Vin[4]
-Fabric.e_s5[0] += AnalogBuffer1.Vin[5]
-Fabric.e_s6[0] += AnalogBuffer1.Vin[6]
-Fabric.e_s7[0] += AnalogBuffer1.Vin[7]
-Fabric.e_s8[0] += AnalogBuffer1.Vin[8]
-Fabric.e_s9[0] += AnalogBuffer1.Vin[9]
-Fabric.e_s10[0] += AnalogBuffer1.Vin[10]
-Fabric.e_s11[0] += AnalogBuffer1.Vin[11]
-Fabric.e_s12[0] += AnalogBuffer1.Vin[12]
-Fabric.e_s13[0] += AnalogBuffer1.Vin[13]
-Fabric.e_s14[0] += AnalogBuffer1.Vin[14]
-Fabric.e_s15[0] += AnalogBuffer1.Vin[15]
+Fabric2.e_s0[0] += AnalogBuffer1.Vin[0]
+Fabric2.e_s1[0] += AnalogBuffer1.Vin[1]
+Fabric2.e_s2[0] += AnalogBuffer1.Vin[2]
+Fabric2.e_s3[0] += AnalogBuffer1.Vin[3]
+Fabric2.e_s4[0] += AnalogBuffer1.Vin[4]
+Fabric2.e_s5[0] += AnalogBuffer1.Vin[5]
+Fabric2.e_s6[0] += AnalogBuffer1.Vin[6]
+Fabric2.e_s7[0] += AnalogBuffer1.Vin[7]
+Fabric2.e_s8[0] += AnalogBuffer1.Vin[8]
+Fabric2.e_s9[0] += AnalogBuffer1.Vin[9]
+Fabric2.e_s10[0] += AnalogBuffer1.Vin[10]
+Fabric2.e_s11[0] += AnalogBuffer1.Vin[11]
+Fabric2.e_s12[0] += AnalogBuffer1.Vin[12]
+Fabric2.e_s13[0] += AnalogBuffer1.Vin[13]
+Fabric2.e_s14[0] += AnalogBuffer1.Vin[14]
+Fabric2.e_s15[0] += AnalogBuffer1.Vin[15]
 
 AnalogBuffer1.Vout[0] += chipframe.IO_W[21]
 AnalogBuffer1.Vout[1] += chipframe.IO_W[22]
@@ -268,61 +283,61 @@ AnalogBuffer1.Vout[14] += chipframe.IO_E[27]
 AnalogBuffer1.Vout[15] += chipframe.IO_E[28]
 
 #west unbuffered IO
-Fabric.w_s0[4] += chipframe.IO_W[31]
-Fabric.w_s1[4] += chipframe.IO_W[32]
-Fabric.w_s2[4] += chipframe.IO_W[33]
-Fabric.w_s10[4] += chipframe.IO_W[34]
-Fabric.w_s17[4] += chipframe.IO_W[35]
-Fabric.w_s19[4] += chipframe.IO_W[36]
-Fabric.w_s0[5] += chipframe.IO_W[37]
-Fabric.w_s1[5] += chipframe.IO_W[38]
-Fabric.w_s4[5] += chipframe.IO_W[39]
-Fabric.w_s11[5] += chipframe.IO_W[40]
-Fabric.w_s18[5] += chipframe.IO_W[41]
-Fabric.w_s19[5] += chipframe.IO_W[42]
+Fabric1.w_s0[4] += chipframe.IO_W[31]
+Fabric1.w_s1[4] += chipframe.IO_W[32]
+Fabric1.w_s2[4] += chipframe.IO_W[33]
+Fabric1.w_s10[4] += chipframe.IO_W[34]
+Fabric1.w_s17[4] += chipframe.IO_W[35]
+Fabric1.w_s19[4] += chipframe.IO_W[36]
+Fabric1.w_s0[5] += chipframe.IO_W[37]
+Fabric1.w_s1[5] += chipframe.IO_W[38]
+Fabric1.w_s4[5] += chipframe.IO_W[39]
+Fabric1.w_s11[5] += chipframe.IO_W[40]
+Fabric1.w_s18[5] += chipframe.IO_W[41]
+Fabric1.w_s19[5] += chipframe.IO_W[42]
 
 
 #east unbuffered IO
-Fabric.e_s0[4] += chipframe.IO_E[31]
-Fabric.e_s1[4] += chipframe.IO_E[32]
-Fabric.e_s2[4] += chipframe.IO_E[33]
-Fabric.e_s10[4] += chipframe.IO_E[34]
-Fabric.e_s17[4] += chipframe.IO_E[35]
-Fabric.e_s19[4] += chipframe.IO_E[36]
-Fabric.e_s0[5] += chipframe.IO_E[37]
-Fabric.e_s1[5] += chipframe.IO_E[38]
-Fabric.e_s4[5] += chipframe.IO_E[39]
-Fabric.e_s11[5] += chipframe.IO_E[40]
-Fabric.e_s18[5] += chipframe.IO_E[41]
-Fabric.e_s19[5] += chipframe.IO_E[42]
+Fabric2.e_s0[4] += chipframe.IO_E[31]
+Fabric2.e_s1[4] += chipframe.IO_E[32]
+Fabric2.e_s2[4] += chipframe.IO_E[33]
+Fabric2.e_s10[4] += chipframe.IO_E[34]
+Fabric2.e_s17[4] += chipframe.IO_E[35]
+Fabric2.e_s19[4] += chipframe.IO_E[36]
+Fabric2.e_s0[5] += chipframe.IO_E[37]
+Fabric2.e_s1[5] += chipframe.IO_E[38]
+Fabric2.e_s4[5] += chipframe.IO_E[39]
+Fabric2.e_s11[5] += chipframe.IO_E[40]
+Fabric2.e_s18[5] += chipframe.IO_E[41]
+Fabric2.e_s19[5] += chipframe.IO_E[42]
 
 #north unbuffered IO
-Fabric.n_s19[6] += chipframe.IO_N[35]
-Fabric.n_s18[6] += chipframe.IO_N[34]
-Fabric.n_s17[6] += chipframe.IO_N[33]
-Fabric.n_s16[6] += chipframe.IO_N[32]
-Fabric.n_s15[6] += chipframe.IO_N[31]
-Fabric.n_s14[6] += chipframe.IO_N[30]
-Fabric.n_s13[6] += chipframe.IO_N[29]
-Fabric.n_s12[6] += chipframe.IO_N[28]
-Fabric.n_s11[6] += chipframe.IO_N[27]
-Fabric.n_s10[6] += chipframe.IO_N[26]
-Fabric.n_s9[6] += chipframe.IO_N[25]
-Fabric.n_s8[6] += chipframe.IO_N[24]
+Fabric2.n_s19[5] += chipframe.IO_N[35]
+Fabric2.n_s18[5] += chipframe.IO_N[34]
+Fabric2.n_s17[5] += chipframe.IO_N[33]
+Fabric2.n_s16[5] += chipframe.IO_N[32]
+Fabric2.n_s15[5] += chipframe.IO_N[31]
+Fabric2.n_s14[5] += chipframe.IO_N[30]
+Fabric2.n_s13[5] += chipframe.IO_N[29]
+Fabric2.n_s12[5] += chipframe.IO_N[28]
+Fabric2.n_s11[5] += chipframe.IO_N[27]
+Fabric2.n_s10[5] += chipframe.IO_N[26]
+Fabric2.n_s9[5] += chipframe.IO_N[25]
+Fabric2.n_s8[5] += chipframe.IO_N[24]
 
 #south unbuffered IO
-Fabric.s_s3[6] += chipframe.IO_S[43]
-Fabric.s_s2[6] += chipframe.IO_S[42]
-Fabric.s_s1[6] += chipframe.IO_S[41]
-Fabric.s_s0[6] += chipframe.IO_S[40]
-Fabric.s_s19[5] += chipframe.IO_S[39]
-Fabric.s_s18[5] += chipframe.IO_S[38]
-Fabric.s_s17[5] += chipframe.IO_S[37]
-Fabric.s_s12[5] += chipframe.IO_S[36]
-Fabric.s_s5[5] += chipframe.IO_S[35]
-Fabric.s_s4[5] += chipframe.IO_S[34]
-Fabric.s_s3[5] += chipframe.IO_S[33]
-Fabric.s_s2[5] += chipframe.IO_S[32]
+Fabric2.s_s3[5] += chipframe.IO_S[43]
+Fabric2.s_s2[5] += chipframe.IO_S[42]
+Fabric2.s_s1[5] += chipframe.IO_S[41]
+Fabric2.s_s0[5] += chipframe.IO_S[40]
+Fabric2.s_s19[4] += chipframe.IO_S[39]
+Fabric2.s_s18[4] += chipframe.IO_S[38]
+Fabric2.s_s17[4] += chipframe.IO_S[37]
+Fabric2.s_s12[4] += chipframe.IO_S[36]
+Fabric2.s_s5[4] += chipframe.IO_S[35]
+Fabric2.s_s4[4] += chipframe.IO_S[34]
+Fabric2.s_s3[4] += chipframe.IO_S[33]
+Fabric2.s_s2[4] += chipframe.IO_S[32]
 
 
 
@@ -330,15 +345,15 @@ Fabric.s_s2[5] += chipframe.IO_S[32]
 # Compilation
 #-------------------------------------------------------------------------------
 design_limits = [15e6, 15e6]
-location_islands = ((250600, 4500000), #macro
+location_islands = ((250600, 4530000), #macro
 (20600, 20000), #frame
-(300000,220000), #Fabric
-(1600000,4510000), #LVLShifter1
-(2200000,4510000), #LVLShifter2
-(3400000,4510000), #LVLShifter3
-(2800000,4510000), #DigBuffer
-(6470000,4000000)) #Analog BUffer
+(340000,220000), #Fabric
+(1600000,4530000), #LVLShifter1
+(2200000,4530000), #LVLShifter2
+(3400000,4530000), #LVLShifter3
+(2800000,4530000), #DigBuffer
+(6420000,4000000)) #Analog BUffer
 # location_islands = ((250600, 4600000), (20600, 20000), (300000, 250600))
 # location_islands = None
 
-compile_asic(Top,process="TSMC350nm",fileName="FPAA_general",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=7,drainSpace =20,gateSpaceIdx=7,gateSpace=15)
+compile_asic(Top,process="TSMC350nm",fileName="FPAA_NN",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=7,drainSpace =20,gateSpaceIdx=7,gateSpace=15)

@@ -106,7 +106,7 @@ macro.DVDD += chipframe.DVDD_N[2]
 
 #Fabric
 FabricIsland = Island(Top)
-Fabric = TILE_analog(Top,FabricIsland,[7,7])
+Fabric = TILE_analog(Top,FabricIsland,[6,7])
 Fabric.place([0,0])
 
 #LVL shifter
@@ -164,8 +164,8 @@ GateSwitch_buf1 = STD_IndirectGateSwitch(Top,AnalogBuffer1Island,1)
 
 AnalogBuffer1.VTUN += GateSwitch_buf1.VTUN
 AnalogBuffer1.VDD += GateSwitch_buf1.VDD[0]
-GateSwitch_buf1.VPWR[0] += chipframe.avdd_W
-GateSwitch_buf1.VPWR[1] += chipframe. avdd_W
+GateSwitch_buf1.VPWR[0] += chipframe.avdd_E
+GateSwitch_buf1.VPWR[1] += chipframe.avdd_E
 AnalogBuffer1.GND += GateSwitch_buf1.GND[0]
 AnalogBuffer1.VINJ += GateSwitch_buf1.VINJ
 AnalogBuffer1.Vg += GateSwitch_buf1.Vg[0]
@@ -176,17 +176,17 @@ GateSwitch_buf1.VTUN_T += chipframe.IO_E_RES[0]
 GateSwitch_buf1.Vgsel += macro.VGPROG
 GateSwitch_buf1.PROG += DigBuffer.Out[0]
 GateSwitch_buf1.RUN += DigBuffer.Out[1]
-GateSwitch_buf1.VINJ_T += chipframe.VINJ_W
+GateSwitch_buf1.VINJ_T += chipframe.VINJ_E
 GateSwitch_buf1.GND_T += chipframe.gnd_E[2]
 GateSwitch_buf1.RUN_IN[0] += macro.VGRUN
 GateSwitch_buf1.RUN_IN[1] += macro.VGRUN
 GateSwitch_buf1.decode[0] += LVLShifter3.OUT[2]
 
-DrainSwitch_buf1.VDD += chipframe.VINJ_W
+DrainSwitch_buf1.VDD += chipframe.VINJ_E
 DrainSwitch_buf1.GND += chipframe.gnd_E[2]
 DrainSwitch_buf1.RUN += DigBuffer.Out[1]
 
-DrainSelect_buf1.VINJ += chipframe.VINJ_W
+DrainSelect_buf1.VINJ += chipframe.VINJ_E
 DrainSelect_buf1.GND += chipframe.gnd_W[2]
 DrainSelect_buf1.prog_drainrail += LVLShifter3.OUT[13]
 DrainSelect_buf1.run_drainrail += LVLShifter3.OUT[14]
@@ -211,13 +211,13 @@ for i in range(6):
 	Fabric.w_drainbit9[i] += LVLShifter1.OUT[9]
 	Fabric.w_drainbit10[i] += LVLShifter1.OUT[10]	
 Fabric.w_vtun[0] += chipframe.IO_W_RES[0]
-Fabric.s_vinj[0] += chipframe.VINJ_S[0]
-Fabric.s_gnd[0] += chipframe.gnd_S[0]
-Fabric.s_avdd[0] += chipframe.avdd_S[0]
-Fabric.w_drainEN += LVLShifter2.OUT[0:7]
+Fabric.e_vinj[3] += chipframe.VINJ_E
+Fabric.e_gnd[3] += chipframe.gnd_E[2]
+Fabric.e_avdd[3] += chipframe.avdd_E
+Fabric.w_drainEN += LVLShifter2.OUT[0:6]
 
 #north non-IO fabric connections 
-Fabric.n_gateEN += LVLShifter2.OUT[7:14]
+Fabric.n_gateEN += LVLShifter2.OUT[6:13]
 for i in range(7):
 	Fabric.n_gatebit0[i] += LVLShifter1.OUT[10]
 	Fabric.n_gatebit1[i] += LVLShifter1.OUT[11]
@@ -232,22 +232,22 @@ for i in range(7):
 	Fabric.n_vgsel[i] += macro.VGPROG
 
 #west and east buffered IO
-Fabric.n_s4[6] += AnalogBuffer1.Vin[0]
-Fabric.n_s5[6] += AnalogBuffer1.Vin[1]
-Fabric.n_s6[6] += AnalogBuffer1.Vin[2]
-Fabric.n_s7[6] += AnalogBuffer1.Vin[3]
-Fabric.n_s8[6] += AnalogBuffer1.Vin[4]
-Fabric.n_s9[6] += AnalogBuffer1.Vin[5]
-Fabric.n_s10[6] += AnalogBuffer1.Vin[6]
-Fabric.n_s11[6] += AnalogBuffer1.Vin[7]
-Fabric.n_s12[6] += AnalogBuffer1.Vin[8]
-Fabric.n_s13[6] += AnalogBuffer1.Vin[9]
-Fabric.n_s14[6] += AnalogBuffer1.Vin[10]
-Fabric.n_s15[6] += AnalogBuffer1.Vin[11]
-Fabric.n_s16[6] += AnalogBuffer1.Vin[12]
-Fabric.n_s17[6] += AnalogBuffer1.Vin[13]
-Fabric.n_s18[6] += AnalogBuffer1.Vin[14]
-Fabric.n_s19[6] += AnalogBuffer1.Vin[15]
+Fabric.n_s0[3] += AnalogBuffer1.Vin[0]
+Fabric.n_s1[3] += AnalogBuffer1.Vin[1]
+Fabric.n_s2[3] += AnalogBuffer1.Vin[2]
+Fabric.n_s3[3] += AnalogBuffer1.Vin[3]
+Fabric.n_s4[3] += AnalogBuffer1.Vin[4]
+Fabric.n_s5[3] += AnalogBuffer1.Vin[5]
+Fabric.n_s6[3] += AnalogBuffer1.Vin[6]
+Fabric.n_s7[3] += AnalogBuffer1.Vin[7]
+Fabric.n_s8[3] += AnalogBuffer1.Vin[8]
+Fabric.n_s9[3] += AnalogBuffer1.Vin[9]
+Fabric.n_s10[3] += AnalogBuffer1.Vin[10]
+Fabric.n_s11[3] += AnalogBuffer1.Vin[11]
+Fabric.n_s12[3] += AnalogBuffer1.Vin[12]
+Fabric.n_s13[3] += AnalogBuffer1.Vin[13]
+Fabric.n_s14[3] += AnalogBuffer1.Vin[14]
+Fabric.n_s15[3] += AnalogBuffer1.Vin[15]
 
 AnalogBuffer1.Vout[0] += chipframe.IO_W[21]
 AnalogBuffer1.Vout[1] += chipframe.IO_W[22]
@@ -332,13 +332,13 @@ Fabric.s_s2[5] += chipframe.IO_S[32]
 design_limits = [15e6, 15e6]
 location_islands = ((250600, 4500000), #macro
 (20600, 20000), #frame
-(300000,220000), #Fabric
-(1600000,4510000), #LVLShifter1
-(2200000,4510000), #LVLShifter2
-(3400000,4510000), #LVLShifter3
-(2800000,4510000), #DigBuffer
-(6470000,4000000)) #Analog BUffer
+(400000,220000), #Fabric
+(1600000,4300000), #LVLShifter1
+(2200000,4300000), #LVLShifter2
+(4000000,4300000), #LVLShifter3
+(2800000,4300000), #DigBuffer
+(3400000,4000000)) #Analog BUffer
 # location_islands = ((250600, 4600000), (20600, 20000), (300000, 250600))
 # location_islands = None
 
-compile_asic(Top,process="TSMC350nm",fileName="FPAA_general",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=7,drainSpace =20,gateSpaceIdx=7,gateSpace=15)
+compile_asic(Top,process="TSMC350nm",fileName="FPAA_general",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=7,drainSpace =40,gateSpaceIdx=7,gateSpace=15)
