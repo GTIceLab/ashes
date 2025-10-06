@@ -1883,10 +1883,10 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     
                     if verbose: 
                         print(f"offset_macro_shape = {shifted_poly}")
-                    for i, poly in enumerate(pieces, start=1):
-                        #print(f"Polygon {i}:")
-                        #print(list(poly.exterior.coords))
-                        final_poly = list(poly.exterior.coords)
+                        for i, poly in enumerate(pieces, start=1):
+                            #print(f"Polygon {i}:")
+                            #print(list(poly.exterior.coords))
+                            final_poly = list(poly.exterior.coords)
 
                     # Defining final blockage rectangles based on cutouts 
                     x_values = sorted({x for x, y in scaled_cutouts})  # use a set to remove duplicates
@@ -1897,36 +1897,25 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     # add spacing for pins
                     for i in range(len(x_values)):
                         if i < 3:
-                            vertical_splits.append(x_values[i] + margin)
+                            vertical_splits.append(x_values[i] + margin + offsetx)
                         else: 
-                            vertical_splits.append(x_values[i] - margin)
+                            vertical_splits.append(x_values[i] - margin + offsetx)
                     
-                    '''print(f"Original vertical splits: {x_values}")
-                    print(f"Offset vertical splits: {vertical_splits}")'''
-                    
-                    shrinked_diff = shrink_polygon(diff, margin)
+                    shrinked_diff = shrink_polygon(shifted_poly, margin)
                     rectangles = generate_rectangles(shrinked_diff, vertical_splits)
 
-                    array = island['coords']
-                    loc = array[idx]
-                    offsetx = loc[0]
-                    offsety = loc[1]
-
-                    # --- Write rectangles to file ---
+                    # --- Write non-pin rectangles blockages to def file ---
                     for block_x1, block_y1, block_x2, block_y2 in rectangles:
-                        block_x1_loc = block_x1 + offsetx
-                        block_y1_loc = block_y1 + offsety
-                        block_x2_loc = block_x2 + offsetx
-                        block_y2_loc = block_y2 + offsety
+                        block_x1_loc = block_x1
+                        block_y1_loc = block_y1
+                        block_x2_loc = block_x2
+                        block_y2_loc = block_y2
                         for num in range(num_metals): 
                             poly_mlayer = metal_layers[num]   
                             def_file.write(f'  - {poly_mlayer}\n')
                             def_file.write(f'    LAYER {poly_mlayer} ;\n')
                             def_file.write(f'    RECT ( {block_x1_loc} {block_y1_loc} ) ( {block_x2_loc} {block_y2_loc} ) ;\n')
                             def_file.write(f'  END\n\n')
-
-                    '''print(f"{len(rectangles)} rectangles generated.")
-                    print(f"Blockages: {rectangles}")'''
 
                     if verbose:
                         test_keys = item.keys()
@@ -1986,7 +1975,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                             for idx, seg in enumerate(segments):
                                 print(f"Segment Start: {idx} - {segments[idx]}")
                                 pins_on_seg = segment_pins[idx]
-                                
+
                                 # Determine segment orientation (horizontal or vertical)
                                 (x1, y1), (x2, y2) = seg
                                 # Ensure consistent coordinate ordering
