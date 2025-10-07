@@ -10,6 +10,9 @@ import sys
 import tracemalloc
 from pathlib import Path
 
+from shapely.geometry import Polygon, Point, LineString
+from shapely.affinity import translate
+
 # make sure our local fork of gdsii is added to system path
 path_root = Path(__file__).parents[0]
 sys.path.append(str(path_root))
@@ -29,7 +32,7 @@ from ashes_fg.asic.utils import *
 # Qs:
 # - Why are island numbers zero indexed but row and cols are 1 indexed?
 
-verbose = False
+verbose = True
 pypath = sys.executable
 
 
@@ -1551,6 +1554,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     def_file.write(''.join(track_string))
     comp_string = []
     rect_string = []
+    pin_rect_string = []
     
     def_blocks, def_nets = None, None
     nets_cnt, comp_cnt = 0, 0
@@ -1827,6 +1831,24 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
         for val,island in cell_order_in_island.items():
             for idx, item in island['items'].items():
                 if item['type'] in ['cell', 'matrix'] and item['name'] in rectilinear:
+                    insts_list = []
+                    if (item['type'] == 'cell' or item['type'] == 'matrix'):
+                        array = island['coords']
+                        loc = array[idx]
+                        block_x1 = loc[0] + pin_const*dbu
+                        block_y1 = loc[1] + pin_const*dbu
+                        block_x2 = loc[2] - pin_const*dbu
+                        block_y2 = loc[3] - pin_const*dbu
+                        #rect_string.append(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} )\n')
+                        insts_list = ['placeholder']
+                    if item['type'] == 'matrix':
+                        insts_list = item['insts'].keys()
+                        c_name = item['name']
+                        mat_x_loc = array[idx][0]
+                        mat_y_loc = array[idx][1]
+                        mat_cell_height = cell_info[c_name]['height']
+                        mat_cell_width = cell_info[c_name]['width']
+                        mat_row = item['mat_info']['mat_row']
                     #print(f"\n\n frame-module-blockages for loop now \n\n")
                     frame_name = item['name']
                     frame_origin = cell_info[frame_name]['origin']
@@ -1852,11 +1874,19 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                         cutouts_rects.append(rect)
                     # print(f'Cutout Rects: {cutouts_rects}\n')
                     pieces, diff = subtract_and_polygonize(macro_rect, cutouts_rects)
-
-                    for i, poly in enumerate(pieces, start=1):
-                        #print(f"Polygon {i}:")
-                        #print(list(poly.exterior.coords))
-                        final_poly = list(poly.exterior.coords)
+                    
+                    array = island['coords']
+                    loc = array[idx]
+                    offsetx = loc[0]
+                    offsety = loc[1]
+                    shifted_poly = translate(diff, xoff=offsetx, yoff=offsety)
+                    
+                    if verbose: 
+                        print(f"offset_macro_shape = {shifted_poly}")
+                        for i, poly in enumerate(pieces, start=1):
+                            #print(f"Polygon {i}:")
+                            #print(list(poly.exterior.coords))
+                            final_poly = list(poly.exterior.coords)
 
                     # Defining final blockage rectangles based on cutouts 
                     x_values = sorted({x for x, y in scaled_cutouts})  # use a set to remove duplicates
@@ -1867,27 +1897,19 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     # add spacing for pins
                     for i in range(len(x_values)):
                         if i < 3:
-                            vertical_splits.append(x_values[i] + margin)
+                            vertical_splits.append(x_values[i] + margin + offsetx)
                         else: 
-                            vertical_splits.append(x_values[i] - margin)
+                            vertical_splits.append(x_values[i] - margin + offsetx)
                     
-                    '''print(f"Original vertical splits: {x_values}")
-                    print(f"Offset vertical splits: {vertical_splits}")'''
-                    
-                    shrinked_diff = shrink_polygon(diff, margin)
+                    shrinked_diff = shrink_polygon(shifted_poly, margin)
                     rectangles = generate_rectangles(shrinked_diff, vertical_splits)
 
-                    array = island['coords']
-                    loc = array[idx]
-                    offsetx = loc[0]
-                    offsety = loc[1]
-
-                    # --- Write rectangles to file ---
+                    # --- Write non-pin rectangles blockages to def file ---
                     for block_x1, block_y1, block_x2, block_y2 in rectangles:
-                        block_x1_loc = block_x1 + offsetx
-                        block_y1_loc = block_y1 + offsety
-                        block_x2_loc = block_x2 + offsetx
-                        block_y2_loc = block_y2 + offsety
+                        block_x1_loc = block_x1
+                        block_y1_loc = block_y1
+                        block_x2_loc = block_x2
+                        block_y2_loc = block_y2
                         for num in range(num_metals): 
                             poly_mlayer = metal_layers[num]   
                             def_file.write(f'  - {poly_mlayer}\n')
@@ -1895,10 +1917,152 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                             def_file.write(f'    RECT ( {block_x1_loc} {block_y1_loc} ) ( {block_x2_loc} {block_y2_loc} ) ;\n')
                             def_file.write(f'  END\n\n')
 
-                    '''print(f"{len(rectangles)} rectangles generated.")
-                    print(f"Blockages: {rectangles}")'''
-            
-        
+                    if verbose:
+                        test_keys = item.keys()
+                        print(f"Item Keys: {test_keys}")
+                    # Insert blockages between pins around the edges
+                    pin_exclusion2 = ['TSMC350nm_4x2_Indirect']
+                    if 'pin_blockage' in item and item['pin_blockage'] and item['name'] not in pin_exclusion2:
+                        for inst_idx in insts_list:
+                            if verbose:
+                                test_keys = item.keys()
+                                print(f"inst_idx loop")
+                        
+                            # --- Handle matrix instance location ---
+                            if item['type'] == 'matrix':
+                                y_loc = (mat_row - 1 - inst_idx[0]) * mat_cell_height + mat_y_loc
+                                x_loc = inst_idx[1] * mat_cell_width + mat_x_loc
+                                loc = [x_loc, y_loc, x_loc + mat_cell_width, y_loc + mat_cell_height]
+                                block_x1 = loc[0] + pin_const * dbu
+                                block_y1 = loc[1] + pin_const * dbu
+                                block_x2 = loc[2] - pin_const * dbu
+                                block_y2 = loc[3] - pin_const * dbu
+
+                            # print(f"ENTER MACRO PIN BLOCKS")
+                            # --- Define polygon from shape vertices ---
+                            # Example: item['poly_vertices'] = [(x1, y1), (x2, y2), ...] (rectilinear outline)
+                            #cell_polygon = Polygon(item['poly_vertices'])
+                            segments = list(zip(shifted_poly.exterior.coords[:-1], shifted_poly.exterior.coords[1:]))
+
+                            # --- Group pins by closest polygon edge ---
+                            cell_pins = cell_info[item['name']]['cell_pins']
+                            segment_pins = {i: [] for i in range(len(segments))}
+
+                            for pin_item in cell_pins.values():
+                                # Get pin rectangle in absolute coordinates
+                                pin_left = loc[0] + int(pin_item['RECT'][0])
+                                pin_bot  = loc[1] + int(pin_item['RECT'][1])
+                                pin_right = loc[0] + int(pin_item['RECT'][2])
+                                pin_top  = loc[1] + int(pin_item['RECT'][3])
+                                pin_center = Point((pin_left + pin_right) / 2, (pin_bot + pin_top) / 2)
+
+                                # Find nearest polygon edge
+                                min_dist = float('inf')
+                                min_idx = None
+                                for idx, seg in enumerate(segments):
+                                    seg_line = LineString(seg)
+                                    dist = seg_line.distance(pin_center)
+                                    if dist < min_dist:
+                                        min_dist = dist
+                                        min_idx = idx
+                                segment_pins[min_idx].append([pin_left, pin_bot, pin_right, pin_top])
+
+                            if verbose:
+                                for i, pins in segment_pins.items():
+                                    print(f'SEGMENT {i} {segments[i]} -> Pins: {pins}')
+
+                            # --- Generate rectangular blockages between pins per segment ---
+                            for idx, seg in enumerate(segments):
+                                print(f"Segment Start: {idx} - {segments[idx]}")
+                                pins_on_seg = segment_pins[idx]
+
+                                # Determine segment orientation (horizontal or vertical)
+                                (x1, y1), (x2, y2) = seg
+                                # Ensure consistent coordinate ordering
+                                if abs(y2 - y1) < abs(x2 - x1):
+                                    # Horizontal segment → left to right
+                                    if x2 < x1:
+                                        x1, x2 = x2, x1
+                                        y1, y2 = y2, y1
+                                else:
+                                    # Vertical segment → bottom to top
+                                    if y2 < y1:
+                                        x1, x2 = x2, x1
+                                        y1, y2 = y2, y1
+
+                                is_horizontal = abs(y2 - y1) < abs(x2 - x1)
+                                
+                                # Sort pins along the segment direction
+                                if is_horizontal:
+                                    pins_on_seg.sort(key=lambda x: (x[0], x[1]))  # left → right
+                                else:
+                                    pins_on_seg.sort(key=lambda x: (x[1], x[0]))  # bottom → top
+
+                                prev_coord = None
+                                num_pins = len(pins_on_seg) - 1
+
+                                for ind, pin_coord in enumerate(pins_on_seg):
+                                    if is_horizontal:
+                                        # Segment is along X axis
+                                        if prev_coord is None:
+                                            pin_dist = abs(pin_coord[0] - x1)
+                                            temp_x = x1
+                                        else:
+                                            pin_dist = abs(pin_coord[0] - prev_coord[2])
+                                            temp_x = prev_coord[2] + pin_spacing
+
+                                        prev_coord = pin_coord
+                                        if pin_dist > pin_threshold:
+                                            pin_rect_string.append(
+                                                f'    RECT ( {temp_x} {y1 - block_ext_len} ) ( {pin_coord[0] - pin_spacing} {y1 + block_ext_len} )\n'
+                                            )
+
+                                        if ind == num_pins:
+                                            pin_dist = abs(pin_coord[2] - x2)
+                                            if pin_dist > pin_threshold:
+                                                pin_rect_string.append(
+                                                    f'    RECT ( {pin_coord[2] + pin_spacing} {y1 - block_ext_len} ) ( {x2} {y1 + block_ext_len} )\n'
+                                                )
+
+                                    else:
+                                        # Segment is along Y axis
+                                        if prev_coord is None:
+                                            pin_dist = abs(pin_coord[1] - y1)
+                                            temp_y = y1
+                                        else:
+                                            pin_dist = abs(pin_coord[1] - prev_coord[3])
+                                            temp_y = prev_coord[3] + pin_spacing
+
+                                        prev_coord = pin_coord
+                                        if pin_dist > pin_threshold:
+                                            pin_rect_string.append(
+                                                f'    RECT ( {x1 - block_ext_len} {temp_y} ) ( {x1 + block_ext_len} {pin_coord[1] - pin_spacing} )\n'
+                                            )
+
+                                        if ind == num_pins:
+                                            pin_dist = abs(pin_coord[3] - y2)
+                                            if pin_dist > pin_threshold:
+                                                pin_rect_string.append(
+                                                    f'    RECT ( {x1 - block_ext_len} {pin_coord[3] + pin_spacing} ) ( {x1 + block_ext_len} {y2} )\n'
+                                                )
+
+                                # If no pins at all, fill entire segment region
+                                if not pins_on_seg:
+                                    if verbose: 
+                                        print(f"inside no pin segment: segement = {segments[idx]}")
+                                    if is_horizontal:
+                                        pin_rect_string.append(f'    RECT ( {x1} {y1 - block_ext_len} ) ( {x2} {y1 + block_ext_len} )\n')
+                                    else:
+                                        pin_rect_string.append(f'    RECT ( {x1 - block_ext_len} {y1+(pin_spacing+block_ext_len)} ) ( {x2 + block_ext_len} {y2-(pin_spacing+block_ext_len)} )\n')
+                    # write the pin blockages 
+                    for num in range(num_metals):
+                        for single_rect in pin_rect_string:
+                            def_file.write(f'  - {metal_layers[num]}\n')
+                            def_file.write(f'    LAYER {metal_layers[num]} ;\n')
+                            if single_rect[-2] != ';':
+                                single_rect = single_rect[:-1] + ' ;\n'
+                            def_file.write(single_rect)
+                            def_file.write(f'  END\n\n')       
         # Write blockages for the frame to keep routes internal
         if frame_module:
             # print(f"\n\n frame-module-blockages for loop now \n\n")
