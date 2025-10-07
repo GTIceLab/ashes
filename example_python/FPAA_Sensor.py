@@ -156,51 +156,57 @@ DigBuffer.In[1] += macro.RUN_HV
 #Analog buffer
 
 AnalogBuffer1Island = Island(Top)
-AnalogBuffer1 = AnalogBuffer(Top,AnalogBuffer1Island,[16,1])
-AnalogBuffer1.place([0,0])
+AnalogBuffer1 = [0]*16
+for i in range(16):
+	AnalogBuffer1[i] = "AnalogBuffer1_"+str(i)
+for i in range(16):
+	AnalogBuffer1[i] = AnalogBuffer(Top,AnalogBuffer1Island,[1,1])
+	AnalogBuffer1[i].place([i,0])
+	AnalogBuffer1[i].markAbut()
 
-DrainDecoder_buf1 = STD_DrainDecoder(Top,AnalogBuffer1Island,bits=4)
-DrainSelect_buf1 = RunDrainSwitch(Top,AnalogBuffer1Island,num=4)
-DrainSwitch_buf1 = DrainCutoff(Top,AnalogBuffer1Island,num=4)    
+DrainDecoder_buf = STD_DrainDecoder(Top,AnalogBuffer1Island,bits=4)
+DrainSelect_buf = RunDrainSwitch(Top,AnalogBuffer1Island,num=4)
+DrainSwitch_buf = DrainCutoff(Top,AnalogBuffer1Island,num=4)    
 
-GateSwitch_buf1 = STD_IndirectGateSwitch(Top,AnalogBuffer1Island,1)
+GateSwitch_buf = STD_IndirectGateSwitch(Top,AnalogBuffer1Island,1)
 
-AnalogBuffer1.VTUN += GateSwitch_buf1.VTUN
-AnalogBuffer1.VDD += GateSwitch_buf1.VDD[0]
-GateSwitch_buf1.VPWR[0] += chipframe.avdd_E
-GateSwitch_buf1.VPWR[1] += chipframe. avdd_E
-AnalogBuffer1.GND += GateSwitch_buf1.GND[0]
-AnalogBuffer1.VINJ += GateSwitch_buf1.VINJ
-AnalogBuffer1.Vg += GateSwitch_buf1.Vg[0]
-AnalogBuffer1.Vsel += GateSwitch_buf1.CTRL_B[0]
-AnalogBuffer1.Vd_P += DrainSwitch_buf1.PR
+AnalogBuffer1[0].VTUN += GateSwitch_buf.VTUN
+AnalogBuffer1[0].VDD += GateSwitch_buf.VDD[0]
+GateSwitch_buf.VPWR[0] += chipframe.avdd_E
+GateSwitch_buf.VPWR[1] += chipframe. avdd_E
+AnalogBuffer1[0].GND += GateSwitch_buf.GND[0]
+AnalogBuffer1[0].VINJ += GateSwitch_buf.VINJ
+AnalogBuffer1[0].Vg += GateSwitch_buf.Vg[0]
+AnalogBuffer1[0].Vsel += GateSwitch_buf.CTRL_B[0]
+for i in range(16):
+	AnalogBuffer1[i].Vd_P += DrainSwitch_buf.PR[i]
 
-GateSwitch_buf1.VTUN_T += chipframe.IO_E_RES[0]
-GateSwitch_buf1.Vgsel += macro.VGPROG
-GateSwitch_buf1.PROG += DigBuffer.Out[0]
-GateSwitch_buf1.RUN += DigBuffer.Out[1]
-GateSwitch_buf1.VINJ_T += chipframe.VINJ_E
-GateSwitch_buf1.GND_T += chipframe.gnd_E[2]
-GateSwitch_buf1.RUN_IN[0] += macro.VGRUN
-GateSwitch_buf1.RUN_IN[1] += macro.VGRUN
-GateSwitch_buf1.decode[0] += LVLShifter3.OUT[2]
+GateSwitch_buf.VTUN_T += chipframe.IO_E_RES[0]
+GateSwitch_buf.Vgsel += macro.VGPROG
+GateSwitch_buf.PROG += DigBuffer.Out[0]
+GateSwitch_buf.RUN += DigBuffer.Out[1]
+GateSwitch_buf.VINJ_T += chipframe.VINJ_E
+GateSwitch_buf.GND_T += chipframe.gnd_E[2]
+GateSwitch_buf.RUN_IN[0] += macro.VGRUN
+GateSwitch_buf.RUN_IN[1] += macro.VGRUN
+GateSwitch_buf.decode[0] += LVLShifter3.OUT[2]
 
-DrainSwitch_buf1.VDD += chipframe.VINJ_E
-DrainSwitch_buf1.GND += chipframe.gnd_E[2]
-DrainSwitch_buf1.RUN += DigBuffer.Out[1]
+DrainSwitch_buf.VDD += chipframe.VINJ_E
+DrainSwitch_buf.GND += chipframe.gnd_E[2]
+DrainSwitch_buf.RUN += DigBuffer.Out[1]
 
-DrainSelect_buf1.VINJ += chipframe.VINJ_E
-DrainSelect_buf1.GND += chipframe.gnd_E[2]
-DrainSelect_buf1.prog_drainrail += LVLShifter3.OUT[13]
-DrainSelect_buf1.run_drainrail += LVLShifter3.OUT[14]
+DrainSelect_buf.VINJ += chipframe.VINJ_E
+DrainSelect_buf.GND += chipframe.gnd_E[2]
+DrainSelect_buf.prog_drainrail += macro.SystemDrainline[0]
+DrainSelect_buf.run_drainrail += macro.SystemDrainline[1]
 
 #DrainDecoder_buf1.VINJ += chipframe.VINJ_W
 #DrainDecoder_buf1.GND += chipframe.gnd_N[8]
-DrainDecoder_buf1.ENABLE += LVLShifter3.OUT[3]
-DrainDecoder_buf1.IN += LVLShifter3.OUT[4:8]
+DrainDecoder_buf.ENABLE += LVLShifter3.OUT[3]
+DrainDecoder_buf.IN += LVLShifter3.OUT[4:8]
 
 #west and east non-IO Fabric Connections
-for i in range(6):
+for i in range(7):
 	Fabric2.e_vgrun[i] += macro.VGRUN
 	Fabric1.w_drainbit0[i] += LVLShifter1.OUT[0]
 	Fabric1.w_drainbit1[i] += LVLShifter1.OUT[1]
@@ -228,9 +234,9 @@ Fabric1.n_gatebit1 += LVLShifter1.OUT[12]
 Fabric1.n_gatebit2 += LVLShifter1.OUT[13]
 Fabric1.n_gatebit3 += LVLShifter1.OUT[14]
 Fabric1.n_gatebit4 += LVLShifter1.OUT[15]
-Fabric1.n_gatebit5 += LVLShifter2.OUT[14]
-Fabric1.n_progdrain += LVLShifter3.OUT[13]
-Fabric1.n_rundrain += LVLShifter3.OUT[14]
+Fabric1.n_gatebit5 += LVLShifter2.OUT[15]
+Fabric1.n_progdrain += macro.SystemDrainline[0]
+Fabric1.n_rundrain += macro.SystemDrainline[1]
 Fabric1.n_prog += DigBuffer.Out[0]
 Fabric1.n_run += DigBuffer.Out[1]
 Fabric1.n_vgsel += macro.VGPROG
@@ -240,77 +246,87 @@ for i in range(6):
 	Fabric2.n_gatebit2[i] += LVLShifter1.OUT[13]
 	Fabric2.n_gatebit3[i] += LVLShifter1.OUT[14]
 	Fabric2.n_gatebit4[i] += LVLShifter1.OUT[15]
-	Fabric2.n_gatebit5[i] += LVLShifter2.OUT[14]
-	Fabric2.n_progdrain[i] += LVLShifter3.OUT[13]
-	Fabric2.n_rundrain[i] += LVLShifter3.OUT[14]
+	Fabric2.n_gatebit5[i] += LVLShifter2.OUT[15]
+	Fabric2.n_progdrain[i] += macro.SystemDrainline[0]
+	Fabric2.n_rundrain[i] += macro.SystemDrainline[1]
 	Fabric2.n_prog[i] += DigBuffer.Out[0]
 	Fabric2.n_run[i] += DigBuffer.Out[1]
 	Fabric2.n_vgsel[i] += macro.VGPROG
+	
+macro.Signal_RampADC_inp[5] += Fabric2.n_s19[4]
+macro.Signal_RampADC_inp[4] += Fabric2.n_s18[4]
+macro.Signal_RampADC_inp[3] += Fabric2.n_s17[4]
+macro.Signal_RampADC_inp[2] += Fabric2.n_s16[4]
+macro.Signal_RampADC_inp[1] += Fabric2.n_s15[4]
+macro.Signal_RampADC_inp[0] += Fabric2.n_s14[4]
+macro.Signal_DAC_out[2] += Fabric2.n_s13[4]
+macro.Signal_DAC_out[1] += Fabric2.n_s12[4]
+macro.Signal_DAC_out[0] += Fabric2.n_s11[4]
 
 #west and east buffered IO
-Fabric2.e_s0[0] += AnalogBuffer1.Vin[0]
-Fabric2.e_s1[0] += AnalogBuffer1.Vin[1]
-Fabric2.e_s2[0] += AnalogBuffer1.Vin[2]
-Fabric2.e_s3[0] += AnalogBuffer1.Vin[3]
-Fabric2.e_s4[0] += AnalogBuffer1.Vin[4]
-Fabric2.e_s5[0] += AnalogBuffer1.Vin[5]
-Fabric2.e_s6[0] += AnalogBuffer1.Vin[6]
-Fabric2.e_s7[0] += AnalogBuffer1.Vin[7]
-Fabric2.e_s8[0] += AnalogBuffer1.Vin[8]
-Fabric2.e_s9[0] += AnalogBuffer1.Vin[9]
-Fabric2.e_s10[0] += AnalogBuffer1.Vin[10]
-Fabric2.e_s11[0] += AnalogBuffer1.Vin[11]
-Fabric2.e_s12[0] += AnalogBuffer1.Vin[12]
-Fabric2.e_s13[0] += AnalogBuffer1.Vin[13]
-Fabric2.e_s14[0] += AnalogBuffer1.Vin[14]
-Fabric2.e_s15[0] += AnalogBuffer1.Vin[15]
+Fabric2.e_s0[0] += AnalogBuffer1[0].Vin
+Fabric2.e_s1[0] += AnalogBuffer1[1].Vin
+Fabric2.e_s2[0] += AnalogBuffer1[2].Vin
+Fabric2.e_s3[0] += AnalogBuffer1[3].Vin
+Fabric2.e_s4[0] += AnalogBuffer1[4].Vin
+Fabric2.e_s5[0] += AnalogBuffer1[5].Vin
+Fabric2.e_s6[0] += AnalogBuffer1[6].Vin
+Fabric2.e_s7[0] += AnalogBuffer1[7].Vin
+Fabric2.e_s8[0] += AnalogBuffer1[8].Vin
+Fabric2.e_s9[0] += AnalogBuffer1[9].Vin
+Fabric2.e_s10[0] += AnalogBuffer1[10].Vin
+Fabric2.e_s11[0] += AnalogBuffer1[11].Vin
+Fabric2.e_s12[0] += AnalogBuffer1[12].Vin
+Fabric2.e_s13[0] += AnalogBuffer1[13].Vin
+Fabric2.e_s14[0] += AnalogBuffer1[14].Vin
+Fabric2.e_s15[0] += AnalogBuffer1[15].Vin
 
-AnalogBuffer1.Vout[0] += chipframe.IO_W[21]
-AnalogBuffer1.Vout[1] += chipframe.IO_W[22]
-AnalogBuffer1.Vout[2] += chipframe.IO_W[23]
-AnalogBuffer1.Vout[3] += chipframe.IO_W[24]
-AnalogBuffer1.Vout[4] += chipframe.IO_W[25]
-AnalogBuffer1.Vout[5] += chipframe.IO_W[26]
-AnalogBuffer1.Vout[6] += chipframe.IO_W[27]
-AnalogBuffer1.Vout[7] += chipframe.IO_W[28]
+AnalogBuffer1[0].Vout += chipframe.IO_E[13]
+AnalogBuffer1[1].Vout += chipframe.IO_E[14]
+AnalogBuffer1[2].Vout += chipframe.IO_E[15]
+AnalogBuffer1[3].Vout += chipframe.IO_E[16]
+AnalogBuffer1[4].Vout += chipframe.IO_E[17]
+AnalogBuffer1[5].Vout += chipframe.IO_E[18]
+AnalogBuffer1[6].Vout += chipframe.IO_E[19]
+AnalogBuffer1[7].Vout += chipframe.IO_E[20]
 
-AnalogBuffer1.Vout[8] += chipframe.IO_E[21]
-AnalogBuffer1.Vout[9] += chipframe.IO_E[22]
-AnalogBuffer1.Vout[10] += chipframe.IO_E[23]
-AnalogBuffer1.Vout[11] += chipframe.IO_E[24]
-AnalogBuffer1.Vout[12] += chipframe.IO_E[25]
-AnalogBuffer1.Vout[13] += chipframe.IO_E[26]
-AnalogBuffer1.Vout[14] += chipframe.IO_E[27]
-AnalogBuffer1.Vout[15] += chipframe.IO_E[28]
-
-#west unbuffered IO
-Fabric1.w_s0[4] += chipframe.IO_W[31]
-Fabric1.w_s1[4] += chipframe.IO_W[32]
-Fabric1.w_s2[4] += chipframe.IO_W[33]
-Fabric1.w_s10[4] += chipframe.IO_W[34]
-Fabric1.w_s17[4] += chipframe.IO_W[35]
-Fabric1.w_s19[4] += chipframe.IO_W[36]
-Fabric1.w_s0[5] += chipframe.IO_W[37]
-Fabric1.w_s1[5] += chipframe.IO_W[38]
-Fabric1.w_s4[5] += chipframe.IO_W[39]
-Fabric1.w_s11[5] += chipframe.IO_W[40]
-Fabric1.w_s18[5] += chipframe.IO_W[41]
-Fabric1.w_s19[5] += chipframe.IO_W[42]
-
+AnalogBuffer1[8].Vout += chipframe.IO_E[21]
+AnalogBuffer1[9].Vout += chipframe.IO_E[22]
+AnalogBuffer1[10].Vout += chipframe.IO_E[23]
+AnalogBuffer1[11].Vout += chipframe.IO_E[24]
+AnalogBuffer1[12].Vout += chipframe.IO_E[25]
+AnalogBuffer1[13].Vout += chipframe.IO_E[26]
+AnalogBuffer1[14].Vout += chipframe.IO_E[27]
+AnalogBuffer1[15].Vout += chipframe.IO_E[28]
 
 #east unbuffered IO
-Fabric2.e_s0[4] += chipframe.IO_E[31]
-Fabric2.e_s1[4] += chipframe.IO_E[32]
-Fabric2.e_s2[4] += chipframe.IO_E[33]
-Fabric2.e_s10[4] += chipframe.IO_E[34]
-Fabric2.e_s17[4] += chipframe.IO_E[35]
-Fabric2.e_s19[4] += chipframe.IO_E[36]
-Fabric2.e_s0[5] += chipframe.IO_E[37]
-Fabric2.e_s1[5] += chipframe.IO_E[38]
-Fabric2.e_s4[5] += chipframe.IO_E[39]
-Fabric2.e_s11[5] += chipframe.IO_E[40]
-Fabric2.e_s18[5] += chipframe.IO_E[41]
-Fabric2.e_s19[5] += chipframe.IO_E[42]
+Fabric2.e_s0[5] += chipframe.IO_E[31]
+Fabric2.e_s1[5] += chipframe.IO_E[32]
+Fabric2.e_s2[5] += chipframe.IO_E[33]
+Fabric2.e_s8[5] += chipframe.IO_E[34]
+Fabric2.e_s15[5] += chipframe.IO_E[35]
+Fabric2.e_s19[5] += chipframe.IO_E[36]
+Fabric2.e_s0[6] += chipframe.IO_E[37]
+Fabric2.e_s1[6] += chipframe.IO_E[38]
+Fabric2.e_s2[6] += chipframe.IO_E[39]
+Fabric2.e_s9[6] += chipframe.IO_E[40]
+Fabric2.e_s17[6] += chipframe.IO_E[41]
+Fabric2.e_s19[6] += chipframe.IO_E[42]
+
+
+#west unbuffered IO
+Fabric1.w_s0[5] += chipframe.IO_W[31]
+Fabric1.w_s1[5] += chipframe.IO_W[32]
+Fabric1.w_s2[5] += chipframe.IO_W[33]
+Fabric1.w_s8[5] += chipframe.IO_W[34]
+Fabric1.w_s15[5] += chipframe.IO_W[35]
+Fabric1.w_s19[5] += chipframe.IO_W[36]
+Fabric1.w_s0[6] += chipframe.IO_W[37]
+Fabric1.w_s1[6] += chipframe.IO_W[38]
+Fabric1.w_s2[6] += chipframe.IO_W[39]
+Fabric1.w_s9[6] += chipframe.IO_W[40]
+Fabric1.w_s17[6] += chipframe.IO_W[41]
+Fabric1.w_s19[6] += chipframe.IO_W[42]
 
 #north unbuffered IO
 Fabric2.n_s19[5] += chipframe.IO_N[35]
@@ -348,12 +364,12 @@ Fabric2.s_s2[4] += chipframe.IO_S[32]
 design_limits = [15e6, 15e6]
 location_islands = ((250600, 4530000), #macro
 (20600, 20000), #frame
-(340000,220000), #Fabric
+(400000,210000), #Fabric
 (1600000,4530000), #LVLShifter1
 (2200000,4530000), #LVLShifter2
 (3400000,4530000), #LVLShifter3
 (2800000,4530000), #DigBuffer
-(6420000,4000000)) #Analog BUffer
+(6220000,4000000)) #Analog BUffer
 # location_islands = ((250600, 4600000), (20600, 20000), (300000, 250600))
 # location_islands = None
 
