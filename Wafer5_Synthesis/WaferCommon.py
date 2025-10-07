@@ -137,6 +137,14 @@ def LargeChip(circuit):
     macro.VINJ += chipframe.VINJ_N[2]
     macro.DVDD += chipframe.DVDD_N[2]
 
+    # Digital Buffer DVDD
+    chipframe.buf_vdd[0:5] += chipframe.DVDD_N[1]
+    chipframe.buf_vdd_N[5] += chipframe.DVDD_N[2]
+
+    chipframe.buf_vdd_E += chipframe.DVDD_E[0]
+
+    chipframe.buf_vdd_W += chipframe.DVDD_W[0]
+
     # Compilation
     #-------------------------------------------------------------------------------
 
@@ -249,6 +257,16 @@ def SmallChip(circuit):
     macro.AVDD += chipframe.avdd_N[2]
     macro.VINJ += chipframe.VINJ_N[2]
     macro.DVDD += chipframe.DVDD_N[2]
+
+    # Digital Buffer DVDD
+    chipframe.buf_vdd[0:5] += chipframe.DVDD_N[1]
+    chipframe.buf_vdd_N[5] += chipframe.DVDD_N[2]
+
+    chipframe.buf_vdd_E += chipframe.DVDD_E[0]
+
+    chipframe.buf_vdd_W += chipframe.DVDD_W[0]
+
+    chipframe.buf_vdd_S += chipframe.DVDD_S[0]
 
     
     location_macro = (210600, 410000)

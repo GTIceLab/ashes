@@ -3937,7 +3937,7 @@ class Macro_test(StandardCell):
 		circuit.addInstance(self,self.island)
 
 class ChipFrame(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),gnd_N=None, esd_vdd_N=None, avdd_N=None, VINJ_N=None, DVDD_N=None, IO_N_CLK=None, IO_N=None, gnd_S=None, esd_vdd_S=None, avdd_S=None, VINJ_S=None, DVDD_S=None, IO_S=None, IO_Bare_W=None, IO_W_RES=None, IO_W=None, gnd_W=None, esd_vdd_W=None, avdd_W=None, VINJ_W=None, DVDD_W=None, IO_Bare_E=None, IO_E_RES=None, IO_E=None, gnd_E=None, esd_vdd_E=None, avdd_E=None, VINJ_E=None, DVDD_E=None):
+	def __init__(self,circuit,island=None,dim=(1,1),gnd_N=None, esd_vdd_N=None, avdd_N=None, VINJ_N=None, DVDD_N=None, IO_N_CLK=None, IO_N=None, gnd_S=None, esd_vdd_S=None, avdd_S=None, VINJ_S=None, DVDD_S=None, IO_S=None, IO_Bare_W=None, IO_W_RES=None, IO_W=None, gnd_W=None, esd_vdd_W=None, avdd_W=None, VINJ_W=None, DVDD_W=None, IO_Bare_E=None, IO_E_RES=None, IO_E=None, gnd_E=None, esd_vdd_E=None, avdd_E=None, VINJ_E=None, DVDD_E=None,buf_vdd_N=None,buf_vdd_E=None,buf_vdd_W=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -3948,7 +3948,7 @@ class ChipFrame(StandardCell):
 
 
 		# Define cell information
-		self.name = 'frame_6p9mm_6p2mm_edit'
+		self.name = 'frame_6p9mm_6p2mm_digbuf'
 		
 		self.gnd_N = Port(circuit,self, 'gnd_N' ,'N',9*self.dim[1])
 		self.esd_vdd_N = Port(circuit,self, 'esd_vdd_N' ,'N',3*self.dim[1])
@@ -3987,8 +3987,14 @@ class ChipFrame(StandardCell):
 		self.DVDD_W = Port(circuit,self, 'DVDD_W' ,'W',1*self.dim[0])
 
 
+		self.buf_vdd_N = Port(circuit,self, 'buf_vdd_N', 'N', 6)
+		self.buf_vdd_E = Port(circuit,self, 'buf_vdd_E', 'E', 1)
+		self.buf_vdd_W = Port(circuit,self, 'buf_vdd_W', 'W', 11)
+
+
+
 		# Initialize ports with given values
-		portsInit = [gnd_N,esd_vdd_N,avdd_N,VINJ_N,DVDD_N,IO_N_CLK,IO_N,gnd_S,esd_vdd_S,avdd_S,VINJ_S,DVDD_S,IO_S,IO_Bare_W,IO_W_RES,IO_W,gnd_W,esd_vdd_W,avdd_W,VINJ_N,DVDD_W,IO_Bare_E,IO_E_RES,IO_E,gnd_E,esd_vdd_E,avdd_E,VINJ_N,DVDD_E]
+		portsInit = [gnd_N,esd_vdd_N,avdd_N,VINJ_N,DVDD_N,IO_N_CLK,IO_N,gnd_S,esd_vdd_S,avdd_S,VINJ_S,DVDD_S,IO_S,IO_Bare_W,IO_W_RES,IO_W,gnd_W,esd_vdd_W,avdd_W,VINJ_N,DVDD_W,IO_Bare_E,IO_E_RES,IO_E,gnd_E,esd_vdd_E,avdd_E,VINJ_N,DVDD_E,buf_vdd_N,buf_vdd_E,buf_vdd_W]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
@@ -3998,7 +4004,7 @@ class ChipFrame(StandardCell):
 		circuit.addInstance(self, self.island)
 
 class SmallPadFrame(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),gnd_N=None,esd_vdd_N=None,avdd_N=None,VINJ_N=None,DVDD_N=None,IO_N_CLK=None,IO_N=None,gnd_S=None,esd_vdd_S=None,avdd_S=None,VINJ_S=None,DVDD_S=None,IO_S=None,IO_Bare_E=None,gnd_E=None,IO_E_RES=None,IO_E=None,IO_Bare_W=None,gnd_W=None,IO_W_RES=None,IO_W=None):
+	def __init__(self,circuit,island=None,dim=(1,1),gnd_N=None,esd_vdd_N=None,avdd_N=None,VINJ_N=None,DVDD_N=None,IO_N_CLK=None,IO_N=None,gnd_S=None,esd_vdd_S=None,avdd_S=None,VINJ_S=None,DVDD_S=None,IO_S=None,IO_Bare_E=None,gnd_E=None,IO_E_RES=None,IO_E=None,IO_Bare_W=None,gnd_W=None,IO_W_RES=None,IO_W=None,buf_vdd_N=None,buf_vdd_W=None,buf_vdd_S=None,buf_vdd_E=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -4008,7 +4014,7 @@ class SmallPadFrame(StandardCell):
 		self.dim = dim
 
 		# Define cell information
-		self.name = 'frame_6p9mm_2mm_edit'
+		self.name = 'frame_6p9mm_2mm_digbuf'
 
 		self.gnd_N = Port(circuit,self,'gnd_N','N',9*self.dim[1])
 		self.esd_vdd_N = Port(circuit,self,'esd_vdd_N','N',3*self.dim[1])
@@ -4035,8 +4041,13 @@ class SmallPadFrame(StandardCell):
 		self.IO_W_RES = Port(circuit,self, 'IO_W_RES' ,'W',2*self.dim[0])
 		self.IO_W = Port(circuit,self, 'IO_W' ,'W',9*self.dim[0])
 
+		self.buf_vdd_N = Port(circuit,self, 'buf_vdd_N', 'N', 6)
+		self.buf_vdd_W = Port(circuit,self, 'buf_vdd_W', 'W', 1)
+		self.buf_vdd_S = Port(circuit,self, 'buf_vdd_S', 'S', 10)
+		self.buf_vdd_E = Port(circuit,self, 'buf_vdd_E', 'E', 1)
+
 		# Initialize ports with given values
-		portsInit = [gnd_N,esd_vdd_N,avdd_N,VINJ_N,DVDD_N,IO_N_CLK,IO_N,gnd_S,esd_vdd_S,avdd_S,VINJ_S,DVDD_S,IO_S,IO_Bare_E,gnd_E,IO_E_RES,IO_E,IO_Bare_W,gnd_W,IO_W_RES,IO_W]
+		portsInit = [gnd_N,esd_vdd_N,avdd_N,VINJ_N,DVDD_N,IO_N_CLK,IO_N,gnd_S,esd_vdd_S,avdd_S,VINJ_S,DVDD_S,IO_S,IO_Bare_E,gnd_E,IO_E_RES,IO_E,IO_Bare_W,gnd_W,IO_W_RES,IO_W,buf_vdd_N,buf_vdd_W,buf_vdd_S,buf_vdd_E]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
