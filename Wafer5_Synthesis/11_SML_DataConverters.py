@@ -219,7 +219,8 @@ with open('./ashes_fg/asic/qrouter_default.json') as file:
     qparams = json.load(file)
 
 qparams["passes"] = 100
-qparams["via"] = 25
+qparams["via"] = 10
+qparams["jog"] = 35
 qparams["conflict"] = 40
 qparams["stage2"] = "mask none force effort 500"
 qparams["stage3"] = "mask none force effort 500"
