@@ -29,13 +29,13 @@ class AveragerDAC(StandardCell):
         self.Prog= Port(circuit,self,"n_Prog",'N',1)
         self.Run = Port(circuit,self,"n_Run",'N',1)
         
-        self.Code = Port(circuit,self,"n_Code",'E',5)
+        self.Code = Port(circuit,self,"e_Code",'E',5)
 
-        self.DEBUG = Port(circuit,self,"e_DEBUG",'S',2)
+        self.DEBUG = Port(circuit,self,"s_DEBUG",'S',2)
 
         self.Vout = Port(circuit,self,"s_Vout",'S',1)
         self.Drainline_Prog = Port(circuit,self,"s_Prog_Drainline",'S',1)
-        self.Drainline_Run = Port(circuit,self,"s_Prog_Drainline",'S',1)
+        self.Drainline_Run = Port(circuit,self,"s_Run_Drainline",'S',1)
 
         self.VGRUN  = Port(circuit,self,"n_VGRUN",'N',1)
         self.VGPROG = Port(circuit,self,"n_VGPROG",'N',1)
@@ -89,7 +89,7 @@ class AlgorithmicADC(StandardCell):
         self.DEBUG = Port(circuit,self,"e_DEBUG",'E',3)
 
         self.Drainline_Prog = Port(circuit,self,"s_Prog_Drainline",'S',1)
-        self.Drainline_Run = Port(circuit,self,"s_Prog_Drainline",'S',1)
+        self.Drainline_Run = Port(circuit,self,"s_Run_Drainline",'S',1)
 
         self.VGRUN  = Port(circuit,self,"n_VGRUN",'N',1)
         self.VGPROG = Port(circuit,self,"n_VGPROG",'N',1)
@@ -142,7 +142,7 @@ class RampADC(StandardCell):
 
         self.Vout = Port(circuit,self,"s_Vout",'S',1)
         self.Drainline_Prog = Port(circuit,self,"s_Prog_Drainline",'S',1)
-        self.Drainline_Run = Port(circuit,self,"s_Prog_Drainline",'S',1)
+        self.Drainline_Run = Port(circuit,self,"s_Run_Drainline",'S',1)
 
         self.VGRUN  = Port(circuit,self,"n_VGRUN",'N',1)
         self.VGPROG = Port(circuit,self,"n_VGPROG",'N',1)
@@ -193,7 +193,7 @@ class QDAC(StandardCell):
 
         self.Vout = Port(circuit,self,"s_Vout",'S',1)
         self.Drainline_Prog = Port(circuit,self,"s_Prog_Drainline",'S',1)
-        self.Drainline_Run = Port(circuit,self,"s_Prog_Drainline",'S',1)
+        self.Drainline_Run = Port(circuit,self,"s_Run_Drainline",'S',1)
 
         self.VGRUN  = Port(circuit,self,"n_VGRUN",'N',1)
         self.VGPROG = Port(circuit,self,"n_VGPROG",'N',1)
