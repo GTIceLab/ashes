@@ -138,7 +138,9 @@ def LargeChip(circuit):
     macro.DVDD += chipframe.DVDD_N[2]
 
     # Digital Buffer DVDD
-    chipframe.buf_vdd[0:5] += chipframe.DVDD_N[1]
+    for i in range(5):
+        chipframe.buf_vdd_N[i] += chipframe.DVDD_N[1]
+
     chipframe.buf_vdd_N[5] += chipframe.DVDD_N[2]
 
     chipframe.buf_vdd_E += chipframe.DVDD_E[0]
@@ -259,12 +261,14 @@ def SmallChip(circuit):
     macro.DVDD += chipframe.DVDD_N[2]
 
     # Digital Buffer DVDD
-    chipframe.buf_vdd[0:5] += chipframe.DVDD_N[1]
+    for i in range(5):
+        chipframe.buf_vdd_N[i] += chipframe.DVDD_N[1]
+
     chipframe.buf_vdd_N[5] += chipframe.DVDD_N[2]
 
-    chipframe.buf_vdd_E += chipframe.DVDD_E[0]
+    chipframe.buf_vdd_E += chipframe.DVDD_S[2]
 
-    chipframe.buf_vdd_W += chipframe.DVDD_W[0]
+    chipframe.buf_vdd_W += chipframe.DVDD_N[0]
 
     chipframe.buf_vdd_S += chipframe.DVDD_S[0]
 

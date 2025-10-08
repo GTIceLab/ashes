@@ -32,7 +32,8 @@ from ashes_fg.asic.utils import *
 # Qs:
 # - Why are island numbers zero indexed but row and cols are 1 indexed?
 
-verbose = False
+
+verbose = False 
 pypath = sys.executable
 
 
@@ -1973,7 +1974,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
 
                             # --- Generate rectangular blockages between pins per segment ---
                             for idx, seg in enumerate(segments):
-                                print(f"Segment Start: {idx} - {segments[idx]}")
+                                #print(f"Segment Start: {idx} - {segments[idx]}")
                                 pins_on_seg = segment_pins[idx]
 
                                 # Determine segment orientation (horizontal or vertical)
@@ -2076,7 +2077,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
             ref_left_pin_name = 'IO_W<0>'
             ref_bot_pin_name = 'IO_S<0>'
             frame_ref_pin = cell_info[frame_name]['cell_pins']
-            # print(f"pins: {frame_ref_pin.values()}")
+            #print(f"pins: {frame_ref_pin.values()}")
             if ref_left_pin_name and ref_bot_pin_name in frame_ref_pin:
                 pin_left_name_int = frame_ref_pin[ref_left_pin_name]
                 pin_bot_name_int = frame_ref_pin[ref_bot_pin_name]
