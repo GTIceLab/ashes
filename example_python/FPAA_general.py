@@ -117,12 +117,15 @@ LVLShifter1.place([0,0])
 LVLShifter1.DVDD += chipframe.DVDD_W
 LVLShifter1.GND += chipframe.gnd_W[2]
 LVLShifter1.VINJ += chipframe.VINJ_W
-LVLShifter1.Vin += macro.mmio_reg_9_bout[0:16]
+for i in range(2,15):
+	LVLShifter1.Vin[i-2] += macro.mmio_reg_7_bout[i]
+
 
 LVLShifter2Island = Island(Top)
 LVLShifter2 = TSMC350nm_LVLShift_x16(Top,LVLShifter2Island,[1,1])
 LVLShifter2.place([0,0])
 LVLShifter2.Vin += macro.mmio_reg_10_bout[0:16]
+
 
 LVLShifter2.DVDD += chipframe.DVDD_W
 LVLShifter2.GND += chipframe.gnd_W[2]
@@ -131,8 +134,8 @@ LVLShifter2.VINJ += chipframe.VINJ_W
 LVLShifter3Island = Island(Top)
 LVLShifter3 = TSMC350nm_LVLShift_x16(Top,LVLShifter3Island,[1,1])
 LVLShifter3.place([0,0])
-for i in range(2,15):
-	LVLShifter3.Vin[i] += macro.mmio_reg_7_bout[i]
+LVLShifter3.Vin += macro.mmio_reg_9_bout[0:16]
+
 
 LVLShifter3.DVDD += chipframe.DVDD_E
 LVLShifter3.GND += chipframe.gnd_E[2]
@@ -186,7 +189,7 @@ GateSwitch_buf.VINJ_T += chipframe.VINJ_E
 GateSwitch_buf.GND_T += chipframe.gnd_E[2]
 GateSwitch_buf.RUN_IN[0] += macro.VGRUN
 GateSwitch_buf.RUN_IN[1] += macro.VGRUN
-GateSwitch_buf.decode[0] += LVLShifter3.OUT[2]
+GateSwitch_buf.decode[0] += LVLShifter3.OUT[6]
 
 DrainSwitch_buf.VDD += chipframe.VINJ_E
 DrainSwitch_buf.GND += chipframe.gnd_E[2]
@@ -199,8 +202,8 @@ DrainSelect_buf.run_drainrail += macro.SystemDrainline[1]
 
 #DrainDecoder_buf1.VINJ += chipframe.VINJ_W
 #DrainDecoder_buf1.GND += chipframe.gnd_N[8]
-DrainDecoder_buf.ENABLE += LVLShifter3.OUT[3]
-DrainDecoder_buf.IN += LVLShifter3.OUT[4:8]
+DrainDecoder_buf.ENABLE += LVLShifter3.OUT[7]
+DrainDecoder_buf.IN += LVLShifter3.OUT[8:12]
 
 #west and east non-IO Fabric Connections
 
@@ -226,12 +229,12 @@ Fabric.w_drainEN += LVLShifter2.OUT[0:7]
 #north non-IO fabric connections 
 Fabric.n_gateEN += LVLShifter2.OUT[7:14]
 for i in range(7):
-	Fabric.n_gatebit0[i] += LVLShifter1.OUT[11]
-	Fabric.n_gatebit1[i] += LVLShifter1.OUT[12]
-	Fabric.n_gatebit2[i] += LVLShifter1.OUT[13]
-	Fabric.n_gatebit3[i] += LVLShifter1.OUT[14]
-	Fabric.n_gatebit4[i] += LVLShifter1.OUT[15]
-	Fabric.n_gatebit5[i] += LVLShifter2.OUT[15]
+	Fabric.n_gatebit0[i] += LVLShifter3.OUT[0]
+	Fabric.n_gatebit1[i] += LVLShifter3.OUT[1]
+	Fabric.n_gatebit2[i] += LVLShifter3.OUT[2]
+	Fabric.n_gatebit3[i] += LVLShifter3.OUT[3]
+	Fabric.n_gatebit4[i] += LVLShifter3.OUT[4]
+	Fabric.n_gatebit5[i] += LVLShifter3.OUT[5]
 	Fabric.n_progdrain[i] += macro.SystemDrainline[0]
 	Fabric.n_rundrain[i] += macro.SystemDrainline[1]
 	Fabric.n_prog[i] += DigBuffer.Out[0]
@@ -342,11 +345,11 @@ Fabric.s_s3[5] += chipframe.IO_S[33]
 Fabric.s_s2[5] += chipframe.IO_S[32]
 
 #Padframe buffer connections
-#for i in range(6):
-#	chipframe.buf_vdd_N[i] += chipframe.DVDD_N[2]
-#for i in range(11):
-#	chipframe.buf_vdd_W[i] += chipframe.DVDD_N[0]
-#chipframe.buf_vdd_E += chipframe.DVDD_N[2]
+for i in range(6):
+	chipframe.buf_vdd_N[i] += chipframe.DVDD_N[2]
+for i in range(11):
+	chipframe.buf_vdd_W[i] += chipframe.DVDD_W
+chipframe.buf_vdd_E += chipframe.DVDD_E
 
 
 
@@ -358,12 +361,12 @@ design_limits = [15e6, 15e6]
 location_islands = ((250600, 4520000), #macro
 (20600, 20000), #frame
 (260000,210000), #Fabric
-(1600000,4530000), #LVLShifter1
-(2200000,4530000), #LVLShifter2
-(3400000,4530000), #LVLShifter3
-(2800000,4530000), #DigBuffer
+(400000,4550000), #LVLShifter1
+(3300000,4540000), #LVLShifter2
+(4100000,4540000), #LVLShifter3
+(1500000,4540000), #DigBuffer
 (6440000,4000000)) #Analog BUffer
 # location_islands = ((250600, 4600000), (20600, 20000), (300000, 250600))
 # location_islands = None
 
-compile_asic(Top,process="TSMC350nm",fileName="FPAA_general",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=7,drainSpace =15,gateSpaceIdx=7,gateSpace=15)
+compile_asic(Top,process="TSMC350nm",fileName="FPAA_general",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=7,drainSpace =20,gateSpaceIdx=7,gateSpace=15)
