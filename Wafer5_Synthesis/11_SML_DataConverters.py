@@ -38,14 +38,12 @@ DebugScannerLocation = (2000e3,300e3)
 BufferIsland = ac.Island(Top)
 Buffers,BufGateDecoder,BufGateSwitch,BufDrainDecoder,BufDrainSel,BufDrainSwitch = wafer.AnalogBuffers(Top,BufferIsland,4)
 
-BufGateDecoder.IN += macro.mmio_reg_5_vinj[0:2]
 BufGateSwitch.RUN += macro.RUN_HV
 BufGateSwitch.PROG += macro.PROG_HV
 BufGateSwitch.GND += chipframe.gnd_S[2]
 BufGateSwitch.Vgsel += macro.VGPROG
 BufGateSwitch.RUN_IN += macro.VGRUN[0]
 
-BufDrainDecoder.IN += macro.mmio_reg_5_vinj[2:4]
 BufDrainSwitch.RUN += macro.RUN_HV
 BufDrainSwitch.GND += chipframe.gnd_S[2]
 BufDrainSwitch.VDD += chipframe.VINJ_S[2]
@@ -55,6 +53,7 @@ BufDrainSel.run_drainrail += macro.SystemDrainline[1]
 Buffers.VDD_b += chipframe.avdd_S[1]
 Buffers.GND_b += chipframe.gnd_S[1]
 Buffers.VINJ_b += chipframe.VINJ_S[1]
+Buffers.VTUN += chipframe.IO_W_RES[0]
 
 Buffers.Vout += chipframe.IO_S[14:18] 
 
@@ -79,6 +78,10 @@ DebugScanner.Out += Buffers.Vin[0]
 BufGateDecoder.ENABLE += LVLShift.OUT[0]
 BufDrainDecoder.ENABLE += LVLShift.OUT[0]
 
+BufGateDecoder.IN += LVLShift.OUT[5:7]
+BufDrainDecoder.IN += LVLShift.OUT[7:9]
+
+
 
 # Data Converters
 #----------------------------------------------------------------------
@@ -92,7 +95,7 @@ QDAC_location = (650e3, 275e3)
 QDAC.AVDD_S += chipframe.avdd_S[0]
 QDAC.GND_S += chipframe.gnd_S[0]
 QDAC.VINJ_S += chipframe.VINJ_S[0]
-QDAC.VTUN += chipframe.IO_E_RES[0]
+QDAC.VTUN += chipframe.IO_W_RES[0]
 QDAC.VGRUN += macro.VGRUN
 QDAC.VGPROG += macro.VGPROG
 
@@ -200,13 +203,16 @@ AveragerDAC.Run += macro.RUN_HV
 
 AveragerDAC.Code += macro.mmio_reg_10_bout[1:6]
 
-AveragerDAC.Vout += Buffers.Vin[2]
+AveragerDAC.Vout += chipframe.IO_S[18]
 
 AveragerDAC.DEBUG += DebugScanner.In[10:12]
 
 AveragerDAC.Drainline_Prog += macro.SystemDrainline[0]
 AveragerDAC.Drainline_Run += macro.SystemDrainline[1]
 
+
+# Extra Routes
+macro.Signal_DAC_out[0] += Buffers.Vin[3]
 
 # Compilation
 #-------------------------------------------------------------------------------
