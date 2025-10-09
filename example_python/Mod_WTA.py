@@ -21,6 +21,6 @@ for i in range(280):
     Mod.VOUT[i] += WTA.VGRUN[i]
 
 
-design_limits = [12e6, 12e6]
+design_limits = [8e6, 8e6]
 location_islands = ((200000,2100000),(1600000,0))
 compile_asic(Top,process="TSMC350nm",fileName="Mod_WTA",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=0,drainSpace = 0,gateSpaceIdx=0,gateSpace=0)

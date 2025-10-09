@@ -45,6 +45,54 @@ class Gate_Routing_NoVGRUN(StandardCell):
 		circuit.addInstance(self,self.island)
 
 
+class Mod_Adjust(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),VOUT=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'Modulation'
+		self.VOUT = Port(circuit,self,'VOUT','E',280*self.dim[0])
+
+		# Initialize ports with given values
+		portsInit = [VOUT]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+class VMMWTA_Adjust(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),VGRUN=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'VMMWTA'
+		self.VGRUN = Port(circuit,self,'VGRUN','N',280*self.dim[1])
+
+		# Initialize ports with given values
+		portsInit = [VGRUN]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
 class Gate_Routing(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),AVDD=None):
 
