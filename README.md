@@ -103,4 +103,12 @@ def the_small_asic_v2():
     - With the detailed router installed, it will create the final routed version `<project_name>_merged.gds`.
 - To view `.gds` output, download [klayout](https://www.klayout.de/) or import into a viewer of your choice.
 
- 
+## Building documentation site (For developers only)
+The following instructions details how to setup and build a local site for the ASHES documentation. This documentation site is built with Mkdocs with the Material theme.
+
+1. Navigate to the directory `ashes/`
+2. Execute `python -m venv .env` to create a Python virtual environment.
+3. Execute `source .env/bin/activate` to activate the environment.
+4. Execute `python -m pip install -r requirements.txt` to install necessary dependencies for mkdocs.
+5. Execute `mkdocs build` to build the documentation site after any updates to the docstrings or markdown files under `docs/`.
+6. Execute `mkdocs serve` to setup a site on you local machine.

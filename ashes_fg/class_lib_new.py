@@ -129,51 +129,6 @@ class TSMC350nm_4WTA_IndirectProg(StandardCell):
 
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
-		
-class TSMC350nm_4WTA_IndirectProg_noncab(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,Iin=None,Vout=None,Vmid=None,Vbias=None,Vsel=None,Vs=None,VINJ=None,Vg=None,VTUN=None,GND=None,PROG=None,Vsel_b=None,Vs_b=None,VINJ_b=None,Vg_b=None,VTUN_b=None,GND_b=None,PROG_b=None):
-
-		# Define variables
-		self.circuit = circuit
-		self.pins = []
-		self.ports = []
-		self.island = island
-		self.dim = dim
-
-
-		# Define cell information
-		self.name = 'TSMC350nm_4WTA_IndirectProg_noncab'
-		self.VD_P = Port(circuit,self,'VD_P','W',4*self.dim[0])
-		self.Iin = Port(circuit,self,'Iin','W',4*self.dim[0])
-		self.Vout = Port(circuit,self,'Vout','E',4*self.dim[0])
-		self.Vmid = Port(circuit,self,'Vmid','E',1*self.dim[0])
-		self.Vbias = Port(circuit,self,'Vbias','E',1*self.dim[0])
-		self.Vsel = Port(circuit,self,'Vsel','N',1*self.dim[1])
-		self.Vs = Port(circuit,self,'Vs','N',1*self.dim[1])
-		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
-		self.Vg = Port(circuit,self,'Vg','N',1*self.dim[1])
-		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
-		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
-		self.PROG = Port(circuit,self,'PROG','N',1*self.dim[1])
-		self.Vsel_b = Port(circuit,self,'Vsel_b','S',1*self.dim[1])
-		self.Vs_b = Port(circuit,self,'Vs_b','S',1*self.dim[1])
-		self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
-		self.Vg_b = Port(circuit,self,'Vg_b','S',1*self.dim[1])
-		self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
-		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
-		self.PROG_b = Port(circuit,self,'PROG_b','S',1*self.dim[1])
-
-
-		# Initialize ports with given values
-		portsInit = [VD_P,Iin,Vout,Vmid,Vbias,Vsel,Vs,VINJ,Vg,VTUN,GND,PROG,Vsel_b,Vs_b,VINJ_b,Vg_b,VTUN_b,GND_b,PROG_b]
-		i=0
-		for p in self.ports:
-			self.assignPort(p,portsInit[i])
-			i+=1
-
-		# Add cell to circuit
-		circuit.addInstance(self,self.island)
-
 
 class TSMC350nm_Ampdet_NoFG(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN=None,OUTPUT=None,VTUN=None,Vg=None,Vsel=None,VINJ=None,GND=None,VPWR=None,VTUN_b=None,Vg_b=None,Vsel_b=None,VINJ_b=None,GND_b=None,VPWR_b=None):
@@ -1174,85 +1129,7 @@ class DelayLine(StandardCell):
 
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
-		
 
-class TSMC350nm_AnalogBuffer(StandardCell):
-    def __init__(self,circuit,island=None,dim=(1,1),VTUN=None,VTUN_b=None,VDD=None,VDD_b=None,GND=None,GND_b=None,VINJ=None,VINJ_b=None,Vg=None,Vg_b=None,Vd_P=None,Vsel=None,Vsel_b=None,Vin=None,Vout=None):
-        # Define variables
-        self.circuit = circuit
-        self.pins = []
-        self.ports = []
-        self.island = island
-        self.dim = dim
-
-
-        # Define cell information
-        self.name = 'TSMC350nm_AnalogBuffer'
-        self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
-        self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
-        self.VDD = Port(circuit,self,'VDD','N',1*self.dim[1])
-        self.VDD_b = Port(circuit,self,'VDD_b','S',1*self.dim[1])
-        self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
-        self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
-        self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
-        self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
-        self.Vg = Port(circuit,self,'Vg','N',1*self.dim[1])
-        self.Vg_b = Port(circuit,self,'Vg_b','S',1*self.dim[1])
-        self.Vd_P = Port(circuit,self,'Vd_P','W',1*self.dim[1])
-        self.Vsel = Port(circuit,self,'Vsel','N',1*self.dim[1])
-        self.Vsel_b = Port(circuit,self,'Vsel_b','S',1*self.dim[1])
-        self.Vin = Port(circuit,self,'Vin','W',1*self.dim[1])
-        self.Vout = Port(circuit,self,'Vout','E',1*self.dim[1])
-
-        # Initialize ports with given values
-        portsInit = [VTUN,VTUN_b,VDD,VDD_b,GND,GND_b,VINJ,VINJ_b,Vg,Vg_b,Vd_P,Vsel,Vsel_b,Vin,Vout]
-        i=0
-        for p in self.ports:
-            self.assignPort(p,portsInit[i])
-            i+=1
-
-        # Add cell to circuit
-        circuit.addInstance(self,self.island)
-        
-
-class TSMC350nm_VerticalScanner(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),In=None,Out=None,Din=None,VDD=None,GND=None,CLK=None,RSTBar=None,Out_b=None,Qout=None,VDD_b=None,GND_b=None,CLK_b=None,RSTBar_b=None):
-
-		# Define variables
-		self.circuit = circuit
-		self.pins = []
-		self.ports = []
-		self.island = island
-		self.dim = dim
-
-
-		# Define cell information
-		self.name = 'TSMC350nm_VerticalScanner'
-		self.In = Port(circuit,self,'In','W',4*self.dim[0])
-		self.Out = Port(circuit,self,'Out','N',1*self.dim[1])
-		self.Din = Port(circuit,self,'Din','N',1*self.dim[1])
-		self.VDD = Port(circuit,self,'VDD','N',1*self.dim[1])
-		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
-		self.CLK = Port(circuit,self,'CLK','N',1*self.dim[1])
-		self.RSTBar = Port(circuit,self,'RSTBar','N',1*self.dim[1])
-		self.Out_b = Port(circuit,self,'Out_b','S',1*self.dim[1])
-		self.Qout = Port(circuit,self,'Qout','S',1*self.dim[1])
-		self.VDD_b = Port(circuit,self,'VDD_b','S',1*self.dim[1])
-		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
-		self.CLK_b = Port(circuit,self,'CLK_b','S',1*self.dim[1])
-		self.RSTBar_b = Port(circuit,self,'RSTBar_b','S',1*self.dim[1])
-
-
-
-		# Initialize ports with given values
-		portsInit = [In,Out,Din,VDD,GND,CLK,RSTBar,Out_b,Qout,VDD_b,GND_b,CLK_b,RSTBar_b]
-		i=0
-		for p in self.ports:
-			self.assignPort(p,portsInit[i])
-			i+=1
-
-		# Add cell to circuit
-		circuit.addInstance(self,self.island)	
 		
 class SHblock1:
 	def __init__(self,input,num_instances='1',type='FPAA',board=['3.0', '3.0a'],SHblock1_ls='0',SHblock1_Ibias='3e-06',SHblock1_cap0_1x_cs='1'):
@@ -2662,26 +2539,4 @@ class FakeCell(FakeStandardCell):
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class FakeCellGateDecoder(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1)):
 
-		# Define variables
-		self.circuit = circuit
-		self.pins = []
-		self.ports = []
-		self.island = island
-		self.dim = dim
-
-
-		# Define cell information
-		self.name = 'FakeCellGateDecoder'
-
-		# Initialize ports with given values
-		portsInit = []
-		i=0
-		for p in self.ports:
-			self.assignPort(p,portsInit[i])
-			i+=1
-
-		# Add cell to circuit
-		circuit.addInstance(self,self.island)

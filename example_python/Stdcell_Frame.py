@@ -276,51 +276,6 @@ Amplifier9T_FGInputs_Bias.PROG_b += SmallPadFrame.IO_S[16]
 Amplifier9T_FGInputs_Bias.VPWR_b += SmallPadFrame.avdd_S[1]
 Amplifier9T_FGInputs_Bias.GND_b += SmallPadFrame.gnd_S[1]
 
-AnalogBuffer_Island = Island(Top)
-AnalogBuffer = TSMC350nm_AnalogBuffer(Top,AnalogBuffer_Island,[1,1])
-AnalogBuffer.place([0,0])
-
-AnalogBuffer.VTUN += SmallPadFrame.E_RES[0]
-AnalogBuffer.VDD_b += SmallPadFrame.avdd_S[1]
-AnalogBuffer.GND_b += SmallPadFrame.gnd_S[1]
-AnalogBuffer.VINJ_b += SmallPadFrame.VINJ_S[1]
-AnalogBuffer.Vg_b += SmallPadFrame.IO_S[14]
-AnalogBuffer.Vsel_b += SmallPadFrame.IO_S[10]
-AnalogBuffer.Vd_P += SmallPadFrame.IO_N[10]
-AnalogBuffer.Vin += SmallPadFrame.IO_N[12]
-AnalogBuffer.Vout += SmallPadFrame.IO_S[24]
-
-DelayLine_Island = Island(Top)
-DelayLine = DelayLine(Top,DelayLine_Island,[1,1])
-DelayLine.place([0,0])
-
-DelayLine.Vsel_b += SmallPadFrame.IO_S[10:12]
-DelayLine.Vg_b += SmallPadFrame.IO_S[14:16]
-DelayLine.VTUN += SmallPadFrame.E_RES[0]
-DelayLine.VINJ_b += SmallPadFrame.VINJ_S[1]
-DelayLine.PROG_b += SmallPadFrame.IO_S[16]
-DelayLine.VDD_b += SmallPadFrame.avdd_S[1]
-DelayLine.GND_b += SmallPadFrame.gnd_S[1]
-DelayLine.VD_P += SmallPadFrame.IO_N[10:14]
-DelayLine.VD_R += SmallPadFrame.IO_N[14:16]
-DelayLine.V_NW += SmallPadFrame.IO_N[16]
-DelayLine.V_SW += SmallPadFrame.IO_N[17]
-DelayLine.V_NE += SmallPadFrame.IO_N[25]
-DelayLine.V_SE += SmallPadFrame.IO_N[26]
-
-VerticalScanner_Island = Island(Top)
-VerticalScanner = TSMC350nm_VerticalScanner(Top,VerticalScanner_Island,[1,1])
-VerticalScanner.place([0,0])
-
-VerticalScanner.In += SmallPadFrame.IO_N[10:14]
-VerticalScanner.Out += SmallPadFrame.IO_N[27]
-VerticalScanner.Din += SmallPadFrame.IO_N[14]
-VerticalScanner.Qout += SmallPadFrame.IO_N[28]
-VerticalScanner.VDD_b += SmallPadFrame.avdd_S[2]
-VerticalScanner.GND_b += SmallPadFrame.gnd_S[2]
-VerticalScanner.CLK += SmallPadFrame.IO_N[15]
-VerticalScanner.RSTBar += SmallPadFrame.IO_N[16]
-
 #4x2 isolated
 
 indirect_4x2_Island = Island(Top)
@@ -349,8 +304,8 @@ Direct_4x2.VTUN += SmallPadFrame.IO_E_RES[0]
 
 # Compilation
 #-------------------------------------------------------------------------------
-design_limits = [8e6, 8e6]
-location_islands = ((20600, 20000),(300000,1000600),(500000,1000600),(700000,1000600),(900000,1000600),(1100000,1000600),(1300000,1000600),(1500000,1000600),(1700000,1000600),(1900000,1000600),(2100000,1000600),(2300000,1000600),(2500000,1000600),(2700000,1000600),(2900000,1000600),(3100000,1000600),(3300000,1000600),(3500000,1000600),(3700000,1000600),(3900000,1000600),(6200000,1000600),(6500000,1000600))
+design_limits = [7e6, 6.21e6]
+location_islands = ((20600, 20000),(300000,1000600),(500000,1000600),(700000,1000600),(900000,1000600),(1100000,1000600),(1300000,1000600),(1600000,1000600),(1900000,1000600),(2200000,1000600),(2500000,1000600),(2800000,1000600),(3100000,1000600),(3400000,1000600),(3700000,1000600),(4000000,1000600),(4300000,1000600),(4600000,1000600),(4900000,1000600))
 # location_islands = ((250600, 4600000), (20600, 20000), (300000, 250600))
 # location_islands = None
 

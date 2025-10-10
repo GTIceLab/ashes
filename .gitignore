@@ -1,5 +1,7 @@
 __pycache__
 .gitignore
+.env
+site/
 cell2cell_350nm/
 cell2cell_350nm_bkup/
 cell2cell_350nm_tr/
@@ -12,4 +14,3 @@ router_log.txt
 routing_params.txt
 routing_two.txt
 /py2asic_test
-Workspace/

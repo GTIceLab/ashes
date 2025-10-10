@@ -8,7 +8,7 @@ def c4_offchip():
     
 def ors_buffer():
     inpad1 = fg.inpad([5])
-    buff_out = fg.ota_buf(inpad1, fix_loc = [1,3,6])
+    buff_out = fg.ota_buf(inpad1, fix_loc = [1,11,6])
     outpad = fg.outpad(buff_out, [6])
     
 def drain_follower_nfet():

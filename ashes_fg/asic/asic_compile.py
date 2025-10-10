@@ -171,15 +171,13 @@ class Circuit:
                 if net.containsVector() == True:
                     largestDim = 0
                     largestPin = None
-                    
                     # Find the dominant pin
                     for pin in net.pins:
-                        if pin.cell != None:
                         # Ignore decoder cells (because they print flat, so their vector doesn't count)
-                            if pin.cell.isDecoder() == False:
-                                if pin.getVectorSize() > largestDim:
-                                    largestDim = pin.getVectorSize()
-                                    largestPin = pin
+                        if pin.cell.isDecoder() == False:
+                            if pin.getVectorSize() > largestDim:
+                                largestDim = pin.getVectorSize()
+                                largestPin = pin
                             
                     # If the net only contain a decoder, it will mistakenly trigger containsVector() but 
                     # will never pick up a largestPin because of the decoder ignore check
@@ -189,16 +187,13 @@ class Circuit:
                         idxNum = self.Nets.index(net)
                         idx = 0
                         physicalPinIdx = largestPin.getPhysicalPin()
-                        
+
             
                         for i in range(port.getVectorSize()):
                             p = port.pins[physicalPinIdx + i*port.numPins()]
                             p.net.number = idxNum
                             p.net.index = idx
                             idx += 1
-                            if largestPin.isShorted()==True:
-                                idx = -1
-                            p.markDominant = True
                     else:
                        net.number = self.Nets.index(net) 
 
@@ -486,7 +481,6 @@ class Pin:
         self.port = port
         self.cell = cell
         self.circuit = circuit
-        self.markDominant = False
 
         if self.net == None:
             self.net = Net(self.circuit,pins=self)
@@ -560,12 +554,7 @@ class Pin:
 
         pinArr = self.port.pins[idx:len(self.port)+1:self.port.numPins()]
 
-        netArr = []
-        # Check to see if all nets in each pin are shorted
-        for pin in pinArr:
-            netArr.append(pin.net)
-
-        if len(set(netArr)) == 1:
+        if len(set(pinArr)) == 1:
             return True
         else:
             return False
@@ -682,7 +671,7 @@ class Port:
                 for i in range(0,len(connection)):
                     self.assignPin(i,connection[i])
             else:
-                raise Exception("Mismatched net sizes assigned together: "+connection.cell.name+" "+connection.name+" <-> "+self.cell.name + " " + self.name )
+                raise Exception("Mismatched net sizes assigned together")
         # Short Pin <-> Port
         elif isinstance(connection,Pin):
             self.shortPins(connection.net)
@@ -817,16 +806,21 @@ class Port:
                         line += "row_" + str(self.cell.dim[0]-1)
 
                 line += "("
+                
+                if pin.cell.isMatrix() == True:
+                    if pin.isShorted() == True:
+                        #line += pin.print()
+                        idxStart = pin.net.index
+                        pinVectorText = "[" + str(idxStart) + ":" + str(idxStart + 1) + "]"
+                        line += "net" + str(pin.net.number) + pinVectorText
+                    else:
+                        idxStart = 0
+                        idxEnd = self.getVectorSize()
+                        pinVectorText = "[" + str(idxStart) + ":" + str(idxEnd) + "]"
+                        line += "net" + str(pin.net.number) + pinVectorText
+                   
 
-                if pin.isVector() == True and pin.isShorted() == True:
-                    # If largest pin is shorted, just print net number 
-                    line += "net" + str(pin.net.number)
-                if pin.isVector() == True and pin.isShorted() == False:
-                    idxStart = 0
-                    idxEnd = self.getVectorSize()
-                    pinVectorText = "[" + str(idxStart) + ":" + str(idxEnd) + "]"
-                    line += "net" + str(pin.net.number) + pinVectorText
-                if pin.isVector() == False:
+                elif pin.isVector() == False:
                     line += pin.print()
 
                 line += ")"
