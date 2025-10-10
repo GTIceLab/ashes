@@ -41,9 +41,12 @@ Buffers.GND_b += chipframe.gnd_S[1]
 Buffers.VINJ_b += chipframe.VINJ_S[1]
 Buffers.VTUN += chipframe.IO_W_RES[0]
 
-Buffers.Vout += chipframe.IO_S[12:18] 
+# print(f"Number of outputs {len(Buffers.Vout)} \n Number of io pads {len(chipframe.IO_S[12:19])}")
 
-BufferLocation = (4500e3,270e3)
+Buffers.Vout += chipframe.IO_S[12:19] 
+
+
+BufferLocation = (4500e3,230e3)
 
 # Level Shifters
 LVLIsland = ac.Island(Top)
@@ -62,9 +65,9 @@ LVL_Location = (3800e3,350e3)
 BufGateDecoder.ENABLE += LVLShift.OUT[0]
 BufDrainDecoder.ENABLE += LVLShift.OUT[0]
 
-BufGateDecoder.IN += LVLShift.OUT[3:4]
-BufDrainDecoder.IN += LVLShift.OUT[5:6]
+BufGateDecoder.IN += LVLShift.OUT[3:5]
 
+BufDrainDecoder.IN += LVLShift.OUT[5:8]
 
 
 # Filters
@@ -74,7 +77,7 @@ BufDrainDecoder.IN += LVLShift.OUT[5:6]
 LPFDelayIsland = ac.Island(Top)
 LPFDelay = lib_new.Top_DelayLPF(Top,LPFDelayIsland)
 LPFDelay.place([0,0])
-LPFDelay_location = (400e3, 250e3)
+LPFDelay_location = (400e3, 320e3)
 
 LPFDelay.AVDD += chipframe.avdd_S[0]
 LPFDelay.GND_S += chipframe.gnd_S[0]
@@ -84,9 +87,9 @@ LPFDelay.VGRUN += macro.VGRUN
 LPFDelay.VGPROG += macro.VGPROG
 
 LPFDelay.GateEnable += LVLShift.OUT[1]
-LPFDelay.GateB += LVLShift.OUT[3:4]
+LPFDelay.GateB += LVLShift.OUT[3:5]
 LPFDelay.DrainEnable += LVLShift.OUT[1]
-LPFDelay.DrainB += LVLShift.OUT[5:10]
+LPFDelay.DrainB += LVLShift.OUT[5:11]
 LPFDelay.Prog += macro.PROG_HV
 LPFDelay.Run += macro.RUN_HV
 
@@ -95,7 +98,7 @@ LPFDelay.Drainline_Run += macro.SystemDrainline[1]
 
 LPFDelay.Vout += Buffers.Vin[0]
 for i in range(5):
-    LPFDelay.Vout_tap += Buffers.Vin[i+1]
+    LPFDelay.Vout_tap[i] += Buffers.Vin[i+1]
 
 LPFDelay.Vin += chipframe.IO_W[7]
 
@@ -103,7 +106,7 @@ LPFDelay.Vin += chipframe.IO_W[7]
 MeadSOSIsland = ac.Island(Top)
 MeadSOS = lib_new.Top_MeadSOS(Top,MeadSOSIsland)
 MeadSOS.place([0,0])
-MeadSOS_location = (1000e3, 250e3)
+MeadSOS_location = (1000e3, 235e3)
 
 MeadSOS.AVDD += chipframe.avdd_S[0]
 MeadSOS.GND_S += chipframe.gnd_S[0]
@@ -113,9 +116,9 @@ MeadSOS.VGRUN += macro.VGRUN
 MeadSOS.VGPROG += macro.VGPROG
 
 MeadSOS.GateEnable += LVLShift.OUT[2]
-MeadSOS.GateB += LVLShift.OUT[3:4]
+MeadSOS.GateB += LVLShift.OUT[3:5]
 MeadSOS.DrainEnable += LVLShift.OUT[2]
-MeadSOS.DrainB += LVLShift.OUT[5:9]
+MeadSOS.DrainB += LVLShift.OUT[5:10]
 MeadSOS.Prog += macro.PROG_HV
 MeadSOS.Run += macro.RUN_HV
 
@@ -124,7 +127,7 @@ MeadSOS.Drainline_Prog += macro.SystemDrainline[0]
 MeadSOS.Vout += Buffers.Vin[6]
 MeadSOS.Vout_buf += chipframe.IO_S[19:24]
 
-MeadSOS.Vin += chipframe.IO_W[7]
+MeadSOS.Vin += chipframe.IO_W[8]
 
 # Compilation
 #-------------------------------------------------------------------------------
@@ -143,4 +146,4 @@ qparams["conflict"] = 40
 qparams["stage2"] = "mask none force effort 500"
 qparams["stage3"] = "mask none force effort 500"
 
-ac.compile_asic(Top,process="TSMC350nm",fileName="CHIP_Filters",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=3,drainSpace=15,gateSpaceIdx=3,gateSpace=15,route=True,qparams=qparams)
+ac.compile_asic(Top,process="TSMC350nm",fileName="CHIP_Filters",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=2,drainSpace=15,gateSpaceIdx=2,gateSpace=15,route=True,qparams=qparams)

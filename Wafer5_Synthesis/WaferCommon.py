@@ -14,7 +14,7 @@ import numpy as np
 def AnalogBuffers(circuit,island,numBuffers):
     Top = circuit
     BufferIsland = island
-    Buffers = lib_dc.TSMC350nm_AnalogBuffer(Top,BufferIsland,dim=(4,1))
+    Buffers = lib_dc.TSMC350nm_AnalogBuffer(Top,BufferIsland,dim=(numBuffers,1))
     Buffers.place([0,0])
 
     GateDecoder = lib_mux.STD_IndirectGateDecoder(Top,BufferIsland,2)
