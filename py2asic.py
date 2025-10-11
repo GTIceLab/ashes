@@ -17,14 +17,14 @@ import re
 
 #exec(open("./Wafer5_Synthesis/Macro_SmallFrame_Route.py").read())
 
-exec(open("./example_python/FPAA_general.py").read())
+#exec(open("./example_python/FPAA_general.py").read())
 
 
 #exec(open("./example_python/FPAA_Optimized.py").read())
 
 #exec(open("./example_python/FPAA_Sensor.py").read())
 
-#exec(open("./example_python/FPAA_PDE.py").read())
+exec(open("./example_python/FPAA_PDE.py").read())
 
 #exec(open("./example_python/FPAA_NN.py").read())
 
