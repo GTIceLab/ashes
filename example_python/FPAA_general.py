@@ -235,7 +235,7 @@ for i in range(7):
 	Fabric.n_gatebit3[i] += LVLShifter3.OUT[3]
 	Fabric.n_gatebit4[i] += LVLShifter3.OUT[4]
 	Fabric.n_gatebit5[i] += LVLShifter3.OUT[5]
-	Fabric.n_progdrain[i] += macro.SystemDrainline[0]
+	Fabric.n_programdrain[i] += macro.SystemDrainline[0]
 	Fabric.n_rundrain[i] += macro.SystemDrainline[1]
 	Fabric.n_prog[i] += DigBuffer.Out[0]
 	Fabric.n_run[i] += DigBuffer.Out[1]
