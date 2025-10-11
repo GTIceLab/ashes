@@ -265,6 +265,7 @@ def compile(project_name, board_type, chip_num):
 		zip_list = zip_list + "target_list Vd_table_30mV ";
 	
 	def if_statements(name, name2, table, chip_num, brdtype, path):
+		nonlocal zip_list
 		os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/pulse_width_table/{table}_chip{chip_num}{brdtype} {path}/{table}")
 		np.savetxt(f"{path}/target_list_{name}", eval(f"target_l_{name}"), "%5.15f", ' ')
 		temp1 = f"0x{eval(f'n_target_{name}'):04x}"
@@ -309,7 +310,7 @@ def compile(project_name, board_type, chip_num):
 		if_statements("aboveVt_otaref",["aboveVt","CAB_ota_ref"],"pulse_width_table_otaref",chip_num,brdtype,path)
 
 	if n_target_subVt_otaref != 0:
-		if_statements("subVt_otaref",["subeVt","CAB_ota_ref"],"pulse_width_table_otaref",chip_num,brdtype,path)
+		if_statements("subVt_otaref",["subVt","CAB_ota_ref"],"pulse_width_table_otaref",chip_num,brdtype,path)
 
 	if n_target_lowsubVt_otaref != 0:
 		if_statements("lowsubVt_otaref",["lowsubVt","CAB_ota_ref"],"pulse_width_table_lowsubVt_otaref",chip_num,brdtype,path)
