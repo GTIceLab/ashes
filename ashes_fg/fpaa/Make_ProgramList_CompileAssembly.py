@@ -264,55 +264,55 @@ def compile(project_name, board_type, chip_num):
 		fd.close()
 		zip_list = zip_list + "target_list Vd_table_30mV ";
 	
-	def if_statements(name, swc, chip_num, brdtype, path, swc2 = "",):
-		os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/pulse_width_table/pulse_width_table_{swc}_chip{chip_num}{brdtype} {path}/pulse_width_table_{swc}")
-		np.savetxt(f"{path}/target_list_{name}_{swc}", eval(f"target_l_{name}_{swc}"), "%5.15f", ' ')
-		temp1 = f"0x{eval(f"n_target_{name}_{swc}"):04x}"
-		temp = temp1 + eval(f"temp2_{name}_{swc}")
-		fd = open(f"{path}/target_info_{name}_{swc}", "w")
+	def if_statements(name, name2, table, chip_num, brdtype, path):
+		os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/pulse_width_table/{table}_chip{chip_num}{brdtype} {path}/{table}")
+		np.savetxt(f"{path}/target_list_{name}", eval(f"target_l_{name}"), "%5.15f", ' ')
+		temp1 = f"0x{eval(f'n_target_{name}'):04x}"
+		temp = temp1 + eval(f"temp2_{name}")
+		fd = open(f"{path}/target_info_{name}", "w")
 		fd.write(temp)
 		fd.close()
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh recover_inject_{name}_{swc2}{swc} ~/rasp30/prog_assembly/libs/asm_code/recover_inject_{name}_{swc2}{swc}.s43 16384 16384 16384 {path}")
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh first_coarse_program_{name}_{swc2}{swc} ~/rasp30/prog_assembly/libs/asm_code/first_coarse_program_{name}_{swc2}{swc}.s43 16384 16384 16384 {path}")
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh measured_coarse_program_{name}_{swc2}{swc} ~/rasp30/prog_assembly/libs/asm_code/measured_coarse_program_{name}_{swc2}{swc}.s43 16384 16384 16384 {path}")
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh fine_program_{name}_m_ave_04_{swc2}{swc} ~/rasp30/prog_assembly/libs/asm_code/fine_program_{name}_m_ave_04_{swc2}{swc}.s43 16384 16384 16384 {path}")
-		zip_list = zip_list + f"target_info_{name}_{swc2}{swc} pulse_width_table_{swc} recover_inject_{name}_{swc2}{swc}.elf first_coarse_program_{name}.elf measured_coarse_program_{name}_{swc2}{swc}.elf fine_program_{name}_m_ave_04_{swc2}{swc}.elf "
+		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh recover_inject_{name2[0]}_{name2[1]} ~/rasp30/prog_assembly/libs/asm_code/recover_inject_{name2[0]}_{name2[1]}.s43 16384 16384 16384 {path}")
+		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh first_coarse_program_{name2[0]}_{name2[1]} ~/rasp30/prog_assembly/libs/asm_code/first_coarse_program_{name2[0]}_{name2[1]}.s43 16384 16384 16384 {path}")
+		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh measured_coarse_program_{name2[0]}_{name2[1]} ~/rasp30/prog_assembly/libs/asm_code/measured_coarse_program_{name2[0]}_{name2[1]}.s43 16384 16384 16384 {path}")
+		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh fine_program_{name2[0]}_m_ave_04_{name2[1]} ~/rasp30/prog_assembly/libs/asm_code/fine_program_{name2[0]}_m_ave_04_{name2[1]}.s43 16384 16384 16384 {path}")
+		zip_list = zip_list + f"target_info_{name} {table} recover_inject_{name2[0]}_{name2[1]}.elf first_coarse_program_{name2[0]}_{name2[1]}.elf measured_coarse_program_{name2[0]}_{name2[1]}.elf fine_program_{name2[0]}_m_ave_04_{name2[1]}.elf "
 
 
 	#print(n_target_highaboveVt_swc)
 	if n_target_highaboveVt_swc != 0:
-		if_statements("highaboveVt","swc", chip_num,brdtype,path)
+		if_statements("highaboveVt_swc",["highaboveVt","SWC"], "pulse_width_table_swc",chip_num,brdtype,path)
 
 	#print(n_target_aboveVt_swc)
 	if n_target_aboveVt_swc != 0:
-		if_statements("aboveVt","pulse_width_table","swc",chip_num,brdtype,path)
+		if_statements("aboveVt_swc",["aboveVt","SWC"],"pulse_width_table_swc",chip_num,brdtype,path)
 
 	if n_target_subVt_swc != 0:
-		if_statements("subVt","pulse_width_table","swc",chip_num,brdtype,path)
+		if_statements("subVt_swc",["subVt","SWC"],"pulse_width_table_swc",chip_num,brdtype,path)
 
 	if n_target_lowsubVt_swc != 0:
-		if_statements(f"lowsubVt","pulse_width_table","swc",chip_num,brdtype,path)
+		if_statements(f"lowsubVt_swc",["lowsubVt","SWC"],"pulse_width_table_lowsubVt_swc",chip_num,brdtype,path)
 
 	if n_target_highaboveVt_ota != 0:
-		if_statements("highaboveVt_ota","pulse_width_table","ota",chip_num,brdtype,path, "CAB_")
+		if_statements("highaboveVt_ota",["highaboveVt","CAB_ota"],"pulse_width_table_ota",chip_num,brdtype,path)
 
 	if n_target_aboveVt_ota != 0:
-		if_statements("aboveVt_ota","pulse_width_table",chip_num,brdtype,path)
+		if_statements("aboveVt_ota",["aboveVt","CAB_ota"],"pulse_width_table_ota",chip_num,brdtype,path)
 
 	if n_target_subVt_ota != 0:
-		if_statements("subVt_ota","pulse_width_table_ota_chip",chip_num,brdtype,path)
+		if_statements("subVt_ota",["subVt","CAB_ota"],"pulse_width_table_ota",chip_num,brdtype,path)
 
 	if n_target_lowsubVt_ota != 0:
-		if_statements("lowsubVt_ota","pulse_width_table_lowsubVt_ota_chip",chip_num,brdtype,path)
+		if_statements("lowsubVt_ota",["lowsubVt","CAB_ota"],"pulse_width_table_lowsubVt_ota",chip_num,brdtype,path)
 
 	if n_target_aboveVt_otaref != 0:
-		if_statements("aboveVt_otaref","pulse_width_table_otaref_chip",chip_num,brdtype,path)
+		if_statements("aboveVt_otaref",["aboveVt","CAB_ota_ref"],"pulse_width_table_otaref",chip_num,brdtype,path)
 
 	if n_target_subVt_otaref != 0:
-		if_statements("subVt_otaref","pulse_width_table_otaref_chip",chip_num,brdtype,path)
+		if_statements("subVt_otaref",["subeVt","CAB_ota_ref"],"pulse_width_table_otaref",chip_num,brdtype,path)
 
 	if n_target_lowsubVt_otaref != 0:
-		if_statements("lowsubVt_otaref","pulse_width_table_lowsubVt_otaref_chip",chip_num,brdtype,path)
+		if_statements("lowsubVt_otaref",["lowsubVt","CAB_ota_ref"],"pulse_width_table_lowsubVt_otaref",chip_num,brdtype,path)
 
 	if n_target_aboveVt_mite != 0:
 		os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/pulse_width_table/pulse_width_table_mite_chip{chip_num}{brdtype} {path}/pulse_width_table_mite");
@@ -331,19 +331,19 @@ def compile(project_name, board_type, chip_num):
 
 
 	if n_target_subVt_mite != 0:
-		if_statements("subVt_mite","pulse_width_table_mite_chip",chip_num,brdtype,path)
+		if_statements("subVt_mite",["subVt","CAB_mite"],"pulse_width_table_mite",chip_num,brdtype,path)
 
 	if n_target_lowsubVt_mite != 0:
-		if_statements("lowsubVt_mite","pulse_width_table_lowsubVt_mite_chip",chip_num,brdtype,path)
+		if_statements("lowsubVt_mite",["lowsubVt","CAB_mite"],"pulse_width_table_lowsubVt_mite",chip_num,brdtype,path)
 
 	if n_target_aboveVt_dirswc != 0:
-		if_statements("aboveVt_dirswc","pulse_width_table_dirswc_chip",chip_num,brdtype,path)
+		if_statements("aboveVt_dirswc",["aboveVt","DIRSWC"],"pulse_width_table_dirswc",chip_num,brdtype,path)
 
 	if n_target_subVt_dirswc != 0:
-		if_statements("subVt_dirswc","pulse_width_table_dirswc_chip",chip_num,brdtype,path)
+		if_statements("subVt_dirswc",["subVt","DIRSWC"],"pulse_width_table_dirswc",chip_num,brdtype,path)
 
 	if n_target_lowsubVt_dirswc != 0:
-		if_statements("lowsubVt_dirswc","pulse_width_table_lowsubVt_dirswc_chip",chip_num,brdtype,path)
+		if_statements("lowsubVt_dirswc",["lowsubVt","DIRSWC"],"pulse_width_table_lowsubVt_dirswc",chip_num,brdtype,path)
 
 	os.system(f"mv {path}/chip_para_debug.asm {path}/chip_para_TR.asm {path}/chip_para_SP.asm {path}/chip_para_RI.asm {path}/chip_para_CP.asm {path}/chip_para_FP.asm *.l43 *.o pmem.x pmem_defs.asm {hid_dir}");
 
