@@ -155,8 +155,8 @@ END M4_M3
 MACRO TSMC350nm_VinjDecode2to4_vtile_spacing
 END TSMC350nm_VinjDecode2to4_vtile_spacing
 
-MACRO TSMC350nm_VinjDecode2to4_vtile_D_bridge
-END TSMC350nm_VinjDecode2to4_vtile_D_bridge
+MACRO TSMC350nm_VinjDecode2to4_vtile_C_bridge
+END TSMC350nm_VinjDecode2to4_vtile_C_bridge
 
 MACRO TSMC350nm_VinjDecode2to4_vtile
   PIN Vinj
@@ -241,14 +241,17 @@ MACRO TSMC350nm_VinjDecode2to4_vtile
   END IN<0>
 END TSMC350nm_VinjDecode2to4_vtile
 
-MACRO TSMC350nm_VinjDecode2to4_vtile_C_bridge
-END TSMC350nm_VinjDecode2to4_vtile_C_bridge
+MACRO TSMC350nm_VinjDecode2to4_vtile_A_bridge
+END TSMC350nm_VinjDecode2to4_vtile_A_bridge
+
+MACRO TSMC350nm_VinjDecode2to4_vtile_bridge_spacing
+END TSMC350nm_VinjDecode2to4_vtile_bridge_spacing
+
+MACRO TSMC350nm_VinjDecode2to4_vtile_D_bridge
+END TSMC350nm_VinjDecode2to4_vtile_D_bridge
 
 MACRO TSMC350nm_VinjDecode2to4_vtile_B_bridge
 END TSMC350nm_VinjDecode2to4_vtile_B_bridge
-
-MACRO TSMC350nm_VinjDecode2to4_vtile_A_bridge
-END TSMC350nm_VinjDecode2to4_vtile_A_bridge
 
 MACRO TSMC350nm_drainSelect01d3
   PIN Vinj
@@ -449,30 +452,6 @@ MACRO TSMC350nm_FourTgate_ThickOx_FG_MEM
 END TSMC350nm_FourTgate_ThickOx_FG_MEM
 
 MACRO TSMC350nm_IndirectSwitches
-  PIN GND_B<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 15.41 0.0 16.01 0.85 ;
-    END
-  END GND_B<1>
-  PIN GND_B<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 11.2 0.0 11.8 0.85 ;
-    END
-  END GND_B<0>
-  PIN GND
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 11.2 3.21 11.8 3.6 ;
-    END
-  END GND
   PIN GND_T
     DIRECTION INOUT ;
     USE SIGNAL ;
@@ -505,6 +484,22 @@ MACRO TSMC350nm_IndirectSwitches
         RECT 13.3 0.0 13.9 0.82 ;
     END
   END VTUN
+  PIN GND<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.2 0.0 11.8 0.85 ;
+    END
+  END GND<0>
+  PIN GNDV<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 15.47 0.0 15.95 1.0 ;
+    END
+  END GNDV<1>
   PIN VINJ
     DIRECTION INOUT ;
     USE SIGNAL ;
@@ -609,6 +604,14 @@ MACRO TSMC350nm_IndirectSwitches
         RECT 12.6 21.12 13.7 22.0 ;
     END
   END VTUN_T
+  PIN vtun_l
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 0.9 1.31 1.88 ;
+    END
+  END vtun_l
   PIN vtun_r
     DIRECTION INOUT ;
     USE SIGNAL ;
@@ -665,14 +668,6 @@ MACRO TSMC350nm_IndirectSwitches
         RECT 0.0 3.72 0.91 4.45 ;
     END
   END Vgsel
-  PIN vtun_l
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 0.9 1.31 1.88 ;
-    END
-  END vtun_l
 END TSMC350nm_IndirectSwitches
 
 MACRO TSMC350nm_VinjDecode2to4_htile
@@ -932,6 +927,76 @@ MACRO TSMC350nm_VinjDecode2to4_htile_B_bridge
   END VGRUN<3>
 END TSMC350nm_VinjDecode2to4_htile_B_bridge
 
+MACRO TSMC350nm_VinjDecode2to4_htile_C_bridge
+  PIN VGRUN<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 9.1 9.54 9.7 10.0 ;
+    END
+  END VGRUN<0>
+  PIN VGRUN<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.2 9.57 11.8 10.0 ;
+    END
+  END VGRUN<1>
+  PIN VGRUN<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 28.7 9.59 29.3 10.0 ;
+    END
+  END VGRUN<2>
+  PIN VGRUN<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 33.6 9.57 34.2 10.0 ;
+    END
+  END VGRUN<3>
+END TSMC350nm_VinjDecode2to4_htile_C_bridge
+
+MACRO TSMC350nm_VinjDecode2to4_htile_D_bridge
+  PIN VGRUN<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 9.1 9.58 9.7 10.0 ;
+    END
+  END VGRUN<0>
+  PIN VGRUN<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.2 9.55 11.8 10.0 ;
+    END
+  END VGRUN<1>
+  PIN VGRUN<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 28.7 9.58 29.3 10.0 ;
+    END
+  END VGRUN<2>
+  PIN VGRUN<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 33.6 9.57 34.2 10.0 ;
+    END
+  END VGRUN<3>
+END TSMC350nm_VinjDecode2to4_htile_D_bridge
+
 MACRO TSMC350nm_VinjDecode2to4_htile_spacing
   PIN VGRUN<0>
     DIRECTION INOUT ;
@@ -967,152 +1032,278 @@ MACRO TSMC350nm_VinjDecode2to4_htile_spacing
   END VGRUN<3>
 END TSMC350nm_VinjDecode2to4_htile_spacing
 
-MACRO Q_layer_output
-  PIN GND<1>
+MACRO TSMC350nm_VinjDecode2to4_htile_bridge_spacing
+  PIN VGRUN<0>
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL2 ;
-        RECT 93.05 21.4 93.65 22.0 ;
+        RECT 9.1 9.52 9.7 9.99 ;
     END
-  END GND<1>
-  PIN Vdbias<1>
+  END VGRUN<0>
+  PIN VGRUN<1>
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL2 ;
-        RECT 66.59 21.4 67.19 22.0 ;
+        RECT 11.2 9.51 11.8 9.99 ;
     END
-  END Vdbias<1>
-  PIN Vbias<1>
+  END VGRUN<1>
+  PIN VGRUN<2>
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL2 ;
-        RECT 63.56 21.4 64.16 22.0 ;
+        RECT 28.7 9.41 29.3 9.99 ;
     END
-  END Vbias<1>
-  PIN VPWR<1>
+  END VGRUN<2>
+  PIN VGRUN<3>
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL2 ;
-        RECT 61.26 21.4 61.86 22.0 ;
+        RECT 33.6 9.47 34.2 9.99 ;
     END
-  END VPWR<1>
-  PIN Vgbias
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 57.27 21.4 57.87 22.0 ;
-    END
-  END Vgbias
-  PIN GND<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 36.39 21.4 36.99 22.0 ;
-    END
-  END GND<0>
-  PIN Vdbias<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 9.93 21.4 10.53 22.0 ;
-    END
-  END Vdbias<0>
-  PIN Vbias<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 6.9 21.4 7.5 22.0 ;
-    END
-  END Vbias<0>
-  PIN VPWR<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 4.6 21.4 5.2 22.0 ;
-    END
-  END VPWR<0>
-  PIN Q_out<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 111.06 17.5 112.46 18.9 ;
-    END
-  END Q_out<0>
-  PIN Q_out<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 111.06 13.8 112.46 15.2 ;
-    END
-  END Q_out<1>
-  PIN Q_out<2>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 111.06 7.0 112.46 8.4 ;
-    END
-  END Q_out<2>
-  PIN Q_out<3>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 111.06 2.6 112.46 4.0 ;
-    END
-  END Q_out<3>
-  PIN Q_in<3>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 2.6 1.4 4.0 ;
-    END
-  END Q_in<3>
-  PIN Q_in<2>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 7.0 1.4 8.4 ;
-    END
-  END Q_in<2>
-  PIN Q_in<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 13.8 1.4 15.2 ;
-    END
-  END Q_in<1>
-  PIN Q_in<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 17.5 1.4 18.9 ;
-    END
-  END Q_in<0>
-END Q_layer_output
+  END VGRUN<3>
+END TSMC350nm_VinjDecode2to4_htile_bridge_spacing
 
-MACRO dotproduct_R
+MACRO SampleControl
+  PIN Sample
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 30.1 1.4 31.5 ;
+    END
+  END Sample
+  PIN VDD
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 36.65 1.4 38.05 ;
+    END
+  END VDD
+  PIN Q
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 22.2 14.85 22.8 15.45 ;
+    END
+  END Q
+  PIN CLK
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 0.0 12.75 0.6 13.35 ;
+    END
+  END CLK
+  PIN D
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 0.0 14.85 0.6 15.45 ;
+    END
+  END D
   PIN GND
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL2 ;
-        RECT 14.71 21.4 15.31 22.0 ;
+        RECT 13.08 39.4 13.68 40.0 ;
+    END
+  END GND
+  PIN phi2
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.45 39.4 12.05 40.0 ;
+    END
+  END phi2
+  PIN phi1
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 2.1 39.4 2.7 40.0 ;
+    END
+  END phi1
+END SampleControl
+
+MACRO tile_analog_frame
+  PIN n_Prog
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 13.3 3722.3 14.7 3725.1 ;
+    END
+  END n_Prog
+  PIN n_RUN
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 27.3 3722.3 28.7 3725.1 ;
+    END
+  END n_RUN
+  PIN n_VGPROG
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 41.3 3722.3 42.7 3725.1 ;
+    END
+  END n_VGPROG
+  PIN n_avdd
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 5747.51 3722.3 5748.91 3725.1 ;
+    END
+  END n_avdd
+  PIN n_gnd
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 5733.51 3722.3 5734.91 3725.1 ;
+    END
+  END n_gnd
+  PIN n_vinj
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 5719.51 3722.3 5720.91 3725.1 ;
+    END
+  END n_vinj
+  PIN n_Q_enable
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 55.3 3722.3 56.7 3725.1 ;
+    END
+  END n_Q_enable
+  PIN e_vbias
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 5774.11 3709.7 5776.91 3711.1 ;
+    END
+  END e_vbias
+  PIN e_vdbias
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 5774.11 3695.7 5776.91 3697.1 ;
+    END
+  END e_vdbias
+  PIN e_vgbias
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 5774.11 3681.7 5776.91 3683.1 ;
+    END
+  END e_vgbias
+  PIN s_avdd
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 5747.51 0.0 5748.91 2.8 ;
+    END
+  END s_avdd
+  PIN s_gnd
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 5733.51 0.0 5734.91 2.8 ;
+    END
+  END s_gnd
+  PIN s_vinj
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 5719.51 0.0 5720.91 2.8 ;
+    END
+  END s_vinj
+  PIN s_CLK
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 13.3 0.0 14.7 2.8 ;
+    END
+  END s_CLK
+  PIN s_Sample
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 27.3 0.0 28.7 2.8 ;
+    END
+  END s_Sample
+  PIN s_Q
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 41.3 0.0 42.7 2.8 ;
+    END
+  END s_Q
+  PIN s_D
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 55.3 0.0 56.7 2.8 ;
+    END
+  END s_D
+END tile_analog_frame
+
+MACRO dotproduct_mid
+  PIN phi1_B
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 2.1 0.0 2.7 0.6 ;
+    END
+  END phi1_B
+  PIN GND_B
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 13.08 0.0 13.68 0.6 ;
+    END
+  END GND_B
+  PIN phi2_B
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.45 0.0 12.05 0.6 ;
+    END
+  END phi2_B
+  PIN GND
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 13.08 21.4 13.68 22.0 ;
     END
   END GND
   PIN out2
@@ -1184,7 +1375,7 @@ MACRO dotproduct_R
     USE SIGNAL ;
     PORT
       LAYER METAL1 ;
-        RECT 20.6 7.01 22.0 8.41 ;
+        RECT 20.6 9.31 22.0 10.71 ;
     END
   END K<2>
   PIN K<1>
@@ -1192,7 +1383,7 @@ MACRO dotproduct_R
     USE SIGNAL ;
     PORT
       LAYER METAL1 ;
-        RECT 20.6 13.81 22.0 15.21 ;
+        RECT 20.6 11.31 22.0 12.71 ;
     END
   END K<1>
   PIN K<3>
@@ -1200,7 +1391,7 @@ MACRO dotproduct_R
     USE SIGNAL ;
     PORT
       LAYER METAL1 ;
-        RECT 20.6 2.61 22.0 4.01 ;
+        RECT 20.6 0.56 22.0 1.96 ;
     END
   END K<3>
   PIN K<0>
@@ -1208,117 +1399,10 @@ MACRO dotproduct_R
     USE SIGNAL ;
     PORT
       LAYER METAL1 ;
-        RECT 20.6 17.51 22.0 18.91 ;
+        RECT 20.6 20.06 22.0 21.46 ;
     END
   END K<0>
-END dotproduct_R
-
-MACRO dotproduct_L
-  PIN K<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 20.6 20.05 22.0 21.45 ;
-    END
-  END K<0>
-  PIN K<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 20.6 11.3 22.0 12.7 ;
-    END
-  END K<1>
-  PIN Q<2>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 6.4 1.4 7.8 ;
-    END
-  END Q<2>
-  PIN K<3>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 20.6 0.55 22.0 1.95 ;
-    END
-  END K<3>
-  PIN Q<3>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 3.45 1.4 4.85 ;
-    END
-  END Q<3>
-  PIN K<2>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 20.6 9.3 22.0 10.7 ;
-    END
-  END K<2>
-  PIN Q<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 14.2 1.4 15.6 ;
-    END
-  END Q<1>
-  PIN Q<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 17.15 1.4 18.55 ;
-    END
-  END Q<0>
-  PIN GND
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 2.6 21.4 3.2 22.0 ;
-    END
-  END GND
-  PIN phi1
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 1.35 21.4 1.95 22.0 ;
-    END
-  END phi1
-  PIN out2
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 17.05 21.4 17.65 22.0 ;
-    END
-  END out2
-  PIN phi2
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 11.45 21.4 12.05 22.0 ;
-    END
-  END phi2
-  PIN out1
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 6.95 21.4 7.55 22.0 ;
-    END
-  END out1
-END dotproduct_L
+END dotproduct_mid
 
 MACRO TSMC350nm_4x2_Indirect
   PIN Vg<1>
@@ -1627,13 +1711,417 @@ MACRO TSMC350nm_4x2_Indirect
   END Vd_R<2>
 END TSMC350nm_4x2_Indirect
 
-MACRO dotproduct_mid
+MACRO dotproduct_L
+  PIN K<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 20.6 20.05 22.0 21.45 ;
+    END
+  END K<0>
+  PIN K<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 20.6 11.3 22.0 12.7 ;
+    END
+  END K<1>
+  PIN Q<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 6.4 1.4 7.8 ;
+    END
+  END Q<2>
+  PIN K<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 20.6 0.55 22.0 1.95 ;
+    END
+  END K<3>
+  PIN Q<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 3.45 1.4 4.85 ;
+    END
+  END Q<3>
+  PIN K<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 20.6 9.3 22.0 10.7 ;
+    END
+  END K<2>
+  PIN Q<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 14.2 1.4 15.6 ;
+    END
+  END Q<1>
+  PIN Q<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 17.15 1.4 18.55 ;
+    END
+  END Q<0>
+  PIN phi1_B
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 1.35 0.0 1.95 0.6 ;
+    END
+  END phi1_B
+  PIN GND_B
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 2.6 0.0 3.2 0.6 ;
+    END
+  END GND_B
+  PIN phi2_B
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.45 0.0 12.05 0.6 ;
+    END
+  END phi2_B
+  PIN phi2
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.45 21.4 12.05 22.0 ;
+    END
+  END phi2
   PIN GND
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL2 ;
-        RECT 13.08 21.4 13.68 22.0 ;
+        RECT 2.6 21.4 3.2 22.0 ;
+    END
+  END GND
+  PIN phi1
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 1.35 21.4 1.95 22.0 ;
+    END
+  END phi1
+  PIN out2
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 17.05 21.4 17.65 22.0 ;
+    END
+  END out2
+  PIN out1
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 6.95 21.4 7.55 22.0 ;
+    END
+  END out1
+END dotproduct_L
+
+MACRO TSMC350nm_HorizontalScanner
+  PIN In<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 76.432 -69.748 77.732 -69.098 ;
+    END
+  END In<3>
+  PIN In<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 79.712 -69.748 80.582 -69.058 ;
+    END
+  END In<2>
+  PIN In<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 87.522 -69.748 88.492 -69.018 ;
+    END
+  END In<1>
+  PIN In<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 90.252 -69.748 91.332 -69.018 ;
+    END
+  END In<0>
+  PIN fake_pin
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 84.002 -69.748 84.492 -69.118 ;
+    END
+  END fake_pin
+  PIN Out
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 73.292 -64.598 74.112 -63.098 ;
+    END
+  END Out
+  PIN Din
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 94.862 -26.948 95.292 -26.348 ;
+    END
+  END Din
+  PIN Qout
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 73.292 -26.948 73.892 -26.348 ;
+    END
+  END Qout
+  PIN VSS
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 73.292 -15.958 73.762 -14.458 ;
+    END
+  END VSS
+  PIN VDD
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 94.752 -23.888 95.292 -22.388 ;
+    END
+  END VDD
+  PIN RSTBar
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 94.922 86.452 95.292 87.052 ;
+    END
+  END RSTBar
+  PIN CLK
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 94.912 80.852 95.292 81.452 ;
+    END
+  END CLK
+END TSMC350nm_HorizontalScanner
+
+MACRO Q_layer_output
+  PIN GND<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 93.05 21.4 93.65 22.0 ;
+    END
+  END GND<1>
+  PIN Vdbias<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 66.59 21.4 67.19 22.0 ;
+    END
+  END Vdbias<1>
+  PIN Vbias<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 63.56 21.4 64.16 22.0 ;
+    END
+  END Vbias<1>
+  PIN VPWR<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 61.26 21.4 61.86 22.0 ;
+    END
+  END VPWR<1>
+  PIN Vgbias
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 57.27 21.4 57.87 22.0 ;
+    END
+  END Vgbias
+  PIN GND<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 36.39 21.4 36.99 22.0 ;
+    END
+  END GND<0>
+  PIN Vdbias<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 9.93 21.4 10.53 22.0 ;
+    END
+  END Vdbias<0>
+  PIN Vbias<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 6.9 21.4 7.5 22.0 ;
+    END
+  END Vbias<0>
+  PIN VPWR<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 4.6 21.4 5.2 22.0 ;
+    END
+  END VPWR<0>
+  PIN Q_out<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 111.06 17.5 112.46 18.9 ;
+    END
+  END Q_out<0>
+  PIN Q_out<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 111.06 13.8 112.46 15.2 ;
+    END
+  END Q_out<1>
+  PIN Q_out<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 111.06 7.0 112.46 8.4 ;
+    END
+  END Q_out<2>
+  PIN Q_out<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 111.06 2.6 112.46 4.0 ;
+    END
+  END Q_out<3>
+  PIN Q_in<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 2.6 1.4 4.0 ;
+    END
+  END Q_in<3>
+  PIN Q_in<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 7.0 1.4 8.4 ;
+    END
+  END Q_in<2>
+  PIN Q_in<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 13.8 1.4 15.2 ;
+    END
+  END Q_in<1>
+  PIN Q_in<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 17.5 1.4 18.9 ;
+    END
+  END Q_in<0>
+END Q_layer_output
+
+MACRO K_layer_output
+  PIN GND
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 5.05 21.4 5.65 22.0 ;
+    END
+  END GND
+END K_layer_output
+
+MACRO dotproduct_R
+  PIN phi1_B
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 2.1 0.0 2.7 0.6 ;
+    END
+  END phi1_B
+  PIN GND_B
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 14.71 0.0 15.31 0.6 ;
+    END
+  END GND_B
+  PIN phi2_B
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 11.45 0.0 12.05 0.6 ;
+    END
+  END phi2_B
+  PIN GND
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 14.71 21.4 15.31 22.0 ;
     END
   END GND
   PIN out2
@@ -1705,7 +2193,7 @@ MACRO dotproduct_mid
     USE SIGNAL ;
     PORT
       LAYER METAL1 ;
-        RECT 20.6 9.31 22.0 10.71 ;
+        RECT 20.6 7.01 22.0 8.41 ;
     END
   END K<2>
   PIN K<1>
@@ -1713,7 +2201,7 @@ MACRO dotproduct_mid
     USE SIGNAL ;
     PORT
       LAYER METAL1 ;
-        RECT 20.6 11.31 22.0 12.71 ;
+        RECT 20.6 13.81 22.0 15.21 ;
     END
   END K<1>
   PIN K<3>
@@ -1721,7 +2209,7 @@ MACRO dotproduct_mid
     USE SIGNAL ;
     PORT
       LAYER METAL1 ;
-        RECT 20.6 0.56 22.0 1.96 ;
+        RECT 20.6 2.61 22.0 4.01 ;
     END
   END K<3>
   PIN K<0>
@@ -1729,9 +2217,9 @@ MACRO dotproduct_mid
     USE SIGNAL ;
     PORT
       LAYER METAL1 ;
-        RECT 20.6 20.06 22.0 21.46 ;
+        RECT 20.6 17.51 22.0 18.91 ;
     END
   END K<0>
-END dotproduct_mid
+END dotproduct_R
 
 END LIBRARY
