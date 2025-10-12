@@ -4196,7 +4196,7 @@ class SmallPadFrame(StandardCell):
 		circuit.addInstance(self,self.island)
 
 class FakeCell(FakeStandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),FakePort=None):
+	def __init__(self,circuit,island=None,dim=(2,2),FakePort=None):
 
 		# Define variables
 		self.circuit = circuit
