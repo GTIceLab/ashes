@@ -1704,7 +1704,85 @@ class TSMC350nm_DigBuffer_x2(StandardCell):
 
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
-		
+
+class CS_Relu_stdcell(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),AVDD=None,DVDD=None,GND=None,Vb=None, Vin=None,Vout=None,En_b=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'FNN_DiodeConn'
+		self.AVDD = Port(circuit,self,'AVDD','N',1*self.dim[1])
+		self.DVDD = Port(circuit,self,'DVDD','S',1*self.dim[1])
+		self.GND = Port(circuit,self,'GND','S',1*self.dim[0])
+		self.Vb = Port(circuit,self,'Vb','S',1*self.dim[1])
+		self.Vin = Port(circuit,self,'Vin','S',1*self.dim[1])
+		self.Vout = Port(circuit,self,'Vout','S',1*self.dim[0])
+		self.En_b = Port(circuit,self,'En_b','S',1*self.dim[1])
+
+
+class FNN_DiodeConn(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),VINJ=None,GND=None,Vd_P_in=None, Vd_P_out=None,Vd_R=None,prog=None,run=None,Vin_p=None,Vin_m=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'FNN_DiodeConn'
+		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
+		self.GND = Port(circuit,self,'GND','S',1*self.dim[1])
+		self.Vd_P_in = Port(circuit,self,'VINJ','S',3*self.dim[0])
+		self.Vd_P_out = Port(circuit,self,'Out','S',3*self.dim[0])
+		self.Vd_R = Port(circuit,self,'VINJ','S',4*self.dim[0])
+		self.prog = Port(circuit,self,'VINJ','S',1*self.dim[1])
+		self.run = Port(circuit,self,'VINJ','S',1*self.dim[1])
+
+
+class FNN_Relu_and_Sig(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),AVDD=None,VTUN=None,VINJ=None,GND=None,prog=None,run=None,sel=None,selb=None,Vg=None,Vsel=None,Vsel_drt=None,Vg_bias=None,Vin_p=None,Vin_m=None,VD_P=None,Output=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'FNN_Relu_and_Sig'
+		self.AVDD = Port(circuit,self,'AVDD','N',2*self.dim[1])
+		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
+		self.GND = Port(circuit,self,'GND','S',1*self.dim[1])
+		self.prog = Port(circuit,self,'prog','S',1*self.dim[1])
+		self.run = Port(circuit,self,'run','S',1*self.dim[1])
+		self.sel = Port(circuit,self,'sel','S',1*self.dim[1])
+		self.selb = Port(circuit,self,'selb','S',1*self.dim[1])
+		self.Vg = Port(circuit,self,'Vg','S',1*self.dim[1])
+		self.Vsel = Port(circuit,self,'Vsel','S',2*self.dim[1])
+		self.Vsel_drt = Port(circuit,self,'Vsel_drt','S',1*self.dim[1])
+		self.Vg_bias = Port(circuit,self,'Vg_bias','S',1*self.dim[1])
+		self.Vin_p = Port(circuit,self,'Vin_p','S',2*self.dim[0])
+		self.Vin_m = Port(circuit,self,'Vin_m','S',2*self.dim[0])
+		self.VD_P = Port(circuit,self,'VD_P','S',3*self.dim[0])
+		self.Output = Port(circuit,self,'Output','S',2*self.dim[1])
+
+
+############################################################################################################################################	
+############################################################################################################################################
+##################################################              STD CELLS END        #######################################################
+############################################################################################################################################
+############################################################################################################################################
+
 class SHblock1:
 	def __init__(self,input,num_instances='1',type='FPAA',board=['3.0', '3.0a'],SHblock1_ls='0',SHblock1_Ibias='3e-06',SHblock1_cap0_1x_cs='1'):
 		self.input=input
