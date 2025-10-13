@@ -1350,6 +1350,53 @@ class TSMC350nm_VerticalScanner(StandardCell):
 
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
+		
+		
+class TSMC350nm_GilbertMultiplier2FG(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),Vd_P=None,IN=None,V3=None,V4=None,SV1=None,RUN=None,I_MEAS=None,VOUT=None,VINJ=None,VINJ_b=None,Vsel=None, Vsel_b=None,GND=None,GND_b=None,VTUN=None,VTUN_b=None,VDD=None,VDD_b=None,VG=None,VG_b=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TSMC350nm_GilbertMultiplier2FG'
+		self.Vd_P = Port(circuit,self,'Vd_P','W',3*self.dim[0])
+		self.IN = Port(circuit,self,'IN','W',1*self.dim[0])
+		self.V3 = Port(circuit,self,'V3','W',1*self.dim[0])
+		self.V4 = Port(circuit,self,'V4','W',1*self.dim[0])
+		self.SV1 = Port(circuit,self,'SV1','W',1*self.dim[0])
+		self.RUN = Port(circuit,self,'RUN','W',1*self.dim[0])
+		self.I_MEAS = Port(circuit,self,'I_MEAS','E',1*self.dim[0])
+		self.VOUT = Port(circuit,self,'VOUT','E',1*self.dim[0])
+		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
+		self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
+		self.Vsel = Port(circuit,self,'Vsel','N',2*self.dim[1])
+		self.Vsel_b = Port(circuit,self,'Vsel_b','S',2*self.dim[1])
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
+		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+		self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
+		self.VDD = Port(circuit,self,'VDD','N',1*self.dim[1])
+		self.VDD_b = Port(circuit,self,'VDD_b','S',1*self.dim[1])
+		self.VG = Port(circuit,self,'VG','N',2*self.dim[1])
+		self.VG_b = Port(circuit,self,'VG_b','S',2*self.dim[1])
+
+
+
+		# Initialize ports with given values
+		portsInit = [Vd_P,IN,V3,V4,SV1,RUN,I_MEAS,VOUT,VINJ,VINJ_b,Vsel,Vsel_b,GND,GND_b,VTUN,VTUN_b,VDD,VDD_b,VG,VG_b]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
 			
 class TSMC350nm_CS_RingOsc(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),AVDD=None, VINJ=None, Vsel=None, Vg=None, GND=None, VTUN=None, Vd_P=None, OUT=None):
