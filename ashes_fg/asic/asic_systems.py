@@ -56,7 +56,7 @@ def IndirectVMM(circuit,dim=[4,2], island=None,decoderPlace=True,loc=[0,0]):
 
     return VMM
 
-def VMMWTA(circuit,dim=[4,2],island=None,decoderPlace=True,loc=[0,0],inputs=None):
+def DirectProg_VMMWTA(circuit,dim=[4,2],island=None,decoderPlace=True,loc=[0,0],inputs=None):
     if (dim[0] % 4) != 0:
         raise Exception("Error: VMM rows must be divisible by 4")
     if (dim[1] % 2) != 0:
@@ -94,3 +94,63 @@ def VMMWTA(circuit,dim=[4,2],island=None,decoderPlace=True,loc=[0,0],inputs=None
         DrainSwitches = STD_DrainSwitch(circuit,VMMWTAIsland,numRows)
 
     return VMMWTA.Vout
+
+def IndirectProg_VMMWTA(circuit,dim=[4,2],island=None,decoderPlace=True,loc=[0,0],inputs=None,soft=False):
+    if (dim[0] % 4) != 0:
+        raise Exception("Error: VMM rows must be divisible by 4")
+    if (dim[1] % 2) != 0:
+        raise Exception("Error: VMM columns must be divisible by 2")
+    
+    numRows = int(dim[0]/4)
+    numCols = int(dim[1]/2)
+
+    VMMWTAIsland = island
+    if island == None:
+          VMMWTAIsland = Island(circuit)
+
+    if soft == False: 
+        WTA = TSMC350nm_4WTA_IndirectProg(circuit,island=VMMWTAIsland,dim=[numRows,1])
+        WTA.place([loc[0],loc[1]+numCols])
+    elif soft == True:
+        WTA = TSMC350nm_4SoftWTA_IndirectProg(circuit,island=VMMWTAIsland,dim=[numRows,1])
+        WTA.place([loc[0],loc[1]+numCols])
+    
+    VMM = None
+    if numCols > 1:
+         VMM = IndirectVMM(circuit,island=VMMWTAIsland,dim=[dim[0],dim[1]],decoderPlace=False)
+         WTA.markAbut()
+
+         
+    if decoderPlace == True:
+        # Add decoders
+        gateBits = int(np.ceil(np.log2(dim[1]+2)))
+        GateDecoder = STD_IndirectGateDecoder(circuit,VMMWTAIsland,gateBits)
+        GateSwitches = STD_IndirectGateSwitch(circuit,VMMWTAIsland,numCols+1)
+        #ERASE_IndirectGateSwitch(circuit,island=VMMWTAIsland,col=numCols)
+        
+
+    
+        if inputs != None:
+            inputs += GateDecoder.VGRUN[0:numCols*2]
+
+        drainBits = int(np.ceil(np.log2(dim[0])))
+        DrainDecoder = STD_DrainDecoder(circuit,VMMWTAIsland,drainBits)
+        DrainSel = STD_DrainSelect(circuit,VMMWTAIsland,numRows)
+        DrainSwitches = STD_DrainSwitch(circuit,VMMWTAIsland,numRows)
+        #Decoder Connections
+        '''WTA.Vs += GateSwitches.VDD[2*numCols]
+        WTA.VINJ += GateSwitches.VINJ[numCols]
+        WTA.Vsel += GateSwitches.CTRL_B[2*numCols]
+        WTA.Vg[0] += GateSwitches.Vg[2*numCols]
+        WTA.VTUN += GateSwitches.VTUN[numCols] 
+        WTA.GND += GateSwitches.GND_B[2*numCols]
+        VMM.VTUN += GateSwitches.VTUN[0:numCols]
+        for i in range(2*numCols):
+            VMM.Vs[i] += GateSwitches.VDD[i]
+            VMM.Vsel[i] += GateSwitches.CTRL_B[i]
+            VMM.Vg[i] += GateSwitches.Vg[i] #two of these routes fail!
+            VMM.GND[i] += GateSwitches.GND_B[i]
+        for i in range(0,2*numCols,2):
+            VMM.VINJ[i] += GateSwitches.VINJ[int(i/2)]
+        VMM.VINJ[1] += GateSwitches.VINJ[0]'''
+    return WTA.Vout
