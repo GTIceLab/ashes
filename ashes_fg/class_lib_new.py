@@ -20,6 +20,35 @@ class outpada(StandardCell):
 		self.input=input
 		self.pad_number=pad_number
 
+class RingOscDiffGen(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),VDD=None,GND=None,CLK=None,SelCLK=None,CLKP=None,CLKN=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'TSMC350nm_RingOsc_DiffGen'
+		self.VDD = Port(circuit,self,'VDD','N',self.dim[1])
+		self.GND = Port(circuit,self,'GND','S',self.dim[1])
+		self.CLK = Port(circuit,self,'CLK','E',2*self.dim[0])
+		self.SelCLK = Port(circuit,self,'SelCLK','E',self.dim[0])
+		self.CLKP = Port(circuit,self,'CLKP','W',self.dim[0])
+		self.CLKN = Port(circuit,self,'CLKN','W',self.dim[0])
+
+		# Initialize ports with given values
+		portsInit = [VDD,GND,CLK,SelCLK,CLKP,CLKN]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
 class Gate_Routing_NoVGRUN(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VGRUN=None):
 
