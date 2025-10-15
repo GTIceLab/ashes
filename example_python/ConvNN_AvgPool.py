@@ -29,144 +29,145 @@ def Conv_AvgPool(circuit,image_size=4,inp_channels=3,out_channels=16,kernel_size
     kernel_cols = int(kernel_size)*inp_channels
     kernel_rows = int(kernel_size*2)  # Accounting for negative kernel weights 
 
-    #################  Defining VMM Kernel weights #################
-    Kernel_VMM = lib_new.TSMC350nm_4x2_Indirect(Top,Conv_AvgP_Island,dim=[kernel_rows//4,kernel_cols//2])
-    Kernel_VMM.place([0,0])
-    Kernel_VMM.markAbut()
-    track_col= (kernel_cols//2)
+    for out_channel_no in (range(out_channels)*(kernel_rows//4)):
 
-    # Defining Horizontal Tgates to choose between kernel rows
-    if (kernel_rows == 4):
-        TgateHoriz_VMMout = lib_new.Tgate_swc_fr_Kernel_Horiz_bot_only(Top,Conv_AvgP_Island,dim=[1,1])
-        TgateHoriz_VMMout.place([0,track_col])
-        TgateHoriz_VMMout.markAbut()
-        track_col=track_col+1
+        #################  Defining VMM Kernel weights #################
+        Kernel_VMM = lib_new.TSMC350nm_4x2_Indirect(Top,Conv_AvgP_Island,dim=[kernel_rows//4,kernel_cols//2])
+        Kernel_VMM.place([out_channel_no,0])
+        Kernel_VMM.markAbut()
+        track_col= (kernel_cols//2)
 
-    elif (kernel_rows == 8):
-        TgateHoriz_VMMout_top = lib_new.Tgate_swc_fr_Kernel_Horiz_top_edge(Top,Conv_AvgP_Island,dim=[1,1])
-        TgateHoriz_VMMout_top.place([0,track_col])
-        TgateHoriz_VMMout_top.markAbut()
+        # Defining Horizontal Tgates to choose between kernel rows
+        if (kernel_rows == 4):
+            TgateHoriz_VMMout = lib_new.Tgate_swc_fr_Kernel_Horiz_bot_only(Top,Conv_AvgP_Island,dim=[1,1])
+            TgateHoriz_VMMout.place([out_channel_no,track_col])
+            TgateHoriz_VMMout.markAbut()
+            track_col=track_col+1
 
-        TgateHoriz_VMMout_bot = lib_new.Tgate_swc_fr_Kernel_Horiz_bot_edge(Top,Conv_AvgP_Island,dim=[1,1])
-        TgateHoriz_VMMout_bot.place([1,track_col])
-        TgateHoriz_VMMout_bot.markAbut()
+        elif (kernel_rows == 8):
+            TgateHoriz_VMMout_top = lib_new.Tgate_swc_fr_Kernel_Horiz_top_edge(Top,Conv_AvgP_Island,dim=[1,1])
+            TgateHoriz_VMMout_top.place([out_channel_no,track_col])
+            TgateHoriz_VMMout_top.markAbut()
 
-        track_col=track_col+1
+            TgateHoriz_VMMout_bot = lib_new.Tgate_swc_fr_Kernel_Horiz_bot_edge(Top,Conv_AvgP_Island,dim=[1,1])
+            TgateHoriz_VMMout_bot.place([out_channel_no+1,track_col])
+            TgateHoriz_VMMout_bot.markAbut()
 
-    else:
-        TgateHoriz_VMMout_top = lib_new.Tgate_swc_fr_Kernel_Horiz_top_edge(Top,Conv_AvgP_Island,dim=[1,1])
-        TgateHoriz_VMMout_top.place([0,track_col])
-        TgateHoriz_VMMout_top.markAbut()
-
-        TgateHoriz_VMMout_core = lib_new.Tgate_swc_fr_Kernel_Horiz_core(Top,Conv_AvgP_Island,dim=[(kernel_rows//4)-2,1])
-        TgateHoriz_VMMout_core.place([1,track_col])
-        TgateHoriz_VMMout_core.markAbut()
-
-        TgateHoriz_VMMout_bot = lib_new.Tgate_swc_fr_Kernel_Horiz_bot_edge(Top,Conv_AvgP_Island,dim=[1,1])
-        TgateHoriz_VMMout_bot.place([(1)+((kernel_rows//4)-2),track_col])
-        TgateHoriz_VMMout_bot.markAbut()
-
-        track_col=track_col+1
-
-
-    ################# Defining CurrentMirror Subtractor block for positive and negative VMM outputs #################
-
-    Isub_top = lib_new.I_Subtractor_AvgPool_top(Top,Conv_AvgP_Island,dim=[1,1])
-    Isub_top.place([0,track_col])
-    Isub_top.markAbut()
-
-    if (kernel_rows > 4):
-        Isub_fill = lib_new.I_Subtractor_AvgPool_core(Top,Conv_AvgP_Island,dim=[(kernel_rows//4)-1,1])
-        Isub_fill.place([1,track_col])
-        Isub_fill.markAbut()
-
-    track_col=track_col+1
-
-    #################  Defining Integration and AvgPooling blocks #################
-
-    no_of_intg = image_size//kernel_size
-    intg_rows = kernel_rows//4
-
-    #intg_cols = (no_of_intg + intg_rows - 1)//intg_rows #Finds the total no of coloumns required in the grid
-
-
-    if (no_of_intg % intg_rows == 0) | (no_of_intg < intg_rows):
-        no_of_fillers= no_of_intg % intg_rows # Finding the remaining area to be filled in the grid
-        intg_cols = no_of_intg //intg_rows  #Finds the total no of coloumns required in the grid
-
-    else:
-        intg_cols = ((no_of_intg + (intg_rows - (no_of_intg % intg_rows)))//intg_rows ) #Finds the total no of coloumns required in the grid
-        no_of_fillers= intg_rows - (no_of_intg % intg_rows) # Finding the remaining area to be filled in the grid
-
-
-    if (intg_rows == 1):
-        Intgr_start = lib_new.Integration_fr_AvgPool_start(Top,Conv_AvgP_Island,dim=[1,1])
-        Intgr_start.place([0,track_col])
-        Intgr_start.markAbut()
-        track_col=track_col+1  # Keeping track of the coloumn placement idx
-
-        if no_of_intg > 1:
-            Intgr_core = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,no_of_intg-1])
-            Intgr_core.place([0,track_col])
-            Intgr_core.markAbut()
-            track_col = track_col + no_of_intg-1 # Keeping track of the coloumn placement idx
-
-    else:
-        Intgr_start = lib_new.Integration_fr_AvgPool_start(Top,Conv_AvgP_Island,dim=[1,1])
-        Intgr_start.place([0,track_col])
-        Intgr_start.markAbut()
-        track_col=track_col+1  # Keeping track of the coloumn placement idx
-        
-        start_flag=1
-        if (no_of_fillers == 0):
-            rows=0
-            for rows in range(intg_rows):
-                if (rows > 0 ):
-                    track_col = track_col - intg_cols   # Keeping track of the coloumn placement idx
-                    start_flag=0
-
-                Intgr_core = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,intg_cols - (1*start_flag)])
-                Intgr_core.place([rows,track_col])
-                Intgr_core.markAbut()
-                track_col = track_col + intg_cols - (1*start_flag) # Keeping track of the coloumn placement idx
+            track_col=track_col+1
 
         else:
-            filler_flag=0
-            rows=0
-            cols=0
-            for rows in range(intg_rows):
+            TgateHoriz_VMMout_top = lib_new.Tgate_swc_fr_Kernel_Horiz_top_edge(Top,Conv_AvgP_Island,dim=[1,1])
+            TgateHoriz_VMMout_top.place([out_channel_no,track_col])
+            TgateHoriz_VMMout_top.markAbut()
 
-                if (rows > 0 ):
-                    track_col = track_col - intg_cols # Keeping track of the coloumn placement idx
-                    start_flag=0
+            TgateHoriz_VMMout_core = lib_new.Tgate_swc_fr_Kernel_Horiz_core(Top,Conv_AvgP_Island,dim=[(kernel_rows//4)-2,1])
+            TgateHoriz_VMMout_core.place([out_channel_no+1,track_col])
+            TgateHoriz_VMMout_core.markAbut()
 
-                for cols in range(intg_cols- (1*start_flag)):
+            TgateHoriz_VMMout_bot = lib_new.Tgate_swc_fr_Kernel_Horiz_bot_edge(Top,Conv_AvgP_Island,dim=[1,1])
+            TgateHoriz_VMMout_bot.place([(out_channel_no)+((kernel_rows//4)-2),track_col])
+            TgateHoriz_VMMout_bot.markAbut()
 
-                    if (filler_flag < ((intg_cols*intg_rows)-no_of_fillers-1)):
-                        Intgr_core = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,1])
-                        Intgr_core.place([rows,track_col])
-                        Intgr_core.markAbut()
-                        track_col = track_col + 1 # Keeping track of the coloumn placement idx
-
-                    else:
-                        Intgr_fill = lib_new.Integration_fr_AvgPool_filler(Top,Conv_AvgP_Island,dim=[1,1])
-                        Intgr_fill.place([rows,track_col])
-                        Intgr_fill.markAbut()
-                        track_col = track_col + 1 # Keeping track of the coloumn placement idx
-
-                    filler_flag = filler_flag + 1
-
-                if (rows == 0):
-                        intg_cols = intg_cols + 1 # Need to account for the next row start block
+            track_col=track_col+1
 
 
-    #################  Defining FinalAvgPool and Relu #################
+        ################# Defining CurrentMirror Subtractor block for positive and negative VMM outputs #################
 
-    # We might have to create a filler cell and change it later
-    Readout_Relu = lib_new.AvgPool_n_Relu(Top,Conv_AvgP_Island,dim=[kernel_rows//4,1])
-    Readout_Relu.place([0,track_col])
-    Readout_Relu.markAbut()
+        Isub_top = lib_new.I_Subtractor_AvgPool_top(Top,Conv_AvgP_Island,dim=[1,1])
+        Isub_top.place([out_channel_no,track_col])
+        Isub_top.markAbut()
 
+        if (kernel_rows > 4):
+            Isub_fill = lib_new.I_Subtractor_AvgPool_core(Top,Conv_AvgP_Island,dim=[(kernel_rows//4)-1,1])
+            Isub_fill.place([out_channel_no+1,track_col])
+            Isub_fill.markAbut()
+
+        track_col=track_col+1
+
+        #################  Defining Integration and AvgPooling blocks #################
+
+        no_of_intg = image_size//kernel_size
+        intg_rows = kernel_rows//4
+
+        #intg_cols = (no_of_intg + intg_rows - 1)//intg_rows #Finds the total no of coloumns required in the grid
+
+
+        if (no_of_intg % intg_rows == 0) | (no_of_intg < intg_rows):
+            no_of_fillers= no_of_intg % intg_rows # Finding the remaining area to be filled in the grid
+            intg_cols = no_of_intg //intg_rows  #Finds the total no of coloumns required in the grid
+
+        else:
+            intg_cols = ((no_of_intg + (intg_rows - (no_of_intg % intg_rows)))//intg_rows ) #Finds the total no of coloumns required in the grid
+            no_of_fillers= intg_rows - (no_of_intg % intg_rows) # Finding the remaining area to be filled in the grid
+
+
+        if (intg_rows == 1):
+            Intgr_start = lib_new.Integration_fr_AvgPool_start(Top,Conv_AvgP_Island,dim=[1,1])
+            Intgr_start.place([out_channel_no,track_col])
+            Intgr_start.markAbut()
+            track_col=track_col+1  # Keeping track of the coloumn placement idx
+
+            if no_of_intg > 1:
+                Intgr_core = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,no_of_intg-1])
+                Intgr_core.place([out_channel_no,track_col])
+                Intgr_core.markAbut()
+                track_col = track_col + no_of_intg-1 # Keeping track of the coloumn placement idx
+
+        else:
+            Intgr_start = lib_new.Integration_fr_AvgPool_start(Top,Conv_AvgP_Island,dim=[1,1])
+            Intgr_start.place([out_channel_no,track_col])
+            Intgr_start.markAbut()
+            track_col=track_col+1  # Keeping track of the coloumn placement idx
+            
+            start_flag=1
+            if (no_of_fillers == 0):
+                rows=0
+                for rows in range(intg_rows):
+                    if (rows > 0 ):
+                        track_col = track_col - intg_cols   # Keeping track of the coloumn placement idx
+                        start_flag=0
+
+                    Intgr_core = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,intg_cols - (1*start_flag)])
+                    Intgr_core.place([out_channel_no+rows,track_col])
+                    Intgr_core.markAbut()
+                    track_col = track_col + intg_cols - (1*start_flag) # Keeping track of the coloumn placement idx
+
+            else:
+                filler_flag=0
+                rows=0
+                cols=0
+                for rows in range(intg_rows):
+
+                    if (rows > 0 ):
+                        track_col = track_col - intg_cols # Keeping track of the coloumn placement idx
+                        start_flag=0
+
+                    for cols in range(intg_cols- (1*start_flag)):
+
+                        if (filler_flag < ((intg_cols*intg_rows)-no_of_fillers-1)):
+                            Intgr_core = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,1])
+                            Intgr_core.place([out_channel_no+rows,track_col])
+                            Intgr_core.markAbut()
+                            track_col = track_col + 1 # Keeping track of the coloumn placement idx
+
+                        else:
+                            Intgr_fill = lib_new.Integration_fr_AvgPool_filler(Top,Conv_AvgP_Island,dim=[1,1])
+                            Intgr_fill.place([out_channel_no+rows,track_col])
+                            Intgr_fill.markAbut()
+                            track_col = track_col + 1 # Keeping track of the coloumn placement idx
+
+                        filler_flag = filler_flag + 1
+
+                    if (rows == 0):
+                            intg_cols = intg_cols + 1 # Need to account for the next row start block
+
+
+        #################  Defining FinalAvgPool and Relu #################
+
+        # We might have to create a filler cell and change it later
+        Readout_Relu = lib_new.AvgPool_n_Relu(Top,Conv_AvgP_Island,dim=[kernel_rows//4,1])
+        Readout_Relu.place([out_channel_no,track_col])
+        Readout_Relu.markAbut()
 
     # Island Placement
     # -------------------------------------------------------------------------------
