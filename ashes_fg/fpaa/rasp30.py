@@ -1,5 +1,7 @@
 import pdb
 from ashes_fg.fpaa.genu import *
+import os
+ASHESPATH = os.getenv("ASHESPATH", "/home/ubuntu/ashes")
 
 class rasp30(stats):
 	def __init__(self):
@@ -15,7 +17,7 @@ class rasp30(stats):
 		self.io_na= iosaStats()
 		
 class arrayStats(stats):
-	arch_file = './arch/rasp30.xml'
+	arch_file = f'{ASHESPATH}/ashes_fg/fpaa/arch/rasp30.xml'
 	pattern = [
 		[[], 'io_w', 'io_w', 'io_w', 'io_w', 'io_w', 'io_w', 'io_w', 'io_w', 'io_w', 'io_w', 'io_w', 'io_w', 'io_w', 'io_w', []], 
 		['io_sd', 'clb', 'clb', 'clb', 'clb', 'clb', 'clb', 'clb', 'clb', 'clb', 'clb', 'clb', 'clb', 'clb', 'clb', 'io_nd'],
