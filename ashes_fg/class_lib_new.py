@@ -974,13 +974,11 @@ class TSMC350nm_Cap_Bank(StandardCell):
 		self.VD_P = Port(circuit,self,'VD_P','W',4*self.dim[0])
 		self.VIN = Port(circuit,self,'VIN','W',2*self.dim[0])
 		self.OUT = Port(circuit,self,'OUT','E',2*self.dim[0])
-		self.Vs = Port(circuit,self,'Vs','N',2*self.dim[1])
 		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
 		self.Vsel = Port(circuit,self,'Vsel','N',2*self.dim[1])
 		self.Vg = Port(circuit,self,'Vg','N',2*self.dim[1])
 		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
 		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
-		self.Vs_b = Port(circuit,self,'Vs_b','S',2*self.dim[1])
 		self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
 		self.Vsel_b = Port(circuit,self,'Vsel_b','S',2*self.dim[1])
 		self.Vg_b = Port(circuit,self,'Vg_b','S',2*self.dim[1])
@@ -4479,7 +4477,7 @@ class SmallPadFrame(StandardCell):
 		self.dim = dim
 
 		# Define cell information
-		self.name = 'frame_6p9mm_2mm_digbuf'
+		self.name = 'frame_6p9mm_2mm_edit'
 
 		self.gnd_N = Port(circuit,self,'gnd_N','N',9*self.dim[1])
 		self.esd_vdd_N = Port(circuit,self,'esd_vdd_N','N',3*self.dim[1])
