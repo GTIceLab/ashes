@@ -11,7 +11,7 @@ import ashes_fg.asic.asic_systems as algs
 import numpy as np
 import math
 
-def Conv_AvgPool(circuit,image_size=4,inp_channels=3,out_channels=16,kernel_size=2,Conv_AvgP_Island=None,islandLoc=[0,0],debug=False):
+def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_size=4,Conv_AvgP_Island=None,islandLoc=[0,0],debug=False):
     
     Top = circuit
     Conv_AvgP_Island = ac.Island(Top)
@@ -29,7 +29,7 @@ def Conv_AvgPool(circuit,image_size=4,inp_channels=3,out_channels=16,kernel_size
     kernel_cols = int(kernel_size)*inp_channels
     kernel_rows = int(kernel_size*2)  # Accounting for negative kernel weights 
 
-    for out_channel_no in (range(out_channels)*(kernel_rows//4)):
+    for out_channel_no in range(0,out_channels,(kernel_rows//4)):
 
         #################  Defining VMM Kernel weights #################
         Kernel_VMM = lib_new.TSMC350nm_4x2_Indirect(Top,Conv_AvgP_Island,dim=[kernel_rows//4,kernel_cols//2])
@@ -168,6 +168,19 @@ def Conv_AvgPool(circuit,image_size=4,inp_channels=3,out_channels=16,kernel_size
         Readout_Relu = lib_new.AvgPool_n_Relu(Top,Conv_AvgP_Island,dim=[kernel_rows//4,1])
         Readout_Relu.place([out_channel_no,track_col])
         Readout_Relu.markAbut()
+
+    
+    #################  Defining GateSwcs, DrainSwcs and Decoders  #################
+    gateBits = int(np.ceil(np.log2(inp_channels*kernel_size)))
+    GateDecoder = lib_mux.STD_IndirectGateDecoder(circuit,Conv_AvgP_Island,gateBits)
+    GateSwitches = lib_mux.STD_IndirectGateSwitch(circuit,Conv_AvgP_Island,(inp_channels*kernel_size)//2)
+
+    drainBits = int(np.ceil(np.log2(out_channels*kernel_size)))
+    DrainDecoder = lib_mux.STD_DrainDecoder(circuit,Conv_AvgP_Island,drainBits)
+    DrainSel = lib_mux.STD_DrainSelect(circuit,Conv_AvgP_Island,(out_channels*kernel_size)//4)
+    DrainSwitches = lib_mux.STD_DrainSwitch(circuit,Conv_AvgP_Island,(out_channels*kernel_size)//4)
+
+
 
     # Island Placement
     # -------------------------------------------------------------------------------
