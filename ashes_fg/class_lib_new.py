@@ -2036,6 +2036,7 @@ class Integration_fr_AvgPool_start(StandardCell):
 
 		# Initialize ports with given values
 		portsInit = [CLKB,CLK,RST_B,Vimg_CLK,nxt_row,GND,AVDD_by_2,prog,run,Vg,Vsel_b,AVDD,VINJ,VTUN,Vd_prog,Vd_run,Vint,int_rst,DVDD,Q,Din]
+		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
 			i+=1
@@ -2088,6 +2089,7 @@ class Integration_fr_AvgPool_core(StandardCell):
 
 		# Initialize ports with given values
 		portsInit = [CLKB,CLK,RST_B,Vimg_CLK,nxt_row,GND,AVDD_by_2,prog,run,Vg,Vsel_b,AVDD,VINJ,VTUN,Vd_prog,Vd_run,Vint,int_rst,DVDD,Q,Din]
+		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
 			i+=1
@@ -2136,6 +2138,7 @@ class Integration_fr_AvgPool_filler(StandardCell):
 
 		# Initialize ports with given values
 		portsInit = [CLKB,CLK,RST_B,Vimg_CLK,nxt_row,GND,AVDD_by_2,prog,run,Vg,Vsel_b,AVDD,VINJ,VTUN,Vd_prog,Vd_run,Vint,int_rst,DVDD,Q]
+		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
 			i+=1
@@ -2178,6 +2181,7 @@ class AvgPool_n_Relu(StandardCell):
 
 		# Initialize ports with given values
 		portsInit = [prog_lv,run_lv,Vb,AVDD,Out_En_b,Vd_prog,Final_row,GND,Vd_run_global,Vint,int_rst,DVDD,Sub_img_out,Q,Vd_run]
+		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
 			i+=1
@@ -2219,6 +2223,7 @@ class I_Subtractor_AvgPool_top(StandardCell):
 
 		# Initialize ports with given values
 		portsInit = [GND,prog_lv,DVDD,run_lv,Out_En_b,Vd_prog_0_out,Final_row_out,Vd_run_global,Vint,Vd_prog_0_in,Vd_run_krnl,Final_row_in]
+		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
 			i+=1
@@ -2261,6 +2266,7 @@ class I_Subtractor_AvgPool_core(StandardCell):
 
 		# Initialize ports with given values
 		portsInit = [GND,prog_lv,DVDD,run_lv,Out_En_b,Vd_prog_0_out,Final_row_out,Vd_run_global,Vint,Vd_prog_0_in,Vd_run_krnl,Final_row_in]
+		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
 			i+=1
