@@ -31,7 +31,7 @@ extra_css:
 
 nav:
   - Home: index.md
-  - Local Installation: local_install.md
+  - Local Installation: local-install.md
   - Reference: reference.md
   - Explanation: explanation.md
   - Contribution Guidelines: contribution.md
