@@ -185,7 +185,7 @@ AnalogBuffer1[0].Vsel += GateSwitch_buf.CTRL_B[0]
 for i in range(3):
 	AnalogBuffer1[i].Vd_P += DrainSwitch_buf.PR[i]
 
-GateSwitch_buf.VTUN_T += chipframe.IO_E_RES[0]
+GateSwitch_buf.VTUN_T += chipframe.IO_W_RES[0]
 GateSwitch_buf.Vgsel += macro.VGPROG
 GateSwitch_buf.PROG += DigBuffer.Out[0]
 GateSwitch_buf.RUN += DigBuffer.Out[1]
@@ -277,16 +277,17 @@ nFET_Mod.place([0,0])
 nFET_Mod.IOUT += Modulation.e_VC
 nFET_Mod.GND += Modulation.n_gnd
 nFET_Mod.GATE += chipframe.IO_W[19]
-
+nFET_Mod.IREF += Modulation.n_gnd
 
 Term2 = Island(Top)
 nFET_WTA = TSMC350nm_Termination_bot(Top,Term2,[1,1])
 nFET_WTA.place([0,0])
 
-nFET_WTA.IOUT += VMMWTA.Vbias
+nFET_WTA.IOUT += VMMWTA.Vmid
 nFET_WTA.GND += VMMWTA.n_gnd
 nFET_WTA.GATE += chipframe.IO_S[22]
-
+nFET_WTA.IREF += VMMWTA.n_gnd
+VMMWTA.Vbias += VMMWTA.n_gnd
 
 #Between Algorithm Connections
 #--------------------------------------------------------------------------------
@@ -340,9 +341,9 @@ Delaylines.w_Drainline_Run += macro.SystemDrainline[1]
 
 # To Pads
 #--------------------------------------------------------------------------------
-Delaylines.w_Input[0:19] += chipframe.IO_E[0:20]
+Delaylines.w_Input[0:20] += chipframe.IO_E[0:20]
 #Delaylines.w_Input[0:19] += chipframe.IO_E[22:42]
-Delaylines.w_Input[20:39] += chipframe.IO_S[25:45]
+Delaylines.w_Input[20:40] += chipframe.IO_S[25:45]
 
 VMMWTA.e_Out += AnalogBuffer1[0].Vin
 AnalogBuffer1[0].Vout += chipframe.IO_W[22]
@@ -408,19 +409,19 @@ qparams["passes"] = 50
 
 qparams["via"] = 10
 
-qparams["jog"] = 35
+qparams["jog"] = 20
 
 qparams["conflict"] = 40
 
 qparams["stage1"] = "mask auto force"
 
-qparams["stage2"] = "mask bbox force effort 500"
+qparams["stage2"] = "mask auto force"
 
-qparams["stage3"] = "mask bbox force effort 500"
+qparams["stage3"] = "mask auto force"
 
 
 
-design_limits = [12e6, 12e6]
+design_limits = [8e6, 8e6]
 
 
 '''(250600, 4500000), (20600, 20000),'''
