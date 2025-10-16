@@ -1,7 +1,9 @@
-site_name: ASHES Docs
+site_name: ASHES Documentation
 
 theme:
   name: "material"
+  features:
+    - content.code.copy
 
 plugins:
   - mkdocstrings
@@ -9,6 +11,15 @@ plugins:
 markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
 
 extra_javascript:
   - javascripts/katex.js
@@ -19,8 +30,10 @@ extra_css:
   - https://unpkg.com/katex@0/dist/katex.min.css
 
 nav:
-  - ASHES Docs: index.md
+  - Home: index.md
+  - Local Installation: local_install.md
   - Tutorials: tutorials.md
   - How-to Guides: how-to-guides.md
   - Reference: reference.md
   - Explanation: explanation.md
+  - Contribution Guidelines: contribution.md
