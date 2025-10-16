@@ -11,7 +11,7 @@ import ashes_fg.asic.asic_systems as algs
 import numpy as np
 import json
 
-def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_size=4,Conv_AvgP_Island=None,islandLoc=[0,0],debug=False):
+def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_size=4,AvgPool_size=2,Conv_AvgP_Island=None,islandLoc=[0,0],debug=False):
     
     Top = circuit
     Conv_AvgP_Island = ac.Island(Top)
@@ -22,6 +22,10 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
     elif ((image_size % kernel_size) != 0):
         raise Exception("Error: image_size should be divisble by kernel_size")
     
+    # Make sure only Average Pooling of 2x2 is initialized
+    if (AvgPool_size!=2):
+        raise Exception("Error: Currently this algorithm only supports Average Pooling of 2x2 with Overlap=2")
+
     # Make sure the Kernel size can be made with VMM4X2 std cell
     if (kernel_size*2 % 4) != 0:
         raise Exception("Error: kernel_size must be divisible by 2")
@@ -80,7 +84,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
         if (kernel_rows > 4):
             Isub_fill = lib_new.I_Subtractor_AvgPool_core(Top,Conv_AvgP_Island,dim=[(kernel_rows//4)-1,1])
             Isub_fill.place([out_channel_no+1,track_col])
-            #Isub_fill.markAbut()
+            Isub_fill.markAbut()
 
         track_col=track_col+1
 
@@ -102,25 +106,27 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
 
 
         if (intg_rows == 1):
-            Intgr_start = lib_new.Integration_fr_AvgPool_start(Top,Conv_AvgP_Island,dim=[1,1])
-            Intgr_start.place([out_channel_no,track_col])
-            Intgr_start.markAbut()
+            Intgr = [None for _ in range(intg_cols)]
+            Intgr[0] = lib_new.Integration_fr_AvgPool_start(Top,Conv_AvgP_Island,dim=[1,1])
+            Intgr[0].place([out_channel_no,track_col])
+            Intgr[0].markAbut()
             track_col=track_col+1  # Keeping track of the coloumn placement idx
 
             if no_of_intg > 1:
-                Intgr_core = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,no_of_intg-1])
-                Intgr_core.place([out_channel_no,track_col])
-                #Intgr_core.markAbut()
-                track_col = track_col + no_of_intg-1 # Keeping track of the coloumn placement idx
+                for intg_var in range(no_of_intg - 1):
+                    Intgr[intg_var + 1] = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,1])
+                    Intgr[intg_var + 1].place([out_channel_no,track_col])
+                    #Intgr_core.markAbut()
+                    track_col = track_col + no_of_intg-1 # Keeping track of the coloumn placement idx
 
         else:
-            Intgr_start = lib_new.Integration_fr_AvgPool_start(Top,Conv_AvgP_Island,dim=[1,1])
-            Intgr_start.place([out_channel_no,track_col])
-            Intgr_start.markAbut()
+            Intgr = [[None for _ in range(intg_cols)] for _ in range(intg_rows)]
+            Intgr[0][0] = lib_new.Integration_fr_AvgPool_start(Top,Conv_AvgP_Island,dim=[1,1])
+            Intgr[0][0].place([out_channel_no,track_col])
+            Intgr[0][0].markAbut()
             track_col=track_col+1  # Keeping track of the coloumn placement idx
             
             start_flag=1
-            Intgr_core = [[None for _ in range(intg_cols)] for _ in range(intg_rows)]
             #Intgr_core=[]
             if (no_of_fillers == 0):
                 rows=0
@@ -133,9 +139,9 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
                     
                     for cols in range(intg_cols - start_flag):
                         #Im not vectorizing here since I need to take out pins from each cell definition
-                        Intgr_core[rows][cols] = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,1])
-                        Intgr_core[rows][cols].place([out_channel_no+rows,track_col])
-                        Intgr_core[rows][cols].markAbut()
+                        Intgr[rows][cols + start_flag] = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,1])
+                        Intgr[rows][cols + start_flag].place([out_channel_no+rows,track_col])
+                        Intgr[rows][cols + start_flag].markAbut()
                         track_col = track_col + 1  # Keeping track of the coloumn placement idx
 
 
@@ -143,25 +149,24 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
                 filler_flag=0
                 rows=0
                 cols=0
-                Intgr_core = [[None for _ in range(intg_cols)] for _ in range(intg_rows)]
                 for rows in range(intg_rows):
 
                     if (rows > 0 ):
                         track_col = track_col - intg_cols # Keeping track of the coloumn placement idx
                         start_flag=0
 
-                    for cols in range(intg_cols- (1*start_flag)):
+                    for cols in range(intg_cols - start_flag):
 
                         if (filler_flag < ((intg_cols*intg_rows)-no_of_fillers-1)):
-                            Intgr_core = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,1])
-                            Intgr_core.place([out_channel_no+rows,track_col])
-                            Intgr_core.markAbut()
-                            track_col = track_col + 1 # Keeping track of the coloumn placement idx
+                            Intgr[rows][cols + start_flag] = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,1])
+                            Intgr[rows][cols + start_flag].place([out_channel_no+rows,track_col])
+                            Intgr[rows][cols + start_flag].markAbut()
+                            Intgr[rows][cols + start_flag] = track_col + 1 # Keeping track of the coloumn placement idx
 
                         else:
-                            Intgr_fill = lib_new.Integration_fr_AvgPool_filler(Top,Conv_AvgP_Island,dim=[1,1])
-                            Intgr_fill.place([out_channel_no+rows,track_col])
-                            Intgr_fill.markAbut()
+                            Intgr[rows][cols + start_flag] = lib_new.Integration_fr_AvgPool_filler(Top,Conv_AvgP_Island,dim=[1,1])
+                            Intgr[rows][cols + start_flag].place([out_channel_no+rows,track_col])
+                            Intgr[rows][cols + start_flag].markAbut()
                             track_col = track_col + 1 # Keeping track of the coloumn placement idx
 
                         filler_flag = filler_flag + 1
@@ -178,8 +183,32 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
         Readout_Relu.place([out_channel_no,track_col])
         #Readout_Relu.markAbut()
 
+
+        #################  Pin Connections  #################
+
+        if(out_channel_no == 0):
+           Dmmy0 = [[Wire(Top) for _ in range(intg_cols*intg_rows)] for _ in range(out_channels)]
+           Dmmy1 = [[Wire(Top) for _ in range(intg_cols*intg_rows)] for _ in range(out_channels)]
+
+        # Tieing the Din and Q of Shift Registers in end and start of rows
+        if (intg_rows>1):
+
+            ## I need to create dummy wires for qrouter to recognize these M3 pins
+            for i in range(intg_rows):
+                for j in range(intg_cols):
+                    Dmmy0[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i] = Wire(Top)
+                    Dmmy1[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i] = Wire(Top)
+                    Intgr[i][j].Q += Dmmy0[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
+                    Intgr[i][j].Din += Dmmy1[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
+
+            for rows in range(intg_rows-1):
+                Intgr[rows][intg_cols-1].Q += Intgr[rows+1][0].Din
+
+
     
     #################  Defining GateSwcs, DrainSwcs and Decoders  #################
+
+    ## For Kernel VMM FGs
     gateBits = int(np.ceil(np.log2(inp_channels*kernel_size)))
     GateDecoder = lib_mux.STD_IndirectGateDecoder(circuit,Conv_AvgP_Island,gateBits)
     GateSwitches = lib_mux.STD_IndirectGateSwitch(circuit,Conv_AvgP_Island,(inp_channels*kernel_size)//2)
@@ -190,8 +219,32 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
     DrainSwitches = lib_mux.STD_DrainSwitch(circuit,Conv_AvgP_Island,(out_channels*kernel_size)//4)
 
 
-    #################  Tieing all the Shift Register row wise connections  #################
-    Intgr_core[0][intg_cols-2].Q += Intgr_core[1][1].Din
+    ## For AvgPooling FGs
+
+    AvgP_Gswcs_Island = ac.Island(Top)
+    gateBits_Avg_pool = int(np.ceil(np.log2(intg_cols*2)))
+
+    ## Fake cell definition for the island
+    Fake_Cells_for_AvgP_Gswcs = lib_new.FakeCellGateDecoder(circuit,AvgP_Gswcs_Island, dim=[1,intg_cols])
+    Fake_Cells_for_AvgP_Gswcs.place([0,0])
+    Fake_Cells_for_AvgP_Gswcs.markAbut()
+
+    GateDecoder_Avg_pool = lib_mux.STD_IndirectGateDecoder(circuit,AvgP_Gswcs_Island,gateBits_Avg_pool)
+    GateSwitches_Avg_pool = lib_mux.STD_IndirectGateSwitch(circuit,AvgP_Gswcs_Island,intg_cols)
+
+
+
+    #################  Outer Pins  #################
+    
+    outerPins = frame(Top)
+    Q_0 = outerPins.createPort("N","Q_0")
+    Q_1 = outerPins.createPort("N","Q_1")
+    Q_2 = outerPins.createPort("N","Q_2")
+
+    Q_0 += Intgr[0][2].Q
+    Q_1 += Intgr[1][0].Q
+    Q_2 += Intgr[1][3].Q
+
 
 
     # Island Placement
@@ -206,9 +259,9 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
 Top = ac.Circuit()
 Conv_AvgPool(Top,islandLoc=[100,100],debug=True)
 
-location_islands = ((100,100),(0,0))
+location_islands = ((100,100),(1e6,3.5e5))
 
-design_limits = [4e7, 4e7]
+design_limits = [2e6, 6e5]
 
 
 
@@ -217,7 +270,7 @@ with open('./ashes_fg/asic/qrouter_default.json') as file:
 
 qparams["passes"] = 100
 qparams["via"] = 10
-qparams["jog"] = 35
+qparams["jog"] = 60
 qparams["conflict"] = 40
 qparams["stage2"] = "mask none force effort 500"
 qparams["stage3"] = "mask none force effort 500"
