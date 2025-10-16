@@ -9,7 +9,7 @@ import ashes_fg.class_lib_dataconverter as lib_dc
 import ashes_fg.asic.asic_systems as algs
 
 import numpy as np
-import math
+import json
 
 def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_size=4,Conv_AvgP_Island=None,islandLoc=[0,0],debug=False):
     
@@ -34,7 +34,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
         #################  Defining VMM Kernel weights #################
         Kernel_VMM = lib_new.TSMC350nm_4x2_Indirect(Top,Conv_AvgP_Island,dim=[kernel_rows//4,kernel_cols//2])
         Kernel_VMM.place([out_channel_no,0])
-        Kernel_VMM.markAbut()
+        #Kernel_VMM.markAbut()
         track_col= (kernel_cols//2)
 
         # Defining Horizontal Tgates to choose between kernel rows
@@ -62,7 +62,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
 
             TgateHoriz_VMMout_core = lib_new.Tgate_swc_fr_Kernel_Horiz_core(Top,Conv_AvgP_Island,dim=[(kernel_rows//4)-2,1])
             TgateHoriz_VMMout_core.place([out_channel_no+1,track_col])
-            TgateHoriz_VMMout_core.markAbut()
+            #TgateHoriz_VMMout_core.markAbut()
 
             TgateHoriz_VMMout_bot = lib_new.Tgate_swc_fr_Kernel_Horiz_bot_edge(Top,Conv_AvgP_Island,dim=[1,1])
             TgateHoriz_VMMout_bot.place([(out_channel_no)+((kernel_rows//4)-2),track_col])
@@ -80,7 +80,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
         if (kernel_rows > 4):
             Isub_fill = lib_new.I_Subtractor_AvgPool_core(Top,Conv_AvgP_Island,dim=[(kernel_rows//4)-1,1])
             Isub_fill.place([out_channel_no+1,track_col])
-            Isub_fill.markAbut()
+            #Isub_fill.markAbut()
 
         track_col=track_col+1
 
@@ -110,7 +110,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
             if no_of_intg > 1:
                 Intgr_core = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,no_of_intg-1])
                 Intgr_core.place([out_channel_no,track_col])
-                Intgr_core.markAbut()
+                #Intgr_core.markAbut()
                 track_col = track_col + no_of_intg-1 # Keeping track of the coloumn placement idx
 
         else:
@@ -120,22 +120,30 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
             track_col=track_col+1  # Keeping track of the coloumn placement idx
             
             start_flag=1
+            Intgr_core = [[None for _ in range(intg_cols)] for _ in range(intg_rows)]
+            #Intgr_core=[]
             if (no_of_fillers == 0):
                 rows=0
+                cols=0
+
                 for rows in range(intg_rows):
                     if (rows > 0 ):
                         track_col = track_col - intg_cols   # Keeping track of the coloumn placement idx
-                        start_flag=0
+                        start_flag=0     
+                    
+                    for cols in range(intg_cols - start_flag):
+                        #Im not vectorizing here since I need to take out pins from each cell definition
+                        Intgr_core[rows][cols] = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,1])
+                        Intgr_core[rows][cols].place([out_channel_no+rows,track_col])
+                        Intgr_core[rows][cols].markAbut()
+                        track_col = track_col + 1  # Keeping track of the coloumn placement idx
 
-                    Intgr_core = lib_new.Integration_fr_AvgPool_core(Top,Conv_AvgP_Island,dim=[1,intg_cols - (1*start_flag)])
-                    Intgr_core.place([out_channel_no+rows,track_col])
-                    Intgr_core.markAbut()
-                    track_col = track_col + intg_cols - (1*start_flag) # Keeping track of the coloumn placement idx
 
             else:
                 filler_flag=0
                 rows=0
                 cols=0
+                Intgr_core = [[None for _ in range(intg_cols)] for _ in range(intg_rows)]
                 for rows in range(intg_rows):
 
                     if (rows > 0 ):
@@ -162,12 +170,13 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
                             intg_cols = intg_cols + 1 # Need to account for the next row start block
 
 
+
         #################  Defining FinalAvgPool and Relu #################
 
         # We might have to create a filler cell and change it later
         Readout_Relu = lib_new.AvgPool_n_Relu(Top,Conv_AvgP_Island,dim=[kernel_rows//4,1])
         Readout_Relu.place([out_channel_no,track_col])
-        Readout_Relu.markAbut()
+        #Readout_Relu.markAbut()
 
     
     #################  Defining GateSwcs, DrainSwcs and Decoders  #################
@@ -180,6 +189,9 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
     DrainSel = lib_mux.STD_DrainSelect(circuit,Conv_AvgP_Island,(out_channels*kernel_size)//4)
     DrainSwitches = lib_mux.STD_DrainSwitch(circuit,Conv_AvgP_Island,(out_channels*kernel_size)//4)
 
+
+    #################  Tieing all the Shift Register row wise connections  #################
+    Intgr_core[0][intg_cols-2].Q += Intgr_core[1][1].Din
 
 
     # Island Placement
@@ -198,5 +210,18 @@ location_islands = ((100,100),(0,0))
 
 design_limits = [4e7, 4e7]
 
-ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_AvgPool", p_and_r = True, route=False, design_limits = design_limits, location_islands = location_islands)
+
+
+with open('./ashes_fg/asic/qrouter_default.json') as file:
+    qparams = json.load(file)
+
+qparams["passes"] = 100
+qparams["via"] = 10
+qparams["jog"] = 35
+qparams["conflict"] = 40
+qparams["stage2"] = "mask none force effort 500"
+qparams["stage3"] = "mask none force effort 500"
+
+
+ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_AvgPool", p_and_r = True, route=True, design_limits = design_limits, location_islands = location_islands)
 

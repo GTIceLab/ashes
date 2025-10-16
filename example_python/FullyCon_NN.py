@@ -10,7 +10,7 @@ import ashes_fg.asic.asic_systems as algs
 
 import numpy as np
 
-def FullyCon_Layer(circuit,input_size=10,no_of_neurons=10,FNN_Island=None,islandLoc=[0,0],debug=False):
+def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islandLoc=[0,0],debug=False):
 
     Top = circuit
     FNN_Island = ac.Island(Top)
@@ -43,7 +43,7 @@ def FullyCon_Layer(circuit,input_size=10,no_of_neurons=10,FNN_Island=None,island
     gateBits = int(np.ceil(np.log2(input_size)))
     GateDecoder = lib_mux.STD_IndirectGateDecoder(circuit,FNN_Island,gateBits)
 
-    drainBits = int(np.ceil(np.log2(no_of_neurons//2)))
+    drainBits = int(np.ceil(np.log2(no_of_neurons*2)))
     DrainDecoder = lib_mux.STD_DrainDecoder(circuit,FNN_Island,drainBits)
     DrainSel = lib_mux.STD_DrainSelect(circuit,FNN_Island,(no_of_neurons*2)//4)
     DrainSwitches = lib_mux.STD_DrainSwitch(circuit,FNN_Island,(no_of_neurons*2)//4)
