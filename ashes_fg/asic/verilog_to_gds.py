@@ -981,7 +981,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 height_accum += cell_height + gate_decoder_spacing
                 for row_idx, row in enumerate(reversed(horz_decoder_array)):
                     for idx, col in enumerate(row):
-                        '''if row_idx == 0:
+                        if row_idx == 0:
                             #Semi-Hardcode connecting net from switch to decoder
                             temp_net_num = idx*8
                             col['nets']['OUT<0>'] = f'isle{val}_swc_net{temp_net_num + 0}' if 'OUT<0>' not in col['nets'] else col['nets']['OUT<0>']
@@ -991,7 +991,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                             col['nets']['OUT<2>'] = f'isle{val}_swc_net{temp_net_num + 4}' if 'OUT<2>' not in col['nets'] else col['nets']['OUT<2>']
                             col['nets']['RUN_OUT<2>'] = f'isle{val}_swc_net{temp_net_num + 5}' if 'RUN_OUT<2>' not in col['nets'] else col['nets']['RUN_OUT<2>']
                             col['nets']['OUT<3>'] = f'isle{val}_swc_net{temp_net_num + 6}' if 'OUT<3>' not in col['nets'] else col['nets']['OUT<3>']
-                            col['nets']['RUN_OUT<3>'] = f'isle{val}_swc_net{temp_net_num + 7}' if 'RUN_OUT<3>' not in col['nets'] else col['nets']['RUN_OUT<3>']'''
+                            col['nets']['RUN_OUT<3>'] = f'isle{val}_swc_net{temp_net_num + 7}' if 'RUN_OUT<3>' not in col['nets'] else col['nets']['RUN_OUT<3>']
                         if cells_only_module and (idx*2) < len(cell_order):
                             x_loc = cell_order[idx*2][4][0]
                             y_loc = height_accum
@@ -1795,7 +1795,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
                     def_file.write(f'  END\n\n')
         # Write blockages for any manually specified cells or islands
-        m3_except = ['TSMC350nm_drainSelect_progrundrains', 'S_BLOCK_SEC1_PINS', 'S_BLOCK_BUFFER', 'S_BLOCK_SPACE_UP_PINS', 'S_BLOCK_CONN_PINS', 'S_BLOCK_SPACE_DOWN_PINS', 'S_BLOCK_SEC2_PINS', 'S_BLOCK_23CONN', 'S_BLOCK_SEC3_PINS', 'TSMC350nm_Cap_Bank', 'Full_Macro_Edit','QDAC_synth','TILE_analog','ALICE_separate','NN_cab1','NN_cab2','optimized_cab2','optimized_cab1','PDE_cab1', 'sensor_cab1','sensor_cab2','AveragerDAC_synth','AlgorithmicADC_synth','RampADC_synth', 'TOP_LPF_DelayBlock', 'TOP_Filter_MeadSOS']
+        m3_except = ['TSMC350nm_drainSelect_progrundrains', 'S_BLOCK_SEC1_PINS', 'S_BLOCK_BUFFER', 'S_BLOCK_SPACE_UP_PINS', 'S_BLOCK_CONN_PINS', 'S_BLOCK_SPACE_DOWN_PINS', 'S_BLOCK_SEC2_PINS', 'S_BLOCK_23CONN', 'S_BLOCK_SEC3_PINS', 'TSMC350nm_Cap_Bank', 'Full_Macro_Edit','QDAC_synth','TILE_analog','ALICE_separate','NN_cab1','NN_cab2','optimized_cab2','optimized_cab1','PDE_cab1', 'sensor_cab1','sensor_cab2','AveragerDAC_synth','AlgorithmicADC_synth','RampADC_synth', 'TOP_LPF_DelayBlock', 'TOP_Filter_MeadSOS','Delaylines_Flip','Modulation_Flip','VMMWTA_FullRoute']
         for val, island in cell_order_in_island.items():
             for idx, item in island['items'].items():
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m3_except:
@@ -1811,7 +1811,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
                     def_file.write(f'  END\n\n')
 
-        m4_except = ['Full_Macro_Edit', 'Full_Macro_Corner','QDAC_synth','TILE_analog','ALICE_separate','NN_cab1','NN_cab2','optimized_cab2','optimized_cab1','PDE_cab1', 'sensor_cab1','sensor_cab2','AveragerDAC_synth','AlgorithmicADC_synth','RampADC_synth', 'TOP_LPF_DelayBlock', 'TOP_Filter_MeadSOS']
+        m4_except = ['Full_Macro_Edit', 'Full_Macro_Corner','QDAC_synth','TILE_analog','ALICE_separate','NN_cab1','NN_cab2','optimized_cab2','optimized_cab1','PDE_cab1', 'sensor_cab1','sensor_cab2','AveragerDAC_synth','AlgorithmicADC_synth','RampADC_synth', 'TOP_LPF_DelayBlock', 'TOP_Filter_MeadSOS','Delaylines_Flip','Modulation_Flip','VMMWTA_FullRoute']
         for val, island in cell_order_in_island.items():
             for idx, item in island['items'].items():
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m4_except:

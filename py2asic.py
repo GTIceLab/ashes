@@ -41,7 +41,7 @@ import re
 
 
 
-#exec(open("./example_python/QDAC.py").read())
+exec(open("./example_python/TestFullRoute.py").read())
 
 
 
