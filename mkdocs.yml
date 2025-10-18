@@ -32,6 +32,8 @@ extra_css:
 nav:
   - Home: index.md
   - Local Installation: local-install.md
+  - Tutorials:
+    - Using Python for FPAA Programming: tutorials/python-for-fpaa
   - Reference: reference.md
   - Explanation: explanation.md
   - Contribution Guidelines: contribution.md
