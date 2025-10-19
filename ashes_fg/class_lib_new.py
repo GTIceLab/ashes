@@ -19,141 +19,6 @@ class outpada(StandardCell):
 	def __init__(self,input,pad_number):
 		self.input=input
 		self.pad_number=pad_number
-		
-		
-class DelayLinesAlgFlip(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),n_OUTS=None,w_Input=None,w_Drainline_Prog=None,w_Drainline_Run=None,w_DrainB=None,w_DrainEnable_Del=None,n_Prog=None,n_Run=None,n_VGPROG=None,n_GateB=None,n_GateEnable_Del=None,n_VTUN=None,n_AVDD=None,n_vinj=None,n_gnd=None,e_Din=None,e_Out=None,e_CLK=None,e_RSTBar=None,e_WTA_Vg=None,e_WTA_Prog=None):
-
-		# Define variables
-		self.circuit = circuit
-		self.pins = []
-		self.ports = []
-		self.island = island
-		self.dim = dim
-
-		# Define cell information
-		self.name = 'Delaylines_Flip'
-		self.w_Input = Port(circuit,self,'w_Input','E',40*self.dim[0])	
-		self.n_OUTS = Port(circuit,self,'n_OUTS','N',400*self.dim[1])	
-		self.w_Drainline_Prog = Port(circuit,self,'w_Drainline_Prog','E',self.dim[0])
-		self.w_Drainline_Run = Port(circuit,self,'w_Drainline_Run','E',self.dim[0])
-		self.w_DrainB = Port(circuit,self,'w_DrainB','E',8*self.dim[0])
-		self.w_DrainEnable_Del = Port(circuit,self,'w_DrainEnable_Del','E',self.dim[0])
-		self.n_Prog = Port(circuit,self,'n_Prog','N',self.dim[1])
-		self.n_Run = Port(circuit,self,'n_Run','N',self.dim[1])
-		self.n_VGPROG = Port(circuit,self,'n_VGPROG','N',self.dim[1])
-		self.n_GateB = Port(circuit,self,'n_GateB','N',5*self.dim[1])
-		self.n_GateEnable_Del = Port(circuit,self,'n_GateEnable_Del','N',self.dim[1])
-		self.n_VTUN = Port(circuit,self,'n_VTUN','N',self.dim[1])	
-
-		self.n_AVDD = Port(circuit,self,'n_AVDD','N',self.dim[1])
-		self.n_vinj = Port(circuit,self,'n_vinj','N',self.dim[1])	
-		self.n_gnd = Port(circuit,self,'n_gnd','N',self.dim[1])	
-
-		self.e_Din = Port(circuit,self,'e_Din','W',self.dim[0])		
-		self.e_WTA_out = Port(circuit,self,'e_WTA_out','W',self.dim[0])	
-		self.e_CLK = Port(circuit,self,'e_CLK','W',self.dim[0])	
-		self.e_RSTBar = Port(circuit,self,'e_RSTBar','W',self.dim[0])
-		self.e_WTA_Vg = Port(circuit,self,'e_WTA_Vg','W',2*self.dim[0])	
-		self.e_WTA_CTRL_B = Port(circuit,self,'e_WTA_CTRL_B','W',2*self.dim[0])	
-		# Initialize ports with given values
-		portsInit = [n_OUTS,w_Input,w_Drainline_Prog, w_Drainline_Run,n_AVDD,w_DrainB,w_DrainEnable_Del,n_Prog,n_Run,n_VGPROG,n_GateB,n_GateEnable_Del,n_VTUN,n_vinj,n_gnd,e_Din,e_Out,e_CLK,e_RSTBar,e_WTA_Vg,e_WTA_Prog]
-		i=0
-		for p in self.ports:
-			self.assignPort(p,portsInit[i])
-			i+=1
-
-		# Add cell to circuit
-		circuit.addInstance(self,self.island)
-
-class VMMWTAAlgFullRoute(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),n_AVDD=None,w_Drainline_Prog=None,w_Drainline_Run=None,w_DrainB=None,w_DrainEnable_WTA=None,n_Prog=None,n_Run=None,n_VGPROG=None,n_GateB=None,n_GateEnable_WTA=None,n_VTUN=None,RUNO=None,VOUT=None,n_vinj=None,n_gnd=None,Vmid=None,Vbias=None,Vsel_WTA=None,Vs_WTA=None,Vg_WTA=None,Prog_WTA=None,e_Din=None,e_Out=None,e_CLK=None,e_RSTBar=None):
-
-		# Define variables
-		self.circuit = circuit
-		self.pins = []
-		self.ports = []
-		self.island = island
-		self.dim = dim
-		##self.w_Input = []
-
-		# Define cell information
-		self.name = 'VMMWTA_FullRoute'
-		self.w_Drainline_Prog = Port(circuit,self,'w_Drainline_Prog','W',self.dim[0])
-		self.w_Drainline_Run = Port(circuit,self,'w_Drainline_Run','W',self.dim[0])
-		self.w_DrainB = Port(circuit,self,'w_DrainB','W',8*self.dim[0])
-		self.w_DrainEnable_WTA = Port(circuit,self,'w_DrainEnable_WTA','W',self.dim[0])
-		self.n_Prog = Port(circuit,self,'n_Prog','N',self.dim[1])
-		self.n_Run = Port(circuit,self,'n_Run','N',self.dim[1])
-		self.n_VGPROG = Port(circuit,self,'n_VGPROG','N',self.dim[1])
-		self.n_GateB = Port(circuit,self,'n_GateB','N',9*self.dim[1])
-		self.n_GateEnable_WTA = Port(circuit,self,'n_GateEnable_WTA','N',self.dim[1])
-		self.n_VTUN = Port(circuit,self,'n_VTUN','N',self.dim[1])
-		self.RUNO = Port(circuit,self,'RUNO','N',280*self.dim[1])  
-		self.n_AVDD = Port(circuit,self,'n_AVDD','N',self.dim[1])
-		self.n_vinj = Port(circuit,self,'n_vinj','N',self.dim[1])	
-		self.n_gnd = Port(circuit,self,'n_gnd','N',self.dim[1])	
-		self.Vmid = Port(circuit,self,'Vmid','N',self.dim[1])	
-		self.Vbias = Port(circuit,self,'Vbias','N',self.dim[1])
-		self.Vsel_WTA = Port(circuit,self,'Vsel_WTA','N',self.dim[1])	
-		self.Vs_WTA = Port(circuit,self,'Vs_WTA','N',self.dim[1])	
-		self.Vg_WTA = Port(circuit,self,'Vg_WTA','N',self.dim[1])
-		self.Prog_WTA = Port(circuit,self,'Prog_WTA','N',self.dim[1])
-		self.e_Din = Port(circuit,self,'e_Din','E',self.dim[0])		
-		self.e_Out = Port(circuit,self,'e_Out','E',self.dim[0])	
-		self.e_CLK = Port(circuit,self,'e_CLK','E',self.dim[0])	
-		self.e_RSTBar = Port(circuit,self,'e_RSTBar','E',self.dim[0])	
-
-		# Initialize ports with given values
-		portsInit = [w_Drainline_Prog, w_Drainline_Run,n_AVDD,w_DrainB,w_DrainEnable_WTA,n_Prog,n_Run,n_VGPROG,n_GateB,n_GateEnable_WTA,n_VTUN,RUNO,n_vinj,n_gnd,Vmid,Vbias,Vsel_WTA,Vs_WTA,Vg_WTA,Prog_WTA,e_Din,e_Out,e_CLK,e_RSTBar]
-		i=0
-		for p in self.ports:
-			self.assignPort(p,portsInit[i])
-			i+=1
-
-		# Add cell to circuit
-		circuit.addInstance(self,self.island)
-
-class ModulationAlgFlip(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),n_AVDD=None,w_Drainline_Prog=None,w_Drainline_Run=None,w_DrainB=None,w_DrainEnable_Mod=None,n_Prog=None,n_Run=None,n_VGPROG=None,n_GateB=None,n_GateEnable_Mod=None,n_VTUN=None,RUNO=None,VOUT=None,e_VG_N=None,e_VG_P=None,e_VC=None,n_vinj=None,n_gnd=None):
-
-		# Define variables
-		self.circuit = circuit
-		self.pins = []
-		self.ports = []
-		self.island = island
-		self.dim = dim
-
-		# Define cell information
-		self.name = 'Modulation_Flip'
-		self.w_Drainline_Prog = Port(circuit,self,'w_Drainline_Prog','E',self.dim[0])
-		self.w_Drainline_Run = Port(circuit,self,'w_Drainline_Run','E',self.dim[0])
-		self.w_DrainB = Port(circuit,self,'w_DrainB','E',9*self.dim[0])
-		self.w_DrainEnable_Mod = Port(circuit,self,'w_DrainEnable_Mod','E',self.dim[0])
-		self.n_Prog = Port(circuit,self,'n_Prog','S',self.dim[1])
-		self.n_Run = Port(circuit,self,'n_Run','S',self.dim[1])
-		self.n_VGPROG = Port(circuit,self,'n_VGPROG','S',self.dim[1])
-		self.n_GateB = Port(circuit,self,'n_GateB','S',9*self.dim[1])
-		self.n_GateEnable_Mod = Port(circuit,self,'n_GateEnable_Mod','S',self.dim[0])
-		self.n_VTUN = Port(circuit,self,'n_VTUN','S',self.dim[1])
-		self.RUNO = Port(circuit,self,'RUNO','S',400*self.dim[1]) 
-		self.VOUT = Port(circuit,self,'VOUT','W',280*self.dim[1]) 
-		self.n_AVDD = Port(circuit,self,'n_AVDD','S',self.dim[1])
-		self.e_VG_N = Port(circuit,self,'e_VG_N','W',self.dim[0])
-		self.e_VG_P = Port(circuit,self,'e_VG_P','W',self.dim[0])
-		self.e_VC = Port(circuit,self,'e_VC','W',self.dim[0])
-		self.n_vinj = Port(circuit,self,'n_vinj','S',self.dim[1])	
-		self.n_gnd = Port(circuit,self,'n_gnd','S',self.dim[1])			
-		# Initialize ports with given values
-		portsInit = [w_Drainline_Prog, w_Drainline_Run,n_AVDD,w_DrainB,w_DrainEnable_Mod,n_Prog,n_Run,n_VGPROG,n_GateB,n_GateEnable_Mod,n_VTUN,RUNO,VOUT,e_VG_N,e_VG_P,e_VC,n_vinj,n_gnd]
-		i=0
-		for p in self.ports:
-			self.assignPort(p,portsInit[i])
-			i+=1
-
-		# Add cell to circuit
-		circuit.addInstance(self,self.island)
-
 
 class RingOscDiffGen(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VDD=None,GND=None,CLK=None,SelCLK=None,CLKP=None,CLKN=None):
@@ -176,31 +41,6 @@ class RingOscDiffGen(StandardCell):
 
 		# Initialize ports with given values
 		portsInit = [VDD,GND,CLK,SelCLK,CLKP,CLKN]
-		i=0
-		for p in self.ports:
-			self.assignPort(p,portsInit[i])
-			i+=1
-
-		# Add cell to circuit
-		circuit.addInstance(self,self.island)
-
-class Gate_Routing_Half(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),VGRUN=None,AVDD=None):
-
-		# Define variables
-		self.circuit = circuit
-		self.pins = []
-		self.ports = []
-		self.island = island
-		self.dim = dim
-
-		# Define cell information
-		self.name = 'Routes_GateDecodeSwcHalf'
-		self.VGRUN = Port(circuit,self,'VGRUN','W',self.dim[0])
-		self.AVDD = Port(circuit,self,'AVDD','E',self.dim[0])
-
-		# Initialize ports with given values
-		portsInit = [VGRUN, AVDD]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
@@ -306,36 +146,6 @@ class Gate_Routing(StandardCell):
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class RingOscillator(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),Vd_P=None,VINJ=None,Vsel=None,Vg=None,GND=None,VTUN=None,VDD=None,OUT=None):
-
-		# Define variables
-		self.circuit = circuit
-		self.pins = []
-		self.ports = []
-		self.island = island
-		self.dim = dim
-
-		self.name = 'TSMC350nm_CS_RingOsc'
-		self.Vd_P = Port(circuit,self,'Vd_P','E',1*self.dim[0])
-		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
-		self.Vsel = Port(circuit,self,'Vsel','N',1*self.dim[1])
-		self.Vg = Port(circuit,self,'Vg','N',1*self.dim[1])
-		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
-		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
-		self.VDD = Port(circuit,self,'VDD','N',1*self.dim[1])
-		self.OUT = Port(circuit,self,'OUT','E',1*self.dim[0])
-
-		portsInit = [Vd_P,VINJ,Vsel,Vg,GND,VTUN,VDD,OUT]
-		i=0
-		for p in self.ports:
-			self.assignPort(p,portsInit[i])
-			i+=1
-
-		# Add cell to circuit
-		circuit.addInstance(self,self.island)
-
-
 class TSMC350nm_4x2_Direct(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),Vd=None,Vs=None,VINJ=None,Vg=None,GND=None,VTUN=None):
 
@@ -415,50 +225,6 @@ class TSMC350nm_4WTA_IndirectProg(StandardCell):
 
 		# Define cell information
 		self.name = 'TSMC350nm_4WTA_IndirectProg'
-		self.VD_P = Port(circuit,self,'VD_P','W',4*self.dim[0])
-		self.Iin = Port(circuit,self,'Iin','W',4*self.dim[0])
-		self.Vout = Port(circuit,self,'Vout','E',4*self.dim[0])
-		self.Vmid = Port(circuit,self,'Vmid','E',1*self.dim[0])
-		self.Vbias = Port(circuit,self,'Vbias','E',1*self.dim[0])
-		self.Vsel = Port(circuit,self,'Vsel','N',1*self.dim[1])
-		self.Vs = Port(circuit,self,'Vs','N',1*self.dim[1])
-		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
-		self.Vg = Port(circuit,self,'Vg','N',1*self.dim[1])
-		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
-		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
-		self.PROG = Port(circuit,self,'PROG','N',1*self.dim[1])
-		self.Vsel_b = Port(circuit,self,'Vsel_b','S',1*self.dim[1])
-		self.Vs_b = Port(circuit,self,'Vs_b','S',1*self.dim[1])
-		self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
-		self.Vg_b = Port(circuit,self,'Vg_b','S',1*self.dim[1])
-		self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
-		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
-		self.PROG_b = Port(circuit,self,'PROG_b','S',1*self.dim[1])
-
-
-		# Initialize ports with given values
-		portsInit = [VD_P,Iin,Vout,Vmid,Vbias,Vsel,Vs,VINJ,Vg,VTUN,GND,PROG,Vsel_b,Vs_b,VINJ_b,Vg_b,VTUN_b,GND_b,PROG_b]
-		i=0
-		for p in self.ports:
-			self.assignPort(p,portsInit[i])
-			i+=1
-
-		# Add cell to circuit
-		circuit.addInstance(self,self.island)
-
-class TSMC350nm_4WTA_IndirectProg_noncab_extended(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,Iin=None,Vout=None,Vmid=None,Vbias=None,Vsel=None,Vs=None,VINJ=None,Vg=None,VTUN=None,GND=None,PROG=None,Vsel_b=None,Vs_b=None,VINJ_b=None,Vg_b=None,VTUN_b=None,GND_b=None,PROG_b=None):
-
-		# Define variables
-		self.circuit = circuit
-		self.pins = []
-		self.ports = []
-		self.island = island
-		self.dim = dim
-
-
-		# Define cell information
-		self.name = 'TSMC350nm_4WTA_IndirectProg_noncab_extended'
 		self.VD_P = Port(circuit,self,'VD_P','W',4*self.dim[0])
 		self.Iin = Port(circuit,self,'Iin','W',4*self.dim[0])
 		self.Vout = Port(circuit,self,'Vout','E',4*self.dim[0])
@@ -1096,11 +862,13 @@ class TSMC350nm_Cap_Bank(StandardCell):
 		self.VD_P = Port(circuit,self,'VD_P','W',4*self.dim[0])
 		self.VIN = Port(circuit,self,'VIN','W',2*self.dim[0])
 		self.OUT = Port(circuit,self,'OUT','E',2*self.dim[0])
+		self.Vs = Port(circuit,self,'Vs','N',2*self.dim[1])
 		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
 		self.Vsel = Port(circuit,self,'Vsel','N',2*self.dim[1])
 		self.Vg = Port(circuit,self,'Vg','N',2*self.dim[1])
 		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
 		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+		self.Vs_b = Port(circuit,self,'Vs_b','S',2*self.dim[1])
 		self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
 		self.Vsel_b = Port(circuit,self,'Vsel_b','S',2*self.dim[1])
 		self.Vg_b = Port(circuit,self,'Vg_b','S',2*self.dim[1])
@@ -1699,53 +1467,6 @@ class TSMC350nm_VerticalScanner(StandardCell):
 
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
-		
-		
-class TSMC350nm_GilbertMultiplier2FG(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),Vd_P=None,IN=None,V3=None,V4=None,SV1=None,RUN=None,I_MEAS=None,VOUT=None,VINJ=None,VINJ_b=None,Vsel=None, Vsel_b=None,GND=None,GND_b=None,VTUN=None,VTUN_b=None,VDD=None,VDD_b=None,VG=None,VG_b=None):
-
-		# Define variables
-		self.circuit = circuit
-		self.pins = []
-		self.ports = []
-		self.island = island
-		self.dim = dim
-
-
-		# Define cell information
-		self.name = 'TSMC350nm_GilbertMultiplier2FG'
-		self.Vd_P = Port(circuit,self,'Vd_P','W',3*self.dim[0])
-		self.IN = Port(circuit,self,'IN','W',1*self.dim[0])
-		self.V3 = Port(circuit,self,'V3','W',1*self.dim[0])
-		self.V4 = Port(circuit,self,'V4','W',1*self.dim[0])
-		self.SV1 = Port(circuit,self,'SV1','W',1*self.dim[0])
-		self.RUN = Port(circuit,self,'RUN','W',1*self.dim[0])
-		self.I_MEAS = Port(circuit,self,'I_MEAS','E',1*self.dim[0])
-		self.VOUT = Port(circuit,self,'VOUT','E',1*self.dim[0])
-		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
-		self.VINJ_b = Port(circuit,self,'VINJ_b','S',1*self.dim[1])
-		self.Vsel = Port(circuit,self,'Vsel','N',2*self.dim[1])
-		self.Vsel_b = Port(circuit,self,'Vsel_b','S',2*self.dim[1])
-		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
-		self.GND_b = Port(circuit,self,'GND_b','S',1*self.dim[1])
-		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
-		self.VTUN_b = Port(circuit,self,'VTUN_b','S',1*self.dim[1])
-		self.VDD = Port(circuit,self,'VDD','N',1*self.dim[1])
-		self.VDD_b = Port(circuit,self,'VDD_b','S',1*self.dim[1])
-		self.VG = Port(circuit,self,'VG','N',2*self.dim[1])
-		self.VG_b = Port(circuit,self,'VG_b','S',2*self.dim[1])
-
-
-
-		# Initialize ports with given values
-		portsInit = [Vd_P,IN,V3,V4,SV1,RUN,I_MEAS,VOUT,VINJ,VINJ_b,Vsel,Vsel_b,GND,GND_b,VTUN,VTUN_b,VDD,VDD_b,VG,VG_b]
-		i=0
-		for p in self.ports:
-			self.assignPort(p,portsInit[i])
-			i+=1
-
-		# Add cell to circuit
-		circuit.addInstance(self,self.island)
 			
 class TSMC350nm_CS_RingOsc(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),AVDD=None, VINJ=None, Vsel=None, Vg=None, GND=None, VTUN=None, Vd_P=None, OUT=None):
@@ -1766,7 +1487,9 @@ class TSMC350nm_CS_RingOsc(StandardCell):
 		self.Vg = Port(circuit,self,'Vg','N',1*self.dim[1])
 		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
 		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+		
 		self.Vd_P = Port(circuit,self,'Vd_P','W',1*self.dim[0])
+		
 		self.OUT = Port(circuit,self,'OUT','E',1*self.dim[0])
 
 		# Initialize ports with given values
@@ -1981,36 +1704,6 @@ class TSMC350nm_DigBuffer_x2(StandardCell):
 
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
-		
-class LVLshifter_std(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),DVDD=None,Vin=None,GND=None,VINJ=None,Vout=None):
-
-		# Define variables
-		self.circuit = circuit
-		self.pins = []
-		self.ports = []
-		self.island = island
-		self.dim = dim
-
-
-		# Define cell information
-		self.name = 'TSMC350nm_LVLShift_Vert_FGMEM_wf'
-		self.DVDD = Port(circuit,self,'DVDD','N',1*self.dim[1])
-		self.Vin = Port(circuit,self,'Vin','N',2*self.dim[1])
-		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
-		self.VINJ = Port(circuit,self,'VINJ','W',1*self.dim[0])
-		self.Vout = Port(circuit,self,'Vout','S',2*self.dim[1])
-		
-		
-		# Initialize ports with given values
-		portsInit = [DVDD,Vin,GND,VINJ,Vout]
-		i=0
-		for p in self.ports:
-			self.assignPort(p,portsInit[i])
-			i+=1
-
-		# Add cell to circuit
-		circuit.addInstance(self,self.island)
 
 class CS_Relu_stdcell(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),AVDD=None,DVDD=None,GND=None,Vb=None, Vin=None,Vout=None,En_b=None):
@@ -2031,7 +1724,8 @@ class CS_Relu_stdcell(StandardCell):
 		self.Vin = Port(circuit,self,'Vin','N',1*self.dim[1])
 		self.Vout = Port(circuit,self,'Vout','E',1*self.dim[0])
 		self.En_b = Port(circuit,self,'En_b','N',1*self.dim[1])
-		
+
+
 		# Initialize ports with given values
 		portsInit = [AVDD,DVDD,GND,Vb,Vin,Vout,En_b]
 		i=0
@@ -2041,7 +1735,6 @@ class CS_Relu_stdcell(StandardCell):
 
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
-
 
 class FNN_DiodeConn(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),VINJ=None,GND=None,Vd_P_in=None, Vd_P_out=None,Vd_R=None,PROG=None,RUN=None,Vin_p=None,Vin_m=None):
@@ -2661,7 +2354,7 @@ class Tgate_swc_fr_Kernel_Ver(StandardCell):
 
 		self.Vimg = Port(circuit,self,'Vimg','W',1*self.dim[0])
 		self.DVDD = Port(circuit,self,'DVDD','W',1*self.dim[0])
-		self.AVDD = Port(circuit,self,'AVDD','W',1*self.dim[0])
+		self.AVDD = Port(circuit,self,'DVDD','W',1*self.dim[0])
 
 
 		# Initialize ports with given values
@@ -3389,7 +3082,7 @@ class TILE_analog(StandardCell):
 		self.n_gatebit2 = Port(circuit,self,'n_gatebit2','N',1*self.dim[1])
 		self.n_gatebit1 = Port(circuit,self,'n_gatebit1','N',1*self.dim[1])
 		self.n_gatebit0 = Port(circuit,self,'n_gatebit0','N',1*self.dim[1])
-		self.n_programdrain = Port(circuit,self,'n_programdrain','N',1*self.dim[1])
+		self.n_progdrain = Port(circuit,self,'n_progdrain','N',1*self.dim[1])
 		self.n_rundrain = Port(circuit,self,'n_rundrain','N',1*self.dim[1])
 		self.n_cew0 = Port(circuit,self,'n_cew0','N',1*self.dim[1])
 		self.n_cew1 = Port(circuit,self,'n_cew1','N',1*self.dim[1])
@@ -3430,7 +3123,7 @@ class TILE_analog(StandardCell):
 		self.s_gatebit2 = Port(circuit,self,'s_gatebit2','S',1*self.dim[1])
 		self.s_gatebit1 = Port(circuit,self,'s_gatebit1','S',1*self.dim[1])
 		self.s_gatebit0 = Port(circuit,self,'s_gatebit0','S',1*self.dim[1])
-		self.s_programdrain = Port(circuit,self,'s_programdrain','S',1*self.dim[1])
+		self.s_progdrain = Port(circuit,self,'s_progdrain','S',1*self.dim[1])
 		self.s_rundrain = Port(circuit,self,'s_rundrain','S',1*self.dim[1])
 		self.s_cew0 = Port(circuit,self,'s_cew0','S',1*self.dim[1])
 		self.s_cew1 = Port(circuit,self,'s_cew1','S',1*self.dim[1])
@@ -3578,7 +3271,7 @@ class sensor_cab1(StandardCell):
 		self.n_gatebit2 = Port(circuit,self,'n_gatebit2','N',1*self.dim[1])
 		self.n_gatebit1 = Port(circuit,self,'n_gatebit1','N',1*self.dim[1])
 		self.n_gatebit0 = Port(circuit,self,'n_gatebit0','N',1*self.dim[1])
-		self.n_programdrain = Port(circuit,self,'n_programdrain','N',1*self.dim[1])
+		self.n_progdrain = Port(circuit,self,'n_progdrain','N',1*self.dim[1])
 		self.n_rundrain = Port(circuit,self,'n_rundrain','N',1*self.dim[1])
 		self.n_cew0 = Port(circuit,self,'n_cew0','N',1*self.dim[1])
 		self.n_cew1 = Port(circuit,self,'n_cew1','N',1*self.dim[1])
@@ -3619,7 +3312,7 @@ class sensor_cab1(StandardCell):
 		self.s_gatebit2 = Port(circuit,self,'s_gatebit2','S',1*self.dim[1])
 		self.s_gatebit1 = Port(circuit,self,'s_gatebit1','S',1*self.dim[1])
 		self.s_gatebit0 = Port(circuit,self,'s_gatebit0','S',1*self.dim[1])
-		self.s_programdrain = Port(circuit,self,'s_programdrain','S',1*self.dim[1])
+		self.s_progdrain = Port(circuit,self,'s_progdrain','S',1*self.dim[1])
 		self.s_rundrain = Port(circuit,self,'s_rundrain','S',1*self.dim[1])
 		self.s_cew0 = Port(circuit,self,'s_cew0','S',1*self.dim[1])
 		self.s_cew1 = Port(circuit,self,'s_cew1','S',1*self.dim[1])
@@ -3767,7 +3460,7 @@ class sensor_cab2(StandardCell):
 		self.n_gatebit2 = Port(circuit,self,'n_gatebit2','N',1*self.dim[1])
 		self.n_gatebit1 = Port(circuit,self,'n_gatebit1','N',1*self.dim[1])
 		self.n_gatebit0 = Port(circuit,self,'n_gatebit0','N',1*self.dim[1])
-		self.n_programdrain = Port(circuit,self,'n_programdrain','N',1*self.dim[1])
+		self.n_progdrain = Port(circuit,self,'n_progdrain','N',1*self.dim[1])
 		self.n_rundrain = Port(circuit,self,'n_rundrain','N',1*self.dim[1])
 		self.n_cew0 = Port(circuit,self,'n_cew0','N',1*self.dim[1])
 		self.n_cew1 = Port(circuit,self,'n_cew1','N',1*self.dim[1])
@@ -3808,7 +3501,7 @@ class sensor_cab2(StandardCell):
 		self.s_gatebit2 = Port(circuit,self,'s_gatebit2','S',1*self.dim[1])
 		self.s_gatebit1 = Port(circuit,self,'s_gatebit1','S',1*self.dim[1])
 		self.s_gatebit0 = Port(circuit,self,'s_gatebit0','S',1*self.dim[1])
-		self.s_programdrain = Port(circuit,self,'s_programdrain','S',1*self.dim[1])
+		self.s_progdrain = Port(circuit,self,'s_progdrain','S',1*self.dim[1])
 		self.s_rundrain = Port(circuit,self,'s_rundrain','S',1*self.dim[1])
 		self.s_cew0 = Port(circuit,self,'s_cew0','S',1*self.dim[1])
 		self.s_cew1 = Port(circuit,self,'s_cew1','S',1*self.dim[1])
@@ -3956,7 +3649,7 @@ class optimized_cab1(StandardCell):
 		self.n_gatebit2 = Port(circuit,self,'n_gatebit2','N',1*self.dim[1])
 		self.n_gatebit1 = Port(circuit,self,'n_gatebit1','N',1*self.dim[1])
 		self.n_gatebit0 = Port(circuit,self,'n_gatebit0','N',1*self.dim[1])
-		self.n_programdrain = Port(circuit,self,'n_programdrain','N',1*self.dim[1])
+		self.n_progdrain = Port(circuit,self,'n_progdrain','N',1*self.dim[1])
 		self.n_rundrain = Port(circuit,self,'n_rundrain','N',1*self.dim[1])
 		self.n_cew0 = Port(circuit,self,'n_cew0','N',1*self.dim[1])
 		self.n_cew1 = Port(circuit,self,'n_cew1','N',1*self.dim[1])
@@ -3997,7 +3690,7 @@ class optimized_cab1(StandardCell):
 		self.s_gatebit2 = Port(circuit,self,'s_gatebit2','S',1*self.dim[1])
 		self.s_gatebit1 = Port(circuit,self,'s_gatebit1','S',1*self.dim[1])
 		self.s_gatebit0 = Port(circuit,self,'s_gatebit0','S',1*self.dim[1])
-		self.s_programdrain = Port(circuit,self,'s_progeamdrain','S',1*self.dim[1])
+		self.s_progdrain = Port(circuit,self,'s_progdrain','S',1*self.dim[1])
 		self.s_rundrain = Port(circuit,self,'s_rundrain','S',1*self.dim[1])
 		self.s_cew0 = Port(circuit,self,'s_cew0','S',1*self.dim[1])
 		self.s_cew1 = Port(circuit,self,'s_cew1','S',1*self.dim[1])
@@ -4145,7 +3838,7 @@ class optimized_cab2(StandardCell):
 		self.n_gatebit2 = Port(circuit,self,'n_gatebit2','N',1*self.dim[1])
 		self.n_gatebit1 = Port(circuit,self,'n_gatebit1','N',1*self.dim[1])
 		self.n_gatebit0 = Port(circuit,self,'n_gatebit0','N',1*self.dim[1])
-		self.n_programdrain = Port(circuit,self,'n_programdrain','N',1*self.dim[1])
+		self.n_progdrain = Port(circuit,self,'n_progdrain','N',1*self.dim[1])
 		self.n_rundrain = Port(circuit,self,'n_rundrain','N',1*self.dim[1])
 		self.n_cew0 = Port(circuit,self,'n_cew0','N',1*self.dim[1])
 		self.n_cew1 = Port(circuit,self,'n_cew1','N',1*self.dim[1])
@@ -4186,7 +3879,7 @@ class optimized_cab2(StandardCell):
 		self.s_gatebit2 = Port(circuit,self,'s_gatebit2','S',1*self.dim[1])
 		self.s_gatebit1 = Port(circuit,self,'s_gatebit1','S',1*self.dim[1])
 		self.s_gatebit0 = Port(circuit,self,'s_gatebit0','S',1*self.dim[1])
-		self.s_programdrain = Port(circuit,self,'s_programdrain','S',1*self.dim[1])
+		self.s_progdrain = Port(circuit,self,'s_progdrain','S',1*self.dim[1])
 		self.s_rundrain = Port(circuit,self,'s_rundrain','S',1*self.dim[1])
 		self.s_cew0 = Port(circuit,self,'s_cew0','S',1*self.dim[1])
 		self.s_cew1 = Port(circuit,self,'s_cew1','S',1*self.dim[1])
@@ -4305,7 +3998,7 @@ class PDE_cab1(StandardCell):
 		self.n_gatebit2 = Port(circuit,self,'n_gatebit2','N',1*self.dim[1])
 		self.n_gatebit1 = Port(circuit,self,'n_gatebit1','N',1*self.dim[1])
 		self.n_gatebit0 = Port(circuit,self,'n_gatebit0','N',1*self.dim[1])
-		self.n_programdrain = Port(circuit,self,'n_programdrain','N',1*self.dim[1])
+		self.n_progdrain = Port(circuit,self,'n_progdrain','N',1*self.dim[1])
 		self.n_rundrain = Port(circuit,self,'n_rundrain','N',1*self.dim[1])
 		self.n_cew0 = Port(circuit,self,'n_cew0','N',1*self.dim[1])
 		self.n_cew1 = Port(circuit,self,'n_cew1','N',1*self.dim[1])
@@ -4333,7 +4026,7 @@ class PDE_cab1(StandardCell):
 		self.s_gatebit2 = Port(circuit,self,'s_gatebit2','S',1*self.dim[1])
 		self.s_gatebit1 = Port(circuit,self,'s_gatebit1','S',1*self.dim[1])
 		self.s_gatebit0 = Port(circuit,self,'s_gatebit0','S',1*self.dim[1])
-		self.s_programdrain = Port(circuit,self,'s_programdrain','S',1*self.dim[1])
+		self.s_progdrain = Port(circuit,self,'s_progdrain','S',1*self.dim[1])
 		self.s_rundrain = Port(circuit,self,'s_rundrain','S',1*self.dim[1])
 		self.s_cew0 = Port(circuit,self,'s_cew0','S',1*self.dim[1])
 		self.s_cew1 = Port(circuit,self,'s_cew1','S',1*self.dim[1])
@@ -4468,7 +4161,7 @@ class NN_cab1(StandardCell):
 		self.n_gatebit2 = Port(circuit,self,'n_gatebit2','N',1*self.dim[1])
 		self.n_gatebit1 = Port(circuit,self,'n_gatebit1','N',1*self.dim[1])
 		self.n_gatebit0 = Port(circuit,self,'n_gatebit0','N',1*self.dim[1])
-		self.n_programdrain = Port(circuit,self,'n_programdrain','N',1*self.dim[1])
+		self.n_progdrain = Port(circuit,self,'n_progdrain','N',1*self.dim[1])
 		self.n_rundrain = Port(circuit,self,'n_rundrain','N',1*self.dim[1])
 		self.n_cew0 = Port(circuit,self,'n_cew0','N',1*self.dim[1])
 		self.n_cew1 = Port(circuit,self,'n_cew1','N',1*self.dim[1])
@@ -4508,7 +4201,7 @@ class NN_cab1(StandardCell):
 		self.s_gatebit2 = Port(circuit,self,'s_gatebit2','S',1*self.dim[1])
 		self.s_gatebit1 = Port(circuit,self,'s_gatebit1','S',1*self.dim[1])
 		self.s_gatebit0 = Port(circuit,self,'s_gatebit0','S',1*self.dim[1])
-		self.s_programdrain = Port(circuit,self,'s_programdrain','S',1*self.dim[1])
+		self.s_progdrain = Port(circuit,self,'s_progdrain','S',1*self.dim[1])
 		self.s_rundrain = Port(circuit,self,'s_rundrain','S',1*self.dim[1])
 		self.s_cew0 = Port(circuit,self,'s_cew0','S',1*self.dim[1])
 		self.s_cew1 = Port(circuit,self,'s_cew1','S',1*self.dim[1])
@@ -4656,7 +4349,7 @@ class NN_cab2(StandardCell):
 		self.n_gatebit2 = Port(circuit,self,'n_gatebit2','N',1*self.dim[1])
 		self.n_gatebit1 = Port(circuit,self,'n_gatebit1','N',1*self.dim[1])
 		self.n_gatebit0 = Port(circuit,self,'n_gatebit0','N',1*self.dim[1])
-		self.n_programdrain = Port(circuit,self,'n_programdrain','N',1*self.dim[1])
+		self.n_progdrain = Port(circuit,self,'n_progdrain','N',1*self.dim[1])
 		self.n_rundrain = Port(circuit,self,'n_rundrain','N',1*self.dim[1])
 		self.n_cew0 = Port(circuit,self,'n_cew0','N',1*self.dim[1])
 		self.n_cew1 = Port(circuit,self,'n_cew1','N',1*self.dim[1])
@@ -4697,7 +4390,7 @@ class NN_cab2(StandardCell):
 		self.s_gatebit2 = Port(circuit,self,'s_gatebit2','S',1*self.dim[1])
 		self.s_gatebit1 = Port(circuit,self,'s_gatebit1','S',1*self.dim[1])
 		self.s_gatebit0 = Port(circuit,self,'s_gatebit0','S',1*self.dim[1])
-		self.s_programdrain = Port(circuit,self,'s_programdrain','S',1*self.dim[1])
+		self.s_progdrain = Port(circuit,self,'s_progdrain','S',1*self.dim[1])
 		self.s_rundrain = Port(circuit,self,'s_rundrain','S',1*self.dim[1])
 		self.s_cew0 = Port(circuit,self,'s_cew0','S',1*self.dim[1])
 		self.s_cew1 = Port(circuit,self,'s_cew1','S',1*self.dim[1])
@@ -5158,7 +4851,7 @@ class SmallPadFrame(StandardCell):
 		self.dim = dim
 
 		# Define cell information
-		self.name = 'frame_6p9mm_2mm_edit'
+		self.name = 'frame_6p9mm_2mm_digbuf'
 
 		self.gnd_N = Port(circuit,self,'gnd_N','N',9*self.dim[1])
 		self.esd_vdd_N = Port(circuit,self,'esd_vdd_N','N',3*self.dim[1])
