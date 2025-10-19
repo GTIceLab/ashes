@@ -2148,7 +2148,7 @@ class Integration_fr_AvgPool_filler(StandardCell):
 
 
 class AvgPool_n_Relu(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),prog_lv=None,run_lv=None,Vb=None,AVDD=None,Out_En_b=None,Vd_prog=None,Final_row=None,GND=None,Vd_run_global=None,Vint=None,int_rst=None,DVDD=None,Sub_img_out=None,Q=None,Vd_run=None):
+	def __init__(self,circuit,island=None,dim=(1,1),prog_lv=None,run_lv=None,Vb=None,AVDD=None,Vd_prog=None,GND=None,Vint_out=None,int_rst_out=None,DVDD=None,Sub_img_out=None,Out_En_b=None,Q_out=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -2163,24 +2163,20 @@ class AvgPool_n_Relu(StandardCell):
 		self.run_lv = Port(circuit,self,'run_lv','N',1*self.dim[1])
 		self.Vb = Port(circuit,self,'Vb','N',1*self.dim[1])
 		self.AVDD = Port(circuit,self,'AVDD','N',1*self.dim[1])
-		self.Out_En_b = Port(circuit,self,'Out_En_b','N',1*self.dim[1])
-
 
 		self.Vd_prog = Port(circuit,self,'Vd_prog','E',1*self.dim[0])
-		self.Final_row = Port(circuit,self,'Final_row','E',1*self.dim[0])
 		self.GND = Port(circuit,self,'GND','E',1*self.dim[0])
-		self.Vd_run_global = Port(circuit,self,'Vd_run_global','E',1*self.dim[0])
-		self.Vint = Port(circuit,self,'Vint','E',1*self.dim[0])
-		self.int_rst = Port(circuit,self,'int_rst','E',1*self.dim[0])
+		self.Vint_out = Port(circuit,self,'Vint','E',1*self.dim[0])
+		self.int_rst_out = Port(circuit,self,'int_rst','E',1*self.dim[0])
 		self.DVDD = Port(circuit,self,'DVDD','E',1*self.dim[0])
 		self.Sub_img_out = Port(circuit,self,'Sub_img_out','E',1*self.dim[0])
-		self.Q = Port(circuit,self,'Q','E',1*self.dim[0])
+		self.Out_En_b = Port(circuit,self,'Out_En_b','E',1*self.dim[0])
+		self.Q_out = Port(circuit,self,'Q','E',1*self.dim[0])
 		#self.GND = Port(circuit,self,'GND','E',1*self.dim[0])
 
-		self.Vd_run = Port(circuit,self,'Vd_run','W',1*self.dim[0])
 
 		# Initialize ports with given values
-		portsInit = [prog_lv,run_lv,Vb,AVDD,Out_En_b,Vd_prog,Final_row,GND,Vd_run_global,Vint,int_rst,DVDD,Sub_img_out,Q,Vd_run]
+		portsInit = [prog_lv,run_lv,Vb,AVDD,Vd_prog,GND,Vint_out,int_rst_out,DVDD,Sub_img_out,Out_En_b,Q_out]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
@@ -2190,7 +2186,7 @@ class AvgPool_n_Relu(StandardCell):
 		circuit.addInstance(self,self.island)
 
 class I_Subtractor_AvgPool_top(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),GND=None,prog_lv=None,DVDD=None,run_lv=None,Out_En_b=None,Vd_prog_0_out=None,Final_row_out=None,Vd_run_global=None,Vint=None,Vd_prog_0_in=None,Vd_run_krnl=None,Final_row_in=None):
+	def __init__(self,circuit,island=None,dim=(1,1),GND=None,prog_lv=None,DVDD=None,run_lv=None,Out_En_b=None,Vd_prog_0_out=None,Vd_run_global=None,Vint=None,Vd_prog_0_in=None,Vd_run_krnl=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -2209,7 +2205,6 @@ class I_Subtractor_AvgPool_top(StandardCell):
 
 
 		self.Vd_prog_0_out = Port(circuit,self,'Vd_prog_0_out','E',1*self.dim[0])
-		self.Final_row_out = Port(circuit,self,'Final_row_out','E',1*self.dim[0])
 		#self.GND = Port(circuit,self,'GND','E',1*self.dim[0])
 		self.Vd_run_avg_pool = Port(circuit,self,'Vd_run_avg_pool','E',1*self.dim[0])
 		self.Vint = Port(circuit,self,'Vint','E',1*self.dim[0])
@@ -2218,11 +2213,9 @@ class I_Subtractor_AvgPool_top(StandardCell):
 		self.Vd_prog_0_in = Port(circuit,self,'Vd_prog_0_in','W',1*self.dim[0])
 		#self.Vint = Port(circuit,self,'Vint','W',1*self.dim[0])
 		self.Vd_run_krnl = Port(circuit,self,'Vd_run_krnl','W',1*self.dim[0])
-		self.Final_row_in = Port(circuit,self,'Vd_run','W',1*self.dim[0])
-
 
 		# Initialize ports with given values
-		portsInit = [GND,prog_lv,DVDD,run_lv,Out_En_b,Vd_prog_0_out,Final_row_out,Vd_run_global,Vint,Vd_prog_0_in,Vd_run_krnl,Final_row_in]
+		portsInit = [GND,prog_lv,DVDD,run_lv,Out_En_b,Vd_prog_0_out,Vd_run_global,Vint,Vd_prog_0_in,Vd_run_krnl]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
@@ -2233,7 +2226,7 @@ class I_Subtractor_AvgPool_top(StandardCell):
 
 
 class I_Subtractor_AvgPool_core(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),GND=None,prog_lv=None,DVDD=None,run_lv=None,Out_En_b=None,Vd_prog_0_out=None,Final_row_out=None,Vd_run_global=None,Vint=None,Vd_prog_0_in=None,Vd_run_krnl=None,Final_row_in=None):
+	def __init__(self,circuit,island=None,dim=(1,1),GND=None,prog_lv=None,DVDD=None,run_lv=None,Out_En_b=None,Vd_prog_0_out=None,Vd_run_global=None,Vint=None,Vd_prog_0_in=None,Vd_run_krnl=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -2252,7 +2245,6 @@ class I_Subtractor_AvgPool_core(StandardCell):
 
 
 		self.Vd_prog_0_out = Port(circuit,self,'Vd_prog_0_out','E',1*self.dim[0])
-		self.Final_row_out = Port(circuit,self,'Final_row_out','E',1*self.dim[0])
 		#self.GND = Port(circuit,self,'GND','E',1*self.dim[0])
 		self.Vd_run_avg_pool = Port(circuit,self,'Vd_run_avg_pool','E',1*self.dim[0])
 		self.Vint = Port(circuit,self,'Vint','E',1*self.dim[0])
@@ -2261,11 +2253,112 @@ class I_Subtractor_AvgPool_core(StandardCell):
 		self.Vd_prog_0_in = Port(circuit,self,'Vd_prog_0_in','W',1*self.dim[0])
 		#self.Vint = Port(circuit,self,'Vint','W',1*self.dim[0])
 		self.Vd_run_krnl = Port(circuit,self,'Vd_run_krnl','W',1*self.dim[0])
-		self.Final_row_in = Port(circuit,self,'Vd_run','W',1*self.dim[0])
 
 
 		# Initialize ports with given values
-		portsInit = [GND,prog_lv,DVDD,run_lv,Out_En_b,Vd_prog_0_out,Final_row_out,Vd_run_global,Vint,Vd_prog_0_in,Vd_run_krnl,Final_row_in]
+		portsInit = [GND,prog_lv,DVDD,run_lv,Out_En_b,Vd_prog_0_out,Vd_run_global,Vint,Vd_prog_0_in,Vd_run_krnl]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+
+class DynamicShiftReg_Rst_Lo(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),Q=None,Din=None,DVDD=None,RST_B=None,CLK=None,CLKB=None,GND=None,Q_bot=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'DynamicShiftReg_Rst_Lo'
+		self.Q = Port(circuit,self,'Q','E',1*self.dim[0])
+
+		self.Din = Port(circuit,self,'Din','W',1*self.dim[0])
+		self.DVDD = Port(circuit,self,'DVDD','W',1*self.dim[0])
+		self.RST_B = Port(circuit,self,'RST_B','W',1*self.dim[0])
+		self.CLK = Port(circuit,self,'CLK','W',1*self.dim[0])
+		self.CLKB = Port(circuit,self,'CLKB','W',1*self.dim[0])
+		self.GND = Port(circuit,self,'GND','W',1*self.dim[0])
+
+		self.Q_bot = Port(circuit,self,'Q_bot','S',1*self.dim[1])
+
+		# Initialize ports with given values
+		portsInit = [Q,Din,DVDD,RST_B,CLK,CLKB,GND,Q_bot]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+
+class DynamicShiftReg_Rst_Hi(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),Q=None,Din=None,DVDD=None,RST_B=None,CLK=None,CLKB=None,GND=None,Q_bot=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'DynamicShiftReg_Rst_Hi'
+		self.Q = Port(circuit,self,'Q','E',1*self.dim[0])
+
+		self.Din = Port(circuit,self,'Din','W',1*self.dim[0])
+		self.DVDD = Port(circuit,self,'DVDD','W',1*self.dim[0])
+		self.RST_B = Port(circuit,self,'RST_B','W',1*self.dim[0])
+		self.CLK = Port(circuit,self,'CLK','W',1*self.dim[0])
+		self.CLKB = Port(circuit,self,'CLKB','W',1*self.dim[0])
+		self.GND = Port(circuit,self,'GND','W',1*self.dim[0])
+
+		self.Q_bot = Port(circuit,self,'Q_bot','S',1*self.dim[1])
+
+		# Initialize ports with given values
+		portsInit = [Q,Din,DVDD,RST_B,CLK,CLKB,GND,Q_bot]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+		
+class Tgate_swc_fr_Kernel_Ver(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),GND=None,Q=None,Vg_R=None,Q_bot=None,Vimg=None,DVDD=None,AVDD=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'Tgate_swc_fr_Kernel_Ver'
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.Q = Port(circuit,self,'Q','N',1*self.dim[1])
+
+		self.Vg_R = Port(circuit,self,'Vg_R','S',1*self.dim[1])
+		self.Q_bot = Port(circuit,self,'Q_bot','S',1*self.dim[1])
+
+		self.Vimg = Port(circuit,self,'Vimg','W',1*self.dim[0])
+		self.DVDD = Port(circuit,self,'DVDD','W',1*self.dim[0])
+		self.AVDD = Port(circuit,self,'DVDD','W',1*self.dim[0])
+
+
+		# Initialize ports with given values
+		portsInit = [GND,Q,Vg_R,Q_bot,Vimg,DVDD,AVDD]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
