@@ -184,6 +184,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
         #Readout_Relu.markAbut()
 
 
+
         #################  Pin Connections  #################
 
         if(out_channel_no == 0):
@@ -219,6 +220,8 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
     DrainSwitches = lib_mux.STD_DrainSwitch(circuit,Conv_AvgP_Island,(out_channels*kernel_size)//4)
 
 
+
+
     ## For AvgPooling FGs
 
     AvgP_Gswcs_Island = ac.Island(Top)
@@ -233,6 +236,25 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
     GateSwitches_Avg_pool = lib_mux.STD_IndirectGateSwitch(circuit,AvgP_Gswcs_Island,intg_cols)
 
 
+    for i in range(0,intg_cols,2):
+        GateSwitches_Avg_pool.Vg[i]+=Intgr[0][i].Vg[0]
+        GateSwitches_Avg_pool.Vg[i+1]+=Intgr[0][i].Vg[1]
+
+
+
+    #################  Global Switches and Shift Reg for kernel col #################
+    SR_k_col_island = ac.Island(Top)
+    
+    SR_k_col = lib_new.DynamicShiftReg_Rst_Lo(Top,SR_k_col_island,dim=[1,inp_channels*kernel_size])
+    SR_k_col.place([0,0])
+
+    Tgate_fr_SR_k_col = lib_new.Tgate_swc_fr_Kernel_Vert(Top,SR_k_col_island,dim=[1,inp_channels*kernel_size])
+    Tgate_fr_SR_k_col.place([1,0])
+
+    for i in range(inp_channels*kernel_size):
+        GateDecoder.VGRUN[i]+=Tgate_fr_SR_k_col.Vg_R[i]
+
+
 
     #################  Outer Pins  #################
     
@@ -240,11 +262,20 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
     Q_0 = outerPins.createPort("N","Q_0")
     Q_1 = outerPins.createPort("N","Q_1")
     Q_2 = outerPins.createPort("N","Q_2")
+    K_col_Din = outerPins.createPort("N","K_col_Din")
+    K_col_CLK = outerPins.createPort("N","K_col_CLK")
+    K_col_CLKB = outerPins.createPort("N","K_col_CLKB")
+    K_col_RST_B = outerPins.createPort("N","K_col_RST_B")
+
 
     Q_0 += Intgr[0][2].Q
     Q_1 += Intgr[1][0].Q
     Q_2 += Intgr[1][3].Q
 
+    K_col_Din+=SR_k_col.Din[0]
+    K_col_CLK+=SR_k_col.CLK[0]
+    K_col_CLKB+=SR_k_col.CLKB[0]
+    K_col_RST_B+=SR_k_col.RST_B[0]
 
 
     # Island Placement
@@ -259,7 +290,8 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
 Top = ac.Circuit()
 Conv_AvgPool(Top,islandLoc=[100,100],debug=True)
 
-location_islands = ((100,100),(1e6,3.5e5))
+location_islands = ((100,100),(0.6e6,3.8e5),(0.4e6,3.7e5))
+#location_islands = ((100,100),(1e6,3.6e5))
 
 design_limits = [2e6, 6e5]
 
@@ -269,12 +301,12 @@ with open('./ashes_fg/asic/qrouter_default.json') as file:
     qparams = json.load(file)
 
 qparams["passes"] = 100
-qparams["via"] = 10
-qparams["jog"] = 60
+qparams["via"] = 20
+qparams["jog"] = 20
 qparams["conflict"] = 40
 qparams["stage2"] = "mask none force effort 500"
 qparams["stage3"] = "mask none force effort 500"
 
 
-ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_AvgPool", p_and_r = True, route=True, design_limits = design_limits, location_islands = location_islands)
+ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_AvgPool", p_and_r = True, route=True, design_limits = design_limits, location_islands = location_islands, qparams=qparams)
 

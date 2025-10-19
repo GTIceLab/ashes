@@ -2334,7 +2334,7 @@ class DynamicShiftReg_Rst_Hi(StandardCell):
 		circuit.addInstance(self,self.island)
 
 		
-class Tgate_swc_fr_Kernel_Ver(StandardCell):
+class Tgate_swc_fr_Kernel_Vert(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),GND=None,Q=None,Vg_R=None,Q_bot=None,Vimg=None,DVDD=None,AVDD=None):
 
 		# Define variables
@@ -2345,7 +2345,7 @@ class Tgate_swc_fr_Kernel_Ver(StandardCell):
 		self.dim = dim
 
 		# Define cell information
-		self.name = 'Tgate_swc_fr_Kernel_Ver'
+		self.name = 'Tgate_swc_fr_Kernel_Vert'
 		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
 		self.Q = Port(circuit,self,'Q','N',1*self.dim[1])
 
