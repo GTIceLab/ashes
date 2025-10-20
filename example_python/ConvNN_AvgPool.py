@@ -206,7 +206,26 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
                 Intgr[rows][intg_cols-1].Q += Intgr[rows+1][0].Din
 
 
+    #################  Outer Pins  #################
     
+    outerPins = frame(Top)
+
+    SR_k_col_Din = outerPins.createPort("N","K_col_Din")
+    SR_k_col_CLK = outerPins.createPort("N","K_col_CLK")
+    SR_k_col_CLKB = outerPins.createPort("N","K_col_CLKB")
+    SR_k_col_RST_B = outerPins.createPort("N","K_col_RST_B")
+
+
+    ## Global Power lines
+    VTUN = outerPins.createPort("N","VTUN")
+    DVDD = outerPins.createPort("N","DVDD")
+    AVDD = outerPins.createPort("N","AVDD")
+    GND = outerPins.createPort("N","GND")
+    VINJ = outerPins.createPort("N","VINJ")
+
+
+
+
     #################  Defining GateSwcs, DrainSwcs and Decoders  #################
 
     ## For Kernel VMM FGs
@@ -218,8 +237,6 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
     DrainDecoder = lib_mux.STD_DrainDecoder(circuit,Conv_AvgP_Island,drainBits)
     DrainSel = lib_mux.STD_DrainSelect(circuit,Conv_AvgP_Island,(out_channels*kernel_size)//4)
     DrainSwitches = lib_mux.STD_DrainSwitch(circuit,Conv_AvgP_Island,(out_channels*kernel_size)//4)
-
-
 
 
     ## For AvgPooling FGs
@@ -244,38 +261,33 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
 
     #################  Global Switches and Shift Reg for kernel col #################
     SR_k_col_island = ac.Island(Top)
+
+    SR_k_col = lib_new.DynamicShiftReg_Rst_Lo(Top,SR_k_col_island,dim=[1,inp_channels*kernel_size/3])
+    SR_k_col.place([0, 0])
     
-    SR_k_col = lib_new.DynamicShiftReg_Rst_Lo(Top,SR_k_col_island,dim=[1,inp_channels*kernel_size])
-    SR_k_col.place([0,0])
+    space_flag=0
+    Tgate_fr_SR_k_col_ImgR = [None for _ in range(inp_channels)]
 
-    Tgate_fr_SR_k_col = lib_new.Tgate_swc_fr_Kernel_Vert(Top,SR_k_col_island,dim=[1,inp_channels*kernel_size])
-    Tgate_fr_SR_k_col.place([1,0])
+    for k_col_set in inp_channels:
 
-    for i in range(inp_channels*kernel_size):
-        GateDecoder.VGRUN[i]+=Tgate_fr_SR_k_col.Vg_R[i]
+        if(k_col_set>0):
+            space_flag = 1
 
+        Tgate_fr_SR_k_col_ImgR[k_col_set] = lib_new.Tgate_swc_fr_Kernel_Vert(Top,SR_k_col_island,dim=[1,inp_channels*kernel_size/3])
+        Tgate_fr_SR_k_col_ImgR[k_col_set].place([1, (k_col_set*(inp_channels*kernel_size/3)) + space_flag])
 
-
-    #################  Outer Pins  #################
-    
-    outerPins = frame(Top)
-    Q_0 = outerPins.createPort("N","Q_0")
-    Q_1 = outerPins.createPort("N","Q_1")
-    Q_2 = outerPins.createPort("N","Q_2")
-    K_col_Din = outerPins.createPort("N","K_col_Din")
-    K_col_CLK = outerPins.createPort("N","K_col_CLK")
-    K_col_CLKB = outerPins.createPort("N","K_col_CLKB")
-    K_col_RST_B = outerPins.createPort("N","K_col_RST_B")
+    ## Internal connections
 
 
-    Q_0 += Intgr[0][2].Q
-    Q_1 += Intgr[1][0].Q
-    Q_2 += Intgr[1][3].Q
+    ## Pin connections
+    SR_k_col_Din+=SR_k_col.Din[0]
+    SR_k_col_CLK+=SR_k_col.CLK[0]
+    SR_k_col_CLKB+=SR_k_col.CLKB[0]
+    SR_k_col_RST_B+=SR_k_col.RST_B[0]
 
-    K_col_Din+=SR_k_col.Din[0]
-    K_col_CLK+=SR_k_col.CLK[0]
-    K_col_CLKB+=SR_k_col.CLKB[0]
-    K_col_RST_B+=SR_k_col.RST_B[0]
+
+
+
 
 
     # Island Placement
