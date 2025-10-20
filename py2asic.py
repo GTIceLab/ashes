@@ -41,6 +41,8 @@ import re
 
 exec(open("./example_python/ConvNN_AvgPool.py").read())
 
+#exec(open("./example_python/FullyCon_NN.py").read())
+
 #exec(open("./example_python/TestFullRoute.py").read())
 
 

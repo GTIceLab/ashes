@@ -1075,6 +1075,153 @@ MACRO TSMC350nm_VinjDecode2to4_htile_bridge_spacing
   END VGRUN<3>
 END TSMC350nm_VinjDecode2to4_htile_bridge_spacing
 
+MACRO FNN_DiodeConn
+  PIN Vd_P_in<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 0.64 0.42 1.14 ;
+    END
+  END Vd_P_in<2>
+  PIN Vd_P_in<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 9.59 0.42 10.09 ;
+    END
+  END Vd_P_in<1>
+  PIN Vd_P_in<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 11.9 0.42 12.4 ;
+    END
+  END Vd_P_in<0>
+  PIN Vd_R<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 3.3 0.42 4.0 ;
+    END
+  END Vd_R<3>
+  PIN Vd_R<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 6.33 0.42 7.03 ;
+    END
+  END Vd_R<2>
+  PIN Vd_R<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 14.5 0.42 15.2 ;
+    END
+  END Vd_R<1>
+  PIN Vd_R<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 17.5 0.42 18.2 ;
+    END
+  END Vd_R<0>
+  PIN Vd_P_out<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 189.95 19.21 190.37 20.21 ;
+    END
+  END Vd_P_out<0>
+  PIN Vin_m<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 189.93 1.57 190.37 2.57 ;
+    END
+  END Vin_m<0>
+  PIN Vd_P_out<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 189.93 3.62 190.37 4.62 ;
+    END
+  END Vd_P_out<2>
+  PIN Vd_P_out<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 189.93 9.51 190.37 10.51 ;
+    END
+  END Vd_P_out<1>
+  PIN Vin_p<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 189.93 12.23 190.37 13.23 ;
+    END
+  END Vin_p<0>
+  PIN Vin_m<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 189.93 14.23 190.37 15.23 ;
+    END
+  END Vin_m<1>
+  PIN Vin_p<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 189.93 16.36 190.37 17.36 ;
+    END
+  END Vin_p<1>
+  PIN GND
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 18.35 21.33 19.75 22.0 ;
+    END
+  END GND
+  PIN RUN
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 16.0 21.33 17.0 22.0 ;
+    END
+  END RUN
+  PIN VINJ
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 9.08 21.33 10.08 22.0 ;
+    END
+  END VINJ
+  PIN PROG
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 2.16 21.33 3.16 22.0 ;
+    END
+  END PROG
+END FNN_DiodeConn
+
 MACRO FNN_Relu_and_Sig
   PIN VTUN
     DIRECTION INOUT ;
@@ -1584,152 +1731,5 @@ MACRO TSMC350nm_4x2_Indirect
     END
   END Vd_R<2>
 END TSMC350nm_4x2_Indirect
-
-MACRO FNN_DiodeConn
-  PIN Vd_P_in<2>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 0.64 0.42 1.14 ;
-    END
-  END Vd_P_in<2>
-  PIN Vd_P_in<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 9.59 0.42 10.09 ;
-    END
-  END Vd_P_in<1>
-  PIN Vd_P_in<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 11.9 0.42 12.4 ;
-    END
-  END Vd_P_in<0>
-  PIN Vd_R<3>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 3.3 0.42 4.0 ;
-    END
-  END Vd_R<3>
-  PIN Vd_R<2>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 6.33 0.42 7.03 ;
-    END
-  END Vd_R<2>
-  PIN Vd_R<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 14.5 0.42 15.2 ;
-    END
-  END Vd_R<1>
-  PIN Vd_R<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 17.5 0.42 18.2 ;
-    END
-  END Vd_R<0>
-  PIN Vd_P_out<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 189.95 19.21 190.37 20.21 ;
-    END
-  END Vd_P_out<0>
-  PIN Vin_m<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 189.93 1.57 190.37 2.57 ;
-    END
-  END Vin_m<0>
-  PIN Vd_P_out<2>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 189.93 3.62 190.37 4.62 ;
-    END
-  END Vd_P_out<2>
-  PIN Vd_P_out<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 189.93 9.51 190.37 10.51 ;
-    END
-  END Vd_P_out<1>
-  PIN Vin_p<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 189.93 12.23 190.37 13.23 ;
-    END
-  END Vin_p<0>
-  PIN Vin_m<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 189.93 14.23 190.37 15.23 ;
-    END
-  END Vin_m<1>
-  PIN Vin_p<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 189.93 16.36 190.37 17.36 ;
-    END
-  END Vin_p<1>
-  PIN GND
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 18.35 21.33 19.75 22.0 ;
-    END
-  END GND
-  PIN RUN
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 16.0 21.33 17.0 22.0 ;
-    END
-  END RUN
-  PIN VINJ
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 9.08 21.33 10.08 22.0 ;
-    END
-  END VINJ
-  PIN PROG
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 2.16 21.33 3.16 22.0 ;
-    END
-  END PROG
-END FNN_DiodeConn
 
 END LIBRARY
