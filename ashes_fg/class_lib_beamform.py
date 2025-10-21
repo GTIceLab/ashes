@@ -1,7 +1,7 @@
 from ashes_fg.asic.asic_compile import *
 
-class TOP_DelayLines_flipped(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),PROG=None,RUN=None,VGRUN=None,VGPROG=None,VTUN=None,AVDD=None,GATE_BITS=None,OUTS=None,G_ENABLE=None,VINJ_N=None,GND_N=None,D_ENABLE=None,INPUT=None,DRAIN_RUN=None,DRAIN_PROG=None,DRAIN_BITS=None,GND_S=None,VINJ_S=None,RSTBar=None,CLK=None,Din=None,WTA_OUT=None,WTA_CTRL_B=None,WTA_VG=None):
+class DelayLinesAlgFlip(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),n_OUTS=None,w_Input=None,w_Drainline_Prog=None,w_Drainline_Run=None,w_DrainB=None,w_DrainEnable_Del=None,n_Prog=None,n_Run=None,n_VGPROG=None,n_GateB=None,n_GateEnable_Del=None,n_VTUN=None,n_AVDD=None,n_vinj=None,n_gnd=None,e_Din=None,e_Out=None,e_CLK=None,e_RSTBar=None,e_WTA_Vg=None,e_WTA_Prog=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -11,38 +11,32 @@ class TOP_DelayLines_flipped(StandardCell):
 		self.dim = dim
 
 		# Define cell information
-		self.name = 'TOP_DelayLines'
+		self.name = 'Delaylines_Flip'
+		self.w_Input = Port(circuit,self,'w_Input','E',40*self.dim[0])	
+		self.n_OUTS = Port(circuit,self,'n_OUTS','N',400*self.dim[1])	
+		self.w_Drainline_Prog = Port(circuit,self,'w_Drainline_Prog','E',self.dim[0])
+		self.w_Drainline_Run = Port(circuit,self,'w_Drainline_Run','E',self.dim[0])
+		self.w_DrainB = Port(circuit,self,'w_DrainB','E',8*self.dim[0])
+		self.w_DrainEnable_Del = Port(circuit,self,'w_DrainEnable_Del','E',self.dim[0])
+		self.n_Prog = Port(circuit,self,'n_Prog','N',self.dim[1])
+		self.n_Run = Port(circuit,self,'n_Run','N',self.dim[1])
+		self.n_VGPROG = Port(circuit,self,'n_VGPROG','N',self.dim[1])
+		self.n_GateB = Port(circuit,self,'n_GateB','N',5*self.dim[1])
+		self.n_GateEnable_Del = Port(circuit,self,'n_GateEnable_Del','N',self.dim[1])
+		self.n_VTUN = Port(circuit,self,'n_VTUN','N',self.dim[1])	
 
-		self.PROG = Port(circuit,self, 'n_Prog' ,'N',1*self.dim[1])
-		self.RUN = Port(circuit,self, 'n_Run' ,'N',1*self.dim[1])
-		self.VGRUN = Port(circuit,self, 'n_VGRUN' ,'N',1*self.dim[1])
-		self.VGPROG = Port(circuit,self, 'n_VGPROG' ,'N',1*self.dim[1])
-		self.VTUN = Port(circuit,self, 'n_VTUN' ,'N',1*self.dim[1])
-		self.AVDD = Port(circuit,self, 'n_AVDD' ,'N',1*self.dim[1])
-		self.GATE_BITS = Port(circuit,self, 'n_GateB' ,'N',5*self.dim[1])
-		self.OUTS = Port(circuit,self, 'n_OUTS' ,'N',400*self.dim[1])
-		self.G_ENABLE = Port(circuit, self, 'n_GateEnable_Del' ,'N',1*self.dim[1])
-		self.VINJ_N = Port(circuit,self, 'n_vinj' ,'N',1*self.dim[1])
-		self.GND_N = Port(circuit,self, 'n_gnd' ,'N',1*self.dim[1])
+		self.n_AVDD = Port(circuit,self,'n_AVDD','N',self.dim[1])
+		self.n_vinj = Port(circuit,self,'n_vinj','N',self.dim[1])	
+		self.n_gnd = Port(circuit,self,'n_gnd','N',self.dim[1])	
 
-		self.GND_S = Port(circuit,self, 's_gnd' ,'S',1*self.dim[1])        
-		self.VINJ_S = Port(circuit,self, 's_vinj' ,'S',1*self.dim[1])
-		self.RSTBar = Port(circuit,self, 's_RSTBar' ,'S',1*self.dim[1])
-		self.CLK = Port(circuit,self, 's_CLK' ,'S',1*self.dim[1])
-		self.Din = Port(circuit,self, 's_Din' ,'S',1*self.dim[1])
-		self.WTA_OUT = Port(circuit,self, 's_WTA_out' ,'S',1*self.dim[1])
-
-		self.WTA_CTRL_B = Port(circuit,self, 'e_WTA_CTRL_B' ,'W',2*self.dim[1])
-		self.WTA_VG = Port(circuit,self, 'e_WTA_Vg' ,'W',2*self.dim[1])
-
-		self.D_ENABLE = Port(circuit,self, 'w_DrainEnable_Del' ,'E',1*self.dim[1])
-		self.INPUT = Port(circuit,self, 'w_Input' ,'E',40*self.dim[1])
-		self.DRAIN_RUN = Port(circuit,self, 'w_Drainline_Run' ,'E',1*self.dim[1])
-		self.DRAIN_PROG = Port(circuit,self, 'w_Drainline_Prog' ,'E',1*self.dim[1])
-		self.DRAIN_BITS = Port(circuit,self, 'w_DrainB' ,'E',8*self.dim[1])		
-		
+		self.e_Din = Port(circuit,self,'e_Din','W',self.dim[0])		
+		self.e_WTA_out = Port(circuit,self,'e_WTA_out','W',self.dim[0])	
+		self.e_CLK = Port(circuit,self,'e_CLK','W',self.dim[0])	
+		self.e_RSTBar = Port(circuit,self,'e_RSTBar','W',self.dim[0])
+		self.e_WTA_Vg = Port(circuit,self,'e_WTA_Vg','W',2*self.dim[0])	
+		self.e_WTA_CTRL_B = Port(circuit,self,'e_WTA_CTRL_B','W',2*self.dim[0])	
 		# Initialize ports with given values
-		portsInit = [PROG,RUN,VGRUN,VGPROG,VTUN,AVDD,GATE_BITS,OUTS,G_ENABLE,VINJ_N,GND_N,D_ENABLE,INPUT,DRAIN_RUN,DRAIN_PROG,DRAIN_BITS,GND_S,VINJ_S,RSTBar,CLK,Din,WTA_OUT,WTA_CTRL_B,WTA_VG]
+		portsInit = [n_OUTS,w_Input,w_Drainline_Prog, w_Drainline_Run,n_AVDD,w_DrainB,w_DrainEnable_Del,n_Prog,n_Run,n_VGPROG,n_GateB,n_GateEnable_Del,n_VTUN,n_vinj,n_gnd,e_Din,e_Out,e_CLK,e_RSTBar,e_WTA_Vg,e_WTA_Prog]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
@@ -52,7 +46,7 @@ class TOP_DelayLines_flipped(StandardCell):
 		circuit.addInstance(self,self.island)
 
 class VMMWTAAlgFullRoute(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),VMID=None,VBIAS=None,VSEL_WTA=None,VS_WTA=None,VG_WTA=None,PROG_WTA=None,DRAIN_PROG=None,DRAIN_RUN=None,DRAIN_BITS=None,D_ENABLE=None,PROG=None,RUN=None,VGPROG=None,GATE_BITS=None,G_ENABLE=None,VTUN=None,RUNO=None,AVDD=None,VINJ_N=None,GND_N=None,Din=None,Out=None,CLK=None,RSTBar=None):
+	def __init__(self,circuit,island=None,dim=(1,1),n_AVDD=None,w_Drainline_Prog=None,w_Drainline_Run=None,w_DrainB=None,w_DrainEnable_WTA=None,n_Prog=None,n_Run=None,n_VGPROG=None,n_GateB=None,n_GateEnable_WTA=None,n_VTUN=None,RUNO=None,VOUT=None,n_vinj=None,n_gnd=None,Vmid=None,Vbias=None,Vsel_WTA=None,Vs_WTA=None,Vg_WTA=None,Prog_WTA=None,e_Din=None,e_Out=None,e_CLK=None,e_RSTBar=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -60,40 +54,37 @@ class VMMWTAAlgFullRoute(StandardCell):
 		self.ports = []
 		self.island = island
 		self.dim = dim
+		##self.w_Input = []
 
 		# Define cell information
 		self.name = 'VMMWTA_FullRoute'
-		
-		self.DRAIN_PROG = Port(circuit,self,'w_Drainline_Prog','E',self.dim[0])
-		self.DRAIN_RUN = Port(circuit,self,'w_Drainline_Run','E',self.dim[0])
-		self.DRAIN_BITS = Port(circuit,self,'w_DrainB','E',8*self.dim[0])
-		self.D_ENABLE = Port(circuit,self,'w_DrainEnable_Mod','E',self.dim[0])
-		
-		self.PROG = Port(circuit,self,'n_Prog','S',self.dim[1])
-		self.RUN = Port(circuit,self,'n_Run','S',self.dim[1])
-		self.VGPROG = Port(circuit,self,'n_VGPROG','S',self.dim[1])
-		self.GATE_BITS = Port(circuit,self,'n_GateB','S',9*self.dim[1])
-		self.G_ENABLE = Port(circuit,self,'w_GateEnable_Mod','S',self.dim[1])
-		self.VTUN = Port(circuit,self,'n_VTUN','S',self.dim[1])
-		self.RUNO = Port(circuit,self,'RUNO','S',280*self.dim[1])  
-		self.AVDD = Port(circuit,self,'n_AVDD','S',self.dim[1])
-		self.VINJ_N = Port(circuit,self,'n_vinj','S',self.dim[1])	
-		self.GND_N = Port(circuit,self,'n_gnd','S',self.dim[1])	
-		
-		self.VMID = Port(circuit,self,'Vmid','N',self.dim[1])	
-		self.VBIAS = Port(circuit,self,'Vbias','N',self.dim[1])
-		self.VSEL_WTA = Port(circuit,self,'Vsel_WTA','N',self.dim[1])	
-		self.VS_WTA = Port(circuit,self,'Vs_WTA','N',self.dim[1])	
-		self.VG_WTA = Port(circuit,self,'Vg_WTA','N',self.dim[1])
-		self.PROG_WTA = Port(circuit,self,'Prog_WTA','N',self.dim[1])
-		
-		self.Din = Port(circuit,self,'e_Din','W',self.dim[0])		
-		self.Out = Port(circuit,self,'e_Out','W',self.dim[0])	
-		self.CLK = Port(circuit,self,'e_CLK','W',self.dim[0])	
-		self.RSTBar = Port(circuit,self,'e_RSTBar','W',self.dim[0])	
+		self.w_Drainline_Prog = Port(circuit,self,'w_Drainline_Prog','W',self.dim[0])
+		self.w_Drainline_Run = Port(circuit,self,'w_Drainline_Run','W',self.dim[0])
+		self.w_DrainB = Port(circuit,self,'w_DrainB','W',8*self.dim[0])
+		self.w_DrainEnable_WTA = Port(circuit,self,'w_DrainEnable_WTA','W',self.dim[0])
+		self.n_Prog = Port(circuit,self,'n_Prog','N',self.dim[1])
+		self.n_Run = Port(circuit,self,'n_Run','N',self.dim[1])
+		self.n_VGPROG = Port(circuit,self,'n_VGPROG','N',self.dim[1])
+		self.n_GateB = Port(circuit,self,'n_GateB','N',9*self.dim[1])
+		self.n_GateEnable_WTA = Port(circuit,self,'n_GateEnable_WTA','N',self.dim[1])
+		self.n_VTUN = Port(circuit,self,'n_VTUN','N',self.dim[1])
+		self.RUNO = Port(circuit,self,'RUNO','N',280*self.dim[1])  
+		self.n_AVDD = Port(circuit,self,'n_AVDD','N',self.dim[1])
+		self.n_vinj = Port(circuit,self,'n_vinj','N',self.dim[1])	
+		self.n_gnd = Port(circuit,self,'n_gnd','N',self.dim[1])	
+		self.Vmid = Port(circuit,self,'Vmid','N',self.dim[1])	
+		self.Vbias = Port(circuit,self,'Vbias','N',self.dim[1])
+		self.Vsel_WTA = Port(circuit,self,'Vsel_WTA','N',self.dim[1])	
+		self.Vs_WTA = Port(circuit,self,'Vs_WTA','N',self.dim[1])	
+		self.Vg_WTA = Port(circuit,self,'Vg_WTA','N',self.dim[1])
+		self.Prog_WTA = Port(circuit,self,'Prog_WTA','N',self.dim[1])
+		self.e_Din = Port(circuit,self,'e_Din','E',self.dim[0])		
+		self.e_Out = Port(circuit,self,'e_Out','E',self.dim[0])	
+		self.e_CLK = Port(circuit,self,'e_CLK','E',self.dim[0])	
+		self.e_RSTBar = Port(circuit,self,'e_RSTBar','E',self.dim[0])	
 
 		# Initialize ports with given values
-		portsInit = [VMID,VBIAS,VSEL_WTA,VS_WTA,VG_WTA,PROG_WTA,DRAIN_PROG,DRAIN_RUN,DRAIN_BITS,D_ENABLE,PROG,RUN,VGPROG,GATE_BITS,G_ENABLE,VTUN,RUNO,AVDD,VINJ_N,GND_N,Din,Out,CLK,RSTBar]
+		portsInit = [w_Drainline_Prog, w_Drainline_Run,n_AVDD,w_DrainB,w_DrainEnable_WTA,n_Prog,n_Run,n_VGPROG,n_GateB,n_GateEnable_WTA,n_VTUN,RUNO,n_vinj,n_gnd,Vmid,Vbias,Vsel_WTA,Vs_WTA,Vg_WTA,Prog_WTA,e_Din,e_Out,e_CLK,e_RSTBar]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
@@ -103,7 +94,7 @@ class VMMWTAAlgFullRoute(StandardCell):
 		circuit.addInstance(self,self.island)
 
 class ModulationAlgFlip(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),VINJ_S=None,GND_S=None,DRAIN_PROG=None,DRAIN_RUN=None,DRAIN_BITS=None,D_ENABLE=None,PROG=None,RUN=None,VGPROG=None,GATE_BITS=None,G_ENABLE=None,VTUN=None,RUNO=None,VOUT=None,AVDD=None,VINJ_N=None,GND_N=None,VG_N=None,VG_P=None,VC=None):
+	def __init__(self,circuit,island=None,dim=(1,1),n_AVDD=None,w_Drainline_Prog=None,w_Drainline_Run=None,w_DrainB=None,w_DrainEnable_Mod=None,n_Prog=None,n_Run=None,n_VGPROG=None,n_GateB=None,n_GateEnable_Mod=None,n_VTUN=None,RUNO=None,VOUT=None,e_VG_N=None,e_VG_P=None,e_VC=None,n_vinj=None,n_gnd=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -114,32 +105,26 @@ class ModulationAlgFlip(StandardCell):
 
 		# Define cell information
 		self.name = 'Modulation_Flip'
-		self.DRAIN_PROG = Port(circuit,self,'w_Drainline_Prog','E',self.dim[0])
-		self.DRAIN_RUN = Port(circuit,self,'w_Drainline_Run','E',self.dim[0])
-		self.DRAIN_BITS = Port(circuit,self,'w_DrainB','E',9*self.dim[0])
-		self.D_ENABLE = Port(circuit,self,'w_DrainEnable_Mod','E',self.dim[0])
-		
-		self.PROG = Port(circuit,self,'n_Prog','S',self.dim[1])
-		self.RUN = Port(circuit,self,'n_Run','S',self.dim[1])
-		self.VGPROG = Port(circuit,self,'n_VGPROG','S',self.dim[1])
-		self.GATE_BITS = Port(circuit,self,'n_GateB','S',9*self.dim[1])
-		self.G_ENABLE = Port(circuit,self,'w_GateEnable_Mod','S',self.dim[1])
-		self.VTUN = Port(circuit,self,'n_VTUN','S',self.dim[1])
+		self.w_Drainline_Prog = Port(circuit,self,'w_Drainline_Prog','E',self.dim[0])
+		self.w_Drainline_Run = Port(circuit,self,'w_Drainline_Run','E',self.dim[0])
+		self.w_DrainB = Port(circuit,self,'w_DrainB','E',9*self.dim[0])
+		self.w_DrainEnable_Mod = Port(circuit,self,'w_DrainEnable_Mod','E',self.dim[0])
+		self.n_Prog = Port(circuit,self,'n_Prog','S',self.dim[1])
+		self.n_Run = Port(circuit,self,'n_Run','S',self.dim[1])
+		self.n_VGPROG = Port(circuit,self,'n_VGPROG','S',self.dim[1])
+		self.n_GateB = Port(circuit,self,'n_GateB','S',9*self.dim[1])
+		self.n_GateEnable_Mod = Port(circuit,self,'n_GateEnable_Mod','S',self.dim[0])
+		self.n_VTUN = Port(circuit,self,'n_VTUN','S',self.dim[1])
 		self.RUNO = Port(circuit,self,'RUNO','S',400*self.dim[1]) 
-		self.VOUT = Port(circuit,self,'VOUT','S',280*self.dim[1]) 
-		self.AVDD = Port(circuit,self,'n_AVDD','S',self.dim[1])
-		self.VINJ_N = Port(circuit,self,'n_vinj','S',self.dim[1])	
-		self.GND_N = Port(circuit,self,'n_gnd','S',self.dim[1])		
-		
-		self.VG_N = Port(circuit,self,'e_VG_N','W',self.dim[0])
-		self.VG_P = Port(circuit,self,'e_VG_P','W',self.dim[0])
-		self.VC = Port(circuit,self,'e_VC','W',self.dim[0])
-		
-		self.VINJ_S = Port(circuit,self,'s_vinj','N',self.dim[1])	
-		self.VINJ_S = Port(circuit,self,'s_gnd','N',self.dim[1])	
-
+		self.VOUT = Port(circuit,self,'VOUT','W',280*self.dim[1]) 
+		self.n_AVDD = Port(circuit,self,'n_AVDD','S',self.dim[1])
+		self.e_VG_N = Port(circuit,self,'e_VG_N','W',self.dim[0])
+		self.e_VG_P = Port(circuit,self,'e_VG_P','W',self.dim[0])
+		self.e_VC = Port(circuit,self,'e_VC','W',self.dim[0])
+		self.n_vinj = Port(circuit,self,'n_vinj','S',self.dim[1])	
+		self.n_gnd = Port(circuit,self,'n_gnd','S',self.dim[1])			
 		# Initialize ports with given values
-		portsInit = [VINJ_S,GND_S,DRAIN_PROG,DRAIN_RUN,DRAIN_BITS,D_ENABLE,PROG,RUN,VGPROG,GATE_BITS,G_ENABLE,VTUN,RUNO,VOUT,AVDD,VINJ_N,GND_N,VG_N,VG_P,VC]
+		portsInit = [w_Drainline_Prog, w_Drainline_Run,n_AVDD,w_DrainB,w_DrainEnable_Mod,n_Prog,n_Run,n_VGPROG,n_GateB,n_GateEnable_Mod,n_VTUN,RUNO,VOUT,e_VG_N,e_VG_P,e_VC,n_vinj,n_gnd]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
@@ -147,9 +132,10 @@ class ModulationAlgFlip(StandardCell):
 
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
-
-class FakeCell(FakeStandardCell):
-	def __init__(self,circuit,island=None,dim=(2,2),FakePort=None):
+		
+		
+class ModulationAlgFlipRight(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),n_AVDD=None,w_Drainline_Prog=None,w_Drainline_Run=None,w_DrainB=None,w_DrainEnable_Mod=None,n_Prog=None,n_Run=None,n_VGPROG=None,n_GateB=None,n_GateEnable_Mod=None,n_VTUN=None,RUNO=None,VOUT=None,e_VG_N=None,e_VG_P=None,e_VC=None,n_vinj=None,n_gnd=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -158,13 +144,28 @@ class FakeCell(FakeStandardCell):
 		self.island = island
 		self.dim = dim
 
-
 		# Define cell information
-		self.name = 'FakeCell'
-		self.FakePort = Port(circuit,self,'FakePort','E',1*self.dim[0])
-
+		self.name = 'Modulation_Flip_Right'
+		self.w_Drainline_Prog = Port(circuit,self,'w_Drainline_Prog','E',self.dim[0])
+		self.w_Drainline_Run = Port(circuit,self,'w_Drainline_Run','E',self.dim[0])
+		self.w_DrainB = Port(circuit,self,'w_DrainB','E',9*self.dim[0])
+		self.w_DrainEnable_Mod = Port(circuit,self,'w_DrainEnable_Mod','E',self.dim[0])
+		self.n_Prog = Port(circuit,self,'n_Prog','S',self.dim[1])
+		self.n_Run = Port(circuit,self,'n_Run','S',self.dim[1])
+		self.n_VGPROG = Port(circuit,self,'n_VGPROG','S',self.dim[1])
+		self.n_GateB = Port(circuit,self,'n_GateB','S',9*self.dim[1])
+		self.n_GateEnable_Mod = Port(circuit,self,'n_GateEnable_Mod','S',self.dim[0])
+		self.n_VTUN = Port(circuit,self,'n_VTUN','S',self.dim[1])
+		self.RUNO = Port(circuit,self,'RUNO','S',400*self.dim[1]) 
+		self.VOUT = Port(circuit,self,'VOUT','W',280*self.dim[1]) 
+		self.n_AVDD = Port(circuit,self,'n_AVDD','S',self.dim[1])
+		self.e_VG_N = Port(circuit,self,'e_VG_N','W',self.dim[0])
+		self.e_VG_P = Port(circuit,self,'e_VG_P','W',self.dim[0])
+		self.e_VC = Port(circuit,self,'e_VC','W',self.dim[0])
+		self.n_vinj = Port(circuit,self,'n_vinj','S',self.dim[1])	
+		self.n_gnd = Port(circuit,self,'n_gnd','S',self.dim[1])			
 		# Initialize ports with given values
-		portsInit = [FakePort]
+		portsInit = [w_Drainline_Prog, w_Drainline_Run,n_AVDD,w_DrainB,w_DrainEnable_Mod,n_Prog,n_Run,n_VGPROG,n_GateB,n_GateEnable_Mod,n_VTUN,RUNO,VOUT,e_VG_N,e_VG_P,e_VC,n_vinj,n_gnd]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
