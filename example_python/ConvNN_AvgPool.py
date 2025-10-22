@@ -239,6 +239,9 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
 
     SR_Intg_nxt_row = outerPins.createPort("N","SR_Intg_nxt_row")
 
+
+    Vimg_CLK = outerPins.createPort("N","Vimg_CLK")
+
     ## Readout Relu for Integrators
     AvgPool_Relu_Vb = outerPins.createPort("N","AvgPool_Relu_Vb")
     
@@ -341,7 +344,8 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
         SR_Intg_CLK+=Intgr_out_channel_1[0][i].CLK
         SR_Intg_CLKB+=Intgr_out_channel_1[0][i].CLKB
         SR_Intg_RST_B+=Intgr_out_channel_1[0][i].RST_B
-        SR_k_col_CLK+=Intgr_out_channel_1[0][i].Vimg_CLK
+        #SR_k_col_CLK+=Intgr_out_channel_1[0][i].Vimg_CLK
+        Vimg_CLK+=Intgr_out_channel_1[0][i].Vimg_CLK
 
         #SR_Intg_nxt_row+=Intgr_out_channel_1[0][i].nxt_row[0] # Connect to global dig logic
         #SR_Intg_nxt_row+=Intgr_out_channel_1[0][i].nxt_row[1] # Connect to global dig logic
@@ -400,7 +404,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
 Top = ac.Circuit()
 Conv_AvgPool(Top,islandLoc=[100,100],debug=True)
 
-location_islands = ((5e4,4e4),(6e5,4.3e5),(4e5,4.2e5))
+location_islands = ((6e4,4e4),(6e5,4.3e5),(4e5,4.2e5))
 #location_islands = ((100,100),(1e6,3.6e5))
 
 design_limits = [2e3*1e3, 1e3*1e3]
@@ -410,12 +414,12 @@ design_limits = [2e3*1e3, 1e3*1e3]
 with open('./ashes_fg/asic/qrouter_default.json') as file:
     qparams = json.load(file)
 
-qparams["passes"] = 30
+qparams["passes"] = 100
 qparams["via"] = 40
-qparams["jog"] = 20
-qparams["conflict"] = 40
-qparams["stage2"] = "mask none force effort 100"
-qparams["stage3"] = "mask none force effort 100"
+qparams["jog"] = 80
+qparams["conflict"] = 100
+qparams["stage2"] = "mask none force effort 150"
+qparams["stage3"] = "mask none force effort 150"
 
 
 ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_AvgPool", p_and_r = True, route=True, design_limits = design_limits, location_islands = location_islands, qparams=qparams,drainSpaceIdx=0,drainSpace=0,gateSpaceIdx=0,gateSpace=0)
