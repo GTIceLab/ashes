@@ -1995,7 +1995,7 @@ class Tgate_swc_fr_Kernel_Horiz_bot_only(StandardCell):
 
 
 class Integration_fr_AvgPool_start(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),CLKB=None,CLK=None,RST_B=None,Vimg_CLK=None,nxt_row=None,GND=None,AVDD_by_2=None,prog=None,run=None,Vg=None,Vsel_b=None,AVDD=None,VINJ=None,VTUN=None,Vd_prog=None,Vd_run=None,Vint=None,int_rst=None,DVDD=None,Q=None,Din=None):
+	def __init__(self,circuit,island=None,dim=(1,1),CLKB=None,CLK=None,RST_B=None,Vimg_CLK=None,nxt_rw=None,GND=None,AVDD_by_2=None,prog=None,run=None,Vg=None,Vsel_b=None,AVDD=None,VINJ=None,VTUN=None,Vd_prog=None,Vd_run=None,Vint=None,int_rst=None,DVDD=None,Q=None,Din=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -2010,7 +2010,7 @@ class Integration_fr_AvgPool_start(StandardCell):
 		self.CLK = Port(circuit,self,'CLK','N',1*self.dim[1])
 		self.RST_B = Port(circuit,self,'RST_B','N',1*self.dim[1])
 		self.Vimg_CLK = Port(circuit,self,'Vimg_CLK','N',1*self.dim[1])
-		self.nxt_row = Port(circuit,self,'nxt_row','N',2*self.dim[1])
+		self.nxt_rw = Port(circuit,self,'nxt_rw','N',2*self.dim[1])
 		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
 		self.AVDD_by_2 = Port(circuit,self,'AVDD_by_2','N',2*self.dim[1])
 		self.prog = Port(circuit,self,'prog','N',2*self.dim[1])
@@ -2035,7 +2035,7 @@ class Integration_fr_AvgPool_start(StandardCell):
 		self.Din = Port(circuit,self,'Din','W',1*self.dim[0])
 
 		# Initialize ports with given values
-		portsInit = [CLKB,CLK,RST_B,Vimg_CLK,nxt_row,GND,AVDD_by_2,prog,run,Vg,Vsel_b,AVDD,VINJ,VTUN,Vd_prog,Vd_run,Vint,int_rst,DVDD,Q,Din]
+		portsInit = [CLKB,CLK,RST_B,Vimg_CLK,nxt_rw,GND,AVDD_by_2,prog,run,Vg,Vsel_b,AVDD,VINJ,VTUN,Vd_prog,Vd_run,Vint,int_rst,DVDD,Q,Din]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
@@ -2047,7 +2047,7 @@ class Integration_fr_AvgPool_start(StandardCell):
 
 
 class Integration_fr_AvgPool_core(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),CLKB=None,CLK=None,RST_B=None,Vimg_CLK=None,nxt_row=None,GND=None,AVDD_by_2=None,prog=None,run=None,Vg=None,Vsel_b=None,AVDD=None,VINJ=None,VTUN=None,Vd_prog=None,Vd_run=None,Vint=None,int_rst=None,DVDD=None,Q=None,Din=None):
+	def __init__(self,circuit,island=None,dim=(1,1),CLKB=None,CLK=None,RST_B=None,Vimg_CLK=None,nxt_rw=None,GND=None,AVDD_by_2=None,prog=None,run=None,Vg=None,Vsel_b=None,AVDD=None,VINJ=None,VTUN=None,Vd_prog=None,Vd_run=None,Vint=None,int_rst=None,DVDD=None,Q=None,Din=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -2062,7 +2062,7 @@ class Integration_fr_AvgPool_core(StandardCell):
 		self.CLK = Port(circuit,self,'CLK','N',1*self.dim[1])
 		self.RST_B = Port(circuit,self,'RST_B','N',1*self.dim[1])
 		self.Vimg_CLK = Port(circuit,self,'Vimg_CLK','N',1*self.dim[1])
-		self.nxt_row = Port(circuit,self,'nxt_row','N',2*self.dim[1])
+		self.nxt_rw = Port(circuit,self,'nxt_rw','N',2*self.dim[1])
 		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
 		self.AVDD_by_2 = Port(circuit,self,'AVDD_by_2','N',2*self.dim[1])
 		self.prog = Port(circuit,self,'prog','N',2*self.dim[1])
@@ -2088,7 +2088,7 @@ class Integration_fr_AvgPool_core(StandardCell):
 
 
 		# Initialize ports with given values
-		portsInit = [CLKB,CLK,RST_B,Vimg_CLK,nxt_row,GND,AVDD_by_2,prog,run,Vg,Vsel_b,AVDD,VINJ,VTUN,Vd_prog,Vd_run,Vint,int_rst,DVDD,Q,Din]
+		portsInit = [CLKB,CLK,RST_B,Vimg_CLK,nxt_rw,GND,AVDD_by_2,prog,run,Vg,Vsel_b,AVDD,VINJ,VTUN,Vd_prog,Vd_run,Vint,int_rst,DVDD,Q,Din]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
@@ -2098,7 +2098,7 @@ class Integration_fr_AvgPool_core(StandardCell):
 		circuit.addInstance(self,self.island)
 
 class Integration_fr_AvgPool_filler(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),CLKB=None,CLK=None,RST_B=None,Vimg_CLK=None,nxt_row=None,GND=None,AVDD_by_2=None,prog=None,run=None,Vg=None,Vsel_b=None,AVDD=None,VINJ=None,VTUN=None,Vd_prog=None,Vd_run=None,Vint=None,int_rst=None,DVDD=None,Q=None):
+	def __init__(self,circuit,island=None,dim=(1,1),CLKB=None,CLK=None,RST_B=None,Vimg_CLK=None,nxt_rw=None,GND=None,AVDD_by_2=None,prog=None,run=None,Vg=None,Vsel_b=None,AVDD=None,VINJ=None,VTUN=None,Vd_prog=None,Vd_run=None,Vint=None,int_rst=None,DVDD=None,Q=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -2113,7 +2113,7 @@ class Integration_fr_AvgPool_filler(StandardCell):
 		self.CLK = Port(circuit,self,'CLK','N',1*self.dim[1])
 		self.RST_B = Port(circuit,self,'RST_B','N',1*self.dim[1])
 		self.Vimg_CLK = Port(circuit,self,'Vimg_CLK','N',1*self.dim[1])
-		self.nxt_row = Port(circuit,self,'nxt_row','N',2*self.dim[1])
+		self.nxt_rw = Port(circuit,self,'nxt_rw','N',2*self.dim[1])
 		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
 		self.AVDD_by_2 = Port(circuit,self,'AVDD_by_2','N',2*self.dim[1])
 		self.prog = Port(circuit,self,'prog','N',2*self.dim[1])
@@ -2137,7 +2137,7 @@ class Integration_fr_AvgPool_filler(StandardCell):
 		#self.GND = Port(circuit,self,'GND','W',1*self.dim[0])
 
 		# Initialize ports with given values
-		portsInit = [CLKB,CLK,RST_B,Vimg_CLK,nxt_row,GND,AVDD_by_2,prog,run,Vg,Vsel_b,AVDD,VINJ,VTUN,Vd_prog,Vd_run,Vint,int_rst,DVDD,Q]
+		portsInit = [CLKB,CLK,RST_B,Vimg_CLK,nxt_rw,GND,AVDD_by_2,prog,run,Vg,Vsel_b,AVDD,VINJ,VTUN,Vd_prog,Vd_run,Vint,int_rst,DVDD,Q]
 		i=0
 		for p in self.ports:
 			self.assignPort(p,portsInit[i])
@@ -2354,7 +2354,7 @@ class Tgate_swc_fr_Kernel_Vert(StandardCell):
 
 		self.Vimg = Port(circuit,self,'Vimg','W',1*self.dim[0])
 		self.DVDD = Port(circuit,self,'DVDD','W',1*self.dim[0])
-		self.AVDD = Port(circuit,self,'DVDD','W',1*self.dim[0])
+		self.AVDD = Port(circuit,self,'AVDD','W',1*self.dim[0])
 
 
 		# Initialize ports with given values
