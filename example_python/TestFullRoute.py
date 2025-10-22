@@ -4,8 +4,7 @@ from ashes_fg.class_lib_new import *
 from ashes_fg.class_lib_mux import *
 from ashes_fg.class_lib_cab import *
 from ashes_fg.asic.asic_systems import *
-import ashes_fg.class_lib_beamform as lib_dc
-
+from ashes_fg.class_lib_beamform import *
 import json
 
 Top = Circuit()
@@ -249,15 +248,12 @@ VMMWTA.place([0,0])
 
 ModulationIsland = Island(Top)
 
-Modulation = ModulationAlgFlip(Top,ModulationIsland,[1,1])
+Modulation = ModulationAlgFlipBot(Top,ModulationIsland,[1,1])
 
 Modulation.place([0,0])
 
 #Ring Oscillator + Switching circuitry
 
-RingOsc.AVDD += VMMWTA.n_AVDD
-RingOsc.GND += Modulation.n_gnd
-RingOsc.VINJ += Modulation.n_vinj
 
 RingOscConn.CLKP += Modulation.e_VG_P
 RingOscConn.CLKN += Modulation.e_VG_N
@@ -267,7 +263,6 @@ RingOscConn.SelCLK += chipframe.IO_W[21]
 RingOscConn.VDD += Modulation.n_AVDD
 RingOscConn.GND += Modulation.n_gnd
 
-RingOsc.VTUN += VMMWTA.n_VTUN
 
 #WTA nFET Connections
 Term = Island(Top)
@@ -334,6 +329,7 @@ VMMWTA.Prog_WTA += DigBuffer.Out[0]
 
 Delaylines.n_VTUN += chipframe.IO_W_RES[0]
 Delaylines.n_VGPROG += macro.VGPROG
+Delaylines.n_VGRUN += macro.VGRUN
 Delaylines.n_Prog += DigBuffer.Out[0]
 Delaylines.n_Run += DigBuffer.Out[1]
 Delaylines.w_Drainline_Prog += macro.SystemDrainline[0]
@@ -341,9 +337,13 @@ Delaylines.w_Drainline_Run += macro.SystemDrainline[1]
 
 # To Pads
 #--------------------------------------------------------------------------------
-Delaylines.w_Input[0:20] += chipframe.IO_E[0:20]
+#Delaylines.w_Input[0:20] += chipframe.IO_E[0:20]
 #Delaylines.w_Input[0:19] += chipframe.IO_E[22:42]
-Delaylines.w_Input[20:40] += chipframe.IO_S[25:45]
+#Delaylines.w_Input[20:40] += chipframe.IO_S[25:45]
+
+for i in range(20):
+	Delaylines.w_Input[i] += chipframe.IO_E[23+i]
+	Delaylines.w_Input[20+i] += chipframe.IO_S[26+i]
 
 VMMWTA.e_Out += AnalogBuffer1[0].Vin
 AnalogBuffer1[0].Vout += chipframe.IO_W[22]
@@ -398,30 +398,7 @@ chipframe.buf_vdd_E += chipframe.DVDD_E
 #-------------------------------------------------------------------------------
 
 
-
-with open('./ashes_fg/asic/qrouter_default.json') as file:
-
-    qparams = json.load(file)
-
-
-
-qparams["passes"] = 50
-
-qparams["via"] = 10
-
-qparams["jog"] = 20
-
-qparams["conflict"] = 40
-
-qparams["stage1"] = "mask auto force"
-
-qparams["stage2"] = "mask auto force"
-
-qparams["stage3"] = "mask auto force"
-
-
-
-design_limits = [8e6, 8e6]
+design_limits = [7e6, 7e6]
 
 
 '''(250600, 4500000), (20600, 20000),'''
@@ -431,17 +408,17 @@ location_islands = ((250600, 4500000), (20600, 20000),
 (3300000,4510000), #LVLShifter2
 (4100000,4510000), #LVLShifter3
 (1500000,4510000), #DigBuffer
-(320000,2360000), #Analog BUffer
-(392000, 2300000), #Ring Osc
-(4850000,650000), #Delay Lines
-(270000,350000), #VMMWTA
+(4470000,2260000), #Analog BUffer
+(4542000, 2200000), #Ring Osc
+(4850000,350000), #Delay Lines
+(280000,250000), #VMMWTA
 (700000,2600000), #VMMDemod
-(550000, 2780000), #nFET Termination for Modulation
-(4870000, 2070000)) #nFET Termination for VMMWTA
+(270000, 2500000), #nFET Termination for Modulation
+(4820000, 2000000)) #nFET Termination for VMMWTA
 # location_islands = ((250600, 4600000), (20600, 20000), (300000, 250600))
 
 # location_islands = None
 
 
 
-compile_asic(Top,process="TSMC350nm",fileName="test_prerana",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=5,drainSpace =30,gateSpaceIdx=5,gateSpace=20)
+compile_asic(Top,process="TSMC350nm",fileName="test_prerana",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=5,drainSpace =30,gateSpaceIdx=5,gateSpace=30)
