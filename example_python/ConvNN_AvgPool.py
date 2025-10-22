@@ -241,6 +241,12 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
 
     ## Readout Relu for Integrators
     AvgPool_Relu_Vb = outerPins.createPort("N","AvgPool_Relu_Vb")
+    
+    
+    Sub_Img_Out_glb = [None for _ in range(out_channels)]
+    for i in range(out_channels):
+        Sub_Img_Out_glb[i] = outerPins.createPort("E", f"Sub_img_out_{i}")
+
 
     ## Global Power lines
     VTUN = outerPins.createPort("N","VTUN")
@@ -263,10 +269,10 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
     GateDecoder = lib_mux.STD_IndirectGateDecoder(circuit,Conv_AvgP_Island,gateBits)
     GateSwitches = lib_mux.STD_IndirectGateSwitch(circuit,Conv_AvgP_Island,(inp_channels*kernel_size)//2)
 
-    drainBits = int(np.ceil(np.log2(out_channels*kernel_size)))
+    drainBits = int(np.ceil(np.log2(out_channels*kernel_size*2)))
     DrainDecoder = lib_mux.STD_DrainDecoder(circuit,Conv_AvgP_Island,drainBits)
-    DrainSel = lib_mux.STD_DrainSelect(circuit,Conv_AvgP_Island,(out_channels*kernel_size)//4)
-    DrainSwitches = lib_mux.STD_DrainSwitch(circuit,Conv_AvgP_Island,(out_channels*kernel_size)//4)
+    DrainSel = lib_mux.STD_DrainSelect(circuit,Conv_AvgP_Island,(out_channels*kernel_size*2)//4)
+    DrainSwitches = lib_mux.STD_DrainSwitch(circuit,Conv_AvgP_Island,(out_channels*kernel_size*2)//4)
     
 
     ## For AvgPooling FGs
@@ -277,21 +283,16 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
     ## Fake cell definition for the island
     Fake_Cells_for_AvgP_Gswcs = lib_new.FakeCellGateDecoder(circuit,AvgP_Gswcs_Island, dim=[1,intg_cols])
     Fake_Cells_for_AvgP_Gswcs.place([0,0])
-    Fake_Cells_for_AvgP_Gswcs.markAbut()
+    #Fake_Cells_for_AvgP_Gswcs.markAbut()
 
     GateDecoder_Avg_pool = lib_mux.STD_IndirectGateDecoder(circuit,AvgP_Gswcs_Island,gateBits_Avg_pool)
     GateSwitches_Avg_pool = lib_mux.STD_IndirectGateSwitch(circuit,AvgP_Gswcs_Island,intg_cols)
 
     ## Internal Connections
-    for i in range(0,intg_cols,2):
-        GateSwitches_Avg_pool.Vg[i]+=Intgr_out_channel_1[0][i].Vg[0]
-        GateSwitches_Avg_pool.Vg[i+1]+=Intgr_out_channel_1[0][i].Vg[1]
-
-    ## Internal Connections
-    for i in range(0,intg_cols,2):
-        GateSwitches_Avg_pool.CTRL_B[i]+=Intgr_out_channel_1[0][i].Vsel_b[0]
-        GateSwitches_Avg_pool.CTRL_B[i+1]+=Intgr_out_channel_1[0][i].Vsel_b[1]
-
+    for i in range(0,intg_cols,1):
+        for j in range(2):
+            GateSwitches_Avg_pool.Vg[j + (2)*i]+=Intgr_out_channel_1[0][i].Vg[j]
+            GateSwitches_Avg_pool.CTRL_B[j + (2)*i]+=Intgr_out_channel_1[0][i].Vsel_b[j]
 
 
     #################  Global Switches and Shift Reg for kernel col #################
@@ -329,7 +330,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
 
 
     #################  Global Ties for Integrator blocks #################
-'''
+
 
     ## Internal connections
 
@@ -365,7 +366,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
 
         VTUN+=Intgr_out_channel_1[0][i].VTUN
 
-        DVDD+=Intgr_out_channel_1[0][i].DVDD
+        #DVDD+=Intgr_out_channel_1[0][i].DVDD
         
 
     #################  Global Ties for Readout Relu blocks #################
@@ -376,7 +377,6 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
     AVDD += Readout_Relu_glb[0].AVDD[0] 
 
     Out_En_b_glb = [Wire(Top) for _ in range(intg_rows)]
-    Sub_Img_Out_glb = [Wire(Top) for _ in range(out_channels)]
 
     for i in range(out_channels):
         for local in range(intg_rows):
@@ -385,7 +385,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
             Out_En_b_glb[local]+=Readout_Relu_glb[i].Out_En_b[local]
             Sub_Img_Out_glb[i]+=Readout_Relu_glb[i].Sub_img_out[local]
 
-'''
+
 
 
     # Island Placement
@@ -400,22 +400,22 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
 Top = ac.Circuit()
 Conv_AvgPool(Top,islandLoc=[100,100],debug=True)
 
-location_islands = ((100,100),(0.6e6,3.8e5),(0.4e6,3.7e5))
+location_islands = ((5e4,4e4),(6e5,4.3e5),(4e5,4.2e5))
 #location_islands = ((100,100),(1e6,3.6e5))
 
-design_limits = [3e6, 6e5]
+design_limits = [2e3*1e3, 1e3*1e3]
 
 
 
 with open('./ashes_fg/asic/qrouter_default.json') as file:
     qparams = json.load(file)
 
-qparams["passes"] = 10
-qparams["via"] = 20
+qparams["passes"] = 30
+qparams["via"] = 40
 qparams["jog"] = 20
 qparams["conflict"] = 40
-qparams["stage2"] = "mask none force effort 10"
-qparams["stage3"] = "mask none force effort 10"
+qparams["stage2"] = "mask none force effort 100"
+qparams["stage3"] = "mask none force effort 100"
 
 
 ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_AvgPool", p_and_r = True, route=True, design_limits = design_limits, location_islands = location_islands, qparams=qparams,drainSpaceIdx=0,drainSpace=0,gateSpaceIdx=0,gateSpace=0)

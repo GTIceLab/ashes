@@ -2009,7 +2009,7 @@ class Integration_fr_AvgPool_start(StandardCell):
 		self.CLKB = Port(circuit,self,'CLKB','N',1*self.dim[1])
 		self.CLK = Port(circuit,self,'CLK','N',1*self.dim[1])
 		self.RST_B = Port(circuit,self,'RST_B','N',1*self.dim[1])
-		self.Vimg_CLK = Port(circuit,self,'RST_B','N',1*self.dim[1])
+		self.Vimg_CLK = Port(circuit,self,'Vimg_CLK','N',1*self.dim[1])
 		self.nxt_row = Port(circuit,self,'nxt_row','N',2*self.dim[1])
 		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
 		self.AVDD_by_2 = Port(circuit,self,'AVDD_by_2','N',2*self.dim[1])
@@ -2061,7 +2061,7 @@ class Integration_fr_AvgPool_core(StandardCell):
 		self.CLKB = Port(circuit,self,'CLKB','N',1*self.dim[1])
 		self.CLK = Port(circuit,self,'CLK','N',1*self.dim[1])
 		self.RST_B = Port(circuit,self,'RST_B','N',1*self.dim[1])
-		self.Vimg_CLK = Port(circuit,self,'RST_B','N',1*self.dim[1])
+		self.Vimg_CLK = Port(circuit,self,'Vimg_CLK','N',1*self.dim[1])
 		self.nxt_row = Port(circuit,self,'nxt_row','N',2*self.dim[1])
 		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
 		self.AVDD_by_2 = Port(circuit,self,'AVDD_by_2','N',2*self.dim[1])
@@ -2112,7 +2112,7 @@ class Integration_fr_AvgPool_filler(StandardCell):
 		self.CLKB = Port(circuit,self,'CLKB','N',1*self.dim[1])
 		self.CLK = Port(circuit,self,'CLK','N',1*self.dim[1])
 		self.RST_B = Port(circuit,self,'RST_B','N',1*self.dim[1])
-		self.Vimg_CLK = Port(circuit,self,'RST_B','N',1*self.dim[1])
+		self.Vimg_CLK = Port(circuit,self,'Vimg_CLK','N',1*self.dim[1])
 		self.nxt_row = Port(circuit,self,'nxt_row','N',2*self.dim[1])
 		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
 		self.AVDD_by_2 = Port(circuit,self,'AVDD_by_2','N',2*self.dim[1])
@@ -4893,7 +4893,7 @@ class SmallPadFrame(StandardCell):
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
-class FakeCell(FakeStandardCell):
+class FakeCell(StandardCell):
 	def __init__(self,circuit,island=None,dim=(2,2),FakePort=None):
 
 		# Define variables
