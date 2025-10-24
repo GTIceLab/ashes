@@ -11,7 +11,7 @@ import ashes_fg.asic.asic_systems as algs
 import numpy as np
 import json
 
-def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size=4,AvgPool_size=2,Conv_AvgP_Island=None,islandLoc=[0,0],debug=False):
+def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_size=4,AvgPool_size=2,Conv_AvgP_Island=None,islandLoc=[0,0],debug=False):
     
     Top = circuit
     Conv_AvgP_Island = ac.Island(Top)
@@ -44,9 +44,9 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
 
         # Defining Horizontal Tgates to choose between kernel rows
         if (kernel_rows == 4):
-            TgateHoriz_VMMout = lib_new.Tgate_swc_fr_Kernel_Horiz_bot_only(Top,Conv_AvgP_Island,dim=[1,1])
-            TgateHoriz_VMMout.place([out_channel_no,track_col])
-            TgateHoriz_VMMout.markAbut()
+            TgateHoriz_VMMout_top = lib_new.Tgate_swc_fr_Kernel_Horiz_bot_only(Top,Conv_AvgP_Island,dim=[1,1])
+            TgateHoriz_VMMout_top.place([out_channel_no,track_col])
+            TgateHoriz_VMMout_top.markAbut()
             track_col=track_col+1
 
         elif (kernel_rows == 8):
@@ -75,6 +75,10 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
 
             track_col=track_col+1
 
+        # copy the first out_channel horiz tgate to a global variable to access its pins
+        if out_channel_no==0:
+            TgateHoriz_VMMout_top_glb = TgateHoriz_VMMout_top
+
 
         ################# Defining CurrentMirror Subtractor block for positive and negative VMM outputs #################
 
@@ -88,6 +92,10 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
             Isub_fill.markAbut()
 
         track_col=track_col+1
+
+        # copy the first out_channel horiz tgate to a global variable to access its pins
+        if out_channel_no==0:
+            Isub_top_glb = Isub_top
 
         #################  Defining Integration and AvgPooling blocks #################
 
@@ -259,6 +267,12 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
 
     SR_Intg_nxt_rw = outerPins.createPort("N","SR_Intg_nxt_rw")
     Vimg_CLK = outerPins.createPort("N","Vimg_CLK")
+
+    ## Shift Registers for Kernel Row
+    SR_k_rw_Din = outerPins.createPort("N","K_rw_Din")
+    SR_k_rw_CLKB = outerPins.createPort("N","K_rw_CLKB")
+    SR_k_rw_RST_B = outerPins.createPort("N","K_rw_RST_B")
+    SR_k_rw_CLK = outerPins.createPort("N","K_rw_CLK")
 
 
     ## Readout Relu for Integrators
@@ -432,6 +446,23 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
 
     #################  Global Ties for Tgate Horizontal Swcs #################
 
+    # Pin connections
+    TgateHoriz_VMMout_top_glb.VINJ+=VINJ
+    TgateHoriz_VMMout_top_glb.RUN_HV+=run_hv
+    TgateHoriz_VMMout_top_glb.GND+=GND
+    TgateHoriz_VMMout_top_glb.CLKB+=SR_k_rw_CLKB
+    TgateHoriz_VMMout_top_glb.CLK+=SR_k_rw_CLK
+    TgateHoriz_VMMout_top_glb.RST_B+=SR_k_rw_RST_B
+    TgateHoriz_VMMout_top_glb.Din+=SR_k_rw_Din
+    TgateHoriz_VMMout_top_glb.DVDD+=DVDD
+    #TgateHoriz_VMMout_top.Final_row_out+=Final_rw_out
+
+    #################  Global Ties for I_subtractor #################
+
+    Isub_top_glb.GND+=GND
+    Isub_top_glb.prog_lv+=prog_lv
+    Isub_top_glb.DVDD+=DVDD
+    Isub_top_glb.run_lv+=run_lv
 
     #################  Global Ties for Integrator blocks #################
 
@@ -505,22 +536,22 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=8,kernel_size
 Top = ac.Circuit()
 Conv_AvgPool(Top,islandLoc=[100,100],debug=True)
 
-location_islands = ((6e4,4e4),(6e5,4.3e5),(4e5,4.2e5))
+location_islands = ((5e4,4.1e4),(6e5,8e5),(4e5,7.9e5))
+#location_islands = ((5e4,4.1e4),(6e5,4.3e5),(4e5,4.2e5))
 #location_islands = ((100,100),(1e6,3.6e5))
 
-design_limits = [2e3*1e3, 1e3*1e3]
-
+design_limits = [4e3*1e3, 2e3*1e3]
 
 
 with open('./ashes_fg/asic/qrouter_default.json') as file:
     qparams = json.load(file)
 
 qparams["passes"] = 100
-qparams["via"] = 80
-qparams["jog"] = 40
-qparams["conflict"] = 50
-qparams["stage2"] = "mask none force effort 200"
-qparams["stage3"] = "mask none force effort 200"
+qparams["via"] = 20
+qparams["jog"] = 80
+qparams["conflict"] = 500
+qparams["stage2"] = "mask none force effort 100"
+qparams["stage3"] = "mask none force effort 100"
 
 
 ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_AvgPool", p_and_r = True, route=True, design_limits = design_limits, location_islands = location_islands, qparams=qparams,drainSpaceIdx=0,drainSpace=0,gateSpaceIdx=0,gateSpace=0)
