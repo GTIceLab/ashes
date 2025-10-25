@@ -39,7 +39,9 @@ import re
 
 #exec(open("./Wafer5_Synthesis/11_SML_DataConverters.py").read())
 
-exec(open("./example_python/ConvNN_AvgPool.py").read())
+#exec(open("./example_python/ConvNN_AvgPool.py").read())
+
+exec(open("./example_python/ConvNN.py").read())
 
 #exec(open("./example_python/FullyCon_NN.py").read())
 
