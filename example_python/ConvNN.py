@@ -11,7 +11,7 @@ import ashes_fg.asic.asic_systems as algs
 import numpy as np
 import json
 
-def ConvNN(circuit,image_size=4,inp_channels=16,out_channels=32,kernel_size=2,Flatten=1,Conv_Island=None,islandLoc=[0,0],debug=False):
+def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Flatten=1,Conv_Island=None,islandLoc=[0,0],debug=False):
     
     Top = circuit
     Conv_Island = ac.Island(Top)
@@ -206,12 +206,18 @@ def ConvNN(circuit,image_size=4,inp_channels=16,out_channels=32,kernel_size=2,Fl
                 Flatten_out_img = [[None for _ in range(No_of_buffers//intg_rows)] for _ in range(intg_rows*out_channels)]
 
             for i in range(intg_rows):
-                for j in range(No_of_buffers//intg_rows):
-                    Flatten_out_img[out_channel_no+i][j] = lib_new.Flatten_Conv(Top,Conv_Island,dim=[1,1])
-                    Flatten_out_img[out_channel_no+i][j].place([out_channel_no+i,track_col])
-                    Flatten_out_img[out_channel_no+i][j].markAbut()
+                for j in range(0,((No_of_buffers//intg_rows)//2)+1,2):
+                    Flatten_out_img[out_channel_no//(kernel_rows//4)+i][j] = lib_new.Flatten_Conv_nxtrw_b(Top,Conv_Island,dim=[1,1])
+                    Flatten_out_img[out_channel_no//(kernel_rows//4)+i][j].place([out_channel_no+i,track_col])
+                    Flatten_out_img[out_channel_no//(kernel_rows//4)+i][j].markAbut()
                     track_col = track_col + 1  # Keeping track of the coloumn placement idx
-                track_col = track_col - (No_of_buffers/intg_rows)
+
+                    Flatten_out_img[out_channel_no//(kernel_rows//4)+i][j+1] = lib_new.Flatten_Conv_nxtrw(Top,Conv_Island,dim=[1,1])
+                    Flatten_out_img[out_channel_no//(kernel_rows//4)+i][j+1].place([out_channel_no+i,track_col])
+                    Flatten_out_img[out_channel_no//(kernel_rows//4)+i][j+1].markAbut()
+                    track_col = track_col + 1  # Keeping track of the coloumn placement idx
+
+                track_col = track_col - (No_of_buffers//intg_rows)
             
             track_col = track_col + No_of_buffers/intg_rows  # Keeping track of the coloumn placement idx
 
@@ -229,6 +235,11 @@ def ConvNN(circuit,image_size=4,inp_channels=16,out_channels=32,kernel_size=2,Fl
             Dmmy4 = [[Wire(Top) for _ in range(No_of_buffers//intg_rows)] for _ in range(out_channels*intg_rows)]
             Dmmy5 = [[Wire(Top) for _ in range(No_of_buffers//intg_rows)] for _ in range(out_channels*intg_rows)]
 
+            ## Splitting intg reset when intg_rows==1
+            int_rst0 = Wire(Top)
+            int_rst1 = Wire(Top)
+
+
 
         for i in range(intg_rows):
             for j in range(intg_cols):
@@ -242,18 +253,34 @@ def ConvNN(circuit,image_size=4,inp_channels=16,out_channels=32,kernel_size=2,Fl
                 Intgr[i][j].int_rst += Dmmy2[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
                 Intgr[i][j].Out_En += Dmmy3[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
 
+
+        # Tieing all the int_rst between output_channels
+        if (intg_rows==1):
+            for j in range(intg_cols//2):
+                int_rst0 += Intgr[0][j].int_rst
+                int_rst1 += Intgr[0][(intg_cols//2)+j].int_rst
+
         # Tieing the Din and Q of Shift Registers in end and start of rows
-        if (intg_rows>1):
+        else:
             for rows in range(intg_rows-1):
                 Intgr[rows][intg_cols-1].Q += Intgr[rows+1][0].Din
-
+        
 
         if bool(Flatten) == 1:
             for i in range(intg_rows):
                 for j in range(No_of_buffers//intg_rows):
-                    Flatten_out_img[out_channel_no+i][j].Sub_img_out+= Dmmy4[out_channel_no+i][j]
-                    Flatten_out_img[out_channel_no+i][j].sample+= Dmmy5[out_channel_no+i][j]
+                    Flatten_out_img[out_channel_no//(kernel_rows//4)+i][j].Sub_img_out+= Dmmy4[out_channel_no//(kernel_rows//4)+i][j]
+                    Flatten_out_img[out_channel_no//(kernel_rows//4)+i][j].sample+= Dmmy5[out_channel_no//(kernel_rows//4)+i][j]
                     
+
+            # Tieing the OutEn from every integrator to its flatten buffers
+            for i in range(intg_rows):
+                for j in range(intg_cols):
+                    #print("i:"+str(i))
+                    #print("j:"+str(j))
+                    Flatten_out_img[out_channel_no//(kernel_rows//4)+i][(j*2)].sample+=Intgr[i][j].Out_En
+                    Flatten_out_img[out_channel_no//(kernel_rows//4)+i][(j*2)+1].sample+=Intgr[i][j].Out_En
+
 
 
     #################  Outer Pins  #################
@@ -261,20 +288,13 @@ def ConvNN(circuit,image_size=4,inp_channels=16,out_channels=32,kernel_size=2,Fl
 
     ## G/D Decoder and Swcs Signals
     Kvmm_G_En = outerPins.createPort("N","Kvmm_G_En")
-    AvgPool_FGs_G_En = outerPins.createPort("N","AvgPool_FGs_G_En")
+    Kvmm_G_bit = outerPins.createPort("N","Kvmm_G_bit",dimension=int(np.ceil(np.log2(inp_channels*kernel_size))))
 
+    Kvmm_Dr_En =  outerPins.createPort("N","Kvmm_Dr_En")
+    Kvmm_Dr_bit = outerPins.createPort("N","Kvmm_Dr_bit",dimension=int(np.ceil(np.log2(out_channels*kernel_size*2))))
 
-    # Checking which island is bigger and assigning the Most bits needed
-    if intg_cols*2 < (inp_channels*kernel_size):
-        Kvmm_AvgP_G_bit = outerPins.createPort("N","Kvmm_G_bit",dimension=int(np.ceil(np.log2(inp_channels*kernel_size))))
-    else:
-        Kvmm_AvgP_G_bit = outerPins.createPort("N","Kvmm_G_bit",dimension=int(np.ceil(np.log2(intg_cols*2))))
-
-    Kvmm_AvgP_Dr_En =  outerPins.createPort("N","Kvmm_AvgP_Dr_En")
-    Kvmm_AvgP_Dr_bit = outerPins.createPort("N","Kvmm_AvgP_Dr_bit",dimension=int(np.ceil(np.log2(out_channels*kernel_size*2))))
-
-    Kvmm_AvgP_Prog_Drln =  outerPins.createPort("N","Kvmm_AvgP_Prog_Drln")
-    Kvmm_AvgP_Run_Drln =  outerPins.createPort("N","Kvmm_AvgP_Run_Drln")
+    Kvmm_Prog_Drln =  outerPins.createPort("N","Kvmm_Prog_Drln")
+    Kvmm_Run_Drln =  outerPins.createPort("N","Kvmm_Run_Drln")
 
     ## Shift Registers for Kernel Coloumn
     SR_k_col_Din = outerPins.createPort("N","K_col_Din")
@@ -293,7 +313,6 @@ def ConvNN(circuit,image_size=4,inp_channels=16,out_channels=32,kernel_size=2,Fl
     SR_Intg_CLK = outerPins.createPort("N","SR_Intg_CLK")
     SR_Intg_CLKB = outerPins.createPort("N","SR_Intg_CLKB")
 
-    SR_Intg_nxt_rw = outerPins.createPort("N","SR_Intg_nxt_rw")
     Vimg_CLK = outerPins.createPort("N","Vimg_CLK")
 
     ## Shift Registers for Kernel Row
@@ -303,18 +322,12 @@ def ConvNN(circuit,image_size=4,inp_channels=16,out_channels=32,kernel_size=2,Fl
     SR_k_rw_CLK = outerPins.createPort("N","K_rw_CLK")
 
 
-    ## Readout Relu for Integrators
-    AvgPool_Relu_Vb = outerPins.createPort("N","AvgPool_Relu_Vb")
     
     if bool(Flatten) == 0:
-        Sub_Img_Out_glb = outerPins.createPort("E", "Sub_img_out",dimension=out_channels)
+        Sub_Img_Out_glb = outerPins.createPort("S", "Sub_img_out",dimension=out_channels)
     else:
-        Sub_Img_Out_glb = outerPins.createPort("E", "Sub_img_out",dimension=out_channels*(No_of_buffers))
-
-
-    # Sub_Img_Out_glb = [None for _ in range(out_channels)]
-    # for i in range(out_channels):
-    #     Sub_Img_Out_glb[i] = outerPins.createPort("E", f"Sub_img_out_{i}")
+        Sub_Img_Out_glb_0 = outerPins.createPort("S", "Sub_img_out_0",dimension=out_channels*(No_of_buffers)/2)
+        Sub_Img_Out_glb_1 = outerPins.createPort("E", "Sub_img_out_1",dimension=out_channels*(No_of_buffers)/2)
 
 
     ## Global Power lines
@@ -329,8 +342,6 @@ def ConvNN(circuit,image_size=4,inp_channels=16,out_channels=32,kernel_size=2,Fl
     prog_hv = outerPins.createPort("N","prog_hv")
     run_hv = outerPins.createPort("N","run_hv")
 
-    prog_lv = outerPins.createPort("N","prog_lv")
-    run_lv = outerPins.createPort("N","run_lv")
 
     
     #################  Defining GateSwcs, DrainSwcs and Decoders  #################
@@ -358,7 +369,7 @@ def ConvNN(circuit,image_size=4,inp_channels=16,out_channels=32,kernel_size=2,Fl
     GateDecoder.ENABLE += Kvmm_G_En
 
     for i in range(gateBits):
-        GateDecoder.IN[i] += Kvmm_AvgP_G_bit[i]
+        GateDecoder.IN[i] += Kvmm_G_bit[i]
 
     for i in range((inp_channels*kernel_size)//2):
         GateSwitches.VINJ_T[i] += GateDecoder.VINJ_b[i]
@@ -373,17 +384,16 @@ def ConvNN(circuit,image_size=4,inp_channels=16,out_channels=32,kernel_size=2,Fl
 
     DrainSel.VINJ += VINJ
     DrainSel.GND += GND
-    DrainSel.prog_drainrail += Kvmm_AvgP_Prog_Drln
-    DrainSel.run_drainrail += Kvmm_AvgP_Run_Drln
+    DrainSel.prog_drainrail += Kvmm_Prog_Drln
+    DrainSel.run_drainrail += Kvmm_Run_Drln
 
     DrainDecoder.VINJ += VINJ
     DrainDecoder.GND += GND
-    DrainDecoder.ENABLE += Kvmm_AvgP_Dr_En
+    DrainDecoder.ENABLE += Kvmm_Dr_En
 
     for i in range(drainBits):
-        DrainDecoder.IN[i] += Kvmm_AvgP_Dr_bit[i]
-        
-        
+        DrainDecoder.IN[i] += Kvmm_Dr_bit[i]
+
 
     #################  Global Switches and Shift Reg for kernel col #################
     SR_k_col_island = ac.Island(Top)
@@ -392,18 +402,26 @@ def ConvNN(circuit,image_size=4,inp_channels=16,out_channels=32,kernel_size=2,Fl
     SR_k_col.place([0, 0])
     
     space_flag=0
+    row_flag = 1
     Tgate_fr_SR_k_col_ImgR = [None for _ in range(inp_channels*kernel_size)]
 
 
     for k_col_set in range(inp_channels):
 
         if k_col_set > 0:
+            
+            if k_col_set==(inp_channels/2):
+                row_flag = 3
+                space_flag = space_flag - (inp_channels//2 -1)*kernel_size - (inp_channels//2) -2
+                
             space_flag = space_flag + 1
+
+
 
         for k_col in range(kernel_size):
 
             Tgate_fr_SR_k_col_ImgR[k_col + (kernel_size)*k_col_set] = lib_new.Tgate_swc_fr_Kernel_Vert(Top,SR_k_col_island,dim=[1,1])
-            Tgate_fr_SR_k_col_ImgR[k_col + (kernel_size)*k_col_set].place([1, k_col + (kernel_size)*(k_col_set) + space_flag])
+            Tgate_fr_SR_k_col_ImgR[k_col + (kernel_size)*k_col_set].place([row_flag, k_col + (kernel_size)*(k_col_set) + space_flag])
            
             if k_col==0 and k_col_set==0:
                 Tgate_fr_SR_k_col_ImgR[k_col + (kernel_size)*k_col_set].markAbut()
@@ -479,9 +497,14 @@ def ConvNN(circuit,image_size=4,inp_channels=16,out_channels=32,kernel_size=2,Fl
     if bool(Flatten) == 1:
         for i in range(No_of_buffers//intg_rows):
             GND +=  Flatten_out_img[0][i].GND
-            #Vb +=  Flatten_out_img[0][i].Vb
             DVDD +=  Flatten_out_img[0][i].DVDD
 
+        for i in range(intg_rows*out_channels):
+            for j in range(No_of_buffers//intg_rows):
+                if (i<intg_rows*out_channels/2):
+                    Flatten_out_img[i][j].Sub_img_out+= Sub_Img_Out_glb_0[j + i*(No_of_buffers//intg_rows)]
+                else:
+                    Flatten_out_img[i][j].Sub_img_out+= Sub_Img_Out_glb_1[j + i*(No_of_buffers//intg_rows) - (intg_rows*out_channels//2)*(No_of_buffers//intg_rows)]
 
 
     # Island Placement
@@ -496,7 +519,8 @@ def ConvNN(circuit,image_size=4,inp_channels=16,out_channels=32,kernel_size=2,Fl
 Top = ac.Circuit()
 ConvNN(Top,islandLoc=[100,100],debug=True)
 
-location_islands = ((5e4,4.1e4),(6e5,7.9e5))
+location_islands = ((5e4,4.1e4+5e4),(7e5+4.5e5,16e5+2e4))
+#location_islands = ((5e4,4.1e4),(7e5,7.9e5))
 #location_islands = ((5e4,4.1e4),(6e5,4.3e5),(4e5,4.2e5))
 #location_islands = ((100,100),(1e6,3.6e5))
 
@@ -509,7 +533,7 @@ with open('./ashes_fg/asic/qrouter_default.json') as file:
 qparams["passes"] = 100
 qparams["via"] = 20
 qparams["jog"] = 80
-qparams["conflict"] = 500
+qparams["conflict"] = 50
 qparams["stage2"] = "mask none force effort 100"
 qparams["stage3"] = "mask none force effort 100"
 

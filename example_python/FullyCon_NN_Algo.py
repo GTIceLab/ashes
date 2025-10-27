@@ -93,20 +93,6 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
     FNN_ActF_G_En = Wire(Top)
     FNN_ActF_G_bit = [Wire(Top) for _ in range(2)]
 
-    FNN_input = [ Wire(Top) for _ in range(input_size)]
-
-    ActF_sel = Wire(Top)
-    ActF_sel_b = Wire(Top)
-    ActF_Vg_bias = Wire(Top)
-
-    FNN_output = [ Wire(Top) for _ in range(no_of_neurons)]
-
-    Act_scan_out =  Wire(Top)
-    Act_scan_Din =  Wire(Top)
-    Act_scan_CLK =  Wire(Top)
-    Act_scan_RSTB =  Wire(Top)
-    Act_scan_Qout =  Wire(Top)
-
     ## Global Signals
     VTUN = Wire(Top)
     DVDD = Wire(Top)
@@ -119,6 +105,18 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
 
     prog_hv = Wire(Top)
     run_hv = Wire(Top)
+
+    ActF_sel = Wire(Top)
+    ActF_sel_b = Wire(Top)
+    ActF_Vg_bias = Wire(Top)
+
+    FNN_output = [ Wire(Top) for _ in range(no_of_neurons)]
+
+    Act_scan_out =  Wire(Top)
+    Act_scan_Din =  Wire(Top)
+    Act_scan_CLK =  Wire(Top)
+    Act_scan_RSTB =  Wire(Top)
+    Act_scan_Qout =  Wire(Top)
 
 
     #################  Defining GateSwcs, DrainSwcs and Decoders  #################
@@ -145,9 +143,6 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
 
     for i in range(gateBits):
         GateDecoder.IN[i] += FNN_G_bit[i]
-    
-    for i in range(input_size):
-        FNN_input[i] += GateDecoder.VGRUN[i]
 
     for i in range(input_size//2):
         GateSwitches.VINJ_T[i] += GateDecoder.VINJ_b[i]
@@ -177,7 +172,7 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
     ##-------------- For Relu/Sigmoid Activation Function circuit --------------##
 
     Relu_Sig_Gswcs_Island = ac.Island(Top)
-    gateBits_Relu_Sig = int(np.ceil(np.log2(4)))
+    gateBits_Relu_Sig = int(np.ceil(np.log2(2)))
 
     ## Fake cell definition for the island
     num_G_col = 4
@@ -286,264 +281,34 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
 
     location_islands = ((islandLoc[0],islandLoc[1]), (Neuron_scanner_start_x,islandLoc[1]), (Neuron_Swcs_start_x,Neuron_Swcs_start_y))
     
-    return {
-        "location_islands": location_islands,
-        "FNN_G_En": FNN_G_En,
-        "FNN_G_bit": FNN_G_bit,
-        "FNN_Dr_En": FNN_Dr_En,
-        "FNN_Dr_bit": FNN_Dr_bit,
-        "FNN_Prog_Drln": FNN_Prog_Drln,
-        "FNN_Run_Drln": FNN_Run_Drln,
-        "FNN_input": FNN_input,
-        "FNN_ActF_G_En": FNN_ActF_G_En,
-        "FNN_ActF_G_bit": FNN_ActF_G_bit,
-        "ActF_sel": ActF_sel,
-        "ActF_sel_b": ActF_sel_b,
-        "ActF_Vg_bias": ActF_Vg_bias,
-        "FNN_output": FNN_output,
-        "Act_scan_out": Act_scan_out,
-        "Act_scan_Din": Act_scan_Din,
-        "Act_scan_CLK": Act_scan_CLK,
-        "Act_scan_RSTB": Act_scan_RSTB,
-        "Act_scan_Qout": Act_scan_Qout,
-        "VTUN": VTUN,
-        "DVDD": DVDD,
-        "AVDD": AVDD,
-        "GND": GND,
-        "VINJ": VINJ,
-        "VGPROG": VGPROG,
-        "VGRUN": VGRUN,
-        "prog_hv": prog_hv,
-        "run_hv": run_hv,
-    }
 
-def VMMWTA_Layer(circuit,input_size=128,no_of_outputs=80,VMMWTA_Island=None,islandLoc=[0,0],debug=False):
-
-    Top = circuit
-    VMMWTA_Island = ac.Island(Top)
-
-    # Make sure the Input and neuron size can be created with 4x2 core cell
-    if ((input_size % 2) !=0):
-        raise Exception("Error: The input size should be divisible by 2")
-    elif (no_of_outputs < 2):
-        raise Exception("Error: No of neurons should be greater than 2")
-    elif ((no_of_outputs % 2) !=0):
-        raise Exception("Error: No of neurons should be divisible by 2")
-    
-    #################  Defining VMM #################
-    VMM = lib_new.TSMC350nm_4x2_Indirect(Top,VMMWTA_Island,dim=[(no_of_outputs)//4,input_size//2])
-    VMM.place([0,0])
-    track_col = input_size//2
-
-    #################  Defining WTA #################
-    WTA = lib_new.TSMC350nm_4WTA_IndirectProg_noncab(Top,VMMWTA_Island,dim=[(no_of_outputs)//4,1])
-    WTA.place([0,track_col])
-    track_col = track_col + 1
-
-    #################  ScanChain for Neuron Debug  #################
-    WTA_scanner_Island = ac.Island(Top)
-
-    WTA_scanner = lib_new.TSMC350nm_VerticalScanner(Top,WTA_scanner_Island,dim=[no_of_outputs//4,1])
-    WTA_scanner.place([0,0])
-
-    #track_col = track_col + 1
-
-    #################  Outer Pins  #################
+    return location_islands
 
 
-    ## Creating wires to share pins and create ports outside the function
+#location_islands = ((5e4,5e4),(5e4+22e3*input_size/2,5e4+22e3*(no_of_neurons+1),0))
 
-    VMM_G_En = Wire(Top)
-    VMM_G_bit = [Wire(Top) for _ in range(int(np.ceil(np.log2(input_size))))]
-
-    VMM_WTA_Dr_En = Wire(Top)
-    VMM_WTA_Dr_bit = [Wire(Top) for _ in range(int(np.ceil(np.log2(no_of_outputs * 2))))]
-
-    VMM_WTA_Prog_Drln = Wire(Top)
-    VMM_WTA_Run_Drln = Wire(Top)
-
-    VMM_WTA_input = [Wire(Top) for _ in range(input_size)]
-
-
-    VMM_WTA_output = [Wire(Top) for _ in range(no_of_outputs)]
-
-    WTA_Vmid = Wire(Top)
-    WTA_Vbias = Wire(Top)
-    WTA_Vsel = Wire(Top)
-    WTA_Vg = Wire(Top)
-
-    WTA_scan_out =  Wire(Top)
-    WTA_scan_Din =  Wire(Top)
-    WTA_scan_CLK =  Wire(Top)
-    WTA_scan_RSTB =  Wire(Top)
-    WTA_scan_Qout =  Wire(Top)
-
-    ## Global Signals
-    VTUN = Wire(Top)
-    DVDD = Wire(Top)
-    AVDD = Wire(Top)
-    GND = Wire(Top)
-    VINJ = Wire(Top)
-
-    VGPROG = Wire(Top)
-    VGRUN = Wire(Top)
-
-    prog_hv = Wire(Top)
-    run_hv = Wire(Top)
-
-
-    #################  Defining GateSwcs, DrainSwcs and Decoders  #################
-
-    GateSwitches = lib_mux.STD_IndirectGateSwitch(circuit,VMMWTA_Island,input_size//2)
-    gateBits = int(np.ceil(np.log2(input_size)))
-    GateDecoder = lib_mux.STD_IndirectGateDecoder(circuit,VMMWTA_Island,gateBits)
-
-    drainBits = int(np.ceil(np.log2(no_of_outputs)))
-    DrainDecoder = lib_mux.STD_DrainDecoder(circuit,VMMWTA_Island,drainBits)
-    DrainSel = lib_mux.RunDrainSwitch(circuit,VMMWTA_Island,(no_of_outputs)//4)
-    DrainSwitches = lib_cab.DrainCutoff(circuit,VMMWTA_Island,(no_of_outputs)//4)
-
-
-    ###### Gate Swcs and Decoders ########
-    GateSwitches.vtun_l += VTUN
-    GateSwitches.Vgsel += VGPROG
-    GateSwitches.PROG += prog_hv
-    GateSwitches.RUN += run_hv
-
-    GateDecoder.VINJV += VINJ
-    GateDecoder.GNDV += GND
-    GateDecoder.ENABLE += VMM_G_En
-
-    for i in range(gateBits):
-        GateDecoder.IN[i] += VMM_G_bit[i]
-
-    for i in range(input_size):
-        VMM_WTA_input[i] += GateDecoder.VGRUN[i]
-
-    for i in range(input_size//2):
-        GateSwitches.VINJ_T[i] += GateDecoder.VINJ_b[i]
-        GateSwitches.GND_T[i] += GateDecoder.GND_b[i]
-        GateSwitches.RUN_IN[i] += GateDecoder.RUN_OUT[i]
-        GateSwitches.decode[i] += GateDecoder.OUT[i]
-
-    ###### Drain Swcs and Decoders ########
-    DrainSwitches.VDD_b += VINJ
-    DrainSwitches.GND_b += GND
-    DrainSwitches.RUN += run_hv
-
-    DrainSel.VINJ += VINJ
-    DrainSel.GND += GND
-    DrainSel.prog_drainrail += VMM_WTA_Prog_Drln
-    DrainSel.run_drainrail += VMM_WTA_Run_Drln
-
-    DrainDecoder.VINJ += VINJ
-    DrainDecoder.GND += GND
-    DrainDecoder.ENABLE += VMM_WTA_Dr_En
-
-    for i in range(drainBits):
-        DrainDecoder.IN[i] += VMM_WTA_Dr_bit[i]
-
-    
-    ###### Connections for WTA ########
-    for i in range(no_of_outputs):
-        VMM_WTA_output[i] += WTA.Vout[i]
-
-
-    WTA_Vmid+=WTA.Vmid[0]
-    WTA_Vbias+=WTA.Vbias[0]
-    WTA_Vsel+=WTA.Vsel[0]
-    WTA_Vg+=WTA.Vg[0]
-    VTUN+=WTA.VTUN[0]
-    prog_hv+=WTA.PROG[0]
-
-    AVDD+=WTA.Vs[0]
-    VINJ+=WTA.VINJ[0]
-    GND+=WTA.GND[0]
-
-    ###### Connections for WTA Scanner ########
-
-    for i in range(no_of_outputs):
-        VMM_WTA_output[i] += WTA_scanner.In[i]
-
-
-    GND += WTA_scanner.GND[0]
-    DVDD += WTA_scanner.VDD[0]
-    WTA_scan_out += WTA_scanner.Out[0]
-    WTA_scan_Din += WTA_scanner.Din[0]
-    WTA_scan_CLK += WTA_scanner.CLK[0]
-    WTA_scan_RSTB += WTA_scanner.RSTBar[0]
-    WTA_scan_Qout += WTA_scanner.Qout[0]
-
-
-
-    # Island Placement
-    # -------------------------------------------------------------------------------
-
-    WTA_scanner_start_x = islandLoc[0]+(140+(27.46*input_size/2)+100)*1e3
-
-    location_islands = ((islandLoc[0],islandLoc[1]), (WTA_scanner_start_x,islandLoc[1]))
-    
-    return {
-        "location_islands": location_islands,
-        "VMM_G_En": VMM_G_En,
-        "VMM_G_bit": VMM_G_bit,
-        "VMM_WTA_Dr_En": VMM_WTA_Dr_En,
-        "VMM_WTA_Dr_bit": VMM_WTA_Dr_bit,
-        "VMM_WTA_Prog_Drln": VMM_WTA_Prog_Drln,
-        "VMM_WTA_Run_Drln": VMM_WTA_Run_Drln,
-        "VMM_WTA_input": VMM_WTA_input,
-        "VMM_WTA_output": VMM_WTA_output,
-        "WTA_Vmid": WTA_Vmid,
-        "WTA_Vbias": WTA_Vbias,
-        "WTA_Vsel": WTA_Vsel,
-        "WTA_Vg": WTA_Vg,
-        "WTA_scan_out": WTA_scan_out,
-        "WTA_scan_Din": WTA_scan_Din,
-        "WTA_scan_CLK": WTA_scan_CLK,
-        "WTA_scan_RSTB": WTA_scan_RSTB,
-        "WTA_scan_Qout": WTA_scan_Qout,
-        "VTUN": VTUN,
-        "DVDD": DVDD,
-        "AVDD": AVDD,
-        "GND": GND,
-        "VINJ": VINJ,
-        "VGPROG": VGPROG,
-        "VGRUN": VGRUN,
-        "prog_hv": prog_hv,
-        "run_hv": run_hv
-    }
-
-
+#location_islands = ((5e4,5e4),(5e4+20e5,5e4+9e5,0)) # 128 to 80
+#location_islands = ((5e4,5e4),(5e4+20e5,5e4+9e5,0)) # 256 to 128
+#location_islands = ((50*1e3,50*1e3), (50*1e3+(140+(27.46*input_size/2)+400)*1e3,50*1e3), (50*1e3+(140+(27.46*input_size/2)+40)*1e3,50*1e3+((22*no_of_neurons/2)+20)*1e3)) # 178 to 96
 
 
 Top = ac.Circuit()
-FNN_layer1 = FullyCon_Layer(Top,islandLoc=[50.5*1e3,50.5*1e3],input_size=178,no_of_neurons=96,debug=True)
-FNN_layer2 = FullyCon_Layer(Top,islandLoc=[50.5*1e3+3400*1e3,50.5*1e3+400*1e3],input_size=96,no_of_neurons=64,debug=True)
-Final_layer = VMMWTA_Layer(Top,islandLoc=[50.5*1e3+3400*1e3,50.5*1e3],input_size=64,no_of_outputs=12,debug=True)
+location_islands = FullyCon_Layer(Top,islandLoc=[50*1e3,50*1e3],input_size=96,no_of_neurons=64,debug=True)
 
-################ Write down conenctions between the layers and Create Ports #######################
+design_limits = [6e6, 6e6]
 
-
-
-
-
-#####################################################################################################
-
-
-
-design_limits = [5e6, 5e6]
 
 with open('./ashes_fg/asic/qrouter_default.json') as file:
     qparams = json.load(file)
 
 qparams["passes"] = 50
-qparams["via"] = 80
-qparams["jog"] = 20
+qparams["via"] = 20
+qparams["jog"] = 80
 qparams["conflict"] = 10
 qparams["stage2"] = "mask none force effort 100"
 qparams["stage3"] = "mask none force effort 100"
 
 
 
-ac.compile_asic(Top,process="TSMC350nm", fileName="FullyCon_NN", p_and_r = True, route=True, design_limits = design_limits, location_islands = FNN_layer1["location_islands"] + FNN_layer2["location_islands"] + Final_layer["location_islands"], qparams=qparams)
+ac.compile_asic(Top,process="TSMC350nm", fileName="FullyCon_NN", p_and_r = True, route=True, design_limits = design_limits, location_islands = location_islands, qparams=qparams)
 

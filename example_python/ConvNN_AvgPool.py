@@ -11,7 +11,7 @@ import ashes_fg.asic.asic_systems as algs
 import numpy as np
 import json
 
-def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_size=4,AvgPool_size=2,Conv_AvgP_Island=None,islandLoc=[0,0],debug=False):
+def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_size=4,AvgPool_size=2,Conv_AvgP_Island=None,islandLoc=[0,0],debug=False):
     
     Top = circuit
     Conv_AvgP_Island = ac.Island(Top)
@@ -526,7 +526,10 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
 
     # Island Placement
     # -------------------------------------------------------------------------------
+    #start_x = islandLoc[0]
+    #start_y = islandLoc[1]
 
+    #AvgP_Gswcs_Island_xloc = start_x + 
     #location_islands = (islandLoc[0],islandLoc[1])
 
     #return location_islands
@@ -534,10 +537,10 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=16,kernel_siz
 
 
 Top = ac.Circuit()
-Conv_AvgPool(Top,islandLoc=[100,100],debug=True)
+location_islands = Conv_AvgPool(Top,islandLoc=[5e4,4.1e4],debug=True)
 
-location_islands = ((5e4,4.1e4),(6e5,8e5),(4e5,7.9e5))
-#location_islands = ((5e4,4.1e4),(6e5,4.3e5),(4e5,4.2e5))
+location_islands = ((5e4,4.1e4),(6e5,15.8e5),(4e5,15.7e5))
+#location_islands = ((5e4,4.1e4),(6e5,8e5),(4e5,7.9e5))
 #location_islands = ((100,100),(1e6,3.6e5))
 
 design_limits = [4e3*1e3, 2e3*1e3]

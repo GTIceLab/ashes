@@ -2397,6 +2397,86 @@ class Flatten_Conv(StandardCell):
 		circuit.addInstance(self,self.island)
 
 
+class Flatten_Conv_nxtrw(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),GND=None,Vb=None,DVDD=None,nxt_rw=None,Q_1_in=None,GND_r=None,Vinp_r=None,Q_1_out=None,GND_l=None,Vinp_l=None,sample=None,Sub_img_out=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'Flatten_Conv_nxtrw'
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.Vb = Port(circuit,self,'Vb','N',1*self.dim[1])
+		self.DVDD = Port(circuit,self,'DVDD','N',1*self.dim[1])
+		self.nxt_rw = Port(circuit,self,'nxt_rw','N',1*self.dim[1])
+
+		self.Q_1_in = Port(circuit,self,'Q_1_in','E',1*self.dim[0])
+		self.GND_r = Port(circuit,self,'GND_r','E',1*self.dim[0])
+		self.Vinp_r = Port(circuit,self,'Vinp_r','W',1*self.dim[0])
+
+		self.Q_1_out = Port(circuit,self,'Q_1_out','W',1*self.dim[0])
+		self.GND_l= Port(circuit,self,'GND_l','W',1*self.dim[0])
+		self.Vinp_l = Port(circuit,self,'Vinp_l','W',1*self.dim[0])
+
+		self.sample = Port(circuit,self,'sample','S',1*self.dim[0])
+		self.Sub_img_out = Port(circuit,self,'Sub_img_out','S',1*self.dim[0])
+
+
+		# Initialize ports with given values
+		portsInit = [GND,Vb,DVDD,nxt_rw,Q_1_in,GND_r,Vinp_r,Q_1_out,GND_l,Vinp_l,sample,Sub_img_out]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+
+class Flatten_Conv_nxtrw_b(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),GND=None,Vb=None,DVDD=None,nxt_rw=None,Q_1_in=None,GND_r=None,Vinp_r=None,Q_1_out=None,GND_l=None,Vinp_l=None,sample=None,Sub_img_out=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'Flatten_Conv_nxtrw_b'
+		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+		self.Vb = Port(circuit,self,'Vb','N',1*self.dim[1])
+		self.DVDD = Port(circuit,self,'DVDD','N',1*self.dim[1])
+		self.nxt_rw = Port(circuit,self,'nxt_rw','N',1*self.dim[1])
+
+		self.Q_1_in = Port(circuit,self,'Q_1_in','E',1*self.dim[0])
+		self.GND_r = Port(circuit,self,'GND_r','E',1*self.dim[0])
+		self.Vinp_r = Port(circuit,self,'Vinp_r','W',1*self.dim[0])
+
+		self.Q_1_out = Port(circuit,self,'Q_1_out','W',1*self.dim[0])
+		self.GND_l= Port(circuit,self,'GND_l','W',1*self.dim[0])
+		self.Vinp_l = Port(circuit,self,'Vinp_l','W',1*self.dim[0])
+
+		self.sample = Port(circuit,self,'sample','S',1*self.dim[0])
+		self.Sub_img_out = Port(circuit,self,'Sub_img_out','S',1*self.dim[0])
+
+
+		# Initialize ports with given values
+		portsInit = [GND,Vb,DVDD,nxt_rw,Q_1_in,GND_r,Vinp_r,Q_1_out,GND_l,Vinp_l,sample,Sub_img_out]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+
 class I_Subtractor_AvgPool_top(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),GND=None,prog_lv=None,DVDD=None,run_lv=None,Out_En_b=None,Vd_prog_0_out=None,Vd_run_global=None,Vint=None,Vd_prog_0_in=None,Vd_run_krnl=None):
 
