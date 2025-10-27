@@ -26,7 +26,8 @@ TRACKS Y 1 DO 3571 STEP 1400 LAYER METAL2 ;
 TRACKS X 0 DO 3571 STEP 1400 LAYER METAL1 ;
 TRACKS Y 0 DO 3571 STEP 1400 LAYER METAL1 ;
 
-COMPONENTS 1641 ;
+COMPONENTS 1642 ;
+- cab_frame tile_analog_frame + PLACED ( 0 0 ) N ;
 - I_0_0 TSMC350nm_VinjDecode2to4_vtile_spacing + PLACED ( 50500 50500 ) N ;
 - I_0_1 TSMC350nm_VinjDecode2to4_vtile_bridge_spacing + PLACED ( 70620 50500 ) N ;
 - I_0_2 TSMC350nm_VinjDecode2to4_vtile_spacing + PLACED ( 76770 50500 ) N ;

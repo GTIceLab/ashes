@@ -198,6 +198,12 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
         GateSwitches_R_n_Sig.Vg[j]+=Neurons.Vg[j]
         GateSwitches_R_n_Sig.CTRL_B[j]+=Neurons.Vsel[j]
 
+    ## Taking these extra bits out for WTA if needed
+    GateSwc_RnSig_Vg_b2 = Wire(Top)
+    GateSwc_RnSig_Vg_b2+= GateSwitches_R_n_Sig.Vg[2]
+
+    GateSwc_RnSig_CTRLB_b2 = Wire(Top)
+    GateSwc_RnSig_CTRLB_b2 += GateSwitches_R_n_Sig.CTRL_B[2]
 
     ###### Gate Swcs and Decoders ########
     GateSwitches_R_n_Sig.vtun_l += VTUN
@@ -297,6 +303,8 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
         "FNN_input": FNN_input,
         "FNN_ActF_G_En": FNN_ActF_G_En,
         "FNN_ActF_G_bit": FNN_ActF_G_bit,
+        "GateSwc_RnSig_Vg_b2": GateSwc_RnSig_Vg_b2,
+        "GateSwc_RnSig_CTRLB_b2": GateSwc_RnSig_CTRLB_b2,
         "ActF_sel": ActF_sel,
         "ActF_sel_b": ActF_sel_b,
         "ActF_Vg_bias": ActF_Vg_bias,
@@ -363,7 +371,6 @@ def VMMWTA_Layer(circuit,input_size=128,no_of_outputs=80,VMMWTA_Island=None,isla
     VMM_WTA_Run_Drln = Wire(Top)
 
     VMM_WTA_input = [Wire(Top) for _ in range(input_size)]
-
 
     VMM_WTA_output = [Wire(Top) for _ in range(no_of_outputs)]
 
@@ -450,7 +457,10 @@ def VMMWTA_Layer(circuit,input_size=128,no_of_outputs=80,VMMWTA_Island=None,isla
 
 
     WTA_Vmid+=WTA.Vmid[0]
-    WTA_Vbias+=WTA.Vbias[0]
+
+    for i in range(no_of_outputs//4):
+        WTA_Vbias+=WTA.Vbias[i]
+
     WTA_Vsel+=WTA.Vsel[0]
     WTA_Vg+=WTA.Vg[0]
     VTUN+=WTA.VTUN[0]
@@ -514,20 +524,228 @@ def VMMWTA_Layer(circuit,input_size=128,no_of_outputs=80,VMMWTA_Island=None,isla
     }
 
 
-
+### Layer sizes ####
+first_layer = (178,96)
+second_layer = (96,64)
+final_layer = (64,12)
 
 Top = ac.Circuit()
-FNN_layer1 = FullyCon_Layer(Top,islandLoc=[50.5*1e3,50.5*1e3],input_size=178,no_of_neurons=96,debug=True)
-FNN_layer2 = FullyCon_Layer(Top,islandLoc=[50.5*1e3+3400*1e3,50.5*1e3+400*1e3],input_size=96,no_of_neurons=64,debug=True)
-Final_layer = VMMWTA_Layer(Top,islandLoc=[50.5*1e3+3400*1e3,50.5*1e3],input_size=64,no_of_outputs=12,debug=True)
+FNN_layer0 = FullyCon_Layer(Top,islandLoc=[50.5*1e3,50.5*1e3],input_size=first_layer[0],no_of_neurons=first_layer[1],debug=True)
+FNN_layer1 = FullyCon_Layer(Top,islandLoc=[50.5*1e3+3400*1e3,50.5*1e3+400*1e3],input_size=second_layer[0],no_of_neurons=second_layer[1],debug=True)
+Final_layer = VMMWTA_Layer(Top,islandLoc=[50.5*1e3+3400*1e3,50.5*1e3],input_size=final_layer[0],no_of_outputs=final_layer[1],debug=True)
+
 
 ################ Write down conenctions between the layers and Create Ports #######################
 
+outerPins = frame(Top)
+
+## Global Signals
+VTUN = outerPins.createPort("N","VTUN")
+DVDD = outerPins.createPort("N","DVDD")
+AVDD = outerPins.createPort("N","AVDD")
+GND = outerPins.createPort("N","GND")
+VINJ = outerPins.createPort("N","VINJ")
+
+VGPROG = outerPins.createPort("N","VGPROG")
+VGRUN = outerPins.createPort("N","VGRUN")
+
+prog_hv = outerPins.createPort("N","prog_hv")
+run_hv = outerPins.createPort("N","run_hv")
 
 
+## Shared btwn layers
+FNN_shr_G_bit = outerPins.createPort("N","FNN_shr_G_bit",dimension=int(np.ceil(np.log2(first_layer[0]))))
+FNN_shr_Dr_bit = outerPins.createPort("N","FNN_shr_Dr_bit",dimension=int(np.ceil(np.log2(first_layer[1]*2))))
+Prog_Drainline =  outerPins.createPort("N","Prog_Drainline")
+Run_Drainline =  outerPins.createPort("N","Run_Drainline")
+ActF_sel = outerPins.createPort("N","ActF_sel")
+ActF_sel_b = outerPins.createPort("N","ActF_selb")
+ActF_Vg_bias = outerPins.createPort("N","ActF_Vg_bias")
 
+## Layer0 
+FNN_ly0_G_En = outerPins.createPort("N","FNN_ly0_G_En")
+FNN_ly0_Dr_En = outerPins.createPort("N","FNN_ly0_Dr_En")
+FNN_input = outerPins.createPort("N","FNN_input", dimension=first_layer[0])
+FNN_ly0_ActF_G_En = outerPins.createPort("N","FNN_ly0_ActF_G_En")
+
+Act_ly0_scan_out = outerPins.createPort("N","Act_ly0_scan_out")
+Act_ly0_scan_Din = outerPins.createPort("N","Act_ly0_scan_Din")
+Act_ly0_scan_CLK = outerPins.createPort("N","Act_ly0_scan_CLK")
+Act_ly0_scan_RSTB = outerPins.createPort("N","Act_ly0_scan_RSTB")
+Act_ly0_scan_Qout = outerPins.createPort("N","Act_ly0_scan_Qout")
+
+## Layer1
+FNN_ly1_G_En = outerPins.createPort("N","FNN_ly1_G_En")
+FNN_ly1_Dr_En = outerPins.createPort("N","FNN_ly1_Dr_En")
+FNN_ly1_ActF_G_En = outerPins.createPort("N","FNN_ly1_ActF_G_En")
+
+Act_ly1_scan_out = outerPins.createPort("N","Act_ly1_scan_out")
+Act_ly1_scan_Din = outerPins.createPort("N","Act_ly1_scan_Din")
+Act_ly1_scan_CLK = outerPins.createPort("N","Act_ly1_scan_CLK")
+Act_ly1_scan_RSTB = outerPins.createPort("N","Act_ly1_scan_RSTB")
+Act_ly1_scan_Qout = outerPins.createPort("N","Act_ly1_scan_Qout")
+
+
+## FinalLayer
+FNN_final_G_En = outerPins.createPort("N","FNN_final_G_En")
+FNN_final_Dr_En = outerPins.createPort("N","FNN_final_Dr_En")
+
+WTA_final_scan_out = outerPins.createPort("N","WTA_final_scan_out")
+WTA_final_scan_Din = outerPins.createPort("N","WTA_final_scan_Din")
+WTA_final_scan_CLK = outerPins.createPort("N","WTA_final_scan_CLK")
+WTA_final_scan_RSTB = outerPins.createPort("N","WTA_final_scan_RSTB")
+WTA_final_scan_Qout = outerPins.createPort("N","WTA_final_scan_Qout")
+
+WTA_final_Vmid = outerPins.createPort("N","WTA_final_Vmid")
+WTA_final_Vbias = outerPins.createPort("N","WTA_final_Vbias")
+
+
+######## Layer0 connections #########
+
+FNN_ly0_G_En += FNN_layer0["FNN_G_En"]
+
+for i in range(int(np.ceil(np.log2(first_layer[0])))):
+    FNN_shr_G_bit[i]+=FNN_layer0["FNN_G_bit"][i]
+
+FNN_ly0_Dr_En += FNN_layer0["FNN_Dr_En"]
+
+for i in range(int(np.ceil(np.log2(first_layer[1])))):
+    FNN_shr_Dr_bit[i]+=FNN_layer0["FNN_Dr_bit"][i]
+
+Prog_Drainline += FNN_layer0["FNN_Prog_Drln"]
+Run_Drainline += FNN_layer0["FNN_Run_Drln"]
+
+for i in range(first_layer[0]):
+    FNN_input[i]+=FNN_layer0["FNN_input"][i]
+
+FNN_ly0_ActF_G_En += FNN_layer0["FNN_ActF_G_En"]
+
+for i in range(int(np.ceil(np.log2(4)))):
+    FNN_shr_G_bit[i]+=FNN_layer0["FNN_ActF_G_bit"][i]
+
+ActF_sel += FNN_layer0["ActF_sel"]
+ActF_sel_b += FNN_layer0["ActF_sel_b"]
+ActF_Vg_bias += FNN_layer0["ActF_Vg_bias"]
+
+
+first_layer_FNN_out = [Wire(Top) for _ in range(first_layer[1])]
+for i in range(first_layer[1]):
+    first_layer_FNN_out[i]+=FNN_layer0["FNN_output"][i]
+
+Act_ly0_scan_out += FNN_layer0["Act_scan_out"]
+Act_ly0_scan_Din += FNN_layer0["Act_scan_Din"]
+Act_ly0_scan_CLK += FNN_layer0["Act_scan_CLK"]
+Act_ly0_scan_RSTB += FNN_layer0["Act_scan_RSTB"]
+Act_ly0_scan_Qout += FNN_layer0["Act_scan_Qout"]
+
+
+VTUN += FNN_layer0["VTUN"]
+DVDD += FNN_layer0["DVDD"]
+AVDD += FNN_layer0["AVDD"]
+GND += FNN_layer0["GND"]
+VINJ += FNN_layer0["VINJ"]
+VGPROG += FNN_layer0["VGPROG"]
+VGRUN += FNN_layer0["VGRUN"]
+prog_hv += FNN_layer0["prog_hv"]
+run_hv += FNN_layer0["run_hv"]
+
+######## Layer1 connections #########
+
+FNN_ly1_G_En += FNN_layer1["FNN_G_En"]
+
+for i in range(int(np.ceil(np.log2(second_layer[0])))):
+    FNN_shr_G_bit[i]+=FNN_layer1["FNN_G_bit"][i]
+
+FNN_ly1_Dr_En += FNN_layer1["FNN_Dr_En"]
+
+for i in range(int(np.ceil(np.log2(second_layer[1])))):
+    FNN_shr_Dr_bit[i]+=FNN_layer1["FNN_Dr_bit"][i]
+
+Prog_Drainline += FNN_layer1["FNN_Prog_Drln"]
+Run_Drainline += FNN_layer1["FNN_Run_Drln"]
+
+for i in range(second_layer[0]):
+    first_layer_FNN_out[i]+=FNN_layer1["FNN_input"][i]
+
+FNN_ly1_ActF_G_En += FNN_layer1["FNN_ActF_G_En"]
+
+for i in range(int(np.ceil(np.log2(4)))):
+    FNN_shr_G_bit[i]+=FNN_layer1["FNN_ActF_G_bit"][i]
+
+ActF_sel += FNN_layer1["ActF_sel"]
+ActF_sel_b += FNN_layer1["ActF_sel_b"]
+ActF_Vg_bias += FNN_layer1["ActF_Vg_bias"]
+
+second_layer_FNN_out = [Wire(Top) for _ in range(second_layer[1])]
+for i in range(second_layer[1]):
+    second_layer_FNN_out[i]+=FNN_layer1["FNN_output"][i]
+
+Act_ly1_scan_out += FNN_layer1["Act_scan_out"]
+Act_ly1_scan_Din += FNN_layer1["Act_scan_Din"]
+Act_ly1_scan_CLK += FNN_layer1["Act_scan_CLK"]
+Act_ly1_scan_RSTB += FNN_layer1["Act_scan_RSTB"]
+Act_ly1_scan_Qout += FNN_layer1["Act_scan_Qout"]
+
+
+VTUN += FNN_layer1["VTUN"]
+DVDD += FNN_layer1["DVDD"]
+AVDD += FNN_layer1["AVDD"]
+GND += FNN_layer1["GND"]
+VINJ += FNN_layer1["VINJ"]
+VGPROG += FNN_layer1["VGPROG"]
+VGRUN += FNN_layer1["VGRUN"]
+prog_hv += FNN_layer1["prog_hv"]
+run_hv += FNN_layer1["run_hv"]
+
+######## Final Layer connections #########
+
+FNN_final_G_En += Final_layer["VMM_G_En"]
+
+for i in range(int(np.ceil(np.log2(final_layer[0])))):
+    FNN_shr_G_bit[i]+=Final_layer["VMM_G_bit"][i]
+
+FNN_final_Dr_En += Final_layer["VMM_WTA_Dr_En"]
+
+for i in range(int(np.ceil(np.log2(final_layer[1])))):
+    FNN_shr_Dr_bit[i]+=Final_layer["VMM_WTA_Dr_bit"][i]
+
+Prog_Drainline += Final_layer["VMM_WTA_Prog_Drln"]
+Run_Drainline += Final_layer["VMM_WTA_Run_Drln"]
+
+for i in range(final_layer[0]):
+    second_layer_FNN_out[i]+=Final_layer["VMM_WTA_input"][i]
+
+final_layer_FNN_out = [Wire(Top) for _ in range(final_layer[1])]
+for i in range(final_layer[1]):
+    final_layer_FNN_out[i]+=Final_layer["VMM_WTA_output"][i]
+
+WTA_final_Vmid += Final_layer["WTA_Vmid"]
+
+WTA_final_Vbias += Final_layer["WTA_Vbias"]
+
+FNN_layer1["GateSwc_RnSig_CTRLB_b2"] += Final_layer["WTA_Vsel"]
+FNN_layer1["GateSwc_RnSig_Vg_b2"] += Final_layer["WTA_Vg"]
+
+
+WTA_final_scan_out += Final_layer["WTA_scan_out"]
+WTA_final_scan_Din += Final_layer["WTA_scan_Din"]
+WTA_final_scan_CLK += Final_layer["WTA_scan_CLK"]
+WTA_final_scan_RSTB += Final_layer["WTA_scan_RSTB"]
+WTA_final_scan_Qout += Final_layer["WTA_scan_Qout"]
+
+
+VTUN += Final_layer["VTUN"]
+DVDD += Final_layer["DVDD"]
+AVDD += Final_layer["AVDD"]
+GND += Final_layer["GND"]
+VINJ += Final_layer["VINJ"]
+VGPROG += Final_layer["VGPROG"]
+VGRUN += Final_layer["VGRUN"]
+prog_hv += Final_layer["prog_hv"]
+run_hv += Final_layer["run_hv"]
 
 #####################################################################################################
+
 
 
 
@@ -545,5 +763,5 @@ qparams["stage3"] = "mask none force effort 100"
 
 
 
-ac.compile_asic(Top,process="TSMC350nm", fileName="FullyCon_NN", p_and_r = True, route=True, design_limits = design_limits, location_islands = FNN_layer1["location_islands"] + FNN_layer2["location_islands"] + Final_layer["location_islands"], qparams=qparams)
+ac.compile_asic(Top,process="TSMC350nm", fileName="FullyCon_NN", p_and_r = True, route=False, design_limits = design_limits, location_islands = FNN_layer0["location_islands"] + FNN_layer1["location_islands"] + Final_layer["location_islands"], qparams=qparams)
 

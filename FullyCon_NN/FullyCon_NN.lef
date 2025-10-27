@@ -1350,137 +1350,6 @@ MACRO TSMC350nm_4TGate_ST_BMatrix
   END GND
 END TSMC350nm_4TGate_ST_BMatrix
 
-MACRO TSMC350nm_VerticalScanner_STD
-  PIN In<3>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 3.5 1.4 4.9 ;
-    END
-  END In<3>
-  PIN In<2>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 6.3 1.5 7.7 ;
-    END
-  END In<2>
-  PIN In<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 14.0 1.4 15.4 ;
-    END
-  END In<1>
-  PIN In<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 17.5 1.4 18.9 ;
-    END
-  END In<0>
-  PIN RSTBar_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 156.1 0.0 157.5 1.23 ;
-    END
-  END RSTBar_b
-  PIN CLK_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 149.8 0.0 151.2 1.23 ;
-    END
-  END CLK_b
-  PIN Out
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 5.15 20.68 6.65 22.0 ;
-    END
-  END Out
-  PIN Out_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 5.15 0.0 6.65 1.27 ;
-    END
-  END Out_b
-  PIN VDD_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 45.86 0.0 47.36 1.28 ;
-    END
-  END VDD_b
-  PIN GND_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 53.79 0.0 55.29 1.23 ;
-    END
-  END GND_b
-  PIN VDD
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 45.86 20.77 47.36 22.0 ;
-    END
-  END VDD
-  PIN GND
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 53.79 20.84 55.29 22.0 ;
-    END
-  END GND
-  PIN Din
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 42.0 20.77 43.4 22.0 ;
-    END
-  END Din
-  PIN Qout
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 42.0 0.0 43.4 1.23 ;
-    END
-  END Qout
-  PIN RSTBar
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 156.1 20.77 157.5 22.0 ;
-    END
-  END RSTBar
-  PIN CLK
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 149.8 20.77 151.2 22.0 ;
-    END
-  END CLK
-END TSMC350nm_VerticalScanner_STD
-
 MACRO TSMC350nm_4x2_Indirect
   PIN Vg<1>
     DIRECTION INOUT ;
@@ -1788,208 +1657,1864 @@ MACRO TSMC350nm_4x2_Indirect
   END Vd_R<2>
 END TSMC350nm_4x2_Indirect
 
-MACRO FNN_Relu_and_Sig
-  PIN VTUN
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 97.15 21.51 98.15 22.0 ;
-    END
-  END VTUN
-  PIN Vin_p<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 0.0 12.23 0.44 13.23 ;
-    END
-  END Vin_p<0>
-  PIN Vin_p<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 0.0 16.36 0.44 17.36 ;
-    END
-  END Vin_p<1>
-  PIN Vin_m<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 0.0 14.23 0.44 15.23 ;
-    END
-  END Vin_m<1>
-  PIN Vin_m<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 0.0 1.57 0.44 2.57 ;
-    END
-  END Vin_m<0>
-  PIN VD_P<2>
+MACRO tile_analog_frame
+  PIN n_VTUN
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 192.4 3.73 192.84 4.53 ;
+        RECT 13.3 1350.18 14.7 1352.98 ;
     END
-  END VD_P<2>
-  PIN VD_P<1>
+  END n_VTUN
+  PIN n_DVDD
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 192.4 9.62 192.84 10.42 ;
+        RECT 27.3 1350.18 28.7 1352.98 ;
     END
-  END VD_P<1>
-  PIN VD_P<0>
+  END n_DVDD
+  PIN n_AVDD
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 192.46 19.31 192.84 20.11 ;
+        RECT 41.3 1350.18 42.7 1352.98 ;
     END
-  END VD_P<0>
-  PIN AVDD<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 189.99 21.57 190.99 22.0 ;
-    END
-  END AVDD<1>
-  PIN Vg<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 128.82 21.57 129.62 22.0 ;
-    END
-  END Vg<1>
-  PIN run
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 67.84 21.57 68.64 22.0 ;
-    END
-  END run
-  PIN prog
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 62.61 21.57 63.41 22.0 ;
-    END
-  END prog
-  PIN sel
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 59.64 21.57 60.44 22.0 ;
-    END
-  END sel
-  PIN Vg_bias
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 57.76 21.57 58.56 22.0 ;
-    END
-  END Vg_bias
-  PIN selb
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 55.56 21.57 56.36 22.0 ;
-    END
-  END selb
-  PIN Vsel<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 151.86 21.57 152.66 22.0 ;
-    END
-  END Vsel<1>
-  PIN GND
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 15.56 21.57 16.56 22.0 ;
-    END
-  END GND
-  PIN VINJ
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 39.69 21.57 40.59 22.0 ;
-    END
-  END VINJ
-  PIN AVDD<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 4.29 21.57 5.29 22.0 ;
-    END
-  END AVDD<0>
-  PIN Vsel<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 42.82 21.57 43.42 22.0 ;
-    END
-  END Vsel<0>
-  PIN Vg<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 65.66 21.57 66.46 22.0 ;
-    END
-  END Vg<0>
-  PIN Vsel_drt<1>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 109.58 21.57 110.38 22.0 ;
-    END
-  END Vsel_drt<1>
-  PIN Vsel_drt<0>
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 84.9 21.57 85.7 22.0 ;
-    END
-  END Vsel_drt<0>
-  PIN Output<0>
+  END n_AVDD
+  PIN n_GND
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 192.4 15.86 192.84 16.66 ;
+        RECT 55.3 1350.18 56.7 1352.98 ;
     END
-  END Output<0>
-  PIN Output<1>
+  END n_GND
+  PIN n_VINJ
     DIRECTION INOUT ;
     USE SIGNAL ;
     PORT
       LAYER METAL3 ;
-        RECT 192.4 12.01 192.84 12.81 ;
+        RECT 69.3 1350.18 70.7 1352.98 ;
     END
-  END Output<1>
-END FNN_Relu_and_Sig
+  END n_VINJ
+  PIN n_VGPROG
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 83.3 1350.18 84.7 1352.98 ;
+    END
+  END n_VGPROG
+  PIN n_VGRUN
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 97.3 1350.18 98.7 1352.98 ;
+    END
+  END n_VGRUN
+  PIN n_prog_hv
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 111.3 1350.18 112.7 1352.98 ;
+    END
+  END n_prog_hv
+  PIN n_run_hv
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 125.3 1350.18 126.7 1352.98 ;
+    END
+  END n_run_hv
+  PIN n_FNN_shr_G_bit<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 139.3 1350.18 140.7 1352.98 ;
+    END
+  END n_FNN_shr_G_bit<0>
+  PIN n_FNN_shr_G_bit<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 153.3 1350.18 154.7 1352.98 ;
+    END
+  END n_FNN_shr_G_bit<1>
+  PIN n_FNN_shr_G_bit<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 167.3 1350.18 168.7 1352.98 ;
+    END
+  END n_FNN_shr_G_bit<2>
+  PIN n_FNN_shr_G_bit<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 181.3 1350.18 182.7 1352.98 ;
+    END
+  END n_FNN_shr_G_bit<3>
+  PIN n_FNN_shr_G_bit<4>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 195.3 1350.18 196.7 1352.98 ;
+    END
+  END n_FNN_shr_G_bit<4>
+  PIN n_FNN_shr_G_bit<5>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 209.3 1350.18 210.7 1352.98 ;
+    END
+  END n_FNN_shr_G_bit<5>
+  PIN n_FNN_shr_G_bit<6>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 223.3 1350.18 224.7 1352.98 ;
+    END
+  END n_FNN_shr_G_bit<6>
+  PIN n_FNN_shr_G_bit<7>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 237.3 1350.18 238.7 1352.98 ;
+    END
+  END n_FNN_shr_G_bit<7>
+  PIN n_FNN_shr_Dr_bit<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 251.3 1350.18 252.7 1352.98 ;
+    END
+  END n_FNN_shr_Dr_bit<0>
+  PIN n_FNN_shr_Dr_bit<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 265.3 1350.18 266.7 1352.98 ;
+    END
+  END n_FNN_shr_Dr_bit<1>
+  PIN n_FNN_shr_Dr_bit<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 279.3 1350.18 280.7 1352.98 ;
+    END
+  END n_FNN_shr_Dr_bit<2>
+  PIN n_FNN_shr_Dr_bit<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 293.3 1350.18 294.7 1352.98 ;
+    END
+  END n_FNN_shr_Dr_bit<3>
+  PIN n_FNN_shr_Dr_bit<4>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 307.3 1350.18 308.7 1352.98 ;
+    END
+  END n_FNN_shr_Dr_bit<4>
+  PIN n_FNN_shr_Dr_bit<5>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 321.3 1350.18 322.7 1352.98 ;
+    END
+  END n_FNN_shr_Dr_bit<5>
+  PIN n_FNN_shr_Dr_bit<6>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 335.3 1350.18 336.7 1352.98 ;
+    END
+  END n_FNN_shr_Dr_bit<6>
+  PIN n_Prog_Drainline
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 349.3 1350.18 350.7 1352.98 ;
+    END
+  END n_Prog_Drainline
+  PIN n_Run_Drainline
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 363.3 1350.18 364.7 1352.98 ;
+    END
+  END n_Run_Drainline
+  PIN n_ActF_sel
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 377.3 1350.18 378.7 1352.98 ;
+    END
+  END n_ActF_sel
+  PIN n_ActF_selb
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 391.3 1350.18 392.7 1352.98 ;
+    END
+  END n_ActF_selb
+  PIN n_ActF_Vg_bias
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 405.3 1350.18 406.7 1352.98 ;
+    END
+  END n_ActF_Vg_bias
+  PIN n_FNN_ly0_G_En
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 419.3 1350.18 420.7 1352.98 ;
+    END
+  END n_FNN_ly0_G_En
+  PIN n_FNN_ly0_Dr_En
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 433.3 1350.18 434.7 1352.98 ;
+    END
+  END n_FNN_ly0_Dr_En
+  PIN n_FNN_input<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 447.3 1350.18 448.7 1352.98 ;
+    END
+  END n_FNN_input<0>
+  PIN n_FNN_input<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 461.3 1350.18 462.7 1352.98 ;
+    END
+  END n_FNN_input<1>
+  PIN n_FNN_input<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 475.3 1350.18 476.7 1352.98 ;
+    END
+  END n_FNN_input<2>
+  PIN n_FNN_input<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 489.3 1350.18 490.7 1352.98 ;
+    END
+  END n_FNN_input<3>
+  PIN n_FNN_input<4>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 503.3 1350.18 504.7 1352.98 ;
+    END
+  END n_FNN_input<4>
+  PIN n_FNN_input<5>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 517.3 1350.18 518.7 1352.98 ;
+    END
+  END n_FNN_input<5>
+  PIN n_FNN_input<6>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 531.3 1350.18 532.7 1352.98 ;
+    END
+  END n_FNN_input<6>
+  PIN n_FNN_input<7>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 545.3 1350.18 546.7 1352.98 ;
+    END
+  END n_FNN_input<7>
+  PIN n_FNN_input<8>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 559.3 1350.18 560.7 1352.98 ;
+    END
+  END n_FNN_input<8>
+  PIN n_FNN_input<9>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 573.3 1350.18 574.7 1352.98 ;
+    END
+  END n_FNN_input<9>
+  PIN n_FNN_input<10>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 587.3 1350.18 588.7 1352.98 ;
+    END
+  END n_FNN_input<10>
+  PIN n_FNN_input<11>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 601.3 1350.18 602.7 1352.98 ;
+    END
+  END n_FNN_input<11>
+  PIN n_FNN_input<12>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 615.3 1350.18 616.7 1352.98 ;
+    END
+  END n_FNN_input<12>
+  PIN n_FNN_input<13>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 629.3 1350.18 630.7 1352.98 ;
+    END
+  END n_FNN_input<13>
+  PIN n_FNN_input<14>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 643.3 1350.18 644.7 1352.98 ;
+    END
+  END n_FNN_input<14>
+  PIN n_FNN_input<15>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 657.3 1350.18 658.7 1352.98 ;
+    END
+  END n_FNN_input<15>
+  PIN n_FNN_input<16>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 671.3 1350.18 672.7 1352.98 ;
+    END
+  END n_FNN_input<16>
+  PIN n_FNN_input<17>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 685.3 1350.18 686.7 1352.98 ;
+    END
+  END n_FNN_input<17>
+  PIN n_FNN_input<18>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 699.3 1350.18 700.7 1352.98 ;
+    END
+  END n_FNN_input<18>
+  PIN n_FNN_input<19>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 713.3 1350.18 714.7 1352.98 ;
+    END
+  END n_FNN_input<19>
+  PIN n_FNN_input<20>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 727.3 1350.18 728.7 1352.98 ;
+    END
+  END n_FNN_input<20>
+  PIN n_FNN_input<21>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 741.3 1350.18 742.7 1352.98 ;
+    END
+  END n_FNN_input<21>
+  PIN n_FNN_input<22>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 755.3 1350.18 756.7 1352.98 ;
+    END
+  END n_FNN_input<22>
+  PIN n_FNN_input<23>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 769.3 1350.18 770.7 1352.98 ;
+    END
+  END n_FNN_input<23>
+  PIN n_FNN_input<24>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 783.3 1350.18 784.7 1352.98 ;
+    END
+  END n_FNN_input<24>
+  PIN n_FNN_input<25>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 797.3 1350.18 798.7 1352.98 ;
+    END
+  END n_FNN_input<25>
+  PIN n_FNN_input<26>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 811.3 1350.18 812.7 1352.98 ;
+    END
+  END n_FNN_input<26>
+  PIN n_FNN_input<27>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 825.3 1350.18 826.7 1352.98 ;
+    END
+  END n_FNN_input<27>
+  PIN n_FNN_input<28>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 839.3 1350.18 840.7 1352.98 ;
+    END
+  END n_FNN_input<28>
+  PIN n_FNN_input<29>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 853.3 1350.18 854.7 1352.98 ;
+    END
+  END n_FNN_input<29>
+  PIN n_FNN_input<30>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 867.3 1350.18 868.7 1352.98 ;
+    END
+  END n_FNN_input<30>
+  PIN n_FNN_input<31>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 881.3 1350.18 882.7 1352.98 ;
+    END
+  END n_FNN_input<31>
+  PIN n_FNN_input<32>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 895.3 1350.18 896.7 1352.98 ;
+    END
+  END n_FNN_input<32>
+  PIN n_FNN_input<33>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 909.3 1350.18 910.7 1352.98 ;
+    END
+  END n_FNN_input<33>
+  PIN n_FNN_input<34>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 923.3 1350.18 924.7 1352.98 ;
+    END
+  END n_FNN_input<34>
+  PIN n_FNN_input<35>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 937.3 1350.18 938.7 1352.98 ;
+    END
+  END n_FNN_input<35>
+  PIN n_FNN_input<36>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 951.3 1350.18 952.7 1352.98 ;
+    END
+  END n_FNN_input<36>
+  PIN n_FNN_input<37>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 965.3 1350.18 966.7 1352.98 ;
+    END
+  END n_FNN_input<37>
+  PIN n_FNN_input<38>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 979.3 1350.18 980.7 1352.98 ;
+    END
+  END n_FNN_input<38>
+  PIN n_FNN_input<39>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 993.3 1350.18 994.7 1352.98 ;
+    END
+  END n_FNN_input<39>
+  PIN n_FNN_input<40>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1007.3 1350.18 1008.7 1352.98 ;
+    END
+  END n_FNN_input<40>
+  PIN n_FNN_input<41>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1021.3 1350.18 1022.7 1352.98 ;
+    END
+  END n_FNN_input<41>
+  PIN n_FNN_input<42>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1035.3 1350.18 1036.7 1352.98 ;
+    END
+  END n_FNN_input<42>
+  PIN n_FNN_input<43>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1049.3 1350.18 1050.7 1352.98 ;
+    END
+  END n_FNN_input<43>
+  PIN n_FNN_input<44>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1063.3 1350.18 1064.7 1352.98 ;
+    END
+  END n_FNN_input<44>
+  PIN n_FNN_input<45>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1077.3 1350.18 1078.7 1352.98 ;
+    END
+  END n_FNN_input<45>
+  PIN n_FNN_input<46>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1091.3 1350.18 1092.7 1352.98 ;
+    END
+  END n_FNN_input<46>
+  PIN n_FNN_input<47>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1105.3 1350.18 1106.7 1352.98 ;
+    END
+  END n_FNN_input<47>
+  PIN n_FNN_input<48>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1119.3 1350.18 1120.7 1352.98 ;
+    END
+  END n_FNN_input<48>
+  PIN n_FNN_input<49>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1133.3 1350.18 1134.7 1352.98 ;
+    END
+  END n_FNN_input<49>
+  PIN n_FNN_input<50>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1147.3 1350.18 1148.7 1352.98 ;
+    END
+  END n_FNN_input<50>
+  PIN n_FNN_input<51>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1161.3 1350.18 1162.7 1352.98 ;
+    END
+  END n_FNN_input<51>
+  PIN n_FNN_input<52>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1175.3 1350.18 1176.7 1352.98 ;
+    END
+  END n_FNN_input<52>
+  PIN n_FNN_input<53>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1189.3 1350.18 1190.7 1352.98 ;
+    END
+  END n_FNN_input<53>
+  PIN n_FNN_input<54>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1203.3 1350.18 1204.7 1352.98 ;
+    END
+  END n_FNN_input<54>
+  PIN n_FNN_input<55>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1217.3 1350.18 1218.7 1352.98 ;
+    END
+  END n_FNN_input<55>
+  PIN n_FNN_input<56>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1231.3 1350.18 1232.7 1352.98 ;
+    END
+  END n_FNN_input<56>
+  PIN n_FNN_input<57>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1245.3 1350.18 1246.7 1352.98 ;
+    END
+  END n_FNN_input<57>
+  PIN n_FNN_input<58>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1259.3 1350.18 1260.7 1352.98 ;
+    END
+  END n_FNN_input<58>
+  PIN n_FNN_input<59>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1273.3 1350.18 1274.7 1352.98 ;
+    END
+  END n_FNN_input<59>
+  PIN n_FNN_input<60>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1287.3 1350.18 1288.7 1352.98 ;
+    END
+  END n_FNN_input<60>
+  PIN n_FNN_input<61>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1301.3 1350.18 1302.7 1352.98 ;
+    END
+  END n_FNN_input<61>
+  PIN n_FNN_input<62>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1315.3 1350.18 1316.7 1352.98 ;
+    END
+  END n_FNN_input<62>
+  PIN n_FNN_input<63>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1329.3 1350.18 1330.7 1352.98 ;
+    END
+  END n_FNN_input<63>
+  PIN n_FNN_input<64>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1343.3 1350.18 1344.7 1352.98 ;
+    END
+  END n_FNN_input<64>
+  PIN n_FNN_input<65>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1357.3 1350.18 1358.7 1352.98 ;
+    END
+  END n_FNN_input<65>
+  PIN n_FNN_input<66>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1371.3 1350.18 1372.7 1352.98 ;
+    END
+  END n_FNN_input<66>
+  PIN n_FNN_input<67>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1385.3 1350.18 1386.7 1352.98 ;
+    END
+  END n_FNN_input<67>
+  PIN n_FNN_input<68>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1399.3 1350.18 1400.7 1352.98 ;
+    END
+  END n_FNN_input<68>
+  PIN n_FNN_input<69>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1413.3 1350.18 1414.7 1352.98 ;
+    END
+  END n_FNN_input<69>
+  PIN n_FNN_input<70>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1427.3 1350.18 1428.7 1352.98 ;
+    END
+  END n_FNN_input<70>
+  PIN n_FNN_input<71>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1441.3 1350.18 1442.7 1352.98 ;
+    END
+  END n_FNN_input<71>
+  PIN n_FNN_input<72>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1455.3 1350.18 1456.7 1352.98 ;
+    END
+  END n_FNN_input<72>
+  PIN n_FNN_input<73>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1469.3 1350.18 1470.7 1352.98 ;
+    END
+  END n_FNN_input<73>
+  PIN n_FNN_input<74>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1483.3 1350.18 1484.7 1352.98 ;
+    END
+  END n_FNN_input<74>
+  PIN n_FNN_input<75>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1497.3 1350.18 1498.7 1352.98 ;
+    END
+  END n_FNN_input<75>
+  PIN n_FNN_input<76>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1511.3 1350.18 1512.7 1352.98 ;
+    END
+  END n_FNN_input<76>
+  PIN n_FNN_input<77>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1525.3 1350.18 1526.7 1352.98 ;
+    END
+  END n_FNN_input<77>
+  PIN n_FNN_input<78>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1539.3 1350.18 1540.7 1352.98 ;
+    END
+  END n_FNN_input<78>
+  PIN n_FNN_input<79>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1553.3 1350.18 1554.7 1352.98 ;
+    END
+  END n_FNN_input<79>
+  PIN n_FNN_input<80>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1567.3 1350.18 1568.7 1352.98 ;
+    END
+  END n_FNN_input<80>
+  PIN n_FNN_input<81>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1581.3 1350.18 1582.7 1352.98 ;
+    END
+  END n_FNN_input<81>
+  PIN n_FNN_input<82>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1595.3 1350.18 1596.7 1352.98 ;
+    END
+  END n_FNN_input<82>
+  PIN n_FNN_input<83>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1609.3 1350.18 1610.7 1352.98 ;
+    END
+  END n_FNN_input<83>
+  PIN n_FNN_input<84>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1623.3 1350.18 1624.7 1352.98 ;
+    END
+  END n_FNN_input<84>
+  PIN n_FNN_input<85>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1637.3 1350.18 1638.7 1352.98 ;
+    END
+  END n_FNN_input<85>
+  PIN n_FNN_input<86>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1651.3 1350.18 1652.7 1352.98 ;
+    END
+  END n_FNN_input<86>
+  PIN n_FNN_input<87>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1665.3 1350.18 1666.7 1352.98 ;
+    END
+  END n_FNN_input<87>
+  PIN n_FNN_input<88>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1679.3 1350.18 1680.7 1352.98 ;
+    END
+  END n_FNN_input<88>
+  PIN n_FNN_input<89>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1693.3 1350.18 1694.7 1352.98 ;
+    END
+  END n_FNN_input<89>
+  PIN n_FNN_input<90>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1707.3 1350.18 1708.7 1352.98 ;
+    END
+  END n_FNN_input<90>
+  PIN n_FNN_input<91>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1721.3 1350.18 1722.7 1352.98 ;
+    END
+  END n_FNN_input<91>
+  PIN n_FNN_input<92>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1735.3 1350.18 1736.7 1352.98 ;
+    END
+  END n_FNN_input<92>
+  PIN n_FNN_input<93>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1749.3 1350.18 1750.7 1352.98 ;
+    END
+  END n_FNN_input<93>
+  PIN n_FNN_input<94>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1763.3 1350.18 1764.7 1352.98 ;
+    END
+  END n_FNN_input<94>
+  PIN n_FNN_input<95>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1777.3 1350.18 1778.7 1352.98 ;
+    END
+  END n_FNN_input<95>
+  PIN n_FNN_input<96>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1791.3 1350.18 1792.7 1352.98 ;
+    END
+  END n_FNN_input<96>
+  PIN n_FNN_input<97>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1805.3 1350.18 1806.7 1352.98 ;
+    END
+  END n_FNN_input<97>
+  PIN n_FNN_input<98>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1819.3 1350.18 1820.7 1352.98 ;
+    END
+  END n_FNN_input<98>
+  PIN n_FNN_input<99>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1833.3 1350.18 1834.7 1352.98 ;
+    END
+  END n_FNN_input<99>
+  PIN n_FNN_input<100>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1847.3 1350.18 1848.7 1352.98 ;
+    END
+  END n_FNN_input<100>
+  PIN n_FNN_input<101>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1861.3 1350.18 1862.7 1352.98 ;
+    END
+  END n_FNN_input<101>
+  PIN n_FNN_input<102>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1875.3 1350.18 1876.7 1352.98 ;
+    END
+  END n_FNN_input<102>
+  PIN n_FNN_input<103>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1889.3 1350.18 1890.7 1352.98 ;
+    END
+  END n_FNN_input<103>
+  PIN n_FNN_input<104>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1903.3 1350.18 1904.7 1352.98 ;
+    END
+  END n_FNN_input<104>
+  PIN n_FNN_input<105>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1917.3 1350.18 1918.7 1352.98 ;
+    END
+  END n_FNN_input<105>
+  PIN n_FNN_input<106>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1931.3 1350.18 1932.7 1352.98 ;
+    END
+  END n_FNN_input<106>
+  PIN n_FNN_input<107>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1945.3 1350.18 1946.7 1352.98 ;
+    END
+  END n_FNN_input<107>
+  PIN n_FNN_input<108>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1959.3 1350.18 1960.7 1352.98 ;
+    END
+  END n_FNN_input<108>
+  PIN n_FNN_input<109>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1973.3 1350.18 1974.7 1352.98 ;
+    END
+  END n_FNN_input<109>
+  PIN n_FNN_input<110>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 1987.3 1350.18 1988.7 1352.98 ;
+    END
+  END n_FNN_input<110>
+  PIN n_FNN_input<111>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2001.3 1350.18 2002.7 1352.98 ;
+    END
+  END n_FNN_input<111>
+  PIN n_FNN_input<112>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2015.3 1350.18 2016.7 1352.98 ;
+    END
+  END n_FNN_input<112>
+  PIN n_FNN_input<113>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2029.3 1350.18 2030.7 1352.98 ;
+    END
+  END n_FNN_input<113>
+  PIN n_FNN_input<114>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2043.3 1350.18 2044.7 1352.98 ;
+    END
+  END n_FNN_input<114>
+  PIN n_FNN_input<115>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2057.3 1350.18 2058.7 1352.98 ;
+    END
+  END n_FNN_input<115>
+  PIN n_FNN_input<116>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2071.3 1350.18 2072.7 1352.98 ;
+    END
+  END n_FNN_input<116>
+  PIN n_FNN_input<117>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2085.3 1350.18 2086.7 1352.98 ;
+    END
+  END n_FNN_input<117>
+  PIN n_FNN_input<118>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2099.3 1350.18 2100.7 1352.98 ;
+    END
+  END n_FNN_input<118>
+  PIN n_FNN_input<119>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2113.3 1350.18 2114.7 1352.98 ;
+    END
+  END n_FNN_input<119>
+  PIN n_FNN_input<120>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2127.3 1350.18 2128.7 1352.98 ;
+    END
+  END n_FNN_input<120>
+  PIN n_FNN_input<121>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2141.3 1350.18 2142.7 1352.98 ;
+    END
+  END n_FNN_input<121>
+  PIN n_FNN_input<122>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2155.3 1350.18 2156.7 1352.98 ;
+    END
+  END n_FNN_input<122>
+  PIN n_FNN_input<123>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2169.3 1350.18 2170.7 1352.98 ;
+    END
+  END n_FNN_input<123>
+  PIN n_FNN_input<124>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2183.3 1350.18 2184.7 1352.98 ;
+    END
+  END n_FNN_input<124>
+  PIN n_FNN_input<125>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2197.3 1350.18 2198.7 1352.98 ;
+    END
+  END n_FNN_input<125>
+  PIN n_FNN_input<126>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2211.3 1350.18 2212.7 1352.98 ;
+    END
+  END n_FNN_input<126>
+  PIN n_FNN_input<127>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2225.3 1350.18 2226.7 1352.98 ;
+    END
+  END n_FNN_input<127>
+  PIN n_FNN_input<128>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2239.3 1350.18 2240.7 1352.98 ;
+    END
+  END n_FNN_input<128>
+  PIN n_FNN_input<129>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2253.3 1350.18 2254.7 1352.98 ;
+    END
+  END n_FNN_input<129>
+  PIN n_FNN_input<130>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2267.3 1350.18 2268.7 1352.98 ;
+    END
+  END n_FNN_input<130>
+  PIN n_FNN_input<131>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2281.3 1350.18 2282.7 1352.98 ;
+    END
+  END n_FNN_input<131>
+  PIN n_FNN_input<132>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2295.3 1350.18 2296.7 1352.98 ;
+    END
+  END n_FNN_input<132>
+  PIN n_FNN_input<133>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2309.3 1350.18 2310.7 1352.98 ;
+    END
+  END n_FNN_input<133>
+  PIN n_FNN_input<134>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2323.3 1350.18 2324.7 1352.98 ;
+    END
+  END n_FNN_input<134>
+  PIN n_FNN_input<135>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2337.3 1350.18 2338.7 1352.98 ;
+    END
+  END n_FNN_input<135>
+  PIN n_FNN_input<136>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2351.3 1350.18 2352.7 1352.98 ;
+    END
+  END n_FNN_input<136>
+  PIN n_FNN_input<137>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2365.3 1350.18 2366.7 1352.98 ;
+    END
+  END n_FNN_input<137>
+  PIN n_FNN_input<138>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2379.3 1350.18 2380.7 1352.98 ;
+    END
+  END n_FNN_input<138>
+  PIN n_FNN_input<139>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2393.3 1350.18 2394.7 1352.98 ;
+    END
+  END n_FNN_input<139>
+  PIN n_FNN_input<140>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2407.3 1350.18 2408.7 1352.98 ;
+    END
+  END n_FNN_input<140>
+  PIN n_FNN_input<141>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2421.3 1350.18 2422.7 1352.98 ;
+    END
+  END n_FNN_input<141>
+  PIN n_FNN_input<142>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2435.3 1350.18 2436.7 1352.98 ;
+    END
+  END n_FNN_input<142>
+  PIN n_FNN_input<143>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2449.3 1350.18 2450.7 1352.98 ;
+    END
+  END n_FNN_input<143>
+  PIN n_FNN_input<144>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2463.3 1350.18 2464.7 1352.98 ;
+    END
+  END n_FNN_input<144>
+  PIN n_FNN_input<145>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2477.3 1350.18 2478.7 1352.98 ;
+    END
+  END n_FNN_input<145>
+  PIN n_FNN_input<146>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2491.3 1350.18 2492.7 1352.98 ;
+    END
+  END n_FNN_input<146>
+  PIN n_FNN_input<147>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2505.3 1350.18 2506.7 1352.98 ;
+    END
+  END n_FNN_input<147>
+  PIN n_FNN_input<148>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2519.3 1350.18 2520.7 1352.98 ;
+    END
+  END n_FNN_input<148>
+  PIN n_FNN_input<149>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2533.3 1350.18 2534.7 1352.98 ;
+    END
+  END n_FNN_input<149>
+  PIN n_FNN_input<150>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2547.3 1350.18 2548.7 1352.98 ;
+    END
+  END n_FNN_input<150>
+  PIN n_FNN_input<151>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2561.3 1350.18 2562.7 1352.98 ;
+    END
+  END n_FNN_input<151>
+  PIN n_FNN_input<152>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2575.3 1350.18 2576.7 1352.98 ;
+    END
+  END n_FNN_input<152>
+  PIN n_FNN_input<153>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2589.3 1350.18 2590.7 1352.98 ;
+    END
+  END n_FNN_input<153>
+  PIN n_FNN_input<154>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2603.3 1350.18 2604.7 1352.98 ;
+    END
+  END n_FNN_input<154>
+  PIN n_FNN_input<155>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2617.3 1350.18 2618.7 1352.98 ;
+    END
+  END n_FNN_input<155>
+  PIN n_FNN_input<156>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2631.3 1350.18 2632.7 1352.98 ;
+    END
+  END n_FNN_input<156>
+  PIN n_FNN_input<157>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2645.3 1350.18 2646.7 1352.98 ;
+    END
+  END n_FNN_input<157>
+  PIN n_FNN_input<158>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2659.3 1350.18 2660.7 1352.98 ;
+    END
+  END n_FNN_input<158>
+  PIN n_FNN_input<159>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2673.3 1350.18 2674.7 1352.98 ;
+    END
+  END n_FNN_input<159>
+  PIN n_FNN_input<160>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2687.3 1350.18 2688.7 1352.98 ;
+    END
+  END n_FNN_input<160>
+  PIN n_FNN_input<161>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2701.3 1350.18 2702.7 1352.98 ;
+    END
+  END n_FNN_input<161>
+  PIN n_FNN_input<162>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2715.3 1350.18 2716.7 1352.98 ;
+    END
+  END n_FNN_input<162>
+  PIN n_FNN_input<163>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2729.3 1350.18 2730.7 1352.98 ;
+    END
+  END n_FNN_input<163>
+  PIN n_FNN_input<164>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2743.3 1350.18 2744.7 1352.98 ;
+    END
+  END n_FNN_input<164>
+  PIN n_FNN_input<165>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2757.3 1350.18 2758.7 1352.98 ;
+    END
+  END n_FNN_input<165>
+  PIN n_FNN_input<166>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2771.3 1350.18 2772.7 1352.98 ;
+    END
+  END n_FNN_input<166>
+  PIN n_FNN_input<167>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2785.3 1350.18 2786.7 1352.98 ;
+    END
+  END n_FNN_input<167>
+  PIN n_FNN_input<168>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2799.3 1350.18 2800.7 1352.98 ;
+    END
+  END n_FNN_input<168>
+  PIN n_FNN_input<169>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2813.3 1350.18 2814.7 1352.98 ;
+    END
+  END n_FNN_input<169>
+  PIN n_FNN_input<170>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2827.3 1350.18 2828.7 1352.98 ;
+    END
+  END n_FNN_input<170>
+  PIN n_FNN_input<171>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2841.3 1350.18 2842.7 1352.98 ;
+    END
+  END n_FNN_input<171>
+  PIN n_FNN_input<172>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2855.3 1350.18 2856.7 1352.98 ;
+    END
+  END n_FNN_input<172>
+  PIN n_FNN_input<173>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2869.3 1350.18 2870.7 1352.98 ;
+    END
+  END n_FNN_input<173>
+  PIN n_FNN_input<174>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2883.3 1350.18 2884.7 1352.98 ;
+    END
+  END n_FNN_input<174>
+  PIN n_FNN_input<175>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2897.3 1350.18 2898.7 1352.98 ;
+    END
+  END n_FNN_input<175>
+  PIN n_FNN_input<176>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2911.3 1350.18 2912.7 1352.98 ;
+    END
+  END n_FNN_input<176>
+  PIN n_FNN_input<177>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2925.3 1350.18 2926.7 1352.98 ;
+    END
+  END n_FNN_input<177>
+  PIN n_FNN_ly0_ActF_G_En
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2939.3 1350.18 2940.7 1352.98 ;
+    END
+  END n_FNN_ly0_ActF_G_En
+  PIN n_Act_ly0_scan_out
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2953.3 1350.18 2954.7 1352.98 ;
+    END
+  END n_Act_ly0_scan_out
+  PIN n_Act_ly0_scan_Din
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2967.3 1350.18 2968.7 1352.98 ;
+    END
+  END n_Act_ly0_scan_Din
+  PIN n_Act_ly0_scan_CLK
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2981.3 1350.18 2982.7 1352.98 ;
+    END
+  END n_Act_ly0_scan_CLK
+  PIN n_Act_ly0_scan_RSTB
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 2995.3 1350.18 2996.7 1352.98 ;
+    END
+  END n_Act_ly0_scan_RSTB
+  PIN n_Act_ly0_scan_Qout
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3009.3 1350.18 3010.7 1352.98 ;
+    END
+  END n_Act_ly0_scan_Qout
+  PIN n_FNN_ly1_G_En
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3023.3 1350.18 3024.7 1352.98 ;
+    END
+  END n_FNN_ly1_G_En
+  PIN n_FNN_ly1_Dr_En
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3037.3 1350.18 3038.7 1352.98 ;
+    END
+  END n_FNN_ly1_Dr_En
+  PIN n_FNN_ly1_ActF_G_En
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3051.3 1350.18 3052.7 1352.98 ;
+    END
+  END n_FNN_ly1_ActF_G_En
+  PIN n_Act_ly1_scan_out
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3065.3 1350.18 3066.7 1352.98 ;
+    END
+  END n_Act_ly1_scan_out
+  PIN n_Act_ly1_scan_Din
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3079.3 1350.18 3080.7 1352.98 ;
+    END
+  END n_Act_ly1_scan_Din
+  PIN n_Act_ly1_scan_CLK
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3093.3 1350.18 3094.7 1352.98 ;
+    END
+  END n_Act_ly1_scan_CLK
+  PIN n_Act_ly1_scan_RSTB
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3107.3 1350.18 3108.7 1352.98 ;
+    END
+  END n_Act_ly1_scan_RSTB
+  PIN n_Act_ly1_scan_Qout
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3121.3 1350.18 3122.7 1352.98 ;
+    END
+  END n_Act_ly1_scan_Qout
+  PIN n_FNN_final_G_En
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3135.3 1350.18 3136.7 1352.98 ;
+    END
+  END n_FNN_final_G_En
+  PIN n_FNN_final_Dr_En
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3149.3 1350.18 3150.7 1352.98 ;
+    END
+  END n_FNN_final_Dr_En
+  PIN n_WTA_final_scan_out
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3163.3 1350.18 3164.7 1352.98 ;
+    END
+  END n_WTA_final_scan_out
+  PIN n_WTA_final_scan_Din
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3177.3 1350.18 3178.7 1352.98 ;
+    END
+  END n_WTA_final_scan_Din
+  PIN n_WTA_final_scan_CLK
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3191.3 1350.18 3192.7 1352.98 ;
+    END
+  END n_WTA_final_scan_CLK
+  PIN n_WTA_final_scan_RSTB
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3205.3 1350.18 3206.7 1352.98 ;
+    END
+  END n_WTA_final_scan_RSTB
+  PIN n_WTA_final_scan_Qout
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3219.3 1350.18 3220.7 1352.98 ;
+    END
+  END n_WTA_final_scan_Qout
+  PIN n_WTA_final_Vmid
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3233.3 1350.18 3234.7 1352.98 ;
+    END
+  END n_WTA_final_Vmid
+  PIN n_WTA_final_Vbias
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 3247.3 1350.18 3248.7 1352.98 ;
+    END
+  END n_WTA_final_Vbias
+END tile_analog_frame
 
 MACRO TSMC350nm_4WTA_IndirectProg_noncab
   PIN Vbias
@@ -2218,6 +3743,9 @@ MACRO TSMC350nm_4WTA_IndirectProg_noncab
   END PROG_b
 END TSMC350nm_4WTA_IndirectProg_noncab
 
+MACRO FakeCellGateDecoder
+END FakeCellGateDecoder
+
 MACRO FNN_DiodeConn
   PIN Vd_P_in<2>
     DIRECTION INOUT ;
@@ -2365,7 +3893,338 @@ MACRO FNN_DiodeConn
   END PROG
 END FNN_DiodeConn
 
-MACRO FakeCellGateDecoder
-END FakeCellGateDecoder
+MACRO TSMC350nm_VerticalScanner_STD
+  PIN In<3>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 3.5 1.4 4.9 ;
+    END
+  END In<3>
+  PIN In<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 6.3 1.5 7.7 ;
+    END
+  END In<2>
+  PIN In<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 14.0 1.4 15.4 ;
+    END
+  END In<1>
+  PIN In<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 17.5 1.4 18.9 ;
+    END
+  END In<0>
+  PIN RSTBar_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 156.1 0.0 157.5 1.23 ;
+    END
+  END RSTBar_b
+  PIN CLK_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 149.8 0.0 151.2 1.23 ;
+    END
+  END CLK_b
+  PIN Out
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 5.15 20.68 6.65 22.0 ;
+    END
+  END Out
+  PIN Out_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 5.15 0.0 6.65 1.27 ;
+    END
+  END Out_b
+  PIN VDD_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 45.86 0.0 47.36 1.28 ;
+    END
+  END VDD_b
+  PIN GND_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 53.79 0.0 55.29 1.23 ;
+    END
+  END GND_b
+  PIN VDD
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 45.86 20.77 47.36 22.0 ;
+    END
+  END VDD
+  PIN GND
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 53.79 20.84 55.29 22.0 ;
+    END
+  END GND
+  PIN Din
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 42.0 20.77 43.4 22.0 ;
+    END
+  END Din
+  PIN Qout
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 42.0 0.0 43.4 1.23 ;
+    END
+  END Qout
+  PIN RSTBar
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 156.1 20.77 157.5 22.0 ;
+    END
+  END RSTBar
+  PIN CLK
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 149.8 20.77 151.2 22.0 ;
+    END
+  END CLK
+END TSMC350nm_VerticalScanner_STD
+
+MACRO FNN_Relu_and_Sig
+  PIN VTUN
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 97.15 21.51 98.15 22.0 ;
+    END
+  END VTUN
+  PIN Vin_p<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 0.0 12.23 0.44 13.23 ;
+    END
+  END Vin_p<0>
+  PIN Vin_p<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 0.0 16.36 0.44 17.36 ;
+    END
+  END Vin_p<1>
+  PIN Vin_m<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 0.0 14.23 0.44 15.23 ;
+    END
+  END Vin_m<1>
+  PIN Vin_m<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 0.0 1.57 0.44 2.57 ;
+    END
+  END Vin_m<0>
+  PIN VD_P<2>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 192.4 3.73 192.84 4.53 ;
+    END
+  END VD_P<2>
+  PIN VD_P<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 192.4 9.62 192.84 10.42 ;
+    END
+  END VD_P<1>
+  PIN VD_P<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 192.46 19.31 192.84 20.11 ;
+    END
+  END VD_P<0>
+  PIN AVDD<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 189.99 21.57 190.99 22.0 ;
+    END
+  END AVDD<1>
+  PIN Vg<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 128.82 21.57 129.62 22.0 ;
+    END
+  END Vg<1>
+  PIN run
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 67.84 21.57 68.64 22.0 ;
+    END
+  END run
+  PIN prog
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 62.61 21.57 63.41 22.0 ;
+    END
+  END prog
+  PIN sel
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 59.64 21.57 60.44 22.0 ;
+    END
+  END sel
+  PIN Vg_bias
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 57.76 21.57 58.56 22.0 ;
+    END
+  END Vg_bias
+  PIN selb
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 55.56 21.57 56.36 22.0 ;
+    END
+  END selb
+  PIN Vsel<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 151.86 21.57 152.66 22.0 ;
+    END
+  END Vsel<1>
+  PIN GND
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 15.56 21.57 16.56 22.0 ;
+    END
+  END GND
+  PIN VINJ
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 39.69 21.57 40.59 22.0 ;
+    END
+  END VINJ
+  PIN AVDD<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 4.29 21.57 5.29 22.0 ;
+    END
+  END AVDD<0>
+  PIN Vsel<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 42.82 21.57 43.42 22.0 ;
+    END
+  END Vsel<0>
+  PIN Vg<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 65.66 21.57 66.46 22.0 ;
+    END
+  END Vg<0>
+  PIN Vsel_drt<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 109.58 21.57 110.38 22.0 ;
+    END
+  END Vsel_drt<1>
+  PIN Vsel_drt<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 84.9 21.57 85.7 22.0 ;
+    END
+  END Vsel_drt<0>
+  PIN Output<0>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 192.4 15.86 192.84 16.66 ;
+    END
+  END Output<0>
+  PIN Output<1>
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL3 ;
+        RECT 192.4 12.01 192.84 12.81 ;
+    END
+  END Output<1>
+END FNN_Relu_and_Sig
 
 END LIBRARY
