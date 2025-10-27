@@ -218,11 +218,11 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
     for i in range(gateBits_Relu_Sig):
         GateDecoder_R_n_Sig.IN[i] += FNN_ActF_G_bit[i]
 
-    for i in range(1):
-        GateSwitches_R_n_Sig.VINJ_T[i] += GateDecoder_R_n_Sig.VINJ_b[i]
-        GateSwitches_R_n_Sig.GND_T[i] += GateDecoder_R_n_Sig.GND_b[i]
-        GateSwitches_R_n_Sig.RUN_IN[i] += GateDecoder_R_n_Sig.RUN_OUT[i]
-        GateSwitches_R_n_Sig.decode[i] += GateDecoder_R_n_Sig.OUT[i]
+    # for i in range(1):
+    #     GateSwitches_R_n_Sig.VINJ_T[i] += GateDecoder_R_n_Sig.VINJ_b[i]
+    #     GateSwitches_R_n_Sig.GND_T[i] += GateDecoder_R_n_Sig.GND_b[i]
+    #     GateSwitches_R_n_Sig.RUN_IN[i] += GateDecoder_R_n_Sig.RUN_OUT[i]
+    #     GateSwitches_R_n_Sig.decode[i] += GateDecoder_R_n_Sig.OUT[i]
 
 
     ###### Connections for the Direct VMM Vsel lines ########
@@ -282,6 +282,12 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
     Act_scan_Qout += Neuron_scanner.Qout[0]
 
 
+    ## Between Gateswcs and Decoders routing 
+    Gate_Route_Island = ac.Island(Top)
+    Gate_Route = lib_new.Gate_Routing(Top,dim=(1,int(np.ceil(input_size/4))),island=Gate_Route_Island)
+    Gate_Route.place([0,0])
+    Gate_Route.AVDD += AVDD
+
 
     # Island Placement
     # -------------------------------------------------------------------------------
@@ -290,7 +296,10 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
     Neuron_Swcs_start_x = islandLoc[0]+(140+(27.46*input_size/2)+80)*1e3
     Neuron_Swcs_start_y = islandLoc[1]+((22*no_of_neurons/2)+20)*1e3
 
-    location_islands = ((islandLoc[0],islandLoc[1]), (Neuron_scanner_start_x,islandLoc[1]), (Neuron_Swcs_start_x,Neuron_Swcs_start_y))
+    location_islands = ((islandLoc[0],islandLoc[1]), 
+                        (Neuron_scanner_start_x,islandLoc[1]), 
+                        (Neuron_Swcs_start_x,Neuron_Swcs_start_y),
+                        (islandLoc[0]+62580+26270*(int(np.ceil(drainBits/2)-1)),islandLoc[1]+int((no_of_neurons*2/4)+1)*22000))
     
     return {
         "location_islands": location_islands,
@@ -427,11 +436,11 @@ def VMMWTA_Layer(circuit,input_size=128,no_of_outputs=80,VMMWTA_Island=None,isla
     for i in range(input_size):
         VMM_WTA_input[i] += GateDecoder.VGRUN[i]
 
-    for i in range(input_size//2):
-        GateSwitches.VINJ_T[i] += GateDecoder.VINJ_b[i]
-        GateSwitches.GND_T[i] += GateDecoder.GND_b[i]
-        GateSwitches.RUN_IN[i] += GateDecoder.RUN_OUT[i]
-        GateSwitches.decode[i] += GateDecoder.OUT[i]
+    # for i in range(input_size//2):
+    #     GateSwitches.VINJ_T[i] += GateDecoder.VINJ_b[i]
+    #     GateSwitches.GND_T[i] += GateDecoder.GND_b[i]
+    #     GateSwitches.RUN_IN[i] += GateDecoder.RUN_OUT[i]
+    #     GateSwitches.decode[i] += GateDecoder.OUT[i]
 
     ###### Drain Swcs and Decoders ########
     DrainSwitches.VDD_b += VINJ
@@ -475,7 +484,6 @@ def VMMWTA_Layer(circuit,input_size=128,no_of_outputs=80,VMMWTA_Island=None,isla
     for i in range(no_of_outputs):
         VMM_WTA_output[i] += WTA_scanner.In[i]
 
-
     GND += WTA_scanner.GND[0]
     DVDD += WTA_scanner.VDD[0]
     WTA_scan_out += WTA_scanner.Out[0]
@@ -485,13 +493,20 @@ def VMMWTA_Layer(circuit,input_size=128,no_of_outputs=80,VMMWTA_Island=None,isla
     WTA_scan_Qout += WTA_scanner.Qout[0]
 
 
+    ## Between Gateswcs and Decoders routing 
+    Gate_Route_Island = ac.Island(Top)
+    Gate_Route = lib_new.Gate_Routing(Top,dim=(1,int(np.ceil(input_size/4))),island=Gate_Route_Island)
+    Gate_Route.place([0,0])
+    Gate_Route.AVDD += AVDD
 
     # Island Placement
     # -------------------------------------------------------------------------------
 
     WTA_scanner_start_x = islandLoc[0]+(140+(27.46*input_size/2)+100)*1e3
 
-    location_islands = ((islandLoc[0],islandLoc[1]), (WTA_scanner_start_x,islandLoc[1]))
+    location_islands = ((islandLoc[0],islandLoc[1]), 
+                        (WTA_scanner_start_x,islandLoc[1]),
+                        (islandLoc[0]+62580+26270*(int(np.ceil(drainBits/2)-1)),islandLoc[1]+int((no_of_outputs/4)+1)*22000))
     
     return {
         "location_islands": location_islands,
