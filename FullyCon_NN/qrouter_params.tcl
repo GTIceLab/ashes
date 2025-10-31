@@ -1,10 +1,10 @@
 read_lef FullyCon_NN/FullyCon_NN.lef
 read_def FullyCon_NN/FullyCon_NN.def
-cost via 80
-cost jog 20
+cost via 20
+cost jog 80
 cost block 40
 cost conflict 10
-passes 50
+passes 100
 stage1 mask none force
 stage2 mask none force effort 100
 stage3 mask none force effort 100

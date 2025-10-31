@@ -149,13 +149,12 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
     for i in range(input_size):
         FNN_input[i] += GateDecoder.VGRUN[i]
 
-    # for i in range(input_size//2):
-    #     GateSwitches.VINJ_T[i] += GateDecoder.VINJ_b[i]
-    #     GateSwitches.GND_T[i] += GateDecoder.GND_b[i]
+    #for i in range(input_size//2):
+    #    GateSwitches.VINJ_T[i] += GateDecoder.VINJ_b[i]
+    #    GateSwitches.GND_T[i] += GateDecoder.GND_b[i]
+    #    GateSwitches.RUN_IN[i] += GateDecoder.RUN_OUT[i]
+    #    GateSwitches.decode[i] += GateDecoder.OUT[i]
     
-    # for i in range(input_size):
-    #     GateSwitches.RUN_IN[i] += GateDecoder.RUN_OUT[i]
-    #     GateSwitches.decode[i] += GateDecoder.OUT[i]
 
     ###### Drain Swcs and Decoders ########
     DrainSwitches.VDD_b += VINJ
@@ -220,13 +219,28 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
     for i in range(gateBits_Relu_Sig):
         GateDecoder_R_n_Sig.IN[i] += FNN_ActF_G_bit[i]
 
-    for i in range(num_G_col//2):
-        GateSwitches_R_n_Sig.VINJ_T[i] += GateDecoder_R_n_Sig.VINJ_b[i]
-        GateSwitches_R_n_Sig.GND_T[i] += GateDecoder_R_n_Sig.GND_b[i]
-
-    for i in range(num_G_col):
-        GateSwitches_R_n_Sig.RUN_IN[i] += GateDecoder_R_n_Sig.RUN_OUT[i]
-        GateSwitches_R_n_Sig.decode[i] += GateDecoder_R_n_Sig.OUT[i]
+     #for i in range(1):
+     #    GateSwitches_R_n_Sig.VINJ_T[i] += GateDecoder_R_n_Sig.VINJ_b[i]
+     #    GateSwitches_R_n_Sig.GND_T[i] += GateDecoder_R_n_Sig.GND_b[i]
+     #    GateSwitches_R_n_Sig.RUN_IN[i] += GateDecoder_R_n_Sig.RUN_OUT[i]
+     #    GateSwitches_R_n_Sig.decode[i] += GateDecoder_R_n_Sig.OUT[i]
+    GateSwitches_R_n_Sig.RUN_IN += VGRUN
+    GateDecoder_R_n_Sig.VGRUN += AVDD
+    GateSwitches_R_n_Sig.VINJ_T[0] += GateDecoder_R_n_Sig.VINJ_b[0]
+    GateSwitches_R_n_Sig.VINJ_T[1] += GateDecoder_R_n_Sig.VINJ_b[1]
+    GateSwitches_R_n_Sig.GND_T[0] += GateDecoder_R_n_Sig.GND_b[0]
+    GateSwitches_R_n_Sig.GND_T[1] += GateDecoder_R_n_Sig.GND_b[1]
+    GateSwitches_R_n_Sig.decode[0] += GateDecoder_R_n_Sig.OUT[0]
+    GateSwitches_R_n_Sig.decode[1] += GateDecoder_R_n_Sig.OUT[1]
+    GateSwitches_R_n_Sig.decode[2] += GateDecoder_R_n_Sig.OUT[2]
+    GateSwitches_R_n_Sig.decode[3] += GateDecoder_R_n_Sig.OUT[3]
+    GateDecoder_R_n_Sig.RUN_OUT[0] += GateSwitches_R_n_Sig.VPWR[0]
+    GateDecoder_R_n_Sig.RUN_OUT[1] += GateSwitches_R_n_Sig.VPWR[1]
+    GateDecoder_R_n_Sig.RUN_OUT[2] += GateSwitches_R_n_Sig.VPWR[2]
+    GateDecoder_R_n_Sig.RUN_OUT[3] += GateSwitches_R_n_Sig.VPWR[3]
+    
+    
+    
 
 
     ###### Connections for the Direct VMM Vsel lines ########
@@ -244,8 +258,8 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
     
     Tgts_fr_Vsel_drtG.A[0]+=GateSwitches_R_n_Sig.CTRL_B[0]
     Tgts_fr_Vsel_drtG.A[1]+=GateSwitches_R_n_Sig.CTRL_B[1]
-    Tgts_fr_Vsel_drtG.A[2]+=VGRUN
-    Tgts_fr_Vsel_drtG.A[3]+=VGRUN
+    Tgts_fr_Vsel_drtG.A[2]+=GND
+    Tgts_fr_Vsel_drtG.A[3]+=GND
     
     prog_hv+=Tgts_fr_Vsel_drtG.Prog
     VINJ+=Tgts_fr_Vsel_drtG.VDD
@@ -265,8 +279,9 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
     run_hv += Neurons.run[0]
     VTUN += Neurons.VTUN[0]
 
-    for i in range(no_of_neurons):
-        FNN_output[i] += Neurons.Output[i]
+    for i in range(0, no_of_neurons, 2):
+        FNN_output[i] += Neurons.Output[i+1]
+        FNN_output[i+1] += Neurons.Output[i]
 
     ###### Connections for Neuron Vertical Scannel ########
 
@@ -291,19 +306,35 @@ def FullyCon_Layer(circuit,input_size=128,no_of_neurons=80,FNN_Island=None,islan
     Gate_Route = lib_new.Gate_Routing(Top,dim=(1,int(np.ceil(input_size/4))),island=Gate_Route_Island)
     Gate_Route.place([0,0])
     Gate_Route.AVDD += AVDD
+    
+    '''FakeSwitchRoute = lib_new.FakeCell(Top,dim=(1,1),island=Gate_Route_Island)
+    FakeSwitchRoute.place([20,20])
+    
+    for i in range(int(input_size/2)):
+        GateSwitches.VINJ_T[i] += FakeSwitchRoute.FakePort
+        GateDecoder.VINJ_b[i] += FakeSwitchRoute.FakePort
+        GateSwitches.GND_T[i] += FakeSwitchRoute.FakePort
+        GateDecoder.GND_b[i] += FakeSwitchRoute.FakePort
+    for i in range(input_size):
+        GateSwitches.RUN_IN[i] += FakeSwitchRoute.FakePort
+        GateDecoder.RUN_OUT[i] += FakeSwitchRoute.FakePort
+        GateSwitches.decode[i] += FakeSwitchRoute.FakePort 
+        GateDecoder.OUT[i] += FakeSwitchRoute.FakePort'''
+    
 
 
     # Island Placement
     # -------------------------------------------------------------------------------
 
-    Neuron_scanner_start_x = islandLoc[0]+(140+(27.46*input_size/2)+400)*1e3
+    Neuron_scanner_start_x = islandLoc[0]+(160+(27.46*input_size/2)+400)*1e3
     Neuron_Swcs_start_x = islandLoc[0]+(140+(27.46*input_size/2)+80)*1e3
     Neuron_Swcs_start_y = islandLoc[1]+((22*no_of_neurons/2)+20)*1e3
 
     location_islands = ((islandLoc[0],islandLoc[1]), 
                         (Neuron_scanner_start_x,islandLoc[1]), 
                         (Neuron_Swcs_start_x,Neuron_Swcs_start_y),
-                        (islandLoc[0]+62580+26270*(int(np.ceil(drainBits/2)-1)),islandLoc[1]+int((no_of_neurons*2/4)+1)*22000))
+                        (islandLoc[0]+62580+26270*(int(np.ceil(drainBits/2)-1)),islandLoc[1]+int((no_of_neurons*2/4)+1)*22000)
+                        )
     
     return {
         "location_islands": location_islands,
@@ -502,6 +533,20 @@ def VMMWTA_Layer(circuit,input_size=128,no_of_outputs=80,VMMWTA_Island=None,isla
     Gate_Route = lib_new.Gate_Routing(Top,dim=(1,int(np.ceil(input_size/4))),island=Gate_Route_Island)
     Gate_Route.place([0,0])
     Gate_Route.AVDD += AVDD
+    
+    '''FakeSwitchRoute = lib_new.FakeCell(Top,dim=(1,1),island=Gate_Route_Island)
+    FakeSwitchRoute.place([20,20])
+    
+    for i in range(int(input_size/2)):
+        GateSwitches.VINJ_T[i] += FakeSwitchRoute.FakePort
+        GateDecoder.VINJ_b[i] += FakeSwitchRoute.FakePort
+        GateSwitches.GND_T[i] += FakeSwitchRoute.FakePort
+        GateDecoder.GND_b[i] += FakeSwitchRoute.FakePort
+    for i in range(input_size):
+        GateSwitches.RUN_IN[i] += FakeSwitchRoute.FakePort
+        GateDecoder.RUN_OUT[i] += FakeSwitchRoute.FakePort
+        GateSwitches.decode[i] += FakeSwitchRoute.FakePort 
+        GateDecoder.OUT[i] += FakeSwitchRoute.FakePort'''
 
     # Island Placement
     # -------------------------------------------------------------------------------
@@ -549,9 +594,9 @@ second_layer = (96,64)
 final_layer = (64,12)
 
 Top = ac.Circuit()
-FNN_layer0 = FullyCon_Layer(Top,islandLoc=[50.5*1e3,50.5*1e3],input_size=first_layer[0],no_of_neurons=first_layer[1],debug=True)
-FNN_layer1 = FullyCon_Layer(Top,islandLoc=[50.5*1e3+3400*1e3,50.5*1e3+400*1e3],input_size=second_layer[0],no_of_neurons=second_layer[1],debug=True)
-Final_layer = VMMWTA_Layer(Top,islandLoc=[50.5*1e3+3400*1e3,50.5*1e3],input_size=final_layer[0],no_of_outputs=final_layer[1],debug=True)
+FNN_layer0 = FullyCon_Layer(Top,islandLoc=[50.5*1e3,250.5*1e3],input_size=first_layer[0],no_of_neurons=first_layer[1],debug=True)
+FNN_layer1 = FullyCon_Layer(Top,islandLoc=[50.5*1e3+3400*1e3,250.5*1e3+400*1e3],input_size=second_layer[0],no_of_neurons=second_layer[1],debug=True)
+Final_layer = VMMWTA_Layer(Top,islandLoc=[50.5*1e3+3400*1e3,250.5*1e3],input_size=final_layer[0],no_of_outputs=final_layer[1],debug=True)
 
 
 ################ Write down conenctions between the layers and Create Ports #######################
@@ -768,19 +813,19 @@ run_hv += Final_layer["run_hv"]
 
 
 
-design_limits = [5.5e6, 3e6]
+design_limits = [6e6, 5e6]
 
 with open('./ashes_fg/asic/qrouter_default.json') as file:
     qparams = json.load(file)
 
 qparams["passes"] = 100
-qparams["via"] = 80
-qparams["jog"] = 20
+qparams["via"] = 20
+qparams["jog"] = 80
 qparams["conflict"] = 10
 qparams["stage2"] = "mask none force effort 100"
 qparams["stage3"] = "mask none force effort 100"
 
 
 
-ac.compile_asic(Top,process="TSMC350nm", fileName="FullyCon_NN", p_and_r = True, route=True, design_limits = design_limits, location_islands = FNN_layer0["location_islands"] + FNN_layer1["location_islands"] + Final_layer["location_islands"], qparams=qparams)
 
+ac.compile_asic(Top,process="TSMC350nm", fileName="FullyCon_NN", p_and_r = True, route=True, design_limits = design_limits, location_islands = FNN_layer0["location_islands"] + FNN_layer1["location_islands"] + Final_layer["location_islands"], qparams=qparams)

@@ -928,10 +928,10 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                         #Semi-Hardcode connecting net from switch to decoder
                         temp_net_num = idx*4
                         # use VPWR for CABs, RUN_IN for ASICs
-                        switch['nets']['decode<0>'] = f'isle{val}_swc_net{temp_net_num + 0}' if 'decode<0>' not in switch['nets'] else switch['nets']['decode<0>']
-                        switch['nets']['VPWR<0>'] = f'isle{val}_swc_net{temp_net_num + 1}' if 'VPWR<0>' not in switch['nets'] else switch['nets']['VPWR<0>']
-                        switch['nets']['decode<1>'] = f'isle{val}_swc_net{temp_net_num + 2}' if 'decode<1>' not in switch['nets'] else switch['nets']['decode<1>']
-                        switch['nets']['VPWR<1>'] = f'isle{val}_swc_net{temp_net_num + 3}' if 'VPWR<1>' not in switch['nets'] else switch['nets']['VPWR<1>']
+                        #switch['nets']['decode<0>'] = f'isle{val}_swc_net{temp_net_num + 0}' if 'decode<0>' not in switch['nets'] else switch['nets']['decode<0>']
+                        #switch['nets']['VPWR<0>'] = f'isle{val}_swc_net{temp_net_num + 1}' if 'VPWR<0>' not in switch['nets'] else switch['nets']['VPWR<0>']
+                        #switch['nets']['decode<1>'] = f'isle{val}_swc_net{temp_net_num + 2}' if 'decode<1>' not in switch['nets'] else switch['nets']['decode<1>']
+                        #switch['nets']['VPWR<1>'] = f'isle{val}_swc_net{temp_net_num + 3}' if 'VPWR<1>' not in switch['nets'] else switch['nets']['VPWR<1>']
                         if cells_only_module:
                             x_loc = cell_order[idx][4][0]
                         else:
