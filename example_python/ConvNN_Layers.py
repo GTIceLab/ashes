@@ -1398,8 +1398,8 @@ first_layer = (32,3,38,4)
 second_layer = (4,36,46,2)
 
 Top = ac.Circuit()
-CNN_layer0 = Conv_AvgPool(Top,image_size=first_layer[0],inp_channels=first_layer[1],out_channels=first_layer[2],kernel_size=first_layer[3],AvgPool_size=2,Conv_AvgP_Island=None,islandLoc=[110*1e3,110*1e3],debug=False)
-CNN_layer1 = ConvNN(Top,image_size=second_layer[0],inp_channels=second_layer[1],out_channels=second_layer[2],kernel_size=second_layer[3],Flatten=1,Conv_Island=None,islandLoc=[2010*1e3,110*1e3+400*1e3],debug=False)
+CNN_layer0 = Conv_AvgPool(Top,image_size=first_layer[0],inp_channels=first_layer[1],out_channels=first_layer[2],kernel_size=first_layer[3],AvgPool_size=2,Conv_AvgP_Island=None,islandLoc=[100*1e3,200*1e3],debug=False)
+CNN_layer1 = ConvNN(Top,image_size=second_layer[0],inp_channels=second_layer[1],out_channels=second_layer[2],kernel_size=second_layer[3],Flatten=1,Conv_Island=None,islandLoc=[2000*1e3,200*1e3+400*1e3],debug=False)
 
 
 ################ Write down conenctions between the layers and Create Ports #######################
