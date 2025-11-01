@@ -43,7 +43,7 @@ import re
 
 #exec(open("./example_python/ConvNN.py").read())
 
-exec(open("./example_python/FullyCon_NN_lin.py").read())
+exec(open("./example_python/ConvNN_Layers.py").read())
 
 #exec(open("./example_python/TestFullRoute.py").read())
 

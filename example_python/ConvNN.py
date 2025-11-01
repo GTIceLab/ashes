@@ -239,7 +239,14 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
             int_rst0 = Wire(Top)
             int_rst1 = Wire(Top)
 
+            ## Saving the Last Q_1 signal
+            Q_1_tie = Wire(Top)
 
+            ## Tieing all the Intg Din pins
+            Intgr_Din_tie = Wire(Top)
+
+        # Tie all Din and Q_1 pins of integrators within all output channels
+        Intgr_Din_tie += Intgr[0][0].Din
 
         for i in range(intg_rows):
             for j in range(intg_cols):
@@ -248,8 +255,8 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
                 #Dmmy2[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i] = Wire(Top)
                 #Dmmy3[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i] = Wire(Top)
 
-                Intgr[i][j].Q_l += Dmmy0[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
-                Intgr[i][j].Din_l += Dmmy1[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
+                Intgr[i][j].Q += Dmmy0[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
+                Intgr[i][j].Din += Dmmy1[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
                 Intgr[i][j].int_rst += Dmmy2[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
                 Intgr[i][j].Out_En += Dmmy3[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
 
@@ -264,9 +271,13 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
         else:
             for rows in range(intg_rows-1):
                 Intgr[rows][intg_cols-1].Q += Intgr[rows+1][0].Din
-        
+            
+        # I need to write code for dealing with more rows of int_rst. Lets do this after wafer tapeout.
 
         if bool(Flatten) == 1:
+
+            Q_1_tie += Flatten_out_img[out_channel_no//(kernel_rows//4)][(No_of_buffers//intg_rows)-1].Q_1_in
+
             for i in range(intg_rows):
                 for j in range(No_of_buffers//intg_rows):
                     Flatten_out_img[out_channel_no//(kernel_rows//4)+i][j].Sub_img_out+= Dmmy4[out_channel_no//(kernel_rows//4)+i][j]
@@ -282,65 +293,115 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
                     Flatten_out_img[out_channel_no//(kernel_rows//4)+i][(j*2)+1].sample+=Intgr[i][j].Out_En
 
 
-
-    #################  Outer Pins  #################
-    outerPins = frame(Top)
+    ################# Creating Nets for connection ##################
 
     ## G/D Decoder and Swcs Signals
-    Kvmm_G_En = outerPins.createPort("N","Kvmm_G_En")
-    Kvmm_G_bit = outerPins.createPort("N","Kvmm_G_bit",dimension=int(np.ceil(np.log2(inp_channels*kernel_size))))
+    Kvmm_G_En = Wire(Top)
+    Kvmm_G_bit = [Wire(Top) for _ in range(int(np.ceil(np.log2(inp_channels*kernel_size))))]
 
-    Kvmm_Dr_En =  outerPins.createPort("N","Kvmm_Dr_En")
-    Kvmm_Dr_bit = outerPins.createPort("N","Kvmm_Dr_bit",dimension=int(np.ceil(np.log2(out_channels*kernel_size*2))))
+    Kvmm_Dr_En =  Wire(Top)
+    Kvmm_Dr_bit =  [Wire(Top) for _ in range(int(np.ceil(np.log2(out_channels*kernel_size*2))))]
 
-    Kvmm_Prog_Drln =  outerPins.createPort("N","Kvmm_Prog_Drln")
-    Kvmm_Run_Drln =  outerPins.createPort("N","Kvmm_Run_Drln")
+    Kvmm_Prog_Drln = Wire(Top)
+    Kvmm_Run_Drln =  Wire(Top)
+    
+    ## Kernel Coloumn Shift Registers
+    SR_k_col_Din = Wire(Top)
+    SR_k_col_CLKB = Wire(Top)
+    SR_k_col_RST_B = Wire(Top)
+    SR_k_col_CLK = Wire(Top)
 
-    ## Shift Registers for Kernel Coloumn
-    SR_k_col_Din = outerPins.createPort("N","K_col_Din")
-    SR_k_col_CLKB = outerPins.createPort("N","K_col_CLKB")
-    SR_k_col_RST_B = outerPins.createPort("N","K_col_RST_B")
-    SR_k_col_CLK = outerPins.createPort("N","K_col_CLK")
+    Vin_inp_Ch = [Wire(Top) for _ in range(inp_channels)]
 
-    Vin_inp_Ch = outerPins.createPort("W", "Vin_inp_Ch",dimension=inp_channels)
-
-    ## Shift Registers for Integrators
-    AVDD_by_2 = outerPins.createPort("N","AVDD_by_2")
-
-
-    SR_Intg_RST_B = outerPins.createPort("N","SR_Intg_RST_B")
-    SR_Intg_Din = outerPins.createPort("N","SR_Intg_Din")
-    SR_Intg_CLK = outerPins.createPort("N","SR_Intg_CLK")
-    SR_Intg_CLKB = outerPins.createPort("N","SR_Intg_CLKB")
-
-    Vimg_CLK = outerPins.createPort("N","Vimg_CLK")
+    ## Integrator Shift Registers
+    SR_Intg_RST_B = Wire(Top)
+    SR_Intg_Din = Wire(Top)
+    SR_Intg_CLK = Wire(Top)
+    SR_Intg_CLKB = Wire(Top)
 
     ## Shift Registers for Kernel Row
-    SR_k_rw_Din = outerPins.createPort("N","K_rw_Din")
-    SR_k_rw_CLKB = outerPins.createPort("N","K_rw_CLKB")
-    SR_k_rw_RST_B = outerPins.createPort("N","K_rw_RST_B")
-    SR_k_rw_CLK = outerPins.createPort("N","K_rw_CLK")
+    SR_k_rw_Din = Wire(Top)
+    SR_k_rw_CLKB = Wire(Top)
+    SR_k_rw_RST_B = Wire(Top)
+    SR_k_rw_CLK = Wire(Top)
+
+    Sub_Img_Out_glb = [Wire(Top) for _ in range(out_channels*(No_of_buffers))]
+
+    ## Global Power lines
+    VTUN = Wire(Top)
+    DVDD = Wire(Top)
+    AVDD = Wire(Top)
+    GND = Wire(Top)
+    VINJ = Wire(Top)
+
+    VGPROG = Wire(Top)
+
+    prog_hv = Wire(Top)
+    run_hv = Wire(Top)
+
+    AVDD_by_2 = Wire(Top)
+
+    ## Top_Digital
+    Global_rst_b = Wire(Top)
+
+    #################  Outer Pins  #################
+    # outerPins = frame(Top)
+
+    # ## G/D Decoder and Swcs Signals
+    # Kvmm_G_En = outerPins.createPort("N","Kvmm_G_En")
+    # Kvmm_G_bit = outerPins.createPort("N","Kvmm_G_bit",dimension=int(np.ceil(np.log2(inp_channels*kernel_size))))
+
+    # Kvmm_Dr_En =  outerPins.createPort("N","Kvmm_Dr_En")
+    # Kvmm_Dr_bit = outerPins.createPort("N","Kvmm_Dr_bit",dimension=int(np.ceil(np.log2(out_channels*kernel_size*2))))
+
+    # Kvmm_Prog_Drln =  outerPins.createPort("N","Kvmm_Prog_Drln")
+    # Kvmm_Run_Drln =  outerPins.createPort("N","Kvmm_Run_Drln")
+
+    # ## Shift Registers for Kernel Coloumn
+    # SR_k_col_Din = outerPins.createPort("N","K_col_Din")
+    # SR_k_col_CLKB = outerPins.createPort("N","K_col_CLKB")
+    # SR_k_col_RST_B = outerPins.createPort("N","K_col_RST_B")
+    # SR_k_col_CLK = outerPins.createPort("N","K_col_CLK")
+
+    # Vin_inp_Ch = outerPins.createPort("W", "Vin_inp_Ch",dimension=inp_channels)
+
+    # ## Shift Registers for Integrators
+    # AVDD_by_2 = outerPins.createPort("N","AVDD_by_2")
+
+
+    # SR_Intg_RST_B = outerPins.createPort("N","SR_Intg_RST_B")
+    # SR_Intg_Din = outerPins.createPort("N","SR_Intg_Din")
+    # SR_Intg_CLK = outerPins.createPort("N","SR_Intg_CLK")
+    # SR_Intg_CLKB = outerPins.createPort("N","SR_Intg_CLKB")
+
+    # Vimg_CLK = outerPins.createPort("N","Vimg_CLK")
+
+    # ## Shift Registers for Kernel Row
+    # SR_k_rw_Din = outerPins.createPort("N","K_rw_Din")
+    # SR_k_rw_CLKB = outerPins.createPort("N","K_rw_CLKB")
+    # SR_k_rw_RST_B = outerPins.createPort("N","K_rw_RST_B")
+    # SR_k_rw_CLK = outerPins.createPort("N","K_rw_CLK")
 
 
     
-    if bool(Flatten) == 0:
-        Sub_Img_Out_glb = outerPins.createPort("S", "Sub_img_out",dimension=out_channels)
-    else:
-        Sub_Img_Out_glb_0 = outerPins.createPort("S", "Sub_img_out_0",dimension=out_channels*(No_of_buffers)/2)
-        Sub_Img_Out_glb_1 = outerPins.createPort("E", "Sub_img_out_1",dimension=out_channels*(No_of_buffers)/2)
+    # if bool(Flatten) == 0:
+    #     Sub_Img_Out_glb = outerPins.createPort("S", "Sub_img_out",dimension=out_channels)
+    # else:
+    #     Sub_Img_Out_glb_0 = outerPins.createPort("S", "Sub_img_out_0",dimension=out_channels*(No_of_buffers)/2)
+    #     Sub_Img_Out_glb_1 = outerPins.createPort("E", "Sub_img_out_1",dimension=out_channels*(No_of_buffers)/2)
 
 
-    ## Global Power lines
-    VTUN = outerPins.createPort("N","VTUN")
-    DVDD = outerPins.createPort("N","DVDD")
-    AVDD = outerPins.createPort("N","AVDD")
-    GND = outerPins.createPort("N","GND")
-    VINJ = outerPins.createPort("N","VINJ")
+    # ## Global Power lines
+    # VTUN = outerPins.createPort("N","VTUN")
+    # DVDD = outerPins.createPort("N","DVDD")
+    # AVDD = outerPins.createPort("N","AVDD")
+    # GND = outerPins.createPort("N","GND")
+    # VINJ = outerPins.createPort("N","VINJ")
 
-    VGPROG = outerPins.createPort("N","VGPROG")
+    # VGPROG = outerPins.createPort("N","VGPROG")
 
-    prog_hv = outerPins.createPort("N","prog_hv")
-    run_hv = outerPins.createPort("N","run_hv")
+    # prog_hv = outerPins.createPort("N","prog_hv")
+    # run_hv = outerPins.createPort("N","run_hv")
 
 
     
@@ -371,11 +432,11 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
     for i in range(gateBits):
         GateDecoder.IN[i] += Kvmm_G_bit[i]
 
-    for i in range((inp_channels*kernel_size)//2):
-        GateSwitches.VINJ_T[i] += GateDecoder.VINJ_b[i]
-        GateSwitches.GND_T[i] += GateDecoder.GND_b[i]
-        GateSwitches.RUN_IN[i] += GateDecoder.RUN_OUT[i]
-        GateSwitches.decode[i] += GateDecoder.OUT[i]
+    # for i in range((inp_channels*kernel_size)//2):
+    #     GateSwitches.VINJ_T[i] += GateDecoder.VINJ_b[i]
+    #     GateSwitches.GND_T[i] += GateDecoder.GND_b[i]
+    #     GateSwitches.RUN_IN[i] += GateDecoder.RUN_OUT[i]
+    #     GateSwitches.decode[i] += GateDecoder.OUT[i]
 
     ###### Drain Swcs and Decoders ########
     DrainSwitches.VDD_b += VINJ
@@ -451,37 +512,72 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
     SR_k_col_CLKB+=SR_k_col.CLKB[0]
     SR_k_col_RST_B+=SR_k_col.RST_B[0]
 
+    ####### Top Dig ##########
+
+    ## Placement
+    Top_Digital_island = ac.Island(Top)
+    Top_Digital = lib_new.Conv_TopDig(Top,Top_Digital_island,dim=[1,1])
+    Top_Digital.place([0,0])
+
+    SR_Intg_RST_B+=Top_Digital.SR_int_RST_B
+    SR_Intg_CLK+=Top_Digital.SR_int_CLK
+    SR_Intg_CLKB+=Top_Digital.SR_int_CLKB
+
+    for i in range(intg_rows):
+        for j in range(intg_cols):
+            Intgr_out_channel_1[i][j].Q += Top_Digital.SR_int_0_Q[j + (i*intg_cols)]
+
+    TgateHoriz_VMMout_top_glb.Final_rw_out += Top_Digital.Final_rw
+
+    sample_nxt_rw = Wire(Top)
+    sample_nxt_rw += Top_Digital.sample_nxt_rw
+
+    Readout_flag_gt = Wire(Top)
+    Readout_flag_gt += Top_Digital.Readout_flag_gt
+
+    int_rst_1 = Wire(Top)
+    int_rst_1 += Top_Digital.int_rst[1]
+
+    int_rst_0 = Wire(Top)
+    int_rst_0 += Top_Digital.int_rst[0]
+
+    Global_rst_b += Top_Digital.Global_rst_b
+
+    DVDD += Top_Digital.DVDD
+    GND += Top_Digital.GND
+    
+    Q_1_tie += Top_Digital.SR_int_0_Q2
 
     #################  Global Ties for Tgate Horizontal Swcs #################
 
     # Pin connections
-    TgateHoriz_VMMout_top_glb.VINJ+=VINJ
-    TgateHoriz_VMMout_top_glb.RUN_HV+=run_hv
-    TgateHoriz_VMMout_top_glb.GND+=GND
-    TgateHoriz_VMMout_top_glb.CLKB+=SR_k_rw_CLKB
-    TgateHoriz_VMMout_top_glb.CLK+=SR_k_rw_CLK
-    TgateHoriz_VMMout_top_glb.RST_B+=SR_k_rw_RST_B
-    TgateHoriz_VMMout_top_glb.Din+=SR_k_rw_Din
-    TgateHoriz_VMMout_top_glb.DVDD+=DVDD
+    VINJ+=TgateHoriz_VMMout_top_glb.VINJ
+    run_hv+=TgateHoriz_VMMout_top_glb.RUN_HV
+    GND+=TgateHoriz_VMMout_top_glb.GND
+    SR_k_rw_CLKB+=TgateHoriz_VMMout_top_glb.CLKB
+    SR_k_rw_CLK+=TgateHoriz_VMMout_top_glb.CLK
+    SR_k_rw_RST_B+=TgateHoriz_VMMout_top_glb.RST_B
+    DVDD+=TgateHoriz_VMMout_top_glb.DVDD
+    SR_k_rw_Din+=TgateHoriz_VMMout_top_glb.Din
+    SR_k_rw_Din+=TgateHoriz_VMMout_top_glb.Din_Glb
     #TgateHoriz_VMMout_top.Final_row_out+=Final_rw_out
 
     #################  Global Ties for I_subtractor #################
 
-    Isub_top_glb.GND+=GND
-
+    GND += Isub_top_glb.GND
+    Readout_flag_gt += Isub_top_glb.Readout_flag_in
     #################  Global Ties for Integrator blocks #################
 
     ## Internal connections
 
-    SR_Intg_Din+=Intgr_out_channel_1[0][0].Din_l
+    Intgr_Din_tie += SR_Intg_Din
 
     for i in range(intg_cols):
 
-        Intgr_out_channel_1[0][i].CLK+=SR_Intg_CLK
-        SR_Intg_CLKB+=Intgr_out_channel_1[0][i].CLKB
-        SR_Intg_RST_B+=Intgr_out_channel_1[0][i].RSTB
-        #SR_k_col_CLK+=Intgr_out_channel_1[0][i].Vimg_CLK
-        Vimg_CLK+=Intgr_out_channel_1[0][i].VImg_CLK
+        SR_Intg_CLK += Intgr_out_channel_1[0][i].CLK
+        SR_Intg_CLKB += Intgr_out_channel_1[0][i].CLKB
+        SR_Intg_RST_B += Intgr_out_channel_1[0][i].RST_B
+        SR_k_col_CLK += Intgr_out_channel_1[0][i].VImg_CLK
 
         GND+=Intgr_out_channel_1[0][i].GND
 
@@ -501,25 +597,79 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
 
         for i in range(intg_rows*out_channels):
             for j in range(No_of_buffers//intg_rows):
-                if (i<intg_rows*out_channels/2):
-                    Flatten_out_img[i][j].Sub_img_out+= Sub_Img_Out_glb_0[j + i*(No_of_buffers//intg_rows)]
-                else:
-                    Flatten_out_img[i][j].Sub_img_out+= Sub_Img_Out_glb_1[j + i*(No_of_buffers//intg_rows) - (intg_rows*out_channels//2)*(No_of_buffers//intg_rows)]
+                Flatten_out_img[i][j].Sub_img_out+= Sub_Img_Out_glb[j + i*(No_of_buffers//intg_rows)]
+                Flatten_out_img[i][j].nxt_rw+= sample_nxt_rw
 
+                # if (i<intg_rows*out_channels/2):
+                #     Flatten_out_img[i][j].Sub_img_out+= Sub_Img_Out_glb_0[j + i*(No_of_buffers//intg_rows)]
+                # else:
+                #     Flatten_out_img[i][j].Sub_img_out+= Sub_Img_Out_glb_1[j + i*(No_of_buffers//intg_rows) - (intg_rows*out_channels//2)*(No_of_buffers//intg_rows)]
+
+    
+    #################  Routing between Gswcs and Decoders #################
+
+    Gate_Route_Island_fr_Kvmm = ac.Island(Top)
+    Gate_Route_kvmm = lib_new.Gate_Routing(Top,dim=(1,(inp_channels*kernel_size)//4),island=Gate_Route_Island_fr_Kvmm)
+    Gate_Route_kvmm.place([0,0])
+    Gate_Route_kvmm.AVDD += AVDD
+    
 
     # Island Placement
     # -------------------------------------------------------------------------------
+    Kernel_VMM_X = islandLoc[0]
+    Kernel_VMM_Y = islandLoc[1]
 
-    #location_islands = (islandLoc[0],islandLoc[1])
+    SR_k_col_X = islandLoc[0] + (170+(27.46*(inp_channels*kernel_size)/2)+50)*1e3
+    SR_k_col_Y = islandLoc[1] + (22*(kernel_size*2*out_channels)/4 + 30)*1e3
 
-    #return location_islands
+    Top_Digital_X = SR_k_col_X + 680*1e3 + 30*1e3 # Currently hard coded, will need to change the placement of SR_K_col cells and eventually this cell placement coordinates
+    Top_Digital_Y = SR_k_col_Y 
 
+    location_islands = ((Kernel_VMM_X,Kernel_VMM_Y),
+                        (SR_k_col_X,SR_k_col_Y),
+                        (Top_Digital_X,Top_Digital_Y),
+                        (islandLoc[0]+62580+26270*(int(np.ceil(drainBits/2)-1)),islandLoc[1]+ (22*((kernel_size*2*out_channels)/4 + 1))*1e3)
+    )
+
+    return {
+        "location_islands": location_islands,
+        "Kvmm_G_En": Kvmm_G_En,
+        "Kvmm_G_bit": Kvmm_G_bit,
+        "Kvmm_Dr_En": Kvmm_Dr_En,
+        "Kvmm_Dr_bit": Kvmm_Dr_bit,
+        "Kvmm_Prog_Drln": Kvmm_Prog_Drln,
+        "Kvmm_Run_Drln": Kvmm_Run_Drln,
+        "SR_k_col_Din": SR_k_col_Din,
+        "SR_k_col_CLKB": SR_k_col_CLKB,
+        "SR_k_col_RST_B": SR_k_col_RST_B,
+        "SR_k_col_CLK": SR_k_col_CLK,
+        "Vin_inp_Ch": Vin_inp_Ch,
+        "SR_Intg_RST_B": SR_Intg_RST_B,
+        "SR_Intg_Din": SR_Intg_Din,
+        "SR_Intg_CLK": SR_Intg_CLK,
+        "SR_Intg_CLKB": SR_Intg_CLKB,
+        "SR_k_rw_Din": SR_k_rw_Din,
+        "SR_k_rw_CLKB": SR_k_rw_CLKB,
+        "SR_k_rw_RST_B": SR_k_rw_RST_B,
+        "SR_k_rw_CLK": SR_k_rw_CLK,
+        "Sub_Img_Out_glb": Sub_Img_Out_glb,
+        "VTUN": VTUN,
+        "DVDD": DVDD,
+        "AVDD": AVDD,
+        "GND": GND,
+        "VINJ": VINJ,
+        "VGPROG": VGPROG,
+        "prog_hv": prog_hv,
+        "run_hv": run_hv,
+        "AVDD_by_2": AVDD_by_2,
+        "Global_rst_b": Global_rst_b,
+    }
 
 
 Top = ac.Circuit()
-ConvNN(Top,islandLoc=[100,100],debug=True)
+Conv_Layer = ConvNN(Top,out_channels=46,islandLoc=[10e4,4.1e4+5e4],debug=True)
 
-location_islands = ((5e4,4.1e4+5e4),(7e5+4.5e5,16e5+2e4))
+#location_islands = ((10e4,4.1e4+5e4),(11e5+4.5e5,16e5+2e4))
 #location_islands = ((5e4,4.1e4),(7e5,7.9e5))
 #location_islands = ((5e4,4.1e4),(6e5,4.3e5),(4e5,4.2e5))
 #location_islands = ((100,100),(1e6,3.6e5))
@@ -532,11 +682,11 @@ with open('./ashes_fg/asic/qrouter_default.json') as file:
 
 qparams["passes"] = 100
 qparams["via"] = 20
-qparams["jog"] = 80
+qparams["jog"] = 60
 qparams["conflict"] = 50
 qparams["stage2"] = "mask none force effort 100"
 qparams["stage3"] = "mask none force effort 100"
 
 
-ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN", p_and_r = True, route=True, design_limits = design_limits, location_islands = location_islands, qparams=qparams,drainSpaceIdx=0,drainSpace=0,gateSpaceIdx=0,gateSpace=0)
+ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN", p_and_r = True, route=True, design_limits = design_limits, location_islands = Conv_Layer["location_islands"], qparams=qparams,drainSpaceIdx=0,drainSpace=0,gateSpaceIdx=0,gateSpace=0)
 

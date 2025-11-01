@@ -215,90 +215,155 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
            Dmmy0 = [[Wire(Top) for _ in range(intg_cols*intg_rows)] for _ in range(out_channels)]
            Dmmy1 = [[Wire(Top) for _ in range(intg_cols*intg_rows)] for _ in range(out_channels)]
 
-        # Tieing the Din and Q of Shift Registers in end and start of rows
-        if (intg_rows>1):
-            for i in range(intg_rows):
-                for j in range(intg_cols):
-                    Dmmy0[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i] = Wire(Top)
-                    Dmmy1[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i] = Wire(Top)
-                    Intgr[i][j].Q += Dmmy0[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
-                    Intgr[i][j].Din += Dmmy1[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
+           Intgr_Din_tie = Wire(Top)
 
+        # Tieing the Din and Q of Shift Registers in end and start of rows
+        for i in range(intg_rows):
+            for j in range(intg_cols):
+                #Dmmy0[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i] = Wire(Top)
+                #Dmmy1[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i] = Wire(Top)
+                Intgr[i][j].Q += Dmmy0[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
+                Intgr[i][j].Din += Dmmy1[out_channel_no//(kernel_rows//4)][j + (intg_cols)*i]
+
+        # Tie all Din pins of integrators within all output channels
+        Intgr_Din_tie += Intgr[0][0].Din
+
+        if (intg_rows>1):
             for rows in range(intg_rows-1):
                 Intgr[rows][intg_cols-1].Q += Intgr[rows+1][0].Din
 
 
-    #################  Outer Pins  #################
-    outerPins = frame(Top)
+    #################  Creating Nets  #################
 
     ## G/D Decoder and Swcs Signals
-    Kvmm_G_En = outerPins.createPort("N","Kvmm_G_En")
-    AvgPool_FGs_G_En = outerPins.createPort("N","AvgPool_FGs_G_En")
+    Kvmm_G_En = Wire(Top)
+    Kvmm_G_bit = [Wire(Top) for _ in range(int(np.ceil(np.log2(inp_channels*kernel_size))))]
 
+    AvgPool_FGs_G_En = Wire(Top)
+    AvgPool_FGs_G_bit = [Wire(Top) for _ in range(int(np.ceil(np.log2(intg_cols*2))))]
+    
+    Kvmm_AvgP_Dr_En =  Wire(Top)
+    Kvmm_AvgP_Dr_bit =  [Wire(Top) for _ in range(int(np.ceil(np.log2(out_channels*kernel_size*2))))]
 
-    # Checking which island is bigger and assigning the Most bits needed
-    if intg_cols*2 < (inp_channels*kernel_size):
-        Kvmm_AvgP_G_bit = outerPins.createPort("N","Kvmm_G_bit",dimension=int(np.ceil(np.log2(inp_channels*kernel_size))))
-    else:
-        Kvmm_AvgP_G_bit = outerPins.createPort("N","Kvmm_G_bit",dimension=int(np.ceil(np.log2(intg_cols*2))))
+    Kvmm_AvgP_Prog_Drln = Wire(Top)
+    Kvmm_AvgP_Run_Drln =  Wire(Top)
+    
+    ## Kernel Coloumn Shift Registers
+    SR_k_col_Din = Wire(Top)
+    SR_k_col_CLKB = Wire(Top)
+    SR_k_col_RST_B = Wire(Top)
+    SR_k_col_CLK = Wire(Top)
 
-    Kvmm_AvgP_Dr_En =  outerPins.createPort("N","Kvmm_AvgP_Dr_En")
-    Kvmm_AvgP_Dr_bit = outerPins.createPort("N","Kvmm_AvgP_Dr_bit",dimension=int(np.ceil(np.log2(out_channels*kernel_size*2))))
+    Vin_inp_Ch = [Wire(Top) for _ in range(inp_channels)]
 
-    Kvmm_AvgP_Prog_Drln =  outerPins.createPort("N","Kvmm_AvgP_Prog_Drln")
-    Kvmm_AvgP_Run_Drln =  outerPins.createPort("N","Kvmm_AvgP_Run_Drln")
-
-    ## Shift Registers for Kernel Coloumn
-    SR_k_col_Din = outerPins.createPort("N","K_col_Din")
-    SR_k_col_CLKB = outerPins.createPort("N","K_col_CLKB")
-    SR_k_col_RST_B = outerPins.createPort("N","K_col_RST_B")
-    SR_k_col_CLK = outerPins.createPort("N","K_col_CLK")
-
-    Vin_inp_Ch = outerPins.createPort("E", "Vin_inp_Ch",dimension=inp_channels)
-
-    ## Shift Registers for Integrators
-    AVDD_by_2 = outerPins.createPort("N","AVDD_by_2")
-
-
-    SR_Intg_RST_B = outerPins.createPort("N","SR_Intg_RST_B")
-    SR_Intg_Din = outerPins.createPort("N","SR_Intg_Din")
-    SR_Intg_CLK = outerPins.createPort("N","SR_Intg_CLK")
-    SR_Intg_CLKB = outerPins.createPort("N","SR_Intg_CLKB")
-
-    SR_Intg_nxt_rw = outerPins.createPort("N","SR_Intg_nxt_rw")
-    Vimg_CLK = outerPins.createPort("N","Vimg_CLK")
+    ## Integrator Shift Registers
+    SR_Intg_RST_B = Wire(Top)
+    SR_Intg_Din = Wire(Top)
+    SR_Intg_CLK = Wire(Top)
+    SR_Intg_CLKB = Wire(Top)
 
     ## Shift Registers for Kernel Row
-    SR_k_rw_Din = outerPins.createPort("N","K_rw_Din")
-    SR_k_rw_CLKB = outerPins.createPort("N","K_rw_CLKB")
-    SR_k_rw_RST_B = outerPins.createPort("N","K_rw_RST_B")
-    SR_k_rw_CLK = outerPins.createPort("N","K_rw_CLK")
+    SR_k_rw_Din = Wire(Top)
+    SR_k_rw_CLKB = Wire(Top)
+    SR_k_rw_RST_B = Wire(Top)
+    SR_k_rw_CLK = Wire(Top)
 
-
-    ## Readout Relu for Integrators
-    AvgPool_Relu_Vb = outerPins.createPort("N","AvgPool_Relu_Vb")
+    # AvgPooling and Readout signals
+    AvgPool_Relu_Vb = Wire(Top)
+    Sub_Img_Out_glb = [Wire(Top) for _ in range(out_channels)]
     
-    Sub_Img_Out_glb = outerPins.createPort("E", "Sub_img_out",dimension=out_channels)
-
-    # Sub_Img_Out_glb = [None for _ in range(out_channels)]
-    # for i in range(out_channels):
-    #     Sub_Img_Out_glb[i] = outerPins.createPort("E", f"Sub_img_out_{i}")
-
 
     ## Global Power lines
-    VTUN = outerPins.createPort("N","VTUN")
-    DVDD = outerPins.createPort("N","DVDD")
-    AVDD = outerPins.createPort("N","AVDD")
-    GND = outerPins.createPort("N","GND")
-    VINJ = outerPins.createPort("N","VINJ")
+    VTUN = Wire(Top)
+    DVDD = Wire(Top)
+    AVDD = Wire(Top)
+    GND = Wire(Top)
+    VINJ = Wire(Top)
 
-    VGPROG = outerPins.createPort("N","VGPROG")
+    VGPROG = Wire(Top)
+    VGRUN = Wire(Top)
 
-    prog_hv = outerPins.createPort("N","prog_hv")
-    run_hv = outerPins.createPort("N","run_hv")
+    prog_hv = Wire(Top)
+    run_hv = Wire(Top)
 
-    prog_lv = outerPins.createPort("N","prog_lv")
-    run_lv = outerPins.createPort("N","run_lv")
+    AVDD_by_2 = Wire(Top)
+
+    ## Top_Digital
+    Global_rst_b = Wire(Top)
+
+
+
+    #################  Outer Pins  #################
+    # outerPins = frame(Top)
+
+    # ## G/D Decoder and Swcs Signals
+    # Kvmm_G_En = outerPins.createPort("N","Kvmm_G_En")
+    # AvgPool_FGs_G_En = outerPins.createPort("N","AvgPool_FGs_G_En")
+
+
+    # # Checking which island is bigger and assigning the Most bits needed
+    # if intg_cols*2 < (inp_channels*kernel_size):
+    #     Kvmm_AvgP_G_bit = outerPins.createPort("N","Kvmm_G_bit",dimension=int(np.ceil(np.log2(inp_channels*kernel_size))))
+    # else:
+    #     Kvmm_AvgP_G_bit = outerPins.createPort("N","Kvmm_G_bit",dimension=int(np.ceil(np.log2(intg_cols*2))))
+
+    # Kvmm_AvgP_Dr_En =  outerPins.createPort("N","Kvmm_AvgP_Dr_En")
+    # Kvmm_AvgP_Dr_bit = outerPins.createPort("N","Kvmm_AvgP_Dr_bit",dimension=int(np.ceil(np.log2(out_channels*kernel_size*2))))
+
+    # Kvmm_AvgP_Prog_Drln =  outerPins.createPort("N","Kvmm_AvgP_Prog_Drln")
+    # Kvmm_AvgP_Run_Drln =  outerPins.createPort("N","Kvmm_AvgP_Run_Drln")
+
+    # ## Shift Registers for Kernel Coloumn
+    # SR_k_col_Din = outerPins.createPort("N","K_col_Din")
+    # SR_k_col_CLKB = outerPins.createPort("N","K_col_CLKB")
+    # SR_k_col_RST_B = outerPins.createPort("N","K_col_RST_B")
+    # SR_k_col_CLK = outerPins.createPort("N","K_col_CLK")
+
+    # Vin_inp_Ch = outerPins.createPort("E", "Vin_inp_Ch",dimension=inp_channels)
+
+    # ## Shift Registers for Integrators
+    # AVDD_by_2 = outerPins.createPort("N","AVDD_by_2")
+
+
+    # SR_Intg_RST_B = outerPins.createPort("N","SR_Intg_RST_B")
+    # SR_Intg_Din = outerPins.createPort("N","SR_Intg_Din")
+    # SR_Intg_CLK = outerPins.createPort("N","SR_Intg_CLK")
+    # SR_Intg_CLKB = outerPins.createPort("N","SR_Intg_CLKB")
+
+    # SR_Intg_nxt_rw = outerPins.createPort("N","SR_Intg_nxt_rw")
+    # Vimg_CLK = outerPins.createPort("N","Vimg_CLK")
+
+    # ## Shift Registers for Kernel Row
+    # SR_k_rw_Din = outerPins.createPort("N","K_rw_Din")
+    # SR_k_rw_CLKB = outerPins.createPort("N","K_rw_CLKB")
+    # SR_k_rw_RST_B = outerPins.createPort("N","K_rw_RST_B")
+    # SR_k_rw_CLK = outerPins.createPort("N","K_rw_CLK")
+
+
+    # ## Readout Relu for Integrators
+    # AvgPool_Relu_Vb = outerPins.createPort("N","AvgPool_Relu_Vb")
+    
+    # Sub_Img_Out_glb = outerPins.createPort("E", "Sub_img_out",dimension=out_channels)
+
+    # # Sub_Img_Out_glb = [None for _ in range(out_channels)]
+    # # for i in range(out_channels):
+    # #     Sub_Img_Out_glb[i] = outerPins.createPort("E", f"Sub_img_out_{i}")
+
+
+    # ## Global Power lines
+    # VTUN = outerPins.createPort("N","VTUN")
+    # DVDD = outerPins.createPort("N","DVDD")
+    # AVDD = outerPins.createPort("N","AVDD")
+    # GND = outerPins.createPort("N","GND")
+    # VINJ = outerPins.createPort("N","VINJ")
+
+    # VGPROG = outerPins.createPort("N","VGPROG")
+
+    # prog_hv = outerPins.createPort("N","prog_hv")
+    # run_hv = outerPins.createPort("N","run_hv")
+
+    # prog_lv = outerPins.createPort("N","prog_lv")
+    # run_lv = outerPins.createPort("N","run_lv")
 
     
     #################  Defining GateSwcs, DrainSwcs and Decoders  #################
@@ -326,13 +391,15 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
     GateDecoder.ENABLE += Kvmm_G_En
 
     for i in range(gateBits):
-        GateDecoder.IN[i] += Kvmm_AvgP_G_bit[i]
+        GateDecoder.IN[i] += Kvmm_G_bit[i]
 
-    for i in range((inp_channels*kernel_size)//2):
-        GateSwitches.VINJ_T[i] += GateDecoder.VINJ_b[i]
-        GateSwitches.GND_T[i] += GateDecoder.GND_b[i]
-        GateSwitches.RUN_IN[i] += GateDecoder.RUN_OUT[i]
-        GateSwitches.decode[i] += GateDecoder.OUT[i]
+    # VGRUN connections of the decoders are written below where SR_K_Col cells are defined.
+
+    # for i in range((inp_channels*kernel_size)//2):
+    #     GateSwitches.VINJ_T[i] += GateDecoder.VINJ_b[i]
+    #     GateSwitches.GND_T[i] += GateDecoder.GND_b[i]
+    #     GateSwitches.RUN_IN[i] += GateDecoder.RUN_OUT[i]
+    #     GateSwitches.decode[i] += GateDecoder.OUT[i]
 
     ###### Drain Swcs and Decoders ########
     DrainSwitches.VDD_b += VINJ
@@ -365,11 +432,16 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
     GateDecoder_Avg_pool = lib_mux.STD_IndirectGateDecoder(circuit,AvgP_Gswcs_Island,gateBits_Avg_pool)
     GateSwitches_Avg_pool = lib_mux.STD_IndirectGateSwitch(circuit,AvgP_Gswcs_Island,intg_cols)
 
+
     ## Internal Connections
     for i in range(0,intg_cols,1):
         for j in range(2):
             GateSwitches_Avg_pool.Vg[j + (2)*i]+=Intgr_out_channel_1[0][i].Vg[j]
-            GateSwitches_Avg_pool.CTRL_B[j + (2)*i]+=Intgr_out_channel_1[0][i].Vsel_b[j]
+           # GateSwitches_Avg_pool.CTRL_B[j + (2)*i]+=Intgr_out_channel_1[0][i].Vsel_b[j]
+
+    for i in range(intg_cols):
+        VGRUN += GateDecoder_Avg_pool.VGRUN[i]
+
 
     ## Pin Connections
 
@@ -384,18 +456,16 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
     GateDecoder_Avg_pool.ENABLE += AvgPool_FGs_G_En
 
     for i in range(gateBits_Avg_pool):
-        GateDecoder_Avg_pool.IN[i] += Kvmm_AvgP_G_bit[i]
+        GateDecoder_Avg_pool.IN[i] += AvgPool_FGs_G_bit[i]
 
-    for i in range(intg_cols):
-        GateSwitches_Avg_pool.VINJ_T[i] += GateDecoder_Avg_pool.VINJ_b[i]
-        GateSwitches_Avg_pool.GND_T[i] += GateDecoder_Avg_pool.GND_b[i]
-        GateSwitches_Avg_pool.RUN_IN[i] += GateDecoder_Avg_pool.RUN_OUT[i]
-        GateSwitches_Avg_pool.decode[i] += GateDecoder_Avg_pool.OUT[i]
-
-
+    # for i in range(intg_cols):
+    #     GateSwitches_Avg_pool.VINJ_T[i] += GateDecoder_Avg_pool.VINJ_b[i]
+    #     GateSwitches_Avg_pool.GND_T[i] += GateDecoder_Avg_pool.GND_b[i]
+    #     GateSwitches_Avg_pool.RUN_IN[i] += GateDecoder_Avg_pool.RUN_OUT[i]
+    #     GateSwitches_Avg_pool.decode[i] += GateDecoder_Avg_pool.OUT[i]
         
 
-    #################  Global Switches and Shift Reg for kernel col #################
+    #################  Placing the Shift Reg and Tgate cells for kernel col #################
     SR_k_col_island = ac.Island(Top)
 
     SR_k_col = lib_new.DynamicShiftReg_Rst_Lo(Top,SR_k_col_island,dim=[1,kernel_size])
@@ -422,81 +492,143 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
                 Tgate_fr_SR_k_col_ImgR[k_col + (kernel_size)*k_col_set].markAbut()
 
 
-    ## Internal Connections
-    for i in range(inp_channels*kernel_size):
-        Tgate_fr_SR_k_col_ImgR[i].Vg_R += GateDecoder.VGRUN[i]
+    #################  Placing and Routing the Top level Digital cell and Tgates for direct scheme #################
 
-    for i in range(0,inp_channels*kernel_size,kernel_size):
-        Tgate_fr_SR_k_col_ImgR[i].DVDD += DVDD
-        Tgate_fr_SR_k_col_ImgR[i].AVDD += AVDD
-        Tgate_fr_SR_k_col_ImgR[i].GND += GND
-        Tgate_fr_SR_k_col_ImgR[i].Vimg+= Vin_inp_Ch[i//kernel_size]
+    ## Placement
+    Top_Digital_island = ac.Island(Top)
+    Top_Digital = lib_new.AvgPool_TopDig(Top,Top_Digital_island,dim=[1,1])
+    Top_Digital.place([0,0])
 
-    for i in range(1,inp_channels,1):
-        for j in range(kernel_size):
-            Tgate_fr_SR_k_col_ImgR[kernel_size].Q_bot+= Tgate_fr_SR_k_col_ImgR[j + i*(kernel_size)].Q
+    Tgts_fr_Vsel_drtG = [None for _ in range(int(np.ceil(intg_cols)))]
 
+    for i in range(intg_cols):
+        Tgts_fr_Vsel_drtG[i] = lib_cab.ST_BMatrix(circuit,Top_Digital_island,dim=[1,1])
+        Tgts_fr_Vsel_drtG[i].place([0,i+1])
 
-    ## Pin connections
+    ## Connections
+    # Top Digital block
+    SR_k_rw_CLK += Top_Digital.SR_k_rw_CLK
+    SR_k_rw_RST_B += Top_Digital.SR_k_rw_RST_B
+    SR_k_rw_CLKB += Top_Digital.SR_k_rw_CLKB
+    TgateHoriz_VMMout_top_glb.Final_rw_out += Top_Digital.Final_rw
+
+    SR_Intg_RST_B+=Top_Digital.SR_int_RST_B
+    SR_Intg_CLK+=Top_Digital.SR_int_CLK
+    SR_Intg_CLKB+=Top_Digital.SR_int_CLKB
+    
+    for i in range(intg_rows):
+        for j in range(intg_cols):
+            Intgr_out_channel_1[i][j].Q += Top_Digital.SR_int_0_Q[j + (i*intg_cols)]
+
+    int_rst_1 = Wire(Top)
+    int_rst_1 += Top_Digital.int_rst[1]
+
+    int_rst_0 = Wire(Top)
+    int_rst_0 += Top_Digital.int_rst[0]
+
+    Relu_en_b_1 = Wire(Top)
+    Relu_en_b_1 += Top_Digital.Relu_en_b[1]
+
+    Relu_en_b_0 = Wire(Top)
+    Relu_en_b_0 += Top_Digital.Relu_en_b[0]
+
+    Global_rst_b += Top_Digital.Global_rst_b
+    
+    intg_nxt_rw = Wire(Top)
+    intg_nxt_rw += Top_Digital.intg_nxt_rw
+
+    DVDD += Top_Digital.DVDD
+    GND += Top_Digital.GND
+
+    # Tgates for direct scheme
+    for i in range(intg_cols):
+        Intgr_out_channel_1[0][i].Vsel_b[0] += Tgts_fr_Vsel_drtG[i].In[0]
+        Intgr_out_channel_1[0][i].Vsel_b[1] += Tgts_fr_Vsel_drtG[i].In[1]
+        Intgr_out_channel_1[0][i].Vsel_b[0] += Tgts_fr_Vsel_drtG[i].In[2]
+        Intgr_out_channel_1[0][i].Vsel_b[1] += Tgts_fr_Vsel_drtG[i].In[3]
+        
+        for j in range(2):
+            GateSwitches_Avg_pool.CTRL_B[j + (2)*i]+=Tgts_fr_Vsel_drtG[i].A[j]
+
+            if (i<intg_cols/2):
+                Top_Digital.AvgPool_col_ctrl[0]+=Tgts_fr_Vsel_drtG[i].A[j+2]
+            else:
+                Top_Digital.AvgPool_col_ctrl[1]+=Tgts_fr_Vsel_drtG[i].A[j+2]
+
+    
+        prog_hv+=Tgts_fr_Vsel_drtG[i].Prog
+        VINJ+=Tgts_fr_Vsel_drtG[i].VDD
+        GND+=Tgts_fr_Vsel_drtG[i].GND
+
+    ################# Starting Internal Connections #################
+
+    ## Shift Registor Kernel Col Tgates
     SR_k_col_Din+=SR_k_col.Din[0]
     SR_k_col_CLK+=SR_k_col.CLK[0]
     SR_k_col_CLKB+=SR_k_col.CLKB[0]
     SR_k_col_RST_B+=SR_k_col.RST_B[0]
+    
+    DVDD+=SR_k_col.DVDD
+    GND+=SR_k_col.GND
 
 
-    #################  Global Ties for Tgate Horizontal Swcs #################
+    ## Shift Registor Kernel Col Tgates
+    for i in range(inp_channels*kernel_size):
+        GateDecoder.VGRUN[i] += Tgate_fr_SR_k_col_ImgR[i].Vg_R
 
-    # Pin connections
-    TgateHoriz_VMMout_top_glb.VINJ+=VINJ
-    TgateHoriz_VMMout_top_glb.RUN_HV+=run_hv
-    TgateHoriz_VMMout_top_glb.GND+=GND
-    TgateHoriz_VMMout_top_glb.CLKB+=SR_k_rw_CLKB
-    TgateHoriz_VMMout_top_glb.CLK+=SR_k_rw_CLK
-    TgateHoriz_VMMout_top_glb.RST_B+=SR_k_rw_RST_B
-    TgateHoriz_VMMout_top_glb.Din+=SR_k_rw_Din
-    TgateHoriz_VMMout_top_glb.DVDD+=DVDD
-    #TgateHoriz_VMMout_top.Final_row_out+=Final_rw_out
+    for i in range(0,inp_channels*kernel_size,kernel_size):
+        DVDD += Tgate_fr_SR_k_col_ImgR[i].DVDD
+        AVDD += Tgate_fr_SR_k_col_ImgR[i].AVDD 
+        GND += Tgate_fr_SR_k_col_ImgR[i].GND
+        Vin_inp_Ch[i//kernel_size] += Tgate_fr_SR_k_col_ImgR[i].Vimg
 
-    #################  Global Ties for I_subtractor #################
-
-    Isub_top_glb.GND+=GND
-    Isub_top_glb.prog_lv+=prog_lv
-    Isub_top_glb.DVDD+=DVDD
-    Isub_top_glb.run_lv+=run_lv
-
-    #################  Global Ties for Integrator blocks #################
+    for i in range(1,inp_channels,1):
+        for j in range(kernel_size):
+            Tgate_fr_SR_k_col_ImgR[j].Q_bot+= Tgate_fr_SR_k_col_ImgR[j + i*(kernel_size)].Q_bot
 
 
-    ## Internal connections
+    ### Tgate Horizontal Swcs
+    VINJ+=TgateHoriz_VMMout_top_glb.VINJ
+    run_hv+=TgateHoriz_VMMout_top_glb.RUN_HV
+    GND+=TgateHoriz_VMMout_top_glb.GND
+    SR_k_rw_CLKB+=TgateHoriz_VMMout_top_glb.CLKB
+    SR_k_rw_CLK+=TgateHoriz_VMMout_top_glb.CLK
+    SR_k_rw_RST_B+=TgateHoriz_VMMout_top_glb.RST_B
+    DVDD+=TgateHoriz_VMMout_top_glb.DVDD
+    SR_k_rw_Din+=TgateHoriz_VMMout_top_glb.Din
+    SR_k_rw_Din+=TgateHoriz_VMMout_top_glb.Din_Glb
 
-    SR_Intg_Din+=Intgr_out_channel_1[0][0].Din
+    ### I_subtractor 
+    GND+=Isub_top_glb.GND
+    prog_hv+=Isub_top_glb.prog_hv
+    VINJ+=Isub_top_glb.VINJ
+    run_hv+=Isub_top_glb.run_hv
 
+    ## Integrator blocks
+
+    Intgr_Din_tie += SR_Intg_Din
     for i in range(intg_cols):
 
         SR_Intg_CLK+=Intgr_out_channel_1[0][i].CLK
         SR_Intg_CLKB+=Intgr_out_channel_1[0][i].CLKB
         SR_Intg_RST_B+=Intgr_out_channel_1[0][i].RST_B
-        #SR_k_col_CLK+=Intgr_out_channel_1[0][i].Vimg_CLK
-        Vimg_CLK+=Intgr_out_channel_1[0][i].Vimg_CLK
+        SR_k_col_CLK+=Intgr_out_channel_1[0][i].Vimg_CLK
 
-        SR_Intg_nxt_rw+=Intgr_out_channel_1[0][i].nxt_rw[0] # Connect to global dig logic
-        SR_Intg_nxt_rw+=Intgr_out_channel_1[0][i].nxt_rw[1] # Connect to global dig logic
+        intg_nxt_rw+=Intgr_out_channel_1[0][i].nxt_rw[0] # Connect to global dig logic
+        intg_nxt_rw+=Intgr_out_channel_1[0][i].nxt_rw[1] # Connect to global dig logic
 
         GND+=Intgr_out_channel_1[0][i].GND
 
         AVDD_by_2+=Intgr_out_channel_1[0][i].AVDD_by_2[0]
         AVDD_by_2+=Intgr_out_channel_1[0][i].AVDD_by_2[1]
 
-        prog_hv+=Intgr_out_channel_1[0][i].prog[0] #check if it is HV or LV
-        prog_hv+=Intgr_out_channel_1[0][i].prog[1]  #check if it is HV or LV
+        prog_hv+=Intgr_out_channel_1[0][i].prog[0]
+        prog_hv+=Intgr_out_channel_1[0][i].prog[1] 
 
-        run_hv+=Intgr_out_channel_1[0][i].run[0] #check if it is HV or LV
-        run_hv+=Intgr_out_channel_1[0][i].run[1]  #check if it is HV or LV
+        run_hv+=Intgr_out_channel_1[0][i].run[0]
+        run_hv+=Intgr_out_channel_1[0][i].run[1] 
 
         ## Connected the Vg, Vsel_b lines under the Gateswcs definitions
-        AVDD+=Intgr_out_channel_1[0][i].AVDD[0]
-        AVDD+=Intgr_out_channel_1[0][i].AVDD[1]
-
         VINJ+=Intgr_out_channel_1[0][i].VINJ[0]
         VINJ+=Intgr_out_channel_1[0][i].VINJ[1]
 
@@ -507,39 +639,107 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
 
     #################  Global Ties for Readout Relu blocks #################
 
-    prog_lv +=  Readout_Relu_glb[0].prog_lv[0] 
-    run_lv +=  Readout_Relu_glb[0].run_lv[0] 
+    prog_hv +=  Readout_Relu_glb[0].prog_hv[0] 
+    run_hv +=  Readout_Relu_glb[0].run_hv[0] 
     AvgPool_Relu_Vb += Readout_Relu_glb[0].Vb[0] 
-    AVDD += Readout_Relu_glb[0].AVDD[0] 
+    AVDD += Readout_Relu_glb[0].AVDD[0]    
+    VINJ += Readout_Relu_glb[0].VINJ[0] 
+
 
     Out_En_b_glb = [Wire(Top) for _ in range(intg_rows)]
 
     for i in range(out_channels):
         for local in range(intg_rows):
-            Sub_Img_Out_glb[i]+=Readout_Relu_glb[i].Sub_img_out[local]
-            GND+= Readout_Relu_glb[i].GND[local] 
-            DVDD+= Readout_Relu_glb[i].DVDD[local] 
-            Out_En_b_glb[local]+=Readout_Relu_glb[i].Out_En_b[local]
+            Sub_Img_Out_glb[i] +=Readout_Relu_glb[i].Sub_img_out[local]
+            GND += Readout_Relu_glb[i].GND[local] 
+            DVDD += Readout_Relu_glb[i].DVDD[local]
 
+            if (local%2==0):
+                Relu_en_b_0 += Readout_Relu_glb[i].Out_En_b[local]
+                int_rst_0 += Readout_Relu_glb[i].int_rst_out[local]
 
+            else:
+                int_rst_0 += Readout_Relu_glb[i].int_rst_out[local]
+                Relu_en_b_1 += Readout_Relu_glb[i].Out_En_b[local]
+
+   ################    Between Gateswcs and Decoders routing    ################
+
+    Gate_Route_Island_fr_Kvmm = ac.Island(Top)
+    Gate_Route_kvmm = lib_new.Gate_Routing(Top,dim=(1,(inp_channels*kernel_size)//4),island=Gate_Route_Island_fr_Kvmm)
+    Gate_Route_kvmm.place([0,0])
+    Gate_Route_kvmm.AVDD += AVDD
+    
+
+    Gate_Route_Island_fr_AvgP = ac.Island(Top)
+    Gate_Route_AvgP = lib_new.Gate_Routing(Top,dim=(1,intg_cols//2),island=Gate_Route_Island_fr_AvgP)
+    Gate_Route_AvgP.place([0,0])
+    Gate_Route_AvgP.AVDD += AVDD
 
 
     # Island Placement
     # -------------------------------------------------------------------------------
-    #start_x = islandLoc[0]
-    #start_y = islandLoc[1]
+    Kernel_VMM_X = islandLoc[0]
+    Kernel_VMM_Y = islandLoc[1]
+
+    ShftReg_Krnl_col_X = islandLoc[0] + (170+(27.46*(inp_channels*kernel_size)/2)+80)*1e3
+    ShftReg_Krnl_col_Y = islandLoc[1] + (22*(kernel_size*2*out_channels)/4 + 30)*1e3
+
+    AvgPool_Gswcs_X = ShftReg_Krnl_col_X + (((kernel_size*inp_channels)/4)*(44.52 + 20.5))*1e3
+    AvgPool_Gswcs_Y = ShftReg_Krnl_col_Y
+
+    Top_Dig_X = AvgPool_Gswcs_X + 250*1e3
+    Top_Dig_Y = ShftReg_Krnl_col_Y
 
     #AvgP_Gswcs_Island_xloc = start_x + 
-    #location_islands = (islandLoc[0],islandLoc[1])
+    location_islands = ((Kernel_VMM_X, Kernel_VMM_Y),
+                        (AvgPool_Gswcs_X, AvgPool_Gswcs_Y),
+                        (ShftReg_Krnl_col_X,ShftReg_Krnl_col_Y),
+                        (Top_Dig_X,Top_Dig_Y),
+                        (islandLoc[0]+62580+26270*(int(np.ceil(drainBits/2)-1)),islandLoc[1]+ (22*((kernel_size*2*out_channels)/4 + 1))*1e3),
+                        (AvgPool_Gswcs_X, AvgPool_Gswcs_Y + 22*1e3))
 
-    #return location_islands
-
+    return {
+        "location_islands": location_islands,
+        "Kvmm_G_En": Kvmm_G_En,
+        "Kvmm_G_bit": Kvmm_G_bit,
+        "AvgPool_FGs_G_En": AvgPool_FGs_G_En,
+        "AvgPool_FGs_G_bit": AvgPool_FGs_G_bit,
+        "Kvmm_AvgP_Dr_En": Kvmm_AvgP_Dr_En,
+        "Kvmm_AvgP_Dr_bit": Kvmm_AvgP_Dr_bit,
+        "Kvmm_AvgP_Prog_Drln": Kvmm_AvgP_Prog_Drln,
+        "Kvmm_AvgP_Run_Drln": Kvmm_AvgP_Run_Drln,
+        "SR_k_col_Din": SR_k_col_Din,
+        "SR_k_col_CLKB": SR_k_col_CLKB,
+        "SR_k_col_RST_B": SR_k_col_RST_B,
+        "SR_k_col_CLK": SR_k_col_CLK,
+        "Vin_inp_Ch": Vin_inp_Ch,
+        "SR_Intg_RST_B": SR_Intg_RST_B,
+        "SR_Intg_Din": SR_Intg_Din,
+        "SR_Intg_CLK": SR_Intg_CLK,
+        "SR_Intg_CLKB": SR_Intg_CLKB,
+        "SR_k_rw_Din": SR_k_rw_Din,
+        "SR_k_rw_CLKB": SR_k_rw_CLKB,
+        "SR_k_rw_RST_B": SR_k_rw_RST_B,
+        "SR_k_rw_CLK": SR_k_rw_CLK,
+        "AvgPool_Relu_Vb": AvgPool_Relu_Vb,
+        "Sub_Img_Out_glb": Sub_Img_Out_glb,
+        "VTUN": VTUN,
+        "DVDD": DVDD,
+        "AVDD": AVDD,
+        "GND": GND,
+        "VINJ": VINJ,
+        "VGPROG": VGPROG,
+        "prog_hv": prog_hv,
+        "run_hv": run_hv,
+        "AVDD_by_2": AVDD_by_2,
+        "Global_rst_b": Global_rst_b
+    }
 
 
 Top = ac.Circuit()
-location_islands = Conv_AvgPool(Top,islandLoc=[5e4,4.1e4],debug=True)
+Conv_AvgPool_layer = Conv_AvgPool(Top,islandLoc=[5e4,4.1e4],debug=True)
 
-location_islands = ((5e4,4.1e4),(6e5,15.8e5),(4e5,15.7e5))
+#location_islands = ((5e4,4.1e4),(6e5,15.8e5),(4e5,15.7e5))
 #location_islands = ((5e4,4.1e4),(6e5,8e5),(4e5,7.9e5))
 #location_islands = ((100,100),(1e6,3.6e5))
 
@@ -551,11 +751,11 @@ with open('./ashes_fg/asic/qrouter_default.json') as file:
 
 qparams["passes"] = 100
 qparams["via"] = 20
-qparams["jog"] = 80
-qparams["conflict"] = 500
+qparams["jog"] = 50
+qparams["conflict"] = 50
 qparams["stage2"] = "mask none force effort 100"
 qparams["stage3"] = "mask none force effort 100"
 
 
-ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_AvgPool", p_and_r = True, route=True, design_limits = design_limits, location_islands = location_islands, qparams=qparams,drainSpaceIdx=0,drainSpace=0,gateSpaceIdx=0,gateSpace=0)
+ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_AvgPool", p_and_r = True, route=True, design_limits = design_limits, location_islands = Conv_AvgPool_layer["location_islands"], qparams=qparams,drainSpaceIdx=0,drainSpace=0,gateSpaceIdx=0,gateSpace=0)
 
