@@ -928,10 +928,10 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                         #Semi-Hardcode connecting net from switch to decoder
                         temp_net_num = idx*4
                         # use VPWR for CABs, RUN_IN for ASICs
-                        switch['nets']['decode<0>'] = f'isle{val}_swc_net{temp_net_num + 0}' if 'decode<0>' not in switch['nets'] else switch['nets']['decode<0>']
-                        switch['nets']['VPWR<0>'] = f'isle{val}_swc_net{temp_net_num + 1}' if 'VPWR<0>' not in switch['nets'] else switch['nets']['VPWR<0>']
-                        switch['nets']['decode<1>'] = f'isle{val}_swc_net{temp_net_num + 2}' if 'decode<1>' not in switch['nets'] else switch['nets']['decode<1>']
-                        switch['nets']['VPWR<1>'] = f'isle{val}_swc_net{temp_net_num + 3}' if 'VPWR<1>' not in switch['nets'] else switch['nets']['VPWR<1>']
+                        #switch['nets']['decode<0>'] = f'isle{val}_swc_net{temp_net_num + 0}' if 'decode<0>' not in switch['nets'] else switch['nets']['decode<0>']
+                        #switch['nets']['VPWR<0>'] = f'isle{val}_swc_net{temp_net_num + 1}' if 'VPWR<0>' not in switch['nets'] else switch['nets']['VPWR<0>']
+                        #switch['nets']['decode<1>'] = f'isle{val}_swc_net{temp_net_num + 2}' if 'decode<1>' not in switch['nets'] else switch['nets']['decode<1>']
+                        #switch['nets']['VPWR<1>'] = f'isle{val}_swc_net{temp_net_num + 3}' if 'VPWR<1>' not in switch['nets'] else switch['nets']['VPWR<1>']
                         if cells_only_module:
                             x_loc = cell_order[idx][4][0]
                         else:
@@ -1457,7 +1457,7 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
 
     # Copy the technology lef for the design
     tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '.lef')
-    tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '_toplevelroute.lef')
+    #tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '_toplevelroute.lef')
     if os.path.exists(tech_lef_path): shutil.copy(tech_lef_path, file_path)
     else: raise CellNotFound(f'Could not find the technology lef file {tech_process}.lef. Is it in the ./lib/tech_lef/ directory?')
 
@@ -1595,7 +1595,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     def_file = open(file_path, 'a')
     #rect_string[-1] = rect_string[-1][:-1] + ' ;\n'
 
-    m1_m2_except = ['Full_Macro_Corner', 'Full_Macro_2p0','Full_Macro_2p0_abstract']
+    m1_m2_except = ['Full_Macro_Corner', 'Full_Macro_2p0','Full_Macro_2p0_abstract','FakeCellGateDecoder']
 
     # Place blockages in def file
     pin_const = 1 # this is for amount of distance between blockage edge and true cell edge
@@ -1636,7 +1636,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 mat_row = item['mat_info']['mat_row']
 
             # Insert blockages between pins around the edges
-            pin_exclusion = ['TSMC350nm_4x2_Indirect', 'Full_Macro_Corner', 'Full_Macro_2p0','Full_Macro_2p0_abstract']
+            pin_exclusion = ['TSMC350nm_4x2_Indirect', 'Full_Macro_Corner', 'Full_Macro_2p0','Full_Macro_2p0_abstract','FakeCellGateDecoder']
             rectilinear = ['Full_Macro_Corner', 'Full_Macro_2p0','Full_Macro_2p0_abstract']
             if 'pin_blockage' in item and item['pin_blockage'] and item['name'] not in pin_exclusion:
                 # Added a number of times to loop for matrices
@@ -1795,7 +1795,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
                     def_file.write(f'  END\n\n')
         # Write blockages for any manually specified cells or islands
-        m3_except = ['TSMC350nm_drainSelect_progrundrains', 'S_BLOCK_SEC1_PINS', 'S_BLOCK_BUFFER', 'S_BLOCK_SPACE_UP_PINS', 'S_BLOCK_CONN_PINS', 'S_BLOCK_SPACE_DOWN_PINS', 'S_BLOCK_SEC2_PINS', 'S_BLOCK_23CONN', 'S_BLOCK_SEC3_PINS', 'TSMC350nm_Cap_Bank', 'Full_Macro_Edit','QDAC_synth','TILE_analog','ALICE_separate','NN_cab1','NN_cab2','optimized_cab2','optimized_cab1','PDE_cab1', 'sensor_cab1','sensor_cab2','AveragerDAC_synth','AlgorithmicADC_synth','RampADC_synth', 'TOP_LPF_DelayBlock', 'TOP_Filter_MeadSOS','Delaylines_Flip','Modulation_Flip','VMMWTA_FullRoute']
+        m3_except = ['TSMC350nm_drainSelect_progrundrains', 'S_BLOCK_SEC1_PINS', 'S_BLOCK_BUFFER', 'S_BLOCK_SPACE_UP_PINS', 'S_BLOCK_CONN_PINS', 'S_BLOCK_SPACE_DOWN_PINS', 'S_BLOCK_SEC2_PINS', 'S_BLOCK_23CONN', 'S_BLOCK_SEC3_PINS', 'TSMC350nm_Cap_Bank', 'Full_Macro_Edit','QDAC_synth','TILE_analog','ALICE_separate','NN_cab1','NN_cab2','optimized_cab2','optimized_cab1','PDE_cab1', 'sensor_cab1','sensor_cab2','AveragerDAC_synth','AlgorithmicADC_synth','RampADC_synth', 'TOP_LPF_DelayBlock', 'TOP_Filter_MeadSOS','Delaylines_Flip','Modulation_Flip','VMMWTA_FullRoute','Tgate_swc_fr_Kernel_Horiz_top_edge','Tgate_swc_fr_Kernel_Horiz_bot_only','Tgate_swc_fr_Kernel_Horiz_core','Tgate_swc_fr_Kernel_Horiz_bot_edge','FNN_Relu_and_Sig']
         for val, island in cell_order_in_island.items():
             for idx, item in island['items'].items():
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m3_except:
