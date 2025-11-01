@@ -1397,8 +1397,8 @@ first_layer = (32,3,38,4)
 second_layer = (4,36,46,2)
 
 Top = ac.Circuit()
-CNN_layer0 = Conv_AvgPool(Top,image_size=first_layer[0],inp_channels=first_layer[1],out_channels=first_layer[2],kernel_size=first_layer[3],AvgPool_size=2,Conv_AvgP_Island=None,islandLoc=[100*1e3,100*1e3],debug=False)
-CNN_layer1 = ConvNN(Top,image_size=second_layer[0],inp_channels=second_layer[1],out_channels=second_layer[2],kernel_size=second_layer[3],Flatten=1,Conv_Island=None,islandLoc=[2000*1e3,100*1e3+400*1e3],debug=False)
+CNN_layer0 = Conv_AvgPool(Top,image_size=first_layer[0],inp_channels=first_layer[1],out_channels=first_layer[2],kernel_size=first_layer[3],AvgPool_size=2,Conv_AvgP_Island=None,islandLoc=[110*1e3,110*1e3],debug=False)
+CNN_layer1 = ConvNN(Top,image_size=second_layer[0],inp_channels=second_layer[1],out_channels=second_layer[2],kernel_size=second_layer[3],Flatten=1,Conv_Island=None,islandLoc=[2010*1e3,110*1e3+400*1e3],debug=False)
 
 
 ################ Write down conenctions between the layers and Create Ports #######################
@@ -1585,18 +1585,20 @@ run_hv += CNN_layer1["run_hv"]
 AVDD_by_2 += CNN_layer1["AVDD_by_2"]
 Global_rst_b += CNN_layer1["Global_rst_b"]
 
-design_limits = [3e3*1e3, 1.9e3*1e3]
+#design_limits = [3e3*1e3, 1.9e3*1e3]
+design_limits = [4.5e3*1e3, 2.5e3*1e3]
+
 
 with open('./ashes_fg/asic/qrouter_default.json') as file:
     qparams = json.load(file)
 
 qparams["passes"] = 10
-qparams["via"] = 20
-qparams["jog"] = 40
+qparams["via"] = 30
+qparams["jog"] = 60
 qparams["conflict"] = 50
 qparams["stage2"] = "mask none force effort 100"
 qparams["stage3"] = "mask none force effort 100"
 
 
-ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_Layers", p_and_r = True, route=True, design_limits = design_limits, location_islands = CNN_layer0["location_islands"] + CNN_layer1["location_islands"], qparams=qparams,drainSpaceIdx=0,drainSpace=0,gateSpaceIdx=0,gateSpace=0)
+ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_Layers", p_and_r = True, route=True, design_limits = design_limits, location_islands = CNN_layer0["location_islands"] + CNN_layer1["location_islands"], qparams=qparams)
 

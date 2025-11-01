@@ -1,7 +1,7 @@
 read_lef ConvNN_Layers/ConvNN_Layers.lef
 read_def ConvNN_Layers/ConvNN_Layers.def
-cost via 20
-cost jog 40
+cost via 30
+cost jog 60
 cost block 40
 cost conflict 50
 passes 10
