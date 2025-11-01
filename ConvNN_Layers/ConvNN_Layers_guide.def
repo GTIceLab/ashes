@@ -2145,7 +2145,7 @@ COMPONENTS 2193 ;
 - I_6_987 TSMC350nm_VinjDecode2to4_htile_spacing + PLACED ( 2965190 1737980 ) N ;
 - I_6_988 TSMC350nm_VinjDecode2to4_htile_spacing + PLACED ( 3020110 1737980 ) N ;
 - I_6_989 TSMC350nm_VinjDecode2to4_htile_spacing + PLACED ( 3075030 1737980 ) N ;
-- I_7_0 Tgate_swc_fr_Kernel_Vert + PLACED ( 3229060 1642000 ) N ;
+- I_7_0_0_0 Tgate_swc_fr_Kernel_Vert + PLACED ( 3208560 1642000 ) N ;
 - I_7_1_0_0 Tgate_swc_fr_Kernel_Vert + PLACED ( 3219690 1642000 ) N ;
 - I_7_2 Tgate_swc_fr_Kernel_Vert + PLACED ( 3251320 1642000 ) N ;
 - I_7_3_0_0 Tgate_swc_fr_Kernel_Vert + PLACED ( 3262450 1642000 ) N ;
@@ -2218,7 +2218,7 @@ COMPONENTS 2193 ;
 - I_7_70 Tgate_swc_fr_Kernel_Vert + PLACED ( 3935480 1686000 ) N ;
 - I_7_71_0_0 Tgate_swc_fr_Kernel_Vert + PLACED ( 3946610 1686000 ) N ;
 - I_7_72_0_0 DynamicShiftReg_Rst_Lo + PLACED ( 3208560 1708000 ) N ;
-- I_8_0 Conv_TopDig + PLACED ( 3939060 1642000 ) N ;
+- I_8_0 Conv_TopDig + PLACED ( 4009060 1642000 ) N ;
 - I_9_0_0_0 Routes_GateDecodeSwc + PLACED ( 2141390 1634000 ) N ;
 END COMPONENTS
 
