@@ -2145,7 +2145,7 @@ COMPONENTS 2193 ;
 - I_6_987 TSMC350nm_VinjDecode2to4_htile_spacing + PLACED ( 2965190 1737980 ) N ;
 - I_6_988 TSMC350nm_VinjDecode2to4_htile_spacing + PLACED ( 3020110 1737980 ) N ;
 - I_6_989 TSMC350nm_VinjDecode2to4_htile_spacing + PLACED ( 3075030 1737980 ) N ;
-- I_7_0 Tgate_swc_fr_Kernel_Vert + PLACED ( 3229060 1642000 ) N ;
+- I_7_0_0_0 Tgate_swc_fr_Kernel_Vert + PLACED ( 3208560 1642000 ) N ;
 - I_7_1_0_0 Tgate_swc_fr_Kernel_Vert + PLACED ( 3219690 1642000 ) N ;
 - I_7_2 Tgate_swc_fr_Kernel_Vert + PLACED ( 3251320 1642000 ) N ;
 - I_7_3_0_0 Tgate_swc_fr_Kernel_Vert + PLACED ( 3262450 1642000 ) N ;
@@ -2218,7 +2218,7 @@ COMPONENTS 2193 ;
 - I_7_70 Tgate_swc_fr_Kernel_Vert + PLACED ( 3935480 1686000 ) N ;
 - I_7_71_0_0 Tgate_swc_fr_Kernel_Vert + PLACED ( 3946610 1686000 ) N ;
 - I_7_72_0_0 DynamicShiftReg_Rst_Lo + PLACED ( 3208560 1708000 ) N ;
-- I_8_0 Conv_TopDig + PLACED ( 3939060 1642000 ) N ;
+- I_8_0 Conv_TopDig + PLACED ( 4009060 1642000 ) N ;
 - I_9_0_0_0 Routes_GateDecodeSwc + PLACED ( 2141390 1634000 ) N ;
 END COMPONENTS
 
@@ -113610,52 +113610,52 @@ BLOCKAGES 46052 ;
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3230060 1643000 ) ( 3239190 1663000 ) ;
+    RECT ( 3209560 1643000 ) ( 3218690 1663000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3228060 1643000 ) ( 3230060 1650470 ) ;
+    RECT ( 3207560 1643000 ) ( 3209560 1650470 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3228060 1653470 ) ( 3230060 1655020 ) ;
+    RECT ( 3207560 1653470 ) ( 3209560 1655020 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3228060 1658020 ) ( 3230060 1658020 ) ;
+    RECT ( 3207560 1658020 ) ( 3209560 1658020 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3228060 1660720 ) ( 3230060 1663000 ) ;
+    RECT ( 3207560 1660720 ) ( 3209560 1663000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3230060 1663000 ) ( 3232450 1665000 ) ;
+    RECT ( 3209560 1663000 ) ( 3211950 1665000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3235250 1663000 ) ( 3236660 1665000 ) ;
+    RECT ( 3214750 1663000 ) ( 3216160 1665000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3239190 1643000 ) ( 3241190 1663000 ) ;
+    RECT ( 3218690 1643000 ) ( 3220690 1663000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3237410 1641000 ) ( 3239190 1643000 ) ;
+    RECT ( 3216910 1641000 ) ( 3218690 1643000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3232110 1641000 ) ( 3234630 1643000 ) ;
+    RECT ( 3211610 1641000 ) ( 3214130 1643000 ) ;
   END
 
   - METAL1
@@ -117245,87 +117245,87 @@ BLOCKAGES 46052 ;
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3940060 1643000 ) ( 4054420 1685000 ) ;
+    RECT ( 4010060 1643000 ) ( 4124420 1685000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3938060 1643000 ) ( 3940060 1685000 ) ;
+    RECT ( 4008060 1643000 ) ( 4010060 1685000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3940060 1685000 ) ( 3953060 1687000 ) ;
+    RECT ( 4010060 1685000 ) ( 4023060 1687000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3956460 1685000 ) ( 3995230 1687000 ) ;
+    RECT ( 4026460 1685000 ) ( 4065230 1687000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3998630 1685000 ) ( 4054420 1687000 ) ;
+    RECT ( 4068630 1685000 ) ( 4124420 1687000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4054420 1679350 ) ( 4056420 1685000 ) ;
+    RECT ( 4124420 1679350 ) ( 4126420 1685000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4054420 1669710 ) ( 4056420 1675950 ) ;
+    RECT ( 4124420 1669710 ) ( 4126420 1675950 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4054420 1660910 ) ( 4056420 1666310 ) ;
+    RECT ( 4124420 1660910 ) ( 4126420 1666310 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4054420 1650690 ) ( 4056420 1656900 ) ;
+    RECT ( 4124420 1650690 ) ( 4126420 1656900 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4054420 1645950 ) ( 4056420 1646680 ) ;
+    RECT ( 4124420 1645950 ) ( 4126420 1646680 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4017210 1641000 ) ( 4054420 1643000 ) ;
+    RECT ( 4087210 1641000 ) ( 4124420 1643000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4009700 1641000 ) ( 4013810 1643000 ) ;
+    RECT ( 4079700 1641000 ) ( 4083810 1643000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3993680 1641000 ) ( 4006300 1643000 ) ;
+    RECT ( 4063680 1641000 ) ( 4076300 1643000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3975610 1641000 ) ( 3990280 1643000 ) ;
+    RECT ( 4045610 1641000 ) ( 4060280 1643000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3965180 1641000 ) ( 3972210 1643000 ) ;
+    RECT ( 4035180 1641000 ) ( 4042210 1643000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3961730 1641000 ) ( 3961780 1643000 ) ;
+    RECT ( 4031730 1641000 ) ( 4031780 1643000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 3943120 1641000 ) ( 3958330 1643000 ) ;
+    RECT ( 4013120 1641000 ) ( 4028330 1643000 ) ;
   END
 
   - METAL1
@@ -228740,52 +228740,52 @@ BLOCKAGES 46052 ;
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3230060 1643000 ) ( 3239190 1663000 ) ;
+    RECT ( 3209560 1643000 ) ( 3218690 1663000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3228060 1643000 ) ( 3230060 1650470 ) ;
+    RECT ( 3207560 1643000 ) ( 3209560 1650470 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3228060 1653470 ) ( 3230060 1655020 ) ;
+    RECT ( 3207560 1653470 ) ( 3209560 1655020 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3228060 1658020 ) ( 3230060 1658020 ) ;
+    RECT ( 3207560 1658020 ) ( 3209560 1658020 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3228060 1660720 ) ( 3230060 1663000 ) ;
+    RECT ( 3207560 1660720 ) ( 3209560 1663000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3230060 1663000 ) ( 3232450 1665000 ) ;
+    RECT ( 3209560 1663000 ) ( 3211950 1665000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3235250 1663000 ) ( 3236660 1665000 ) ;
+    RECT ( 3214750 1663000 ) ( 3216160 1665000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3239190 1643000 ) ( 3241190 1663000 ) ;
+    RECT ( 3218690 1643000 ) ( 3220690 1663000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3237410 1641000 ) ( 3239190 1643000 ) ;
+    RECT ( 3216910 1641000 ) ( 3218690 1643000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3232110 1641000 ) ( 3234630 1643000 ) ;
+    RECT ( 3211610 1641000 ) ( 3214130 1643000 ) ;
   END
 
   - METAL2
@@ -232375,87 +232375,87 @@ BLOCKAGES 46052 ;
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3940060 1643000 ) ( 4054420 1685000 ) ;
+    RECT ( 4010060 1643000 ) ( 4124420 1685000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3938060 1643000 ) ( 3940060 1685000 ) ;
+    RECT ( 4008060 1643000 ) ( 4010060 1685000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3940060 1685000 ) ( 3953060 1687000 ) ;
+    RECT ( 4010060 1685000 ) ( 4023060 1687000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3956460 1685000 ) ( 3995230 1687000 ) ;
+    RECT ( 4026460 1685000 ) ( 4065230 1687000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3998630 1685000 ) ( 4054420 1687000 ) ;
+    RECT ( 4068630 1685000 ) ( 4124420 1687000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4054420 1679350 ) ( 4056420 1685000 ) ;
+    RECT ( 4124420 1679350 ) ( 4126420 1685000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4054420 1669710 ) ( 4056420 1675950 ) ;
+    RECT ( 4124420 1669710 ) ( 4126420 1675950 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4054420 1660910 ) ( 4056420 1666310 ) ;
+    RECT ( 4124420 1660910 ) ( 4126420 1666310 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4054420 1650690 ) ( 4056420 1656900 ) ;
+    RECT ( 4124420 1650690 ) ( 4126420 1656900 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4054420 1645950 ) ( 4056420 1646680 ) ;
+    RECT ( 4124420 1645950 ) ( 4126420 1646680 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4017210 1641000 ) ( 4054420 1643000 ) ;
+    RECT ( 4087210 1641000 ) ( 4124420 1643000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4009700 1641000 ) ( 4013810 1643000 ) ;
+    RECT ( 4079700 1641000 ) ( 4083810 1643000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3993680 1641000 ) ( 4006300 1643000 ) ;
+    RECT ( 4063680 1641000 ) ( 4076300 1643000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3975610 1641000 ) ( 3990280 1643000 ) ;
+    RECT ( 4045610 1641000 ) ( 4060280 1643000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3965180 1641000 ) ( 3972210 1643000 ) ;
+    RECT ( 4035180 1641000 ) ( 4042210 1643000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3961730 1641000 ) ( 3961780 1643000 ) ;
+    RECT ( 4031730 1641000 ) ( 4031780 1643000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 3943120 1641000 ) ( 3958330 1643000 ) ;
+    RECT ( 4013120 1641000 ) ( 4028330 1643000 ) ;
   END
 
   - METAL2
@@ -233710,17 +233710,17 @@ BLOCKAGES 46052 ;
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4154420 0 ) ( 4155420 2186010 ) ;
+    RECT ( 4224420 0 ) ( 4225420 2186010 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 0 2185010 ) ( 4155420 2186010 ) ;
+    RECT ( 0 2185010 ) ( 4225420 2186010 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 0 0 ) ( 4155420 1000 ) ;
+    RECT ( 0 0 ) ( 4225420 1000 ) ;
   END
 
   - METAL2
@@ -233730,17 +233730,17 @@ BLOCKAGES 46052 ;
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4154420 0 ) ( 4155420 2186010 ) ;
+    RECT ( 4224420 0 ) ( 4225420 2186010 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 0 2185010 ) ( 4155420 2186010 ) ;
+    RECT ( 0 2185010 ) ( 4225420 2186010 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 0 0 ) ( 4155420 1000 ) ;
+    RECT ( 0 0 ) ( 4225420 1000 ) ;
   END
 
   - METAL3
@@ -233750,17 +233750,17 @@ BLOCKAGES 46052 ;
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 4154420 0 ) ( 4155420 2186010 ) ;
+    RECT ( 4224420 0 ) ( 4225420 2186010 ) ;
   END
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 0 2185010 ) ( 4155420 2186010 ) ;
+    RECT ( 0 2185010 ) ( 4225420 2186010 ) ;
   END
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 0 0 ) ( 4155420 1000 ) ;
+    RECT ( 0 0 ) ( 4225420 1000 ) ;
   END
 
   - METAL4
@@ -233770,17 +233770,17 @@ BLOCKAGES 46052 ;
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 4154420 0 ) ( 4155420 2186010 ) ;
+    RECT ( 4224420 0 ) ( 4225420 2186010 ) ;
   END
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 0 2185010 ) ( 4155420 2186010 ) ;
+    RECT ( 0 2185010 ) ( 4225420 2186010 ) ;
   END
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 0 0 ) ( 4155420 1000 ) ;
+    RECT ( 0 0 ) ( 4225420 1000 ) ;
   END
 
   - METAL1
@@ -233790,17 +233790,17 @@ BLOCKAGES 46052 ;
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4154420 0 ) ( 4155420 2186010 ) ;
+    RECT ( 4224420 0 ) ( 4225420 2186010 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 0 2185010 ) ( 4155420 2186010 ) ;
+    RECT ( 0 2185010 ) ( 4225420 2186010 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 0 0 ) ( 4155420 1000 ) ;
+    RECT ( 0 0 ) ( 4225420 1000 ) ;
   END
 
   - METAL2
@@ -233810,17 +233810,17 @@ BLOCKAGES 46052 ;
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4154420 0 ) ( 4155420 2186010 ) ;
+    RECT ( 4224420 0 ) ( 4225420 2186010 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 0 2185010 ) ( 4155420 2186010 ) ;
+    RECT ( 0 2185010 ) ( 4225420 2186010 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 0 0 ) ( 4155420 1000 ) ;
+    RECT ( 0 0 ) ( 4225420 1000 ) ;
   END
 
   - METAL3
@@ -233830,17 +233830,17 @@ BLOCKAGES 46052 ;
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 4154420 0 ) ( 4155420 2186010 ) ;
+    RECT ( 4224420 0 ) ( 4225420 2186010 ) ;
   END
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 0 2185010 ) ( 4155420 2186010 ) ;
+    RECT ( 0 2185010 ) ( 4225420 2186010 ) ;
   END
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 0 0 ) ( 4155420 1000 ) ;
+    RECT ( 0 0 ) ( 4225420 1000 ) ;
   END
 
   - METAL4
@@ -233850,17 +233850,17 @@ BLOCKAGES 46052 ;
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 4154420 0 ) ( 4155420 2186010 ) ;
+    RECT ( 4224420 0 ) ( 4225420 2186010 ) ;
   END
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 0 2185010 ) ( 4155420 2186010 ) ;
+    RECT ( 0 2185010 ) ( 4225420 2186010 ) ;
   END
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 0 0 ) ( 4155420 1000 ) ;
+    RECT ( 0 0 ) ( 4225420 1000 ) ;
   END
 
 END BLOCKAGES
@@ -233870,7 +233870,7 @@ NETS 1360 ;
   ( I_0_675 VINJ ) ( I_0_834 VINJ ) ( I_0_835 VDD_b ) ( I_0_1361_0_0 VINJ ) ( I_0_1362_0_0 VINJ ) ( I_0_1363_0_0 VINJ<0> ) ( I_0_1363_0_0 VINJ<1> ) ( I_0_1364_0_0 VINJ<0> ) ( I_0_1364_0_0 VINJ<1> ) ( I_0_1365_0_0 VINJ<0> ) ( I_0_1365_0_0 VINJ<1> ) ( I_0_1366_0_0 VINJ<0> ) ( I_0_1366_0_0 VINJ<1> ) ( I_0_1367_0_0 VINJ ) ( I_0_1380 VINJV ) ( I_1_9 VINJV ) ( I_3_1 VDD ) ( I_3_2 VDD ) ( I_3_3 VDD ) ( I_3_4 VDD ) ( I_6_315 VINJ ) ( I_6_412 VINJ ) ( I_6_413 VDD_b ) ( I_6_820_0_0 VINJ ) ( I_6_972 VINJV ) ( cab_frame n_VINJ ) 
 ;
 - net59381
-  ( I_0_675 GND ) ( I_0_834 GND ) ( I_0_835 GND_b ) ( I_0_849_0_0 GND ) ( I_0_849_1_0 GND ) ( I_0_863_0_0 GND ) ( I_0_863_1_0 GND ) ( I_0_877_0_0 GND ) ( I_0_877_1_0 GND ) ( I_0_891_0_0 GND ) ( I_0_891_1_0 GND ) ( I_0_905_0_0 GND ) ( I_0_905_1_0 GND ) ( I_0_919_0_0 GND ) ( I_0_919_1_0 GND ) ( I_0_933_0_0 GND ) ( I_0_933_1_0 GND ) ( I_0_947_0_0 GND ) ( I_0_947_1_0 GND ) ( I_0_961_0_0 GND ) ( I_0_961_1_0 GND ) ( I_0_975_0_0 GND ) ( I_0_975_1_0 GND ) ( I_0_989_0_0 GND ) ( I_0_989_1_0 GND ) ( I_0_1003_0_0 GND ) ( I_0_1003_1_0 GND ) ( I_0_1017_0_0 GND ) ( I_0_1017_1_0 GND ) ( I_0_1031_0_0 GND ) ( I_0_1031_1_0 GND ) ( I_0_1045_0_0 GND ) ( I_0_1045_1_0 GND ) ( I_0_1059_0_0 GND ) ( I_0_1059_1_0 GND ) ( I_0_1073_0_0 GND ) ( I_0_1073_1_0 GND ) ( I_0_1087_0_0 GND ) ( I_0_1087_1_0 GND ) ( I_0_1101_0_0 GND ) ( I_0_1101_1_0 GND ) ( I_0_1115_0_0 GND ) ( I_0_1115_1_0 GND ) ( I_0_1129_0_0 GND ) ( I_0_1129_1_0 GND ) ( I_0_1143_0_0 GND ) ( I_0_1143_1_0 GND ) ( I_0_1157_0_0 GND ) ( I_0_1157_1_0 GND ) ( I_0_1171_0_0 GND ) ( I_0_1171_1_0 GND ) ( I_0_1185_0_0 GND ) ( I_0_1185_1_0 GND ) ( I_0_1199_0_0 GND ) ( I_0_1199_1_0 GND ) ( I_0_1213_0_0 GND ) ( I_0_1213_1_0 GND ) ( I_0_1227_0_0 GND ) ( I_0_1227_1_0 GND ) ( I_0_1241_0_0 GND ) ( I_0_1241_1_0 GND ) ( I_0_1255_0_0 GND ) ( I_0_1255_1_0 GND ) ( I_0_1269_0_0 GND ) ( I_0_1269_1_0 GND ) ( I_0_1283_0_0 GND ) ( I_0_1283_1_0 GND ) ( I_0_1297_0_0 GND ) ( I_0_1297_1_0 GND ) ( I_0_1311_0_0 GND ) ( I_0_1311_1_0 GND ) ( I_0_1325_0_0 GND ) ( I_0_1325_1_0 GND ) ( I_0_1339_0_0 GND ) ( I_0_1339_1_0 GND ) ( I_0_1353_0_0 GND ) ( I_0_1353_1_0 GND ) ( I_0_1361_0_0 GND ) ( I_0_1362_0_0 GND ) ( I_0_1363_0_0 GND ) ( I_0_1364_0_0 GND ) ( I_0_1365_0_0 GND ) ( I_0_1366_0_0 GND ) ( I_0_1367_0_0 GND ) ( I_0_1367_1_0 GND ) ( I_0_1380 GNDV ) ( I_1_9 GNDV ) ( I_2_0_0_0 GND ) ( I_2_4 GND ) ( I_2_8 GND ) ( I_2_12_0_0 GND ) ( I_3_0 GND ) ( I_3_1 GND ) ( I_3_2 GND ) ( I_3_3 GND ) ( I_3_4 GND ) ( I_6_315 GND ) ( I_6_412 GND ) ( I_6_413 GND_b ) ( I_6_820_0_0 GND ) ( I_6_821_0_0 GND ) ( I_6_822_0_0 GND ) ( I_6_823_0_0 GND ) ( I_6_824_0_0 GND ) ( I_6_825_0_0 GND ) ( I_6_826_0_0 GND ) ( I_6_827_0_0 GND ) ( I_6_972 GNDV ) ( I_7_0 GND ) ( I_7_2 GND ) ( I_7_4 GND ) ( I_7_6 GND ) ( I_7_8 GND ) ( I_7_10 GND ) ( I_7_12 GND ) ( I_7_14 GND ) ( I_7_16 GND ) ( I_7_18 GND ) ( I_7_20 GND ) ( I_7_22 GND ) ( I_7_24 GND ) ( I_7_26 GND ) ( I_7_28 GND ) ( I_7_30 GND ) ( I_7_32 GND ) ( I_7_34 GND ) ( I_7_36_0_0 GND ) ( I_7_38 GND ) ( I_7_40 GND ) ( I_7_42 GND ) ( I_7_44 GND ) ( I_7_46 GND ) ( I_7_48 GND ) ( I_7_50 GND ) ( I_7_52 GND ) ( I_7_54 GND ) ( I_7_56 GND ) ( I_7_58 GND ) ( I_7_60 GND ) ( I_7_62 GND ) ( I_7_64 GND ) ( I_7_66 GND ) ( I_7_68 GND ) ( I_7_70 GND ) ( I_8_0 GND ) ( cab_frame n_GND ) 
+  ( I_0_675 GND ) ( I_0_834 GND ) ( I_0_835 GND_b ) ( I_0_849_0_0 GND ) ( I_0_849_1_0 GND ) ( I_0_863_0_0 GND ) ( I_0_863_1_0 GND ) ( I_0_877_0_0 GND ) ( I_0_877_1_0 GND ) ( I_0_891_0_0 GND ) ( I_0_891_1_0 GND ) ( I_0_905_0_0 GND ) ( I_0_905_1_0 GND ) ( I_0_919_0_0 GND ) ( I_0_919_1_0 GND ) ( I_0_933_0_0 GND ) ( I_0_933_1_0 GND ) ( I_0_947_0_0 GND ) ( I_0_947_1_0 GND ) ( I_0_961_0_0 GND ) ( I_0_961_1_0 GND ) ( I_0_975_0_0 GND ) ( I_0_975_1_0 GND ) ( I_0_989_0_0 GND ) ( I_0_989_1_0 GND ) ( I_0_1003_0_0 GND ) ( I_0_1003_1_0 GND ) ( I_0_1017_0_0 GND ) ( I_0_1017_1_0 GND ) ( I_0_1031_0_0 GND ) ( I_0_1031_1_0 GND ) ( I_0_1045_0_0 GND ) ( I_0_1045_1_0 GND ) ( I_0_1059_0_0 GND ) ( I_0_1059_1_0 GND ) ( I_0_1073_0_0 GND ) ( I_0_1073_1_0 GND ) ( I_0_1087_0_0 GND ) ( I_0_1087_1_0 GND ) ( I_0_1101_0_0 GND ) ( I_0_1101_1_0 GND ) ( I_0_1115_0_0 GND ) ( I_0_1115_1_0 GND ) ( I_0_1129_0_0 GND ) ( I_0_1129_1_0 GND ) ( I_0_1143_0_0 GND ) ( I_0_1143_1_0 GND ) ( I_0_1157_0_0 GND ) ( I_0_1157_1_0 GND ) ( I_0_1171_0_0 GND ) ( I_0_1171_1_0 GND ) ( I_0_1185_0_0 GND ) ( I_0_1185_1_0 GND ) ( I_0_1199_0_0 GND ) ( I_0_1199_1_0 GND ) ( I_0_1213_0_0 GND ) ( I_0_1213_1_0 GND ) ( I_0_1227_0_0 GND ) ( I_0_1227_1_0 GND ) ( I_0_1241_0_0 GND ) ( I_0_1241_1_0 GND ) ( I_0_1255_0_0 GND ) ( I_0_1255_1_0 GND ) ( I_0_1269_0_0 GND ) ( I_0_1269_1_0 GND ) ( I_0_1283_0_0 GND ) ( I_0_1283_1_0 GND ) ( I_0_1297_0_0 GND ) ( I_0_1297_1_0 GND ) ( I_0_1311_0_0 GND ) ( I_0_1311_1_0 GND ) ( I_0_1325_0_0 GND ) ( I_0_1325_1_0 GND ) ( I_0_1339_0_0 GND ) ( I_0_1339_1_0 GND ) ( I_0_1353_0_0 GND ) ( I_0_1353_1_0 GND ) ( I_0_1361_0_0 GND ) ( I_0_1362_0_0 GND ) ( I_0_1363_0_0 GND ) ( I_0_1364_0_0 GND ) ( I_0_1365_0_0 GND ) ( I_0_1366_0_0 GND ) ( I_0_1367_0_0 GND ) ( I_0_1367_1_0 GND ) ( I_0_1380 GNDV ) ( I_1_9 GNDV ) ( I_2_0_0_0 GND ) ( I_2_4 GND ) ( I_2_8 GND ) ( I_2_12_0_0 GND ) ( I_3_0 GND ) ( I_3_1 GND ) ( I_3_2 GND ) ( I_3_3 GND ) ( I_3_4 GND ) ( I_6_315 GND ) ( I_6_412 GND ) ( I_6_413 GND_b ) ( I_6_820_0_0 GND ) ( I_6_821_0_0 GND ) ( I_6_822_0_0 GND ) ( I_6_823_0_0 GND ) ( I_6_824_0_0 GND ) ( I_6_825_0_0 GND ) ( I_6_826_0_0 GND ) ( I_6_827_0_0 GND ) ( I_6_972 GNDV ) ( I_7_0_0_0 GND ) ( I_7_2 GND ) ( I_7_4 GND ) ( I_7_6 GND ) ( I_7_8 GND ) ( I_7_10 GND ) ( I_7_12 GND ) ( I_7_14 GND ) ( I_7_16 GND ) ( I_7_18 GND ) ( I_7_20 GND ) ( I_7_22 GND ) ( I_7_24 GND ) ( I_7_26 GND ) ( I_7_28 GND ) ( I_7_30 GND ) ( I_7_32 GND ) ( I_7_34 GND ) ( I_7_36_0_0 GND ) ( I_7_38 GND ) ( I_7_40 GND ) ( I_7_42 GND ) ( I_7_44 GND ) ( I_7_46 GND ) ( I_7_48 GND ) ( I_7_50 GND ) ( I_7_52 GND ) ( I_7_54 GND ) ( I_7_56 GND ) ( I_7_58 GND ) ( I_7_60 GND ) ( I_7_62 GND ) ( I_7_64 GND ) ( I_7_66 GND ) ( I_7_68 GND ) ( I_7_70 GND ) ( I_8_0 GND ) ( cab_frame n_GND ) 
 ;
 - net59107
   ( I_0_675 ENABLE ) ( cab_frame n_CNN_ly0_Dr_En ) 
@@ -233915,7 +233915,7 @@ NETS 1360 ;
   ( I_0_849_0_0 int_rst_out ) ( I_0_849_1_0 int_rst_out ) ( I_0_863_0_0 int_rst_out ) ( I_0_863_1_0 int_rst_out ) ( I_0_877_0_0 int_rst_out ) ( I_0_877_1_0 int_rst_out ) ( I_0_891_0_0 int_rst_out ) ( I_0_891_1_0 int_rst_out ) ( I_0_905_0_0 int_rst_out ) ( I_0_905_1_0 int_rst_out ) ( I_0_919_0_0 int_rst_out ) ( I_0_919_1_0 int_rst_out ) ( I_0_933_0_0 int_rst_out ) ( I_0_933_1_0 int_rst_out ) ( I_0_947_0_0 int_rst_out ) ( I_0_947_1_0 int_rst_out ) ( I_0_961_0_0 int_rst_out ) ( I_0_961_1_0 int_rst_out ) ( I_0_975_0_0 int_rst_out ) ( I_0_975_1_0 int_rst_out ) ( I_0_989_0_0 int_rst_out ) ( I_0_989_1_0 int_rst_out ) ( I_0_1003_0_0 int_rst_out ) ( I_0_1003_1_0 int_rst_out ) ( I_0_1017_0_0 int_rst_out ) ( I_0_1017_1_0 int_rst_out ) ( I_0_1031_0_0 int_rst_out ) ( I_0_1031_1_0 int_rst_out ) ( I_0_1045_0_0 int_rst_out ) ( I_0_1045_1_0 int_rst_out ) ( I_0_1059_0_0 int_rst_out ) ( I_0_1059_1_0 int_rst_out ) ( I_0_1073_0_0 int_rst_out ) ( I_0_1073_1_0 int_rst_out ) ( I_0_1087_0_0 int_rst_out ) ( I_0_1087_1_0 int_rst_out ) ( I_0_1101_0_0 int_rst_out ) ( I_0_1101_1_0 int_rst_out ) ( I_0_1115_0_0 int_rst_out ) ( I_0_1115_1_0 int_rst_out ) ( I_0_1129_0_0 int_rst_out ) ( I_0_1129_1_0 int_rst_out ) ( I_0_1143_0_0 int_rst_out ) ( I_0_1143_1_0 int_rst_out ) ( I_0_1157_0_0 int_rst_out ) ( I_0_1157_1_0 int_rst_out ) ( I_0_1171_0_0 int_rst_out ) ( I_0_1171_1_0 int_rst_out ) ( I_0_1185_0_0 int_rst_out ) ( I_0_1185_1_0 int_rst_out ) ( I_0_1199_0_0 int_rst_out ) ( I_0_1199_1_0 int_rst_out ) ( I_0_1213_0_0 int_rst_out ) ( I_0_1213_1_0 int_rst_out ) ( I_0_1227_0_0 int_rst_out ) ( I_0_1227_1_0 int_rst_out ) ( I_0_1241_0_0 int_rst_out ) ( I_0_1241_1_0 int_rst_out ) ( I_0_1255_0_0 int_rst_out ) ( I_0_1255_1_0 int_rst_out ) ( I_0_1269_0_0 int_rst_out ) ( I_0_1269_1_0 int_rst_out ) ( I_0_1283_0_0 int_rst_out ) ( I_0_1283_1_0 int_rst_out ) ( I_0_1297_0_0 int_rst_out ) ( I_0_1297_1_0 int_rst_out ) ( I_0_1311_0_0 int_rst_out ) ( I_0_1311_1_0 int_rst_out ) ( I_0_1325_0_0 int_rst_out ) ( I_0_1325_1_0 int_rst_out ) ( I_0_1339_0_0 int_rst_out ) ( I_0_1339_1_0 int_rst_out ) ( I_0_1353_0_0 int_rst_out ) ( I_0_1353_1_0 int_rst_out ) ( I_0_1367_0_0 int_rst_out ) ( I_0_1367_1_0 int_rst_out ) ( I_3_0 int_rst<0> ) 
 ;
 - net59379
-  ( I_0_849_0_0 DVDD ) ( I_0_849_1_0 DVDD ) ( I_0_863_0_0 DVDD ) ( I_0_863_1_0 DVDD ) ( I_0_877_0_0 DVDD ) ( I_0_877_1_0 DVDD ) ( I_0_891_0_0 DVDD ) ( I_0_891_1_0 DVDD ) ( I_0_905_0_0 DVDD ) ( I_0_905_1_0 DVDD ) ( I_0_919_0_0 DVDD ) ( I_0_919_1_0 DVDD ) ( I_0_933_0_0 DVDD ) ( I_0_933_1_0 DVDD ) ( I_0_947_0_0 DVDD ) ( I_0_947_1_0 DVDD ) ( I_0_961_0_0 DVDD ) ( I_0_961_1_0 DVDD ) ( I_0_975_0_0 DVDD ) ( I_0_975_1_0 DVDD ) ( I_0_989_0_0 DVDD ) ( I_0_989_1_0 DVDD ) ( I_0_1003_0_0 DVDD ) ( I_0_1003_1_0 DVDD ) ( I_0_1017_0_0 DVDD ) ( I_0_1017_1_0 DVDD ) ( I_0_1031_0_0 DVDD ) ( I_0_1031_1_0 DVDD ) ( I_0_1045_0_0 DVDD ) ( I_0_1045_1_0 DVDD ) ( I_0_1059_0_0 DVDD ) ( I_0_1059_1_0 DVDD ) ( I_0_1073_0_0 DVDD ) ( I_0_1073_1_0 DVDD ) ( I_0_1087_0_0 DVDD ) ( I_0_1087_1_0 DVDD ) ( I_0_1101_0_0 DVDD ) ( I_0_1101_1_0 DVDD ) ( I_0_1115_0_0 DVDD ) ( I_0_1115_1_0 DVDD ) ( I_0_1129_0_0 DVDD ) ( I_0_1129_1_0 DVDD ) ( I_0_1143_0_0 DVDD ) ( I_0_1143_1_0 DVDD ) ( I_0_1157_0_0 DVDD ) ( I_0_1157_1_0 DVDD ) ( I_0_1171_0_0 DVDD ) ( I_0_1171_1_0 DVDD ) ( I_0_1185_0_0 DVDD ) ( I_0_1185_1_0 DVDD ) ( I_0_1199_0_0 DVDD ) ( I_0_1199_1_0 DVDD ) ( I_0_1213_0_0 DVDD ) ( I_0_1213_1_0 DVDD ) ( I_0_1227_0_0 DVDD ) ( I_0_1227_1_0 DVDD ) ( I_0_1241_0_0 DVDD ) ( I_0_1241_1_0 DVDD ) ( I_0_1255_0_0 DVDD ) ( I_0_1255_1_0 DVDD ) ( I_0_1269_0_0 DVDD ) ( I_0_1269_1_0 DVDD ) ( I_0_1283_0_0 DVDD ) ( I_0_1283_1_0 DVDD ) ( I_0_1297_0_0 DVDD ) ( I_0_1297_1_0 DVDD ) ( I_0_1311_0_0 DVDD ) ( I_0_1311_1_0 DVDD ) ( I_0_1325_0_0 DVDD ) ( I_0_1325_1_0 DVDD ) ( I_0_1339_0_0 DVDD ) ( I_0_1339_1_0 DVDD ) ( I_0_1353_0_0 DVDD ) ( I_0_1353_1_0 DVDD ) ( I_0_1361_0_0 DVDD ) ( I_0_1363_0_0 DVDD ) ( I_0_1364_0_0 DVDD ) ( I_0_1365_0_0 DVDD ) ( I_0_1366_0_0 DVDD ) ( I_0_1367_0_0 DVDD ) ( I_0_1367_1_0 DVDD ) ( I_2_0_0_0 DVDD ) ( I_2_4 DVDD ) ( I_2_8 DVDD ) ( I_2_12_0_0 DVDD ) ( I_3_0 DVDD ) ( I_6_820_0_0 DVDD ) ( I_6_822_0_0 DVDD ) ( I_6_823_0_0 DVDD ) ( I_6_824_0_0 DVDD ) ( I_6_825_0_0 DVDD ) ( I_6_826_0_0 DVDD ) ( I_6_827_0_0 DVDD ) ( I_7_0 DVDD ) ( I_7_2 DVDD ) ( I_7_4 DVDD ) ( I_7_6 DVDD ) ( I_7_8 DVDD ) ( I_7_10 DVDD ) ( I_7_12 DVDD ) ( I_7_14 DVDD ) ( I_7_16 DVDD ) ( I_7_18 DVDD ) ( I_7_20 DVDD ) ( I_7_22 DVDD ) ( I_7_24 DVDD ) ( I_7_26 DVDD ) ( I_7_28 DVDD ) ( I_7_30 DVDD ) ( I_7_32 DVDD ) ( I_7_34 DVDD ) ( I_7_36_0_0 DVDD ) ( I_7_38 DVDD ) ( I_7_40 DVDD ) ( I_7_42 DVDD ) ( I_7_44 DVDD ) ( I_7_46 DVDD ) ( I_7_48 DVDD ) ( I_7_50 DVDD ) ( I_7_52 DVDD ) ( I_7_54 DVDD ) ( I_7_56 DVDD ) ( I_7_58 DVDD ) ( I_7_60 DVDD ) ( I_7_62 DVDD ) ( I_7_64 DVDD ) ( I_7_66 DVDD ) ( I_7_68 DVDD ) ( I_7_70 DVDD ) ( I_8_0 DVDD ) ( cab_frame n_DVDD ) 
+  ( I_0_849_0_0 DVDD ) ( I_0_849_1_0 DVDD ) ( I_0_863_0_0 DVDD ) ( I_0_863_1_0 DVDD ) ( I_0_877_0_0 DVDD ) ( I_0_877_1_0 DVDD ) ( I_0_891_0_0 DVDD ) ( I_0_891_1_0 DVDD ) ( I_0_905_0_0 DVDD ) ( I_0_905_1_0 DVDD ) ( I_0_919_0_0 DVDD ) ( I_0_919_1_0 DVDD ) ( I_0_933_0_0 DVDD ) ( I_0_933_1_0 DVDD ) ( I_0_947_0_0 DVDD ) ( I_0_947_1_0 DVDD ) ( I_0_961_0_0 DVDD ) ( I_0_961_1_0 DVDD ) ( I_0_975_0_0 DVDD ) ( I_0_975_1_0 DVDD ) ( I_0_989_0_0 DVDD ) ( I_0_989_1_0 DVDD ) ( I_0_1003_0_0 DVDD ) ( I_0_1003_1_0 DVDD ) ( I_0_1017_0_0 DVDD ) ( I_0_1017_1_0 DVDD ) ( I_0_1031_0_0 DVDD ) ( I_0_1031_1_0 DVDD ) ( I_0_1045_0_0 DVDD ) ( I_0_1045_1_0 DVDD ) ( I_0_1059_0_0 DVDD ) ( I_0_1059_1_0 DVDD ) ( I_0_1073_0_0 DVDD ) ( I_0_1073_1_0 DVDD ) ( I_0_1087_0_0 DVDD ) ( I_0_1087_1_0 DVDD ) ( I_0_1101_0_0 DVDD ) ( I_0_1101_1_0 DVDD ) ( I_0_1115_0_0 DVDD ) ( I_0_1115_1_0 DVDD ) ( I_0_1129_0_0 DVDD ) ( I_0_1129_1_0 DVDD ) ( I_0_1143_0_0 DVDD ) ( I_0_1143_1_0 DVDD ) ( I_0_1157_0_0 DVDD ) ( I_0_1157_1_0 DVDD ) ( I_0_1171_0_0 DVDD ) ( I_0_1171_1_0 DVDD ) ( I_0_1185_0_0 DVDD ) ( I_0_1185_1_0 DVDD ) ( I_0_1199_0_0 DVDD ) ( I_0_1199_1_0 DVDD ) ( I_0_1213_0_0 DVDD ) ( I_0_1213_1_0 DVDD ) ( I_0_1227_0_0 DVDD ) ( I_0_1227_1_0 DVDD ) ( I_0_1241_0_0 DVDD ) ( I_0_1241_1_0 DVDD ) ( I_0_1255_0_0 DVDD ) ( I_0_1255_1_0 DVDD ) ( I_0_1269_0_0 DVDD ) ( I_0_1269_1_0 DVDD ) ( I_0_1283_0_0 DVDD ) ( I_0_1283_1_0 DVDD ) ( I_0_1297_0_0 DVDD ) ( I_0_1297_1_0 DVDD ) ( I_0_1311_0_0 DVDD ) ( I_0_1311_1_0 DVDD ) ( I_0_1325_0_0 DVDD ) ( I_0_1325_1_0 DVDD ) ( I_0_1339_0_0 DVDD ) ( I_0_1339_1_0 DVDD ) ( I_0_1353_0_0 DVDD ) ( I_0_1353_1_0 DVDD ) ( I_0_1361_0_0 DVDD ) ( I_0_1363_0_0 DVDD ) ( I_0_1364_0_0 DVDD ) ( I_0_1365_0_0 DVDD ) ( I_0_1366_0_0 DVDD ) ( I_0_1367_0_0 DVDD ) ( I_0_1367_1_0 DVDD ) ( I_2_0_0_0 DVDD ) ( I_2_4 DVDD ) ( I_2_8 DVDD ) ( I_2_12_0_0 DVDD ) ( I_3_0 DVDD ) ( I_6_820_0_0 DVDD ) ( I_6_822_0_0 DVDD ) ( I_6_823_0_0 DVDD ) ( I_6_824_0_0 DVDD ) ( I_6_825_0_0 DVDD ) ( I_6_826_0_0 DVDD ) ( I_6_827_0_0 DVDD ) ( I_7_0_0_0 DVDD ) ( I_7_2 DVDD ) ( I_7_4 DVDD ) ( I_7_6 DVDD ) ( I_7_8 DVDD ) ( I_7_10 DVDD ) ( I_7_12 DVDD ) ( I_7_14 DVDD ) ( I_7_16 DVDD ) ( I_7_18 DVDD ) ( I_7_20 DVDD ) ( I_7_22 DVDD ) ( I_7_24 DVDD ) ( I_7_26 DVDD ) ( I_7_28 DVDD ) ( I_7_30 DVDD ) ( I_7_32 DVDD ) ( I_7_34 DVDD ) ( I_7_36_0_0 DVDD ) ( I_7_38 DVDD ) ( I_7_40 DVDD ) ( I_7_42 DVDD ) ( I_7_44 DVDD ) ( I_7_46 DVDD ) ( I_7_48 DVDD ) ( I_7_50 DVDD ) ( I_7_52 DVDD ) ( I_7_54 DVDD ) ( I_7_56 DVDD ) ( I_7_58 DVDD ) ( I_7_60 DVDD ) ( I_7_62 DVDD ) ( I_7_64 DVDD ) ( I_7_66 DVDD ) ( I_7_68 DVDD ) ( I_7_70 DVDD ) ( I_8_0 DVDD ) ( cab_frame n_DVDD ) 
 ;
 - net59126
   ( I_0_849_0_0 Sub_img_out ) ( I_0_849_1_0 Sub_img_out ) 
@@ -234038,7 +234038,7 @@ NETS 1360 ;
   ( I_0_1104_0_0 Din ) ( I_0_1114_0_0 Q ) 
 ;
 - net59166
-  ( I_0_1115_0_0 Sub_img_out ) ( I_0_1115_1_0 Sub_img_out ) ( I_7_0 Vimg ) 
+  ( I_0_1115_0_0 Sub_img_out ) ( I_0_1115_1_0 Sub_img_out ) ( I_7_0_0_0 Vimg ) 
 ;
 - net7538
   ( I_0_1118_0_0 Din ) ( I_0_1128_0_0 Q ) 
@@ -234257,7 +234257,7 @@ NETS 1360 ;
   ( I_0_1367_0_0 Vb ) ( cab_frame n_CNN_ly0_AP_Relu_Vb ) 
 ;
 - net59380_0
-  ( I_0_1367_0_0 AVDD ) ( I_2_0_0_0 AVDD ) ( I_2_4 AVDD ) ( I_2_8 AVDD ) ( I_4_0_0_0 AVDD ) ( I_5_0_0_0 AVDD ) ( I_6_822_0_0 AVDD ) ( I_6_823_0_0 AVDD ) ( I_7_0 AVDD ) ( I_7_2 AVDD ) ( I_7_4 AVDD ) ( I_7_6 AVDD ) ( I_7_8 AVDD ) ( I_7_10 AVDD ) ( I_7_12 AVDD ) ( I_7_14 AVDD ) ( I_7_16 AVDD ) ( I_7_18 AVDD ) ( I_7_20 AVDD ) ( I_7_22 AVDD ) ( I_7_24 AVDD ) ( I_7_26 AVDD ) ( I_7_28 AVDD ) ( I_7_30 AVDD ) ( I_7_32 AVDD ) ( I_7_34 AVDD ) ( I_7_36_0_0 AVDD ) ( I_7_38 AVDD ) ( I_7_40 AVDD ) ( I_7_42 AVDD ) ( I_7_44 AVDD ) ( I_7_46 AVDD ) ( I_7_48 AVDD ) ( I_7_50 AVDD ) ( I_7_52 AVDD ) ( I_7_54 AVDD ) ( I_7_56 AVDD ) ( I_7_58 AVDD ) ( I_7_60 AVDD ) ( I_7_62 AVDD ) ( I_7_64 AVDD ) ( I_7_66 AVDD ) ( I_7_68 AVDD ) ( I_7_70 AVDD ) ( I_9_0_0_0 AVDD ) ( cab_frame n_AVDD ) 
+  ( I_0_1367_0_0 AVDD ) ( I_2_0_0_0 AVDD ) ( I_2_4 AVDD ) ( I_2_8 AVDD ) ( I_4_0_0_0 AVDD ) ( I_5_0_0_0 AVDD ) ( I_6_822_0_0 AVDD ) ( I_6_823_0_0 AVDD ) ( I_7_0_0_0 AVDD ) ( I_7_2 AVDD ) ( I_7_4 AVDD ) ( I_7_6 AVDD ) ( I_7_8 AVDD ) ( I_7_10 AVDD ) ( I_7_12 AVDD ) ( I_7_14 AVDD ) ( I_7_16 AVDD ) ( I_7_18 AVDD ) ( I_7_20 AVDD ) ( I_7_22 AVDD ) ( I_7_24 AVDD ) ( I_7_26 AVDD ) ( I_7_28 AVDD ) ( I_7_30 AVDD ) ( I_7_32 AVDD ) ( I_7_34 AVDD ) ( I_7_36_0_0 AVDD ) ( I_7_38 AVDD ) ( I_7_40 AVDD ) ( I_7_42 AVDD ) ( I_7_44 AVDD ) ( I_7_46 AVDD ) ( I_7_48 AVDD ) ( I_7_50 AVDD ) ( I_7_52 AVDD ) ( I_7_54 AVDD ) ( I_7_56 AVDD ) ( I_7_58 AVDD ) ( I_7_60 AVDD ) ( I_7_62 AVDD ) ( I_7_64 AVDD ) ( I_7_66 AVDD ) ( I_7_68 AVDD ) ( I_7_70 AVDD ) ( I_9_0_0_0 AVDD ) ( cab_frame n_AVDD ) 
 ;
 - net59148
   ( I_0_1367_0_0 Sub_img_out ) ( I_0_1367_1_0 Sub_img_out ) ( I_7_36_0_0 Vimg ) 
@@ -235394,7 +235394,7 @@ NETS 1360 ;
   ( I_6_980 VGRUN<3> ) ( I_7_71_0_0 Vg_R ) 
 ;
 - net59059_0
-  ( I_6_981 VGRUN<0> ) ( I_7_0 Vg_R ) 
+  ( I_6_981 VGRUN<0> ) ( I_7_0_0_0 Vg_R ) 
 ;
 - net59060_0
   ( I_6_981 VGRUN<1> ) ( I_7_1_0_0 Vg_R ) 
@@ -235502,7 +235502,7 @@ NETS 1360 ;
   ( I_6_989 VGRUN<3> ) ( I_7_35_0_0 Vg_R ) 
 ;
 - net59095
-  ( I_7_0 Q ) ( I_7_1_0_0 Q ) ( I_7_2 Q ) ( I_7_3_0_0 Q ) ( I_7_4 Q ) ( I_7_5_0_0 Q ) ( I_7_6 Q ) ( I_7_7_0_0 Q ) ( I_7_8 Q ) ( I_7_9_0_0 Q ) ( I_7_10 Q ) ( I_7_11_0_0 Q ) ( I_7_12 Q ) ( I_7_13_0_0 Q ) ( I_7_14 Q ) ( I_7_15_0_0 Q ) ( I_7_16 Q ) ( I_7_17_0_0 Q ) ( I_7_18 Q ) ( I_7_19_0_0 Q ) ( I_7_20 Q ) ( I_7_21_0_0 Q ) ( I_7_22 Q ) ( I_7_23_0_0 Q ) ( I_7_24 Q ) ( I_7_25_0_0 Q ) ( I_7_26 Q ) ( I_7_27_0_0 Q ) ( I_7_28 Q ) ( I_7_29_0_0 Q ) ( I_7_30 Q ) ( I_7_31_0_0 Q ) ( I_7_32 Q ) ( I_7_33_0_0 Q ) ( I_7_34 Q ) ( I_7_35_0_0 Q ) ( I_7_38 Q ) ( I_7_38 Q_bot ) ( I_7_39_0_0 Q ) ( I_7_40 Q ) ( I_7_41_0_0 Q ) ( I_7_42 Q ) ( I_7_43_0_0 Q ) ( I_7_44 Q ) ( I_7_45_0_0 Q ) ( I_7_46 Q ) ( I_7_47_0_0 Q ) ( I_7_48 Q ) ( I_7_49_0_0 Q ) ( I_7_50 Q ) ( I_7_51_0_0 Q ) ( I_7_52 Q ) ( I_7_53_0_0 Q ) ( I_7_54 Q ) ( I_7_55_0_0 Q ) ( I_7_56 Q ) ( I_7_57_0_0 Q ) ( I_7_58 Q ) ( I_7_59_0_0 Q ) ( I_7_60 Q ) ( I_7_61_0_0 Q ) ( I_7_62 Q ) ( I_7_63_0_0 Q ) ( I_7_64 Q ) ( I_7_65_0_0 Q ) ( I_7_66 Q ) ( I_7_67_0_0 Q ) ( I_7_68 Q ) ( I_7_69_0_0 Q ) ( I_7_70 Q ) ( I_7_71_0_0 Q ) 
+  ( I_7_0_0_0 Q ) ( I_7_1_0_0 Q ) ( I_7_2 Q ) ( I_7_3_0_0 Q ) ( I_7_4 Q ) ( I_7_5_0_0 Q ) ( I_7_6 Q ) ( I_7_7_0_0 Q ) ( I_7_8 Q ) ( I_7_9_0_0 Q ) ( I_7_10 Q ) ( I_7_11_0_0 Q ) ( I_7_12 Q ) ( I_7_13_0_0 Q ) ( I_7_14 Q ) ( I_7_15_0_0 Q ) ( I_7_16 Q ) ( I_7_17_0_0 Q ) ( I_7_18 Q ) ( I_7_19_0_0 Q ) ( I_7_20 Q ) ( I_7_21_0_0 Q ) ( I_7_22 Q ) ( I_7_23_0_0 Q ) ( I_7_24 Q ) ( I_7_25_0_0 Q ) ( I_7_26 Q ) ( I_7_27_0_0 Q ) ( I_7_28 Q ) ( I_7_29_0_0 Q ) ( I_7_30 Q ) ( I_7_31_0_0 Q ) ( I_7_32 Q ) ( I_7_33_0_0 Q ) ( I_7_34 Q ) ( I_7_35_0_0 Q ) ( I_7_38 Q ) ( I_7_38 Q_bot ) ( I_7_39_0_0 Q ) ( I_7_40 Q ) ( I_7_41_0_0 Q ) ( I_7_42 Q ) ( I_7_43_0_0 Q ) ( I_7_44 Q ) ( I_7_45_0_0 Q ) ( I_7_46 Q ) ( I_7_47_0_0 Q ) ( I_7_48 Q ) ( I_7_49_0_0 Q ) ( I_7_50 Q ) ( I_7_51_0_0 Q ) ( I_7_52 Q ) ( I_7_53_0_0 Q ) ( I_7_54 Q ) ( I_7_55_0_0 Q ) ( I_7_56 Q ) ( I_7_57_0_0 Q ) ( I_7_58 Q ) ( I_7_59_0_0 Q ) ( I_7_60 Q ) ( I_7_61_0_0 Q ) ( I_7_62 Q ) ( I_7_63_0_0 Q ) ( I_7_64 Q ) ( I_7_65_0_0 Q ) ( I_7_66 Q ) ( I_7_67_0_0 Q ) ( I_7_68 Q ) ( I_7_69_0_0 Q ) ( I_7_70 Q ) ( I_7_71_0_0 Q ) 
 ;
 - net59144_0
   ( I_7_72_0_0 Din ) ( cab_frame n_CNN_ly1_k_col_Din ) 

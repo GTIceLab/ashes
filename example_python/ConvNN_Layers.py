@@ -1213,7 +1213,7 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
             Tgate_fr_SR_k_col_ImgR[k_col + (kernel_size)*k_col_set] = lib_new.Tgate_swc_fr_Kernel_Vert(Top,SR_k_col_island,dim=[1,1])
             Tgate_fr_SR_k_col_ImgR[k_col + (kernel_size)*k_col_set].place([row_flag, k_col + (kernel_size)*(k_col_set) + space_flag])
            
-            if k_col==0 and k_col_set==0:
+            if k_col==0 and k_col_set==0 or k_col_set==(inp_channels/2):
                 Tgate_fr_SR_k_col_ImgR[k_col + (kernel_size)*k_col_set].markAbut()
 
             elif k_col!=0:
@@ -1348,7 +1348,7 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
     SR_k_col_X = islandLoc[0] + (170+(27.46*(inp_channels*kernel_size)/2)+50)*1e3
     SR_k_col_Y = islandLoc[1] + (22*(kernel_size*2*out_channels)/4 + 30)*1e3
 
-    Top_Digital_X = SR_k_col_X + 680*1e3 + 30*1e3 # Currently hard coded, will need to change the placement of SR_K_col cells and eventually this cell placement coordinates
+    Top_Digital_X = SR_k_col_X + 680*1e3 + 100*1e3 # Currently hard coded, will need to change the placement of SR_K_col cells and eventually this cell placement coordinates
     Top_Digital_Y = SR_k_col_Y 
 
     location_islands = ((Kernel_VMM_X,Kernel_VMM_Y),
@@ -1604,5 +1604,5 @@ qparams["stage2"] = "mask none force effort 50"
 qparams["stage3"] = "mask none force effort 50"
 
 
-ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_Layers", p_and_r = True, route=True, design_limits = design_limits, location_islands = CNN_layer0["location_islands"] +  CNN_layer1["location_islands"], qparams=qparams)
+ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_Layers", p_and_r = True, route=False, design_limits = design_limits, location_islands = CNN_layer0["location_islands"] +  CNN_layer1["location_islands"], qparams=qparams)
 

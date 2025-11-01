@@ -1053,7 +1053,7 @@ module TOP(port1);
 	Tgate_swc_fr_Kernel_Vert I__34 (.island_num(7), .row(1), .col(49), .matrix_row(1), .matrix_col(1), .Qrow_0(net59095), .Vg_Rrow_0(net59056[0]));
 	Tgate_swc_fr_Kernel_Vert I__35 (.island_num(7), .row(1), .col(51), .GND(net59381), .Q(net59095), .Vg_R(net59057[0]), .Vimg(net59165), .DVDD(net59379), .AVDD(net59380[0]));
 	Tgate_swc_fr_Kernel_Vert I__36 (.island_num(7), .row(1), .col(52), .matrix_row(1), .matrix_col(1), .Qrow_0(net59095), .Vg_Rrow_0(net59058[0]));
-	Tgate_swc_fr_Kernel_Vert I__37 (.island_num(7), .row(3), .col(0), .GND(net59381), .Q(net59095), .Vg_R(net59059[0]), .Vimg(net59166), .DVDD(net59379), .AVDD(net59380[0]));
+	Tgate_swc_fr_Kernel_Vert I__37 (.island_num(7), .row(3), .col(0), .matrix_row(1), .matrix_col(1), .GNDrow_0(net59381), .Qrow_0(net59095), .Vg_Rrow_0(net59059[0]), .Vimgrow_0(net59166), .DVDDrow_0(net59379), .AVDDrow_0(net59380[0]));
 	Tgate_swc_fr_Kernel_Vert I__38 (.island_num(7), .row(3), .col(1), .matrix_row(1), .matrix_col(1), .Qrow_0(net59095), .Vg_Rrow_0(net59060[0]));
 	Tgate_swc_fr_Kernel_Vert I__39 (.island_num(7), .row(3), .col(3), .GND(net59381), .Q(net59095), .Vg_R(net59061[0]), .Vimg(net59167), .DVDD(net59379), .AVDD(net59380[0]));
 	Tgate_swc_fr_Kernel_Vert I__40 (.island_num(7), .row(3), .col(4), .matrix_row(1), .matrix_col(1), .Qrow_0(net59095), .Vg_Rrow_0(net59062[0]));
