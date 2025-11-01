@@ -2157,7 +2157,7 @@ class Integration_n_Relu_start(StandardCell):
 		# self.GND_l = Port(circuit,self,'GND_l','E',1*self.dim[0])
 		# self.Sub_img_out_l = Port(circuit,self,'Sub_img_out_l','E',1*self.dim[0])
 		
-		self.Din = Port(circuit,self,'int_rst','S',1*self.dim[1])
+		self.Din = Port(circuit,self,'Din','S',1*self.dim[1])
 		self.int_rst = Port(circuit,self,'int_rst','S',1*self.dim[1])
 		self.Out_En = Port(circuit,self,'Out_En','S',1*self.dim[1])
 
@@ -2216,7 +2216,7 @@ class Integration_n_Relu_core(StandardCell):
 		# self.GND_l = Port(circuit,self,'GND_l','E',1*self.dim[0])
 		# self.Sub_img_out_l = Port(circuit,self,'Sub_img_out_l','E',1*self.dim[0])
 		
-		self.Din = Port(circuit,self,'int_rst','S',1*self.dim[1])
+		self.Din = Port(circuit,self,'Din','S',1*self.dim[1])
 		self.int_rst = Port(circuit,self,'int_rst','S',1*self.dim[1])
 		self.Out_En = Port(circuit,self,'Out_En','S',1*self.dim[1])
 

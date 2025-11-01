@@ -2218,7 +2218,7 @@ COMPONENTS 2193 ;
 - I_7_70 Tgate_swc_fr_Kernel_Vert + PLACED ( 3945480 1596000 ) N ;
 - I_7_71_0_0 Tgate_swc_fr_Kernel_Vert + PLACED ( 3956610 1596000 ) N ;
 - I_7_72_0_0 DynamicShiftReg_Rst_Lo + PLACED ( 3218560 1618000 ) N ;
-- I_8_0 Conv_TopDig + PLACED ( 4049060 1552000 ) N ;
+- I_8_0 Conv_TopDig + PLACED ( 3949060 1552000 ) N ;
 - I_9_0_0_0 Routes_GateDecodeSwc + PLACED ( 2151390 1544000 ) N ;
 END COMPONENTS
 
@@ -117245,87 +117245,87 @@ BLOCKAGES 46052 ;
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4050060 1553000 ) ( 4164420 1595000 ) ;
+    RECT ( 3950060 1553000 ) ( 4064420 1595000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4048060 1553000 ) ( 4050060 1595000 ) ;
+    RECT ( 3948060 1553000 ) ( 3950060 1595000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4050060 1595000 ) ( 4063060 1597000 ) ;
+    RECT ( 3950060 1595000 ) ( 3963060 1597000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4066460 1595000 ) ( 4105230 1597000 ) ;
+    RECT ( 3966460 1595000 ) ( 4005230 1597000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4108630 1595000 ) ( 4164420 1597000 ) ;
+    RECT ( 4008630 1595000 ) ( 4064420 1597000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4164420 1589350 ) ( 4166420 1595000 ) ;
+    RECT ( 4064420 1589350 ) ( 4066420 1595000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4164420 1579710 ) ( 4166420 1585950 ) ;
+    RECT ( 4064420 1579710 ) ( 4066420 1585950 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4164420 1570910 ) ( 4166420 1576310 ) ;
+    RECT ( 4064420 1570910 ) ( 4066420 1576310 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4164420 1560690 ) ( 4166420 1566900 ) ;
+    RECT ( 4064420 1560690 ) ( 4066420 1566900 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4164420 1555950 ) ( 4166420 1556680 ) ;
+    RECT ( 4064420 1555950 ) ( 4066420 1556680 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4127210 1551000 ) ( 4164420 1553000 ) ;
+    RECT ( 4027210 1551000 ) ( 4064420 1553000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4119700 1551000 ) ( 4123810 1553000 ) ;
+    RECT ( 4019700 1551000 ) ( 4023810 1553000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4103680 1551000 ) ( 4116300 1553000 ) ;
+    RECT ( 4003680 1551000 ) ( 4016300 1553000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4085610 1551000 ) ( 4100280 1553000 ) ;
+    RECT ( 3985610 1551000 ) ( 4000280 1553000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4075180 1551000 ) ( 4082210 1553000 ) ;
+    RECT ( 3975180 1551000 ) ( 3982210 1553000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4071730 1551000 ) ( 4071780 1553000 ) ;
+    RECT ( 3971730 1551000 ) ( 3971780 1553000 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4053120 1551000 ) ( 4068330 1553000 ) ;
+    RECT ( 3953120 1551000 ) ( 3968330 1553000 ) ;
   END
 
   - METAL1
@@ -232375,87 +232375,87 @@ BLOCKAGES 46052 ;
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4050060 1553000 ) ( 4164420 1595000 ) ;
+    RECT ( 3950060 1553000 ) ( 4064420 1595000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4048060 1553000 ) ( 4050060 1595000 ) ;
+    RECT ( 3948060 1553000 ) ( 3950060 1595000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4050060 1595000 ) ( 4063060 1597000 ) ;
+    RECT ( 3950060 1595000 ) ( 3963060 1597000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4066460 1595000 ) ( 4105230 1597000 ) ;
+    RECT ( 3966460 1595000 ) ( 4005230 1597000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4108630 1595000 ) ( 4164420 1597000 ) ;
+    RECT ( 4008630 1595000 ) ( 4064420 1597000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4164420 1589350 ) ( 4166420 1595000 ) ;
+    RECT ( 4064420 1589350 ) ( 4066420 1595000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4164420 1579710 ) ( 4166420 1585950 ) ;
+    RECT ( 4064420 1579710 ) ( 4066420 1585950 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4164420 1570910 ) ( 4166420 1576310 ) ;
+    RECT ( 4064420 1570910 ) ( 4066420 1576310 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4164420 1560690 ) ( 4166420 1566900 ) ;
+    RECT ( 4064420 1560690 ) ( 4066420 1566900 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4164420 1555950 ) ( 4166420 1556680 ) ;
+    RECT ( 4064420 1555950 ) ( 4066420 1556680 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4127210 1551000 ) ( 4164420 1553000 ) ;
+    RECT ( 4027210 1551000 ) ( 4064420 1553000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4119700 1551000 ) ( 4123810 1553000 ) ;
+    RECT ( 4019700 1551000 ) ( 4023810 1553000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4103680 1551000 ) ( 4116300 1553000 ) ;
+    RECT ( 4003680 1551000 ) ( 4016300 1553000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4085610 1551000 ) ( 4100280 1553000 ) ;
+    RECT ( 3985610 1551000 ) ( 4000280 1553000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4075180 1551000 ) ( 4082210 1553000 ) ;
+    RECT ( 3975180 1551000 ) ( 3982210 1553000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4071730 1551000 ) ( 4071780 1553000 ) ;
+    RECT ( 3971730 1551000 ) ( 3971780 1553000 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4053120 1551000 ) ( 4068330 1553000 ) ;
+    RECT ( 3953120 1551000 ) ( 3968330 1553000 ) ;
   END
 
   - METAL2
@@ -233710,17 +233710,17 @@ BLOCKAGES 46052 ;
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4274420 0 ) ( 4275420 2006010 ) ;
+    RECT ( 4174420 0 ) ( 4175420 2006010 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 0 2005010 ) ( 4275420 2006010 ) ;
+    RECT ( 0 2005010 ) ( 4175420 2006010 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 0 0 ) ( 4275420 1000 ) ;
+    RECT ( 0 0 ) ( 4175420 1000 ) ;
   END
 
   - METAL2
@@ -233730,17 +233730,17 @@ BLOCKAGES 46052 ;
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4274420 0 ) ( 4275420 2006010 ) ;
+    RECT ( 4174420 0 ) ( 4175420 2006010 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 0 2005010 ) ( 4275420 2006010 ) ;
+    RECT ( 0 2005010 ) ( 4175420 2006010 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 0 0 ) ( 4275420 1000 ) ;
+    RECT ( 0 0 ) ( 4175420 1000 ) ;
   END
 
   - METAL3
@@ -233750,17 +233750,17 @@ BLOCKAGES 46052 ;
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 4274420 0 ) ( 4275420 2006010 ) ;
+    RECT ( 4174420 0 ) ( 4175420 2006010 ) ;
   END
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 0 2005010 ) ( 4275420 2006010 ) ;
+    RECT ( 0 2005010 ) ( 4175420 2006010 ) ;
   END
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 0 0 ) ( 4275420 1000 ) ;
+    RECT ( 0 0 ) ( 4175420 1000 ) ;
   END
 
   - METAL4
@@ -233770,17 +233770,17 @@ BLOCKAGES 46052 ;
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 4274420 0 ) ( 4275420 2006010 ) ;
+    RECT ( 4174420 0 ) ( 4175420 2006010 ) ;
   END
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 0 2005010 ) ( 4275420 2006010 ) ;
+    RECT ( 0 2005010 ) ( 4175420 2006010 ) ;
   END
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 0 0 ) ( 4275420 1000 ) ;
+    RECT ( 0 0 ) ( 4175420 1000 ) ;
   END
 
   - METAL1
@@ -233790,17 +233790,17 @@ BLOCKAGES 46052 ;
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 4274420 0 ) ( 4275420 2006010 ) ;
+    RECT ( 4174420 0 ) ( 4175420 2006010 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 0 2005010 ) ( 4275420 2006010 ) ;
+    RECT ( 0 2005010 ) ( 4175420 2006010 ) ;
   END
 
   - METAL1
     LAYER METAL1 ;
-    RECT ( 0 0 ) ( 4275420 1000 ) ;
+    RECT ( 0 0 ) ( 4175420 1000 ) ;
   END
 
   - METAL2
@@ -233810,17 +233810,17 @@ BLOCKAGES 46052 ;
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 4274420 0 ) ( 4275420 2006010 ) ;
+    RECT ( 4174420 0 ) ( 4175420 2006010 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 0 2005010 ) ( 4275420 2006010 ) ;
+    RECT ( 0 2005010 ) ( 4175420 2006010 ) ;
   END
 
   - METAL2
     LAYER METAL2 ;
-    RECT ( 0 0 ) ( 4275420 1000 ) ;
+    RECT ( 0 0 ) ( 4175420 1000 ) ;
   END
 
   - METAL3
@@ -233830,17 +233830,17 @@ BLOCKAGES 46052 ;
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 4274420 0 ) ( 4275420 2006010 ) ;
+    RECT ( 4174420 0 ) ( 4175420 2006010 ) ;
   END
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 0 2005010 ) ( 4275420 2006010 ) ;
+    RECT ( 0 2005010 ) ( 4175420 2006010 ) ;
   END
 
   - METAL3
     LAYER METAL3 ;
-    RECT ( 0 0 ) ( 4275420 1000 ) ;
+    RECT ( 0 0 ) ( 4175420 1000 ) ;
   END
 
   - METAL4
@@ -233850,74 +233850,74 @@ BLOCKAGES 46052 ;
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 4274420 0 ) ( 4275420 2006010 ) ;
+    RECT ( 4174420 0 ) ( 4175420 2006010 ) ;
   END
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 0 2005010 ) ( 4275420 2006010 ) ;
+    RECT ( 0 2005010 ) ( 4175420 2006010 ) ;
   END
 
   - METAL4
     LAYER METAL4 ;
-    RECT ( 0 0 ) ( 4275420 1000 ) ;
+    RECT ( 0 0 ) ( 4175420 1000 ) ;
   END
 
 END BLOCKAGES
 
-NETS 1313 ;
-- net59207_0
+NETS 1360 ;
+- net59382_0
   ( I_0_675 VINJ ) ( I_0_834 VINJ ) ( I_0_835 VDD_b ) ( I_0_1361_0_0 VINJ ) ( I_0_1362_0_0 VINJ ) ( I_0_1363_0_0 VINJ<0> ) ( I_0_1363_0_0 VINJ<1> ) ( I_0_1364_0_0 VINJ<0> ) ( I_0_1364_0_0 VINJ<1> ) ( I_0_1365_0_0 VINJ<0> ) ( I_0_1365_0_0 VINJ<1> ) ( I_0_1366_0_0 VINJ<0> ) ( I_0_1366_0_0 VINJ<1> ) ( I_0_1367_0_0 VINJ ) ( I_0_1380 VINJV ) ( I_1_9 VINJV ) ( I_3_1 VDD ) ( I_3_2 VDD ) ( I_3_3 VDD ) ( I_3_4 VDD ) ( I_6_315 VINJ ) ( I_6_412 VINJ ) ( I_6_413 VDD_b ) ( I_6_820_0_0 VINJ ) ( I_6_972 VINJV ) ( cab_frame n_VINJ ) 
 ;
-- net59206
+- net59381
   ( I_0_675 GND ) ( I_0_834 GND ) ( I_0_835 GND_b ) ( I_0_849_0_0 GND ) ( I_0_849_1_0 GND ) ( I_0_863_0_0 GND ) ( I_0_863_1_0 GND ) ( I_0_877_0_0 GND ) ( I_0_877_1_0 GND ) ( I_0_891_0_0 GND ) ( I_0_891_1_0 GND ) ( I_0_905_0_0 GND ) ( I_0_905_1_0 GND ) ( I_0_919_0_0 GND ) ( I_0_919_1_0 GND ) ( I_0_933_0_0 GND ) ( I_0_933_1_0 GND ) ( I_0_947_0_0 GND ) ( I_0_947_1_0 GND ) ( I_0_961_0_0 GND ) ( I_0_961_1_0 GND ) ( I_0_975_0_0 GND ) ( I_0_975_1_0 GND ) ( I_0_989_0_0 GND ) ( I_0_989_1_0 GND ) ( I_0_1003_0_0 GND ) ( I_0_1003_1_0 GND ) ( I_0_1017_0_0 GND ) ( I_0_1017_1_0 GND ) ( I_0_1031_0_0 GND ) ( I_0_1031_1_0 GND ) ( I_0_1045_0_0 GND ) ( I_0_1045_1_0 GND ) ( I_0_1059_0_0 GND ) ( I_0_1059_1_0 GND ) ( I_0_1073_0_0 GND ) ( I_0_1073_1_0 GND ) ( I_0_1087_0_0 GND ) ( I_0_1087_1_0 GND ) ( I_0_1101_0_0 GND ) ( I_0_1101_1_0 GND ) ( I_0_1115_0_0 GND ) ( I_0_1115_1_0 GND ) ( I_0_1129_0_0 GND ) ( I_0_1129_1_0 GND ) ( I_0_1143_0_0 GND ) ( I_0_1143_1_0 GND ) ( I_0_1157_0_0 GND ) ( I_0_1157_1_0 GND ) ( I_0_1171_0_0 GND ) ( I_0_1171_1_0 GND ) ( I_0_1185_0_0 GND ) ( I_0_1185_1_0 GND ) ( I_0_1199_0_0 GND ) ( I_0_1199_1_0 GND ) ( I_0_1213_0_0 GND ) ( I_0_1213_1_0 GND ) ( I_0_1227_0_0 GND ) ( I_0_1227_1_0 GND ) ( I_0_1241_0_0 GND ) ( I_0_1241_1_0 GND ) ( I_0_1255_0_0 GND ) ( I_0_1255_1_0 GND ) ( I_0_1269_0_0 GND ) ( I_0_1269_1_0 GND ) ( I_0_1283_0_0 GND ) ( I_0_1283_1_0 GND ) ( I_0_1297_0_0 GND ) ( I_0_1297_1_0 GND ) ( I_0_1311_0_0 GND ) ( I_0_1311_1_0 GND ) ( I_0_1325_0_0 GND ) ( I_0_1325_1_0 GND ) ( I_0_1339_0_0 GND ) ( I_0_1339_1_0 GND ) ( I_0_1353_0_0 GND ) ( I_0_1353_1_0 GND ) ( I_0_1361_0_0 GND ) ( I_0_1362_0_0 GND ) ( I_0_1363_0_0 GND ) ( I_0_1364_0_0 GND ) ( I_0_1365_0_0 GND ) ( I_0_1366_0_0 GND ) ( I_0_1367_0_0 GND ) ( I_0_1367_1_0 GND ) ( I_0_1380 GNDV ) ( I_1_9 GNDV ) ( I_2_0_0_0 GND ) ( I_2_4 GND ) ( I_2_8 GND ) ( I_2_12_0_0 GND ) ( I_3_0 GND ) ( I_3_1 GND ) ( I_3_2 GND ) ( I_3_3 GND ) ( I_3_4 GND ) ( I_6_315 GND ) ( I_6_412 GND ) ( I_6_413 GND_b ) ( I_6_820_0_0 GND ) ( I_6_821_0_0 GND ) ( I_6_822_0_0 GND ) ( I_6_823_0_0 GND ) ( I_6_824_0_0 GND ) ( I_6_825_0_0 GND ) ( I_6_826_0_0 GND ) ( I_6_827_0_0 GND ) ( I_6_972 GNDV ) ( I_7_0 GND ) ( I_7_2 GND ) ( I_7_4 GND ) ( I_7_6 GND ) ( I_7_8 GND ) ( I_7_10 GND ) ( I_7_12 GND ) ( I_7_14 GND ) ( I_7_16 GND ) ( I_7_18 GND ) ( I_7_20 GND ) ( I_7_22 GND ) ( I_7_24 GND ) ( I_7_26 GND ) ( I_7_28 GND ) ( I_7_30 GND ) ( I_7_32 GND ) ( I_7_34 GND ) ( I_7_36_0_0 GND ) ( I_7_38 GND ) ( I_7_40 GND ) ( I_7_42 GND ) ( I_7_44 GND ) ( I_7_46 GND ) ( I_7_48 GND ) ( I_7_50 GND ) ( I_7_52 GND ) ( I_7_54 GND ) ( I_7_56 GND ) ( I_7_58 GND ) ( I_7_60 GND ) ( I_7_62 GND ) ( I_7_64 GND ) ( I_7_66 GND ) ( I_7_68 GND ) ( I_7_70 GND ) ( I_8_0 GND ) ( cab_frame n_GND ) 
 ;
-- net58935
+- net59107
   ( I_0_675 ENABLE ) ( cab_frame n_CNN_ly0_Dr_En ) 
 ;
-- net58936
+- net59108
   ( I_0_677 IN<1> ) ( cab_frame n_CNN_Dr_bit<7> ) 
 ;
-- net58969
+- net59142
   ( I_0_677 IN<0> ) ( I_6_315 IN<0> ) ( cab_frame n_CNN_Dr_bit<6> ) 
 ;
-- net58968
+- net59141
   ( I_0_679 IN<1> ) ( I_6_317 IN<1> ) ( cab_frame n_CNN_Dr_bit<5> ) 
 ;
-- net58967
+- net59140
   ( I_0_679 IN<0> ) ( I_6_317 IN<0> ) ( cab_frame n_CNN_Dr_bit<4> ) 
 ;
-- net58966
+- net59139
   ( I_0_681 IN<1> ) ( I_6_319 IN<1> ) ( cab_frame n_CNN_Dr_bit<3> ) 
 ;
-- net58965
+- net59138
   ( I_0_681 IN<0> ) ( I_6_319 IN<0> ) ( cab_frame n_CNN_Dr_bit<2> ) 
 ;
-- net58964
+- net59137
   ( I_0_683 IN<1> ) ( I_6_321 IN<1> ) ( cab_frame n_CNN_Dr_bit<1> ) 
 ;
-- net58963
+- net59136
   ( I_0_683 IN<0> ) ( I_6_321 IN<0> ) ( cab_frame n_CNN_Dr_bit<0> ) 
 ;
-- net58970
+- net59143
   ( I_0_834 prog_drainrail ) ( I_0_834 run_drainrail ) ( I_6_412 prog_drainrail ) ( cab_frame n_Prog_Drainline ) ( cab_frame n_Run_Drainline ) 
 ;
-- net59210_0
+- net59385_0
   ( I_0_835 RUN ) ( I_0_1361_0_0 RUN_HV ) ( I_0_1362_0_0 run_hv ) ( I_0_1363_0_0 run<0> ) ( I_0_1363_0_0 run<1> ) ( I_0_1364_0_0 run<0> ) ( I_0_1364_0_0 run<1> ) ( I_0_1365_0_0 run<0> ) ( I_0_1365_0_0 run<1> ) ( I_0_1366_0_0 run<0> ) ( I_0_1366_0_0 run<1> ) ( I_0_1367_0_0 run_hv ) ( I_0_1368 RUN ) ( I_1_1 RUN ) ( I_6_413 RUN ) ( I_6_820_0_0 RUN_HV ) ( I_6_828 RUN ) ( cab_frame n_run_hv ) 
 ;
 - net16038
   ( I_0_838_0_0 Din ) ( I_0_848_0_0 Q ) 
 ;
-- net58943
+- net59116
   ( I_0_845_0_0 Din ) ( I_0_859_0_0 Din ) ( I_0_873_0_0 Din ) ( I_0_887_0_0 Din ) ( I_0_901_0_0 Din ) ( I_0_915_0_0 Din ) ( I_0_929_0_0 Din ) ( I_0_943_0_0 Din ) ( I_0_957_0_0 Din ) ( I_0_971_0_0 Din ) ( I_0_985_0_0 Din ) ( I_0_999_0_0 Din ) ( I_0_1013_0_0 Din ) ( I_0_1027_0_0 Din ) ( I_0_1041_0_0 Din ) ( I_0_1055_0_0 Din ) ( I_0_1069_0_0 Din ) ( I_0_1083_0_0 Din ) ( I_0_1097_0_0 Din ) ( I_0_1111_0_0 Din ) ( I_0_1125_0_0 Din ) ( I_0_1139_0_0 Din ) ( I_0_1153_0_0 Din ) ( I_0_1167_0_0 Din ) ( I_0_1181_0_0 Din ) ( I_0_1195_0_0 Din ) ( I_0_1209_0_0 Din ) ( I_0_1223_0_0 Din ) ( I_0_1237_0_0 Din ) ( I_0_1251_0_0 Din ) ( I_0_1265_0_0 Din ) ( I_0_1279_0_0 Din ) ( I_0_1293_0_0 Din ) ( I_0_1307_0_0 Din ) ( I_0_1321_0_0 Din ) ( I_0_1335_0_0 Din ) ( I_0_1349_0_0 Din ) ( I_0_1363_0_0 Din ) ( cab_frame n_CNN_ly0_Intg_Din ) 
 ;
 - net17050
   ( I_0_849_0_0 int_rst_out ) ( I_0_849_1_0 int_rst_out ) ( I_0_863_0_0 int_rst_out ) ( I_0_863_1_0 int_rst_out ) ( I_0_877_0_0 int_rst_out ) ( I_0_877_1_0 int_rst_out ) ( I_0_891_0_0 int_rst_out ) ( I_0_891_1_0 int_rst_out ) ( I_0_905_0_0 int_rst_out ) ( I_0_905_1_0 int_rst_out ) ( I_0_919_0_0 int_rst_out ) ( I_0_919_1_0 int_rst_out ) ( I_0_933_0_0 int_rst_out ) ( I_0_933_1_0 int_rst_out ) ( I_0_947_0_0 int_rst_out ) ( I_0_947_1_0 int_rst_out ) ( I_0_961_0_0 int_rst_out ) ( I_0_961_1_0 int_rst_out ) ( I_0_975_0_0 int_rst_out ) ( I_0_975_1_0 int_rst_out ) ( I_0_989_0_0 int_rst_out ) ( I_0_989_1_0 int_rst_out ) ( I_0_1003_0_0 int_rst_out ) ( I_0_1003_1_0 int_rst_out ) ( I_0_1017_0_0 int_rst_out ) ( I_0_1017_1_0 int_rst_out ) ( I_0_1031_0_0 int_rst_out ) ( I_0_1031_1_0 int_rst_out ) ( I_0_1045_0_0 int_rst_out ) ( I_0_1045_1_0 int_rst_out ) ( I_0_1059_0_0 int_rst_out ) ( I_0_1059_1_0 int_rst_out ) ( I_0_1073_0_0 int_rst_out ) ( I_0_1073_1_0 int_rst_out ) ( I_0_1087_0_0 int_rst_out ) ( I_0_1087_1_0 int_rst_out ) ( I_0_1101_0_0 int_rst_out ) ( I_0_1101_1_0 int_rst_out ) ( I_0_1115_0_0 int_rst_out ) ( I_0_1115_1_0 int_rst_out ) ( I_0_1129_0_0 int_rst_out ) ( I_0_1129_1_0 int_rst_out ) ( I_0_1143_0_0 int_rst_out ) ( I_0_1143_1_0 int_rst_out ) ( I_0_1157_0_0 int_rst_out ) ( I_0_1157_1_0 int_rst_out ) ( I_0_1171_0_0 int_rst_out ) ( I_0_1171_1_0 int_rst_out ) ( I_0_1185_0_0 int_rst_out ) ( I_0_1185_1_0 int_rst_out ) ( I_0_1199_0_0 int_rst_out ) ( I_0_1199_1_0 int_rst_out ) ( I_0_1213_0_0 int_rst_out ) ( I_0_1213_1_0 int_rst_out ) ( I_0_1227_0_0 int_rst_out ) ( I_0_1227_1_0 int_rst_out ) ( I_0_1241_0_0 int_rst_out ) ( I_0_1241_1_0 int_rst_out ) ( I_0_1255_0_0 int_rst_out ) ( I_0_1255_1_0 int_rst_out ) ( I_0_1269_0_0 int_rst_out ) ( I_0_1269_1_0 int_rst_out ) ( I_0_1283_0_0 int_rst_out ) ( I_0_1283_1_0 int_rst_out ) ( I_0_1297_0_0 int_rst_out ) ( I_0_1297_1_0 int_rst_out ) ( I_0_1311_0_0 int_rst_out ) ( I_0_1311_1_0 int_rst_out ) ( I_0_1325_0_0 int_rst_out ) ( I_0_1325_1_0 int_rst_out ) ( I_0_1339_0_0 int_rst_out ) ( I_0_1339_1_0 int_rst_out ) ( I_0_1353_0_0 int_rst_out ) ( I_0_1353_1_0 int_rst_out ) ( I_0_1367_0_0 int_rst_out ) ( I_0_1367_1_0 int_rst_out ) ( I_3_0 int_rst<0> ) 
 ;
-- net59204
+- net59379
   ( I_0_849_0_0 DVDD ) ( I_0_849_1_0 DVDD ) ( I_0_863_0_0 DVDD ) ( I_0_863_1_0 DVDD ) ( I_0_877_0_0 DVDD ) ( I_0_877_1_0 DVDD ) ( I_0_891_0_0 DVDD ) ( I_0_891_1_0 DVDD ) ( I_0_905_0_0 DVDD ) ( I_0_905_1_0 DVDD ) ( I_0_919_0_0 DVDD ) ( I_0_919_1_0 DVDD ) ( I_0_933_0_0 DVDD ) ( I_0_933_1_0 DVDD ) ( I_0_947_0_0 DVDD ) ( I_0_947_1_0 DVDD ) ( I_0_961_0_0 DVDD ) ( I_0_961_1_0 DVDD ) ( I_0_975_0_0 DVDD ) ( I_0_975_1_0 DVDD ) ( I_0_989_0_0 DVDD ) ( I_0_989_1_0 DVDD ) ( I_0_1003_0_0 DVDD ) ( I_0_1003_1_0 DVDD ) ( I_0_1017_0_0 DVDD ) ( I_0_1017_1_0 DVDD ) ( I_0_1031_0_0 DVDD ) ( I_0_1031_1_0 DVDD ) ( I_0_1045_0_0 DVDD ) ( I_0_1045_1_0 DVDD ) ( I_0_1059_0_0 DVDD ) ( I_0_1059_1_0 DVDD ) ( I_0_1073_0_0 DVDD ) ( I_0_1073_1_0 DVDD ) ( I_0_1087_0_0 DVDD ) ( I_0_1087_1_0 DVDD ) ( I_0_1101_0_0 DVDD ) ( I_0_1101_1_0 DVDD ) ( I_0_1115_0_0 DVDD ) ( I_0_1115_1_0 DVDD ) ( I_0_1129_0_0 DVDD ) ( I_0_1129_1_0 DVDD ) ( I_0_1143_0_0 DVDD ) ( I_0_1143_1_0 DVDD ) ( I_0_1157_0_0 DVDD ) ( I_0_1157_1_0 DVDD ) ( I_0_1171_0_0 DVDD ) ( I_0_1171_1_0 DVDD ) ( I_0_1185_0_0 DVDD ) ( I_0_1185_1_0 DVDD ) ( I_0_1199_0_0 DVDD ) ( I_0_1199_1_0 DVDD ) ( I_0_1213_0_0 DVDD ) ( I_0_1213_1_0 DVDD ) ( I_0_1227_0_0 DVDD ) ( I_0_1227_1_0 DVDD ) ( I_0_1241_0_0 DVDD ) ( I_0_1241_1_0 DVDD ) ( I_0_1255_0_0 DVDD ) ( I_0_1255_1_0 DVDD ) ( I_0_1269_0_0 DVDD ) ( I_0_1269_1_0 DVDD ) ( I_0_1283_0_0 DVDD ) ( I_0_1283_1_0 DVDD ) ( I_0_1297_0_0 DVDD ) ( I_0_1297_1_0 DVDD ) ( I_0_1311_0_0 DVDD ) ( I_0_1311_1_0 DVDD ) ( I_0_1325_0_0 DVDD ) ( I_0_1325_1_0 DVDD ) ( I_0_1339_0_0 DVDD ) ( I_0_1339_1_0 DVDD ) ( I_0_1353_0_0 DVDD ) ( I_0_1353_1_0 DVDD ) ( I_0_1361_0_0 DVDD ) ( I_0_1363_0_0 DVDD ) ( I_0_1364_0_0 DVDD ) ( I_0_1365_0_0 DVDD ) ( I_0_1366_0_0 DVDD ) ( I_0_1367_0_0 DVDD ) ( I_0_1367_1_0 DVDD ) ( I_2_0_0_0 DVDD ) ( I_2_4 DVDD ) ( I_2_8 DVDD ) ( I_2_12_0_0 DVDD ) ( I_3_0 DVDD ) ( I_6_820_0_0 DVDD ) ( I_6_822_0_0 DVDD ) ( I_6_823_0_0 DVDD ) ( I_6_824_0_0 DVDD ) ( I_6_825_0_0 DVDD ) ( I_6_826_0_0 DVDD ) ( I_6_827_0_0 DVDD ) ( I_7_0 DVDD ) ( I_7_2 DVDD ) ( I_7_4 DVDD ) ( I_7_6 DVDD ) ( I_7_8 DVDD ) ( I_7_10 DVDD ) ( I_7_12 DVDD ) ( I_7_14 DVDD ) ( I_7_16 DVDD ) ( I_7_18 DVDD ) ( I_7_20 DVDD ) ( I_7_22 DVDD ) ( I_7_24 DVDD ) ( I_7_26 DVDD ) ( I_7_28 DVDD ) ( I_7_30 DVDD ) ( I_7_32 DVDD ) ( I_7_34 DVDD ) ( I_7_36_0_0 DVDD ) ( I_7_38 DVDD ) ( I_7_40 DVDD ) ( I_7_42 DVDD ) ( I_7_44 DVDD ) ( I_7_46 DVDD ) ( I_7_48 DVDD ) ( I_7_50 DVDD ) ( I_7_52 DVDD ) ( I_7_54 DVDD ) ( I_7_56 DVDD ) ( I_7_58 DVDD ) ( I_7_60 DVDD ) ( I_7_62 DVDD ) ( I_7_64 DVDD ) ( I_7_66 DVDD ) ( I_7_68 DVDD ) ( I_7_70 DVDD ) ( I_8_0 DVDD ) ( cab_frame n_DVDD ) 
 ;
-- net58953
+- net59126
   ( I_0_849_0_0 Sub_img_out ) ( I_0_849_1_0 Sub_img_out ) 
 ;
 - net17049_0
@@ -233929,217 +233929,217 @@ NETS 1313 ;
 - net15613
   ( I_0_852_0_0 Din ) ( I_0_862_0_0 Q ) 
 ;
-- net58952
+- net59125
   ( I_0_863_0_0 Sub_img_out ) ( I_0_863_1_0 Sub_img_out ) 
 ;
 - net15188
   ( I_0_866_0_0 Din ) ( I_0_876_0_0 Q ) 
 ;
-- net59010
+- net59183
   ( I_0_877_0_0 Sub_img_out ) ( I_0_877_1_0 Sub_img_out ) ( I_7_34 Vimg ) 
 ;
 - net14763
   ( I_0_880_0_0 Din ) ( I_0_890_0_0 Q ) 
 ;
-- net59009
+- net59182
   ( I_0_891_0_0 Sub_img_out ) ( I_0_891_1_0 Sub_img_out ) ( I_7_32 Vimg ) 
 ;
 - net14338
   ( I_0_894_0_0 Din ) ( I_0_904_0_0 Q ) 
 ;
-- net59008
+- net59181
   ( I_0_905_0_0 Sub_img_out ) ( I_0_905_1_0 Sub_img_out ) ( I_7_30 Vimg ) 
 ;
 - net13913
   ( I_0_908_0_0 Din ) ( I_0_918_0_0 Q ) 
 ;
-- net59007
+- net59180
   ( I_0_919_0_0 Sub_img_out ) ( I_0_919_1_0 Sub_img_out ) ( I_7_28 Vimg ) 
 ;
 - net13488
   ( I_0_922_0_0 Din ) ( I_0_932_0_0 Q ) 
 ;
-- net59006
+- net59179
   ( I_0_933_0_0 Sub_img_out ) ( I_0_933_1_0 Sub_img_out ) ( I_7_26 Vimg ) 
 ;
 - net13063
   ( I_0_936_0_0 Din ) ( I_0_946_0_0 Q ) 
 ;
-- net59005
+- net59178
   ( I_0_947_0_0 Sub_img_out ) ( I_0_947_1_0 Sub_img_out ) ( I_7_24 Vimg ) 
 ;
 - net12638
   ( I_0_950_0_0 Din ) ( I_0_960_0_0 Q ) 
 ;
-- net59004
+- net59177
   ( I_0_961_0_0 Sub_img_out ) ( I_0_961_1_0 Sub_img_out ) ( I_7_22 Vimg ) 
 ;
 - net12213
   ( I_0_964_0_0 Din ) ( I_0_974_0_0 Q ) 
 ;
-- net59003
+- net59176
   ( I_0_975_0_0 Sub_img_out ) ( I_0_975_1_0 Sub_img_out ) ( I_7_20 Vimg ) 
 ;
 - net11788
   ( I_0_978_0_0 Din ) ( I_0_988_0_0 Q ) 
 ;
-- net59002
+- net59175
   ( I_0_989_0_0 Sub_img_out ) ( I_0_989_1_0 Sub_img_out ) ( I_7_18 Vimg ) 
 ;
 - net11363
   ( I_0_992_0_0 Din ) ( I_0_1002_0_0 Q ) 
 ;
-- net59001
+- net59174
   ( I_0_1003_0_0 Sub_img_out ) ( I_0_1003_1_0 Sub_img_out ) ( I_7_16 Vimg ) 
 ;
 - net10938
   ( I_0_1006_0_0 Din ) ( I_0_1016_0_0 Q ) 
 ;
-- net59000
+- net59173
   ( I_0_1017_0_0 Sub_img_out ) ( I_0_1017_1_0 Sub_img_out ) ( I_7_14 Vimg ) 
 ;
 - net10513
   ( I_0_1020_0_0 Din ) ( I_0_1030_0_0 Q ) 
 ;
-- net58999
+- net59172
   ( I_0_1031_0_0 Sub_img_out ) ( I_0_1031_1_0 Sub_img_out ) ( I_7_12 Vimg ) 
 ;
 - net10088
   ( I_0_1034_0_0 Din ) ( I_0_1044_0_0 Q ) 
 ;
-- net58998
+- net59171
   ( I_0_1045_0_0 Sub_img_out ) ( I_0_1045_1_0 Sub_img_out ) ( I_7_10 Vimg ) 
 ;
 - net9663
   ( I_0_1048_0_0 Din ) ( I_0_1058_0_0 Q ) 
 ;
-- net58997
+- net59170
   ( I_0_1059_0_0 Sub_img_out ) ( I_0_1059_1_0 Sub_img_out ) ( I_7_8 Vimg ) 
 ;
 - net9238
   ( I_0_1062_0_0 Din ) ( I_0_1072_0_0 Q ) 
 ;
-- net58996
+- net59169
   ( I_0_1073_0_0 Sub_img_out ) ( I_0_1073_1_0 Sub_img_out ) ( I_7_6 Vimg ) 
 ;
 - net8813
   ( I_0_1076_0_0 Din ) ( I_0_1086_0_0 Q ) 
 ;
-- net58995
+- net59168
   ( I_0_1087_0_0 Sub_img_out ) ( I_0_1087_1_0 Sub_img_out ) ( I_7_4 Vimg ) 
 ;
 - net8388
   ( I_0_1090_0_0 Din ) ( I_0_1100_0_0 Q ) 
 ;
-- net58994
+- net59167
   ( I_0_1101_0_0 Sub_img_out ) ( I_0_1101_1_0 Sub_img_out ) ( I_7_2 Vimg ) 
 ;
 - net7963
   ( I_0_1104_0_0 Din ) ( I_0_1114_0_0 Q ) 
 ;
-- net58993
+- net59166
   ( I_0_1115_0_0 Sub_img_out ) ( I_0_1115_1_0 Sub_img_out ) ( I_7_0 Vimg ) 
 ;
 - net7538
   ( I_0_1118_0_0 Din ) ( I_0_1128_0_0 Q ) 
 ;
-- net58992
+- net59165
   ( I_0_1129_0_0 Sub_img_out ) ( I_0_1129_1_0 Sub_img_out ) ( I_7_70 Vimg ) 
 ;
 - net7113
   ( I_0_1132_0_0 Din ) ( I_0_1142_0_0 Q ) 
 ;
-- net58991
+- net59164
   ( I_0_1143_0_0 Sub_img_out ) ( I_0_1143_1_0 Sub_img_out ) ( I_7_68 Vimg ) 
 ;
 - net6688
   ( I_0_1146_0_0 Din ) ( I_0_1156_0_0 Q ) 
 ;
-- net58990
+- net59163
   ( I_0_1157_0_0 Sub_img_out ) ( I_0_1157_1_0 Sub_img_out ) ( I_7_66 Vimg ) 
 ;
 - net6263
   ( I_0_1160_0_0 Din ) ( I_0_1170_0_0 Q ) 
 ;
-- net58989
+- net59162
   ( I_0_1171_0_0 Sub_img_out ) ( I_0_1171_1_0 Sub_img_out ) ( I_7_64 Vimg ) 
 ;
 - net5838
   ( I_0_1174_0_0 Din ) ( I_0_1184_0_0 Q ) 
 ;
-- net58988
+- net59161
   ( I_0_1185_0_0 Sub_img_out ) ( I_0_1185_1_0 Sub_img_out ) ( I_7_62 Vimg ) 
 ;
 - net5413
   ( I_0_1188_0_0 Din ) ( I_0_1198_0_0 Q ) 
 ;
-- net58987
+- net59160
   ( I_0_1199_0_0 Sub_img_out ) ( I_0_1199_1_0 Sub_img_out ) ( I_7_60 Vimg ) 
 ;
 - net4988
   ( I_0_1202_0_0 Din ) ( I_0_1212_0_0 Q ) 
 ;
-- net58986
+- net59159
   ( I_0_1213_0_0 Sub_img_out ) ( I_0_1213_1_0 Sub_img_out ) ( I_7_58 Vimg ) 
 ;
 - net4563
   ( I_0_1216_0_0 Din ) ( I_0_1226_0_0 Q ) 
 ;
-- net58985
+- net59158
   ( I_0_1227_0_0 Sub_img_out ) ( I_0_1227_1_0 Sub_img_out ) ( I_7_56 Vimg ) 
 ;
 - net4138
   ( I_0_1230_0_0 Din ) ( I_0_1240_0_0 Q ) 
 ;
-- net58984
+- net59157
   ( I_0_1241_0_0 Sub_img_out ) ( I_0_1241_1_0 Sub_img_out ) ( I_7_54 Vimg ) 
 ;
 - net3713
   ( I_0_1244_0_0 Din ) ( I_0_1254_0_0 Q ) 
 ;
-- net58983
+- net59156
   ( I_0_1255_0_0 Sub_img_out ) ( I_0_1255_1_0 Sub_img_out ) ( I_7_52 Vimg ) 
 ;
 - net3288
   ( I_0_1258_0_0 Din ) ( I_0_1268_0_0 Q ) 
 ;
-- net58982
+- net59155
   ( I_0_1269_0_0 Sub_img_out ) ( I_0_1269_1_0 Sub_img_out ) ( I_7_50 Vimg ) 
 ;
 - net2863
   ( I_0_1272_0_0 Din ) ( I_0_1282_0_0 Q ) 
 ;
-- net58981
+- net59154
   ( I_0_1283_0_0 Sub_img_out ) ( I_0_1283_1_0 Sub_img_out ) ( I_7_48 Vimg ) 
 ;
 - net2438
   ( I_0_1286_0_0 Din ) ( I_0_1296_0_0 Q ) 
 ;
-- net58980
+- net59153
   ( I_0_1297_0_0 Sub_img_out ) ( I_0_1297_1_0 Sub_img_out ) ( I_7_46 Vimg ) 
 ;
 - net2013
   ( I_0_1300_0_0 Din ) ( I_0_1310_0_0 Q ) 
 ;
-- net58979
+- net59152
   ( I_0_1311_0_0 Sub_img_out ) ( I_0_1311_1_0 Sub_img_out ) ( I_7_44 Vimg ) 
 ;
 - net1588
   ( I_0_1314_0_0 Din ) ( I_0_1324_0_0 Q ) 
 ;
-- net58978
+- net59151
   ( I_0_1325_0_0 Sub_img_out ) ( I_0_1325_1_0 Sub_img_out ) ( I_7_42 Vimg ) 
 ;
 - net1163
   ( I_0_1328_0_0 Din ) ( I_0_1338_0_0 Q ) 
 ;
-- net58977
+- net59150
   ( I_0_1339_0_0 Sub_img_out ) ( I_0_1339_1_0 Sub_img_out ) ( I_7_40 Vimg ) 
 ;
 - net738
   ( I_0_1342_0_0 Din ) ( I_0_1352_0_0 Q ) 
 ;
-- net58976
+- net59149
   ( I_0_1353_0_0 Sub_img_out ) ( I_0_1353_1_0 Sub_img_out ) ( I_7_38 Vimg ) 
 ;
 - net17007
@@ -234157,40 +234157,40 @@ NETS 1313 ;
 - net17010
   ( I_0_1359_0_0 Q ) ( I_3_0 SR_int_0_Q<7> ) 
 ;
-- net58948
+- net59121
   ( I_0_1361_0_0 CLKB ) ( I_3_0 SR_k_rw_CLKB ) ( cab_frame n_CNN_ly0_k_rw_CLKB ) 
 ;
-- net58950
+- net59123
   ( I_0_1361_0_0 CLK ) ( I_3_0 SR_k_rw_CLK ) ( cab_frame n_CNN_ly0_k_rw_CLK ) 
 ;
-- net58949
+- net59122
   ( I_0_1361_0_0 RST_B ) ( I_3_0 SR_k_rw_RST_B ) ( cab_frame n_CNN_ly0_k_rw_RST_B ) 
 ;
-- net58947
+- net59120
   ( I_0_1361_0_0 Din ) ( I_0_1361_0_0 Din_Glb ) ( cab_frame n_CNN_ly0_k_rw_Din ) 
 ;
 - net17002
   ( I_0_1361_0_0 Final_rw_out ) ( I_3_0 Final_rw ) 
 ;
-- net59209_0
+- net59384_0
   ( I_0_1362_0_0 prog_hv ) ( I_0_1363_0_0 prog<0> ) ( I_0_1363_0_0 prog<1> ) ( I_0_1364_0_0 prog<0> ) ( I_0_1364_0_0 prog<1> ) ( I_0_1365_0_0 prog<0> ) ( I_0_1365_0_0 prog<1> ) ( I_0_1366_0_0 prog<0> ) ( I_0_1366_0_0 prog<1> ) ( I_0_1367_0_0 prog_hv ) ( I_0_1368 PROG ) ( I_1_1 PROG ) ( I_3_1 Prog ) ( I_3_2 Prog ) ( I_3_3 Prog ) ( I_3_4 Prog ) ( I_6_828 PROG ) ( cab_frame n_prog_hv ) 
 ;
-- net58944
+- net59117
   ( I_0_1363_0_0 CLKB ) ( I_0_1364_0_0 CLKB ) ( I_0_1365_0_0 CLKB ) ( I_0_1366_0_0 CLKB ) ( I_3_0 SR_int_CLKB ) ( cab_frame n_CNN_ly0_Intg_CLKB ) 
 ;
-- net58946
+- net59119
   ( I_0_1363_0_0 CLK ) ( I_0_1364_0_0 CLK ) ( I_0_1365_0_0 CLK ) ( I_0_1366_0_0 CLK ) ( I_3_0 SR_int_CLK ) ( cab_frame n_CNN_ly0_Intg_CLK ) 
 ;
-- net58945
+- net59118
   ( I_0_1363_0_0 RST_B ) ( I_0_1364_0_0 RST_B ) ( I_0_1365_0_0 RST_B ) ( I_0_1366_0_0 RST_B ) ( I_3_0 SR_int_RST_B ) ( cab_frame n_CNN_ly0_Intg_RST_B ) 
 ;
-- net58939_0
+- net59112_0
   ( I_0_1363_0_0 Vimg_CLK ) ( I_0_1364_0_0 Vimg_CLK ) ( I_0_1365_0_0 Vimg_CLK ) ( I_0_1366_0_0 Vimg_CLK ) ( I_2_12_0_0 CLK ) ( cab_frame n_CNN_ly0_k_col_CLK ) 
 ;
 - net17046
   ( I_0_1363_0_0 nxt_rw<0> ) ( I_0_1363_0_0 nxt_rw<1> ) ( I_0_1364_0_0 nxt_rw<0> ) ( I_0_1364_0_0 nxt_rw<1> ) ( I_0_1365_0_0 nxt_rw<0> ) ( I_0_1365_0_0 nxt_rw<1> ) ( I_0_1366_0_0 nxt_rw<0> ) ( I_0_1366_0_0 nxt_rw<1> ) ( I_3_0 intg_nxt_rw ) 
 ;
-- net59211
+- net59386
   ( I_0_1363_0_0 AVDD_by_2<0> ) ( I_0_1363_0_0 AVDD_by_2<1> ) ( I_0_1364_0_0 AVDD_by_2<0> ) ( I_0_1364_0_0 AVDD_by_2<1> ) ( I_0_1365_0_0 AVDD_by_2<0> ) ( I_0_1365_0_0 AVDD_by_2<1> ) ( I_0_1366_0_0 AVDD_by_2<0> ) ( I_0_1366_0_0 AVDD_by_2<1> ) ( I_6_822_0_0 AVDD_by_2 ) ( I_6_823_0_0 AVDD_by_2 ) ( cab_frame n_AVDD_by_2 ) 
 ;
 - net16912_0
@@ -234205,7 +234205,7 @@ NETS 1313 ;
 - net17013
   ( I_0_1363_0_0 Vsel_b<1> ) ( I_3_1 Input<1> ) ( I_3_1 Input<3> ) 
 ;
-- net59203
+- net59378
   ( I_0_1363_0_0 VTUN ) ( I_0_1364_0_0 VTUN ) ( I_0_1365_0_0 VTUN ) ( I_0_1366_0_0 VTUN ) ( I_0_1368 vtun_l ) ( I_1_1 vtun_l ) ( I_6_828 vtun_l ) ( cab_frame n_VTUN ) 
 ;
 - net17003
@@ -234253,22 +234253,22 @@ NETS 1313 ;
 - net17026
   ( I_0_1366_0_0 Vsel_b<1> ) ( I_3_4 Input<1> ) ( I_3_4 Input<3> ) 
 ;
-- net58951_0
+- net59124_0
   ( I_0_1367_0_0 Vb ) ( cab_frame n_CNN_ly0_AP_Relu_Vb ) 
 ;
-- net59205_0
+- net59380_0
   ( I_0_1367_0_0 AVDD ) ( I_2_0_0_0 AVDD ) ( I_2_4 AVDD ) ( I_2_8 AVDD ) ( I_4_0_0_0 AVDD ) ( I_5_0_0_0 AVDD ) ( I_6_822_0_0 AVDD ) ( I_6_823_0_0 AVDD ) ( I_7_0 AVDD ) ( I_7_2 AVDD ) ( I_7_4 AVDD ) ( I_7_6 AVDD ) ( I_7_8 AVDD ) ( I_7_10 AVDD ) ( I_7_12 AVDD ) ( I_7_14 AVDD ) ( I_7_16 AVDD ) ( I_7_18 AVDD ) ( I_7_20 AVDD ) ( I_7_22 AVDD ) ( I_7_24 AVDD ) ( I_7_26 AVDD ) ( I_7_28 AVDD ) ( I_7_30 AVDD ) ( I_7_32 AVDD ) ( I_7_34 AVDD ) ( I_7_36_0_0 AVDD ) ( I_7_38 AVDD ) ( I_7_40 AVDD ) ( I_7_42 AVDD ) ( I_7_44 AVDD ) ( I_7_46 AVDD ) ( I_7_48 AVDD ) ( I_7_50 AVDD ) ( I_7_52 AVDD ) ( I_7_54 AVDD ) ( I_7_56 AVDD ) ( I_7_58 AVDD ) ( I_7_60 AVDD ) ( I_7_62 AVDD ) ( I_7_64 AVDD ) ( I_7_66 AVDD ) ( I_7_68 AVDD ) ( I_7_70 AVDD ) ( I_9_0_0_0 AVDD ) ( cab_frame n_AVDD ) 
 ;
-- net58975
+- net59148
   ( I_0_1367_0_0 Sub_img_out ) ( I_0_1367_1_0 Sub_img_out ) ( I_7_36_0_0 Vimg ) 
 ;
-- net59208
+- net59383
   ( I_0_1368 Vgsel ) ( I_1_1 Vgsel ) ( I_6_828 Vgsel ) ( cab_frame n_VGPROG ) 
 ;
-- net58956
+- net59129
   ( I_0_1374 IN<1> ) ( I_1_5 IN<1> ) ( I_6_864 IN<1> ) ( cab_frame n_CNN_G_bit<1> ) 
 ;
-- net58955
+- net59128
   ( I_0_1374 IN<0> ) ( I_1_5 IN<0> ) ( I_6_864 IN<0> ) ( cab_frame n_CNN_G_bit<0> ) 
 ;
 - net17030_0
@@ -234283,13 +234283,13 @@ NETS 1313 ;
 - net17033_0
   ( I_0_1380 VGRUN<3> ) ( I_2_3_0_0 Vg_R ) 
 ;
-- net58933
+- net59105
   ( I_0_1380 ENABLE ) ( cab_frame n_CNN_ly0_G_En ) 
 ;
-- net58958
+- net59131
   ( I_0_1380 IN<1> ) ( I_6_900 IN<1> ) ( cab_frame n_CNN_G_bit<3> ) 
 ;
-- net58957
+- net59130
   ( I_0_1380 IN<0> ) ( I_1_9 IN<0> ) ( I_6_900 IN<0> ) ( cab_frame n_CNN_G_bit<2> ) 
 ;
 - net17034_0
@@ -234343,13 +234343,13 @@ NETS 1313 ;
 - net16920
   ( I_1_9 VGRUN<0> ) ( I_1_9 VGRUN<1> ) ( I_1_9 VGRUN<2> ) ( I_1_9 VGRUN<3> ) 
 ;
-- net58934
+- net59106
   ( I_1_9 ENABLE ) ( cab_frame n_CNN_ly0_AP_G_En ) 
 ;
 - net17042
   ( I_2_0_0_0 Q_bot ) ( I_2_4 Q_bot ) ( I_2_8 Q_bot ) 
 ;
-- net58940
+- net59113
   ( I_2_0_0_0 Vimg ) ( cab_frame n_CNN_ly0_Vinp<0> ) 
 ;
 - net17043
@@ -234361,22 +234361,22 @@ NETS 1313 ;
 - net17045
   ( I_2_3_0_0 Q_bot ) ( I_2_7_0_0 Q_bot ) ( I_2_11_0_0 Q_bot ) 
 ;
-- net58941
+- net59114
   ( I_2_4 Vimg ) ( cab_frame n_CNN_ly0_Vinp<1> ) 
 ;
-- net58942
+- net59115
   ( I_2_8 Vimg ) ( cab_frame n_CNN_ly0_Vinp<2> ) 
 ;
-- net58971_0
-  ( I_2_12_0_0 Din ) ( I_7_72_0_0 Din ) ( cab_frame n_CNN_ly0_k_col_Din ) ( cab_frame n_CNN_ly1_k_col_Din ) 
+- net59109_0
+  ( I_2_12_0_0 Din ) ( cab_frame n_CNN_ly0_k_col_Din ) 
 ;
-- net58938_0
+- net59111_0
   ( I_2_12_0_0 RST_B ) ( cab_frame n_CNN_ly0_k_col_RST_B ) 
 ;
-- net58937_0
+- net59110_0
   ( I_2_12_0_0 CLKB ) ( cab_frame n_CNN_ly0_k_col_CLKB ) 
 ;
-- net59212
+- net59387
   ( I_3_0 Global_rst_b ) ( I_8_0 Global_rst_b ) ( cab_frame n_Global_rst_b ) 
 ;
 - net17020
@@ -234385,1120 +234385,1132 @@ NETS 1313 ;
 - net17029
   ( I_3_0 AvgPool_col_ctrl<1> ) ( I_3_3 A<2> ) ( I_3_3 A<3> ) ( I_3_4 A<2> ) ( I_3_4 A<3> ) 
 ;
-- net58962
+- net59135
   ( I_6_315 ENABLE ) ( cab_frame n_CNN_ly1_Dr_En ) 
 ;
-- net57124
-  ( I_6_417_0_0 int_rst ) ( I_6_426_0_0 int_rst ) ( I_6_435_0_0 int_rst ) ( I_6_444_0_0 int_rst ) ( I_6_453_0_0 int_rst ) ( I_6_462_0_0 int_rst ) ( I_6_471_0_0 int_rst ) ( I_6_480_0_0 int_rst ) ( I_6_489_0_0 int_rst ) ( I_6_498_0_0 int_rst ) ( I_6_507_0_0 int_rst ) ( I_6_516_0_0 int_rst ) ( I_6_525_0_0 int_rst ) ( I_6_534_0_0 int_rst ) ( I_6_543_0_0 int_rst ) ( I_6_552_0_0 int_rst ) ( I_6_561_0_0 int_rst ) ( I_6_570_0_0 int_rst ) ( I_6_579_0_0 int_rst ) ( I_6_588_0_0 int_rst ) ( I_6_597_0_0 int_rst ) ( I_6_606_0_0 int_rst ) ( I_6_615_0_0 int_rst ) ( I_6_624_0_0 int_rst ) ( I_6_633_0_0 int_rst ) ( I_6_642_0_0 int_rst ) ( I_6_651_0_0 int_rst ) ( I_6_660_0_0 int_rst ) ( I_6_669_0_0 int_rst ) ( I_6_678_0_0 int_rst ) ( I_6_687_0_0 int_rst ) ( I_6_696_0_0 int_rst ) ( I_6_705_0_0 int_rst ) ( I_6_714_0_0 int_rst ) ( I_6_723_0_0 int_rst ) ( I_6_732_0_0 int_rst ) ( I_6_741_0_0 int_rst ) ( I_6_750_0_0 int_rst ) ( I_6_759_0_0 int_rst ) ( I_6_768_0_0 int_rst ) ( I_6_777_0_0 int_rst ) ( I_6_786_0_0 int_rst ) ( I_6_795_0_0 int_rst ) ( I_6_804_0_0 int_rst ) ( I_6_813_0_0 int_rst ) ( I_6_822_0_0 int_rst ) 
-;
-- net57126
-  ( I_6_417_0_0 Out_En ) ( I_6_419_0_0 sample ) ( I_6_420_0_0 sample ) 
-;
-- net57125
-  ( I_6_418_0_0 int_rst ) ( I_6_427_0_0 int_rst ) ( I_6_436_0_0 int_rst ) ( I_6_445_0_0 int_rst ) ( I_6_454_0_0 int_rst ) ( I_6_463_0_0 int_rst ) ( I_6_472_0_0 int_rst ) ( I_6_481_0_0 int_rst ) ( I_6_490_0_0 int_rst ) ( I_6_499_0_0 int_rst ) ( I_6_508_0_0 int_rst ) ( I_6_517_0_0 int_rst ) ( I_6_526_0_0 int_rst ) ( I_6_535_0_0 int_rst ) ( I_6_544_0_0 int_rst ) ( I_6_553_0_0 int_rst ) ( I_6_562_0_0 int_rst ) ( I_6_571_0_0 int_rst ) ( I_6_580_0_0 int_rst ) ( I_6_589_0_0 int_rst ) ( I_6_598_0_0 int_rst ) ( I_6_607_0_0 int_rst ) ( I_6_616_0_0 int_rst ) ( I_6_625_0_0 int_rst ) ( I_6_634_0_0 int_rst ) ( I_6_643_0_0 int_rst ) ( I_6_652_0_0 int_rst ) ( I_6_661_0_0 int_rst ) ( I_6_670_0_0 int_rst ) ( I_6_679_0_0 int_rst ) ( I_6_688_0_0 int_rst ) ( I_6_697_0_0 int_rst ) ( I_6_706_0_0 int_rst ) ( I_6_715_0_0 int_rst ) ( I_6_724_0_0 int_rst ) ( I_6_733_0_0 int_rst ) ( I_6_742_0_0 int_rst ) ( I_6_751_0_0 int_rst ) ( I_6_760_0_0 int_rst ) ( I_6_769_0_0 int_rst ) ( I_6_778_0_0 int_rst ) ( I_6_787_0_0 int_rst ) ( I_6_796_0_0 int_rst ) ( I_6_805_0_0 int_rst ) ( I_6_814_0_0 int_rst ) ( I_6_823_0_0 int_rst ) 
-;
-- net57127
-  ( I_6_418_0_0 Out_En ) ( I_6_421_0_0 sample ) ( I_6_422_0_0 sample ) 
-;
-- net58931
-  ( I_6_419_0_0 nxt_rw ) ( I_6_420_0_0 nxt_rw ) ( I_6_421_0_0 nxt_rw ) ( I_6_422_0_0 nxt_rw ) ( I_6_428_0_0 nxt_rw ) ( I_6_429_0_0 nxt_rw ) ( I_6_430_0_0 nxt_rw ) ( I_6_431_0_0 nxt_rw ) ( I_6_437_0_0 nxt_rw ) ( I_6_438_0_0 nxt_rw ) ( I_6_439_0_0 nxt_rw ) ( I_6_440_0_0 nxt_rw ) ( I_6_446_0_0 nxt_rw ) ( I_6_447_0_0 nxt_rw ) ( I_6_448_0_0 nxt_rw ) ( I_6_449_0_0 nxt_rw ) ( I_6_455_0_0 nxt_rw ) ( I_6_456_0_0 nxt_rw ) ( I_6_457_0_0 nxt_rw ) ( I_6_458_0_0 nxt_rw ) ( I_6_464_0_0 nxt_rw ) ( I_6_465_0_0 nxt_rw ) ( I_6_466_0_0 nxt_rw ) ( I_6_467_0_0 nxt_rw ) ( I_6_473_0_0 nxt_rw ) ( I_6_474_0_0 nxt_rw ) ( I_6_475_0_0 nxt_rw ) ( I_6_476_0_0 nxt_rw ) ( I_6_482_0_0 nxt_rw ) ( I_6_483_0_0 nxt_rw ) ( I_6_484_0_0 nxt_rw ) ( I_6_485_0_0 nxt_rw ) ( I_6_491_0_0 nxt_rw ) ( I_6_492_0_0 nxt_rw ) ( I_6_493_0_0 nxt_rw ) ( I_6_494_0_0 nxt_rw ) ( I_6_500_0_0 nxt_rw ) ( I_6_501_0_0 nxt_rw ) ( I_6_502_0_0 nxt_rw ) ( I_6_503_0_0 nxt_rw ) ( I_6_509_0_0 nxt_rw ) ( I_6_510_0_0 nxt_rw ) ( I_6_511_0_0 nxt_rw ) ( I_6_512_0_0 nxt_rw ) ( I_6_518_0_0 nxt_rw ) ( I_6_519_0_0 nxt_rw ) ( I_6_520_0_0 nxt_rw ) ( I_6_521_0_0 nxt_rw ) ( I_6_527_0_0 nxt_rw ) ( I_6_528_0_0 nxt_rw ) ( I_6_529_0_0 nxt_rw ) ( I_6_530_0_0 nxt_rw ) ( I_6_536_0_0 nxt_rw ) ( I_6_537_0_0 nxt_rw ) ( I_6_538_0_0 nxt_rw ) ( I_6_539_0_0 nxt_rw ) ( I_6_545_0_0 nxt_rw ) ( I_6_546_0_0 nxt_rw ) ( I_6_547_0_0 nxt_rw ) ( I_6_548_0_0 nxt_rw ) ( I_6_554_0_0 nxt_rw ) ( I_6_555_0_0 nxt_rw ) ( I_6_556_0_0 nxt_rw ) ( I_6_557_0_0 nxt_rw ) ( I_6_563_0_0 nxt_rw ) ( I_6_564_0_0 nxt_rw ) ( I_6_565_0_0 nxt_rw ) ( I_6_566_0_0 nxt_rw ) ( I_6_572_0_0 nxt_rw ) ( I_6_573_0_0 nxt_rw ) ( I_6_574_0_0 nxt_rw ) ( I_6_575_0_0 nxt_rw ) ( I_6_581_0_0 nxt_rw ) ( I_6_582_0_0 nxt_rw ) ( I_6_583_0_0 nxt_rw ) ( I_6_584_0_0 nxt_rw ) ( I_6_590_0_0 nxt_rw ) ( I_6_591_0_0 nxt_rw ) ( I_6_592_0_0 nxt_rw ) ( I_6_593_0_0 nxt_rw ) ( I_6_599_0_0 nxt_rw ) ( I_6_600_0_0 nxt_rw ) ( I_6_601_0_0 nxt_rw ) ( I_6_602_0_0 nxt_rw ) ( I_6_608_0_0 nxt_rw ) ( I_6_609_0_0 nxt_rw ) ( I_6_610_0_0 nxt_rw ) ( I_6_611_0_0 nxt_rw ) ( I_6_617_0_0 nxt_rw ) ( I_6_618_0_0 nxt_rw ) ( I_6_619_0_0 nxt_rw ) ( I_6_620_0_0 nxt_rw ) ( I_6_626_0_0 nxt_rw ) ( I_6_627_0_0 nxt_rw ) ( I_6_628_0_0 nxt_rw ) ( I_6_629_0_0 nxt_rw ) ( I_6_635_0_0 nxt_rw ) ( I_6_636_0_0 nxt_rw ) ( I_6_637_0_0 nxt_rw ) ( I_6_638_0_0 nxt_rw ) ( I_6_644_0_0 nxt_rw ) ( I_6_645_0_0 nxt_rw ) ( I_6_646_0_0 nxt_rw ) ( I_6_647_0_0 nxt_rw ) ( I_6_653_0_0 nxt_rw ) ( I_6_654_0_0 nxt_rw ) ( I_6_655_0_0 nxt_rw ) ( I_6_656_0_0 nxt_rw ) ( I_6_662_0_0 nxt_rw ) ( I_6_663_0_0 nxt_rw ) ( I_6_664_0_0 nxt_rw ) ( I_6_665_0_0 nxt_rw ) ( I_6_671_0_0 nxt_rw ) ( I_6_672_0_0 nxt_rw ) ( I_6_673_0_0 nxt_rw ) ( I_6_674_0_0 nxt_rw ) ( I_6_680_0_0 nxt_rw ) ( I_6_681_0_0 nxt_rw ) ( I_6_682_0_0 nxt_rw ) ( I_6_683_0_0 nxt_rw ) ( I_6_689_0_0 nxt_rw ) ( I_6_690_0_0 nxt_rw ) ( I_6_691_0_0 nxt_rw ) ( I_6_692_0_0 nxt_rw ) ( I_6_698_0_0 nxt_rw ) ( I_6_699_0_0 nxt_rw ) ( I_6_700_0_0 nxt_rw ) ( I_6_701_0_0 nxt_rw ) ( I_6_707_0_0 nxt_rw ) ( I_6_708_0_0 nxt_rw ) ( I_6_709_0_0 nxt_rw ) ( I_6_710_0_0 nxt_rw ) ( I_6_716_0_0 nxt_rw ) ( I_6_717_0_0 nxt_rw ) ( I_6_718_0_0 nxt_rw ) ( I_6_719_0_0 nxt_rw ) ( I_6_725_0_0 nxt_rw ) ( I_6_726_0_0 nxt_rw ) ( I_6_727_0_0 nxt_rw ) ( I_6_728_0_0 nxt_rw ) ( I_6_734_0_0 nxt_rw ) ( I_6_735_0_0 nxt_rw ) ( I_6_736_0_0 nxt_rw ) ( I_6_737_0_0 nxt_rw ) ( I_6_743_0_0 nxt_rw ) ( I_6_744_0_0 nxt_rw ) ( I_6_745_0_0 nxt_rw ) ( I_6_746_0_0 nxt_rw ) ( I_6_752_0_0 nxt_rw ) ( I_6_753_0_0 nxt_rw ) ( I_6_754_0_0 nxt_rw ) ( I_6_755_0_0 nxt_rw ) ( I_6_761_0_0 nxt_rw ) ( I_6_762_0_0 nxt_rw ) ( I_6_763_0_0 nxt_rw ) ( I_6_764_0_0 nxt_rw ) ( I_6_770_0_0 nxt_rw ) ( I_6_771_0_0 nxt_rw ) ( I_6_772_0_0 nxt_rw ) ( I_6_773_0_0 nxt_rw ) ( I_6_779_0_0 nxt_rw ) ( I_6_780_0_0 nxt_rw ) ( I_6_781_0_0 nxt_rw ) ( I_6_782_0_0 nxt_rw ) ( I_6_788_0_0 nxt_rw ) ( I_6_789_0_0 nxt_rw ) ( I_6_790_0_0 nxt_rw ) ( I_6_791_0_0 nxt_rw ) ( I_6_797_0_0 nxt_rw ) ( I_6_798_0_0 nxt_rw ) ( I_6_799_0_0 nxt_rw ) ( I_6_800_0_0 nxt_rw ) ( I_6_806_0_0 nxt_rw ) ( I_6_807_0_0 nxt_rw ) ( I_6_808_0_0 nxt_rw ) ( I_6_809_0_0 nxt_rw ) ( I_6_815_0_0 nxt_rw ) ( I_6_816_0_0 nxt_rw ) ( I_6_817_0_0 nxt_rw ) ( I_6_818_0_0 nxt_rw ) ( I_6_824_0_0 nxt_rw ) ( I_6_825_0_0 nxt_rw ) ( I_6_826_0_0 nxt_rw ) ( I_6_827_0_0 nxt_rw ) ( I_8_0 sample_nxt_rw ) 
-;
-- net59199
-  ( I_6_419_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<180> ) 
-;
-- net59200
-  ( I_6_420_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<181> ) 
-;
-- net59201
-  ( I_6_421_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<182> ) 
-;
-- net58929
-  ( I_6_422_0_0 Q<1>in ) ( I_6_431_0_0 Q<1>in ) ( I_6_440_0_0 Q<1>in ) ( I_6_449_0_0 Q<1>in ) ( I_6_458_0_0 Q<1>in ) ( I_6_467_0_0 Q<1>in ) ( I_6_476_0_0 Q<1>in ) ( I_6_485_0_0 Q<1>in ) ( I_6_494_0_0 Q<1>in ) ( I_6_503_0_0 Q<1>in ) ( I_6_512_0_0 Q<1>in ) ( I_6_521_0_0 Q<1>in ) ( I_6_530_0_0 Q<1>in ) ( I_6_539_0_0 Q<1>in ) ( I_6_548_0_0 Q<1>in ) ( I_6_557_0_0 Q<1>in ) ( I_6_566_0_0 Q<1>in ) ( I_6_575_0_0 Q<1>in ) ( I_6_584_0_0 Q<1>in ) ( I_6_593_0_0 Q<1>in ) ( I_6_602_0_0 Q<1>in ) ( I_6_611_0_0 Q<1>in ) ( I_6_620_0_0 Q<1>in ) ( I_6_629_0_0 Q<1>in ) ( I_6_638_0_0 Q<1>in ) ( I_6_647_0_0 Q<1>in ) ( I_6_656_0_0 Q<1>in ) ( I_6_665_0_0 Q<1>in ) ( I_6_674_0_0 Q<1>in ) ( I_6_683_0_0 Q<1>in ) ( I_6_692_0_0 Q<1>in ) ( I_6_701_0_0 Q<1>in ) ( I_6_710_0_0 Q<1>in ) ( I_6_719_0_0 Q<1>in ) ( I_6_728_0_0 Q<1>in ) ( I_6_737_0_0 Q<1>in ) ( I_6_746_0_0 Q<1>in ) ( I_6_755_0_0 Q<1>in ) ( I_6_764_0_0 Q<1>in ) ( I_6_773_0_0 Q<1>in ) ( I_6_782_0_0 Q<1>in ) ( I_6_791_0_0 Q<1>in ) ( I_6_800_0_0 Q<1>in ) ( I_6_809_0_0 Q<1>in ) ( I_6_818_0_0 Q<1>in ) ( I_6_827_0_0 Q<1>in ) ( I_8_0 SR_int<0>Q2 ) 
-;
-- net59202
-  ( I_6_422_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<183> ) 
-;
-- net56252
-  ( I_6_426_0_0 Out_En ) ( I_6_428_0_0 sample ) ( I_6_429_0_0 sample ) 
-;
-- net56253
-  ( I_6_427_0_0 Out_En ) ( I_6_430_0_0 sample ) ( I_6_431_0_0 sample ) 
-;
-- net59195
-  ( I_6_428_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<176> ) 
-;
-- net59196
-  ( I_6_429_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<177> ) 
-;
-- net59197
-  ( I_6_430_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<178> ) 
-;
-- net59198
-  ( I_6_431_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<179> ) 
-;
-- net55380
-  ( I_6_435_0_0 Out_En ) ( I_6_437_0_0 sample ) ( I_6_438_0_0 sample ) 
-;
-- net55381
-  ( I_6_436_0_0 Out_En ) ( I_6_439_0_0 sample ) ( I_6_440_0_0 sample ) 
-;
-- net59191
-  ( I_6_437_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<172> ) 
-;
-- net59192
-  ( I_6_438_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<173> ) 
-;
-- net59193
-  ( I_6_439_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<174> ) 
-;
-- net59194
-  ( I_6_440_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<175> ) 
-;
-- net54508
-  ( I_6_444_0_0 Out_En ) ( I_6_446_0_0 sample ) ( I_6_447_0_0 sample ) 
-;
-- net54509
-  ( I_6_445_0_0 Out_En ) ( I_6_448_0_0 sample ) ( I_6_449_0_0 sample ) 
-;
-- net59187
-  ( I_6_446_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<168> ) 
-;
-- net59188
-  ( I_6_447_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<169> ) 
-;
-- net59189
-  ( I_6_448_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<170> ) 
-;
-- net59190
-  ( I_6_449_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<171> ) 
-;
-- net53636
-  ( I_6_453_0_0 Out_En ) ( I_6_455_0_0 sample ) ( I_6_456_0_0 sample ) 
-;
-- net53637
-  ( I_6_454_0_0 Out_En ) ( I_6_457_0_0 sample ) ( I_6_458_0_0 sample ) 
-;
-- net59183
-  ( I_6_455_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<164> ) 
-;
 - net59184
-  ( I_6_456_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<165> ) 
-;
-- net59185
-  ( I_6_457_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<166> ) 
-;
-- net59186
-  ( I_6_458_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<167> ) 
-;
-- net52764
-  ( I_6_462_0_0 Out_En ) ( I_6_464_0_0 sample ) ( I_6_465_0_0 sample ) 
-;
-- net52765
-  ( I_6_463_0_0 Out_En ) ( I_6_466_0_0 sample ) ( I_6_467_0_0 sample ) 
-;
-- net59179
-  ( I_6_464_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<160> ) 
-;
-- net59180
-  ( I_6_465_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<161> ) 
-;
-- net59181
-  ( I_6_466_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<162> ) 
-;
-- net59182
-  ( I_6_467_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<163> ) 
-;
-- net51892
-  ( I_6_471_0_0 Out_En ) ( I_6_473_0_0 sample ) ( I_6_474_0_0 sample ) 
-;
-- net51893
-  ( I_6_472_0_0 Out_En ) ( I_6_475_0_0 sample ) ( I_6_476_0_0 sample ) 
-;
-- net59175
-  ( I_6_473_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<156> ) 
-;
-- net59176
-  ( I_6_474_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<157> ) 
-;
-- net59177
-  ( I_6_475_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<158> ) 
-;
-- net59178
-  ( I_6_476_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<159> ) 
-;
-- net51020
-  ( I_6_480_0_0 Out_En ) ( I_6_482_0_0 sample ) ( I_6_483_0_0 sample ) 
-;
-- net51021
-  ( I_6_481_0_0 Out_En ) ( I_6_484_0_0 sample ) ( I_6_485_0_0 sample ) 
-;
-- net59171
-  ( I_6_482_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<152> ) 
-;
-- net59172
-  ( I_6_483_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<153> ) 
-;
-- net59173
-  ( I_6_484_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<154> ) 
-;
-- net59174
-  ( I_6_485_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<155> ) 
-;
-- net50148
-  ( I_6_489_0_0 Out_En ) ( I_6_491_0_0 sample ) ( I_6_492_0_0 sample ) 
-;
-- net50149
-  ( I_6_490_0_0 Out_En ) ( I_6_493_0_0 sample ) ( I_6_494_0_0 sample ) 
-;
-- net59167
-  ( I_6_491_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<148> ) 
-;
-- net59168
-  ( I_6_492_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<149> ) 
-;
-- net59169
-  ( I_6_493_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<150> ) 
-;
-- net59170
-  ( I_6_494_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<151> ) 
-;
-- net49276
-  ( I_6_498_0_0 Out_En ) ( I_6_500_0_0 sample ) ( I_6_501_0_0 sample ) 
-;
-- net49277
-  ( I_6_499_0_0 Out_En ) ( I_6_502_0_0 sample ) ( I_6_503_0_0 sample ) 
-;
-- net59163
-  ( I_6_500_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<144> ) 
-;
-- net59164
-  ( I_6_501_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<145> ) 
-;
-- net59165
-  ( I_6_502_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<146> ) 
-;
-- net59166
-  ( I_6_503_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<147> ) 
-;
-- net48404
-  ( I_6_507_0_0 Out_En ) ( I_6_509_0_0 sample ) ( I_6_510_0_0 sample ) 
-;
-- net48405
-  ( I_6_508_0_0 Out_En ) ( I_6_511_0_0 sample ) ( I_6_512_0_0 sample ) 
-;
-- net59159
-  ( I_6_509_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<140> ) 
-;
-- net59160
-  ( I_6_510_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<141> ) 
-;
-- net59161
-  ( I_6_511_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<142> ) 
-;
-- net59162
-  ( I_6_512_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<143> ) 
-;
-- net47532
-  ( I_6_516_0_0 Out_En ) ( I_6_518_0_0 sample ) ( I_6_519_0_0 sample ) 
-;
-- net47533
-  ( I_6_517_0_0 Out_En ) ( I_6_520_0_0 sample ) ( I_6_521_0_0 sample ) 
-;
-- net59155
-  ( I_6_518_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<136> ) 
-;
-- net59156
-  ( I_6_519_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<137> ) 
-;
-- net59157
-  ( I_6_520_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<138> ) 
-;
-- net59158
-  ( I_6_521_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<139> ) 
-;
-- net46660
-  ( I_6_525_0_0 Out_En ) ( I_6_527_0_0 sample ) ( I_6_528_0_0 sample ) 
-;
-- net46661
-  ( I_6_526_0_0 Out_En ) ( I_6_529_0_0 sample ) ( I_6_530_0_0 sample ) 
-;
-- net59151
-  ( I_6_527_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<132> ) 
-;
-- net59152
-  ( I_6_528_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<133> ) 
-;
-- net59153
-  ( I_6_529_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<134> ) 
-;
-- net59154
-  ( I_6_530_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<135> ) 
-;
-- net45788
-  ( I_6_534_0_0 Out_En ) ( I_6_536_0_0 sample ) ( I_6_537_0_0 sample ) 
-;
-- net45789
-  ( I_6_535_0_0 Out_En ) ( I_6_538_0_0 sample ) ( I_6_539_0_0 sample ) 
-;
-- net59147
-  ( I_6_536_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<128> ) 
-;
-- net59148
-  ( I_6_537_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<129> ) 
-;
-- net59149
-  ( I_6_538_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<130> ) 
-;
-- net59150
-  ( I_6_539_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<131> ) 
-;
-- net44916
-  ( I_6_543_0_0 Out_En ) ( I_6_545_0_0 sample ) ( I_6_546_0_0 sample ) 
-;
-- net44917
-  ( I_6_544_0_0 Out_En ) ( I_6_547_0_0 sample ) ( I_6_548_0_0 sample ) 
-;
-- net59143
-  ( I_6_545_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<124> ) 
-;
-- net59144
-  ( I_6_546_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<125> ) 
-;
-- net59145
-  ( I_6_547_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<126> ) 
-;
-- net59146
-  ( I_6_548_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<127> ) 
-;
-- net44044
-  ( I_6_552_0_0 Out_En ) ( I_6_554_0_0 sample ) ( I_6_555_0_0 sample ) 
-;
-- net44045
-  ( I_6_553_0_0 Out_En ) ( I_6_556_0_0 sample ) ( I_6_557_0_0 sample ) 
-;
-- net59139
-  ( I_6_554_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<120> ) 
-;
-- net59140
-  ( I_6_555_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<121> ) 
-;
-- net59141
-  ( I_6_556_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<122> ) 
-;
-- net59142
-  ( I_6_557_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<123> ) 
-;
-- net43172
-  ( I_6_561_0_0 Out_En ) ( I_6_563_0_0 sample ) ( I_6_564_0_0 sample ) 
-;
-- net43173
-  ( I_6_562_0_0 Out_En ) ( I_6_565_0_0 sample ) ( I_6_566_0_0 sample ) 
-;
-- net59135
-  ( I_6_563_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<116> ) 
-;
-- net59136
-  ( I_6_564_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<117> ) 
-;
-- net59137
-  ( I_6_565_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<118> ) 
-;
-- net59138
-  ( I_6_566_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<119> ) 
-;
-- net42300
-  ( I_6_570_0_0 Out_En ) ( I_6_572_0_0 sample ) ( I_6_573_0_0 sample ) 
-;
-- net42301
-  ( I_6_571_0_0 Out_En ) ( I_6_574_0_0 sample ) ( I_6_575_0_0 sample ) 
-;
-- net59131
-  ( I_6_572_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<112> ) 
-;
-- net59132
-  ( I_6_573_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<113> ) 
-;
-- net59133
-  ( I_6_574_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<114> ) 
-;
-- net59134
-  ( I_6_575_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<115> ) 
-;
-- net41428
-  ( I_6_579_0_0 Out_En ) ( I_6_581_0_0 sample ) ( I_6_582_0_0 sample ) 
-;
-- net41429
-  ( I_6_580_0_0 Out_En ) ( I_6_583_0_0 sample ) ( I_6_584_0_0 sample ) 
-;
-- net59127
-  ( I_6_581_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<108> ) 
-;
-- net59128
-  ( I_6_582_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<109> ) 
-;
-- net59129
-  ( I_6_583_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<110> ) 
-;
-- net59130
-  ( I_6_584_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<111> ) 
-;
-- net40556
-  ( I_6_588_0_0 Out_En ) ( I_6_590_0_0 sample ) ( I_6_591_0_0 sample ) 
-;
-- net40557
-  ( I_6_589_0_0 Out_En ) ( I_6_592_0_0 sample ) ( I_6_593_0_0 sample ) 
-;
-- net59123
-  ( I_6_590_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<104> ) 
-;
-- net59124
-  ( I_6_591_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<105> ) 
-;
-- net59125
-  ( I_6_592_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<106> ) 
-;
-- net59126
-  ( I_6_593_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<107> ) 
-;
-- net39684
-  ( I_6_597_0_0 Out_En ) ( I_6_599_0_0 sample ) ( I_6_600_0_0 sample ) 
-;
-- net39685
-  ( I_6_598_0_0 Out_En ) ( I_6_601_0_0 sample ) ( I_6_602_0_0 sample ) 
-;
-- net59119
-  ( I_6_599_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<100> ) 
-;
-- net59120
-  ( I_6_600_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<101> ) 
-;
-- net59121
-  ( I_6_601_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<102> ) 
-;
-- net59122
-  ( I_6_602_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<103> ) 
-;
-- net38812
-  ( I_6_606_0_0 Out_En ) ( I_6_608_0_0 sample ) ( I_6_609_0_0 sample ) 
-;
-- net38813
-  ( I_6_607_0_0 Out_En ) ( I_6_610_0_0 sample ) ( I_6_611_0_0 sample ) 
-;
-- net59115
-  ( I_6_608_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<96> ) 
-;
-- net59116
-  ( I_6_609_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<97> ) 
-;
-- net59117
-  ( I_6_610_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<98> ) 
-;
-- net59118
-  ( I_6_611_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<99> ) 
-;
-- net37940
-  ( I_6_615_0_0 Out_En ) ( I_6_617_0_0 sample ) ( I_6_618_0_0 sample ) 
-;
-- net37941
-  ( I_6_616_0_0 Out_En ) ( I_6_619_0_0 sample ) ( I_6_620_0_0 sample ) 
-;
-- net59111
-  ( I_6_617_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<92> ) 
-;
-- net59112
-  ( I_6_618_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<93> ) 
-;
-- net59113
-  ( I_6_619_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<94> ) 
-;
-- net59114
-  ( I_6_620_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<95> ) 
-;
-- net37068
-  ( I_6_624_0_0 Out_En ) ( I_6_626_0_0 sample ) ( I_6_627_0_0 sample ) 
-;
-- net37069
-  ( I_6_625_0_0 Out_En ) ( I_6_628_0_0 sample ) ( I_6_629_0_0 sample ) 
-;
-- net59107
-  ( I_6_626_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<88> ) 
-;
-- net59108
-  ( I_6_627_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<89> ) 
-;
-- net59109
-  ( I_6_628_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<90> ) 
-;
-- net59110
-  ( I_6_629_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<91> ) 
-;
-- net36196
-  ( I_6_633_0_0 Out_En ) ( I_6_635_0_0 sample ) ( I_6_636_0_0 sample ) 
-;
-- net36197
-  ( I_6_634_0_0 Out_En ) ( I_6_637_0_0 sample ) ( I_6_638_0_0 sample ) 
-;
-- net59103
-  ( I_6_635_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<84> ) 
-;
-- net59104
-  ( I_6_636_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<85> ) 
-;
-- net59105
-  ( I_6_637_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<86> ) 
-;
-- net59106
-  ( I_6_638_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<87> ) 
-;
-- net35324
-  ( I_6_642_0_0 Out_En ) ( I_6_644_0_0 sample ) ( I_6_645_0_0 sample ) 
-;
-- net35325
-  ( I_6_643_0_0 Out_En ) ( I_6_646_0_0 sample ) ( I_6_647_0_0 sample ) 
-;
-- net59099
-  ( I_6_644_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<80> ) 
+  ( I_6_417_0_0 Din ) ( I_6_426_0_0 Din ) ( I_6_435_0_0 Din ) ( I_6_444_0_0 Din ) ( I_6_453_0_0 Din ) ( I_6_462_0_0 Din ) ( I_6_471_0_0 Din ) ( I_6_480_0_0 Din ) ( I_6_489_0_0 Din ) ( I_6_498_0_0 Din ) ( I_6_507_0_0 Din ) ( I_6_516_0_0 Din ) ( I_6_525_0_0 Din ) ( I_6_534_0_0 Din ) ( I_6_543_0_0 Din ) ( I_6_552_0_0 Din ) ( I_6_561_0_0 Din ) ( I_6_570_0_0 Din ) ( I_6_579_0_0 Din ) ( I_6_588_0_0 Din ) ( I_6_597_0_0 Din ) ( I_6_606_0_0 Din ) ( I_6_615_0_0 Din ) ( I_6_624_0_0 Din ) ( I_6_633_0_0 Din ) ( I_6_642_0_0 Din ) ( I_6_651_0_0 Din ) ( I_6_660_0_0 Din ) ( I_6_669_0_0 Din ) ( I_6_678_0_0 Din ) ( I_6_687_0_0 Din ) ( I_6_696_0_0 Din ) ( I_6_705_0_0 Din ) ( I_6_714_0_0 Din ) ( I_6_723_0_0 Din ) ( I_6_732_0_0 Din ) ( I_6_741_0_0 Din ) ( I_6_750_0_0 Din ) ( I_6_759_0_0 Din ) ( I_6_768_0_0 Din ) ( I_6_777_0_0 Din ) ( I_6_786_0_0 Din ) ( I_6_795_0_0 Din ) ( I_6_804_0_0 Din ) ( I_6_813_0_0 Din ) ( I_6_822_0_0 Din ) ( cab_frame n_CNN_ly1_Intg_Din ) 
 ;
 - net59100
-  ( I_6_645_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<81> ) 
+  ( I_6_417_0_0 int_rst ) ( I_6_426_0_0 int_rst ) ( I_6_435_0_0 int_rst ) ( I_6_444_0_0 int_rst ) ( I_6_453_0_0 int_rst ) ( I_6_462_0_0 int_rst ) ( I_6_471_0_0 int_rst ) ( I_6_480_0_0 int_rst ) ( I_6_489_0_0 int_rst ) ( I_6_498_0_0 int_rst ) ( I_6_507_0_0 int_rst ) ( I_6_516_0_0 int_rst ) ( I_6_525_0_0 int_rst ) ( I_6_534_0_0 int_rst ) ( I_6_543_0_0 int_rst ) ( I_6_552_0_0 int_rst ) ( I_6_561_0_0 int_rst ) ( I_6_570_0_0 int_rst ) ( I_6_579_0_0 int_rst ) ( I_6_588_0_0 int_rst ) ( I_6_597_0_0 int_rst ) ( I_6_606_0_0 int_rst ) ( I_6_615_0_0 int_rst ) ( I_6_624_0_0 int_rst ) ( I_6_633_0_0 int_rst ) ( I_6_642_0_0 int_rst ) ( I_6_651_0_0 int_rst ) ( I_6_660_0_0 int_rst ) ( I_6_669_0_0 int_rst ) ( I_6_678_0_0 int_rst ) ( I_6_687_0_0 int_rst ) ( I_6_696_0_0 int_rst ) ( I_6_705_0_0 int_rst ) ( I_6_714_0_0 int_rst ) ( I_6_723_0_0 int_rst ) ( I_6_732_0_0 int_rst ) ( I_6_741_0_0 int_rst ) ( I_6_750_0_0 int_rst ) ( I_6_759_0_0 int_rst ) ( I_6_768_0_0 int_rst ) ( I_6_777_0_0 int_rst ) ( I_6_786_0_0 int_rst ) ( I_6_795_0_0 int_rst ) ( I_6_804_0_0 int_rst ) ( I_6_813_0_0 int_rst ) ( I_6_822_0_0 int_rst ) ( I_8_0 int_rst<0> ) 
+;
+- net57298
+  ( I_6_417_0_0 Out_En ) ( I_6_419_0_0 sample ) ( I_6_420_0_0 sample ) 
+;
+- net59099
+  ( I_6_418_0_0 int_rst ) ( I_6_427_0_0 int_rst ) ( I_6_436_0_0 int_rst ) ( I_6_445_0_0 int_rst ) ( I_6_454_0_0 int_rst ) ( I_6_463_0_0 int_rst ) ( I_6_472_0_0 int_rst ) ( I_6_481_0_0 int_rst ) ( I_6_490_0_0 int_rst ) ( I_6_499_0_0 int_rst ) ( I_6_508_0_0 int_rst ) ( I_6_517_0_0 int_rst ) ( I_6_526_0_0 int_rst ) ( I_6_535_0_0 int_rst ) ( I_6_544_0_0 int_rst ) ( I_6_553_0_0 int_rst ) ( I_6_562_0_0 int_rst ) ( I_6_571_0_0 int_rst ) ( I_6_580_0_0 int_rst ) ( I_6_589_0_0 int_rst ) ( I_6_598_0_0 int_rst ) ( I_6_607_0_0 int_rst ) ( I_6_616_0_0 int_rst ) ( I_6_625_0_0 int_rst ) ( I_6_634_0_0 int_rst ) ( I_6_643_0_0 int_rst ) ( I_6_652_0_0 int_rst ) ( I_6_661_0_0 int_rst ) ( I_6_670_0_0 int_rst ) ( I_6_679_0_0 int_rst ) ( I_6_688_0_0 int_rst ) ( I_6_697_0_0 int_rst ) ( I_6_706_0_0 int_rst ) ( I_6_715_0_0 int_rst ) ( I_6_724_0_0 int_rst ) ( I_6_733_0_0 int_rst ) ( I_6_742_0_0 int_rst ) ( I_6_751_0_0 int_rst ) ( I_6_760_0_0 int_rst ) ( I_6_769_0_0 int_rst ) ( I_6_778_0_0 int_rst ) ( I_6_787_0_0 int_rst ) ( I_6_796_0_0 int_rst ) ( I_6_805_0_0 int_rst ) ( I_6_814_0_0 int_rst ) ( I_6_823_0_0 int_rst ) ( I_8_0 int_rst<1> ) 
+;
+- net57299
+  ( I_6_418_0_0 Out_En ) ( I_6_421_0_0 sample ) ( I_6_422_0_0 sample ) 
+;
+- net59372
+  ( I_6_419_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<180> ) 
+;
+- net59373
+  ( I_6_420_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<181> ) 
+;
+- net59374
+  ( I_6_421_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<182> ) 
 ;
 - net59101
+  ( I_6_422_0_0 Q<1>in ) ( I_6_431_0_0 Q<1>in ) ( I_6_440_0_0 Q<1>in ) ( I_6_449_0_0 Q<1>in ) ( I_6_458_0_0 Q<1>in ) ( I_6_467_0_0 Q<1>in ) ( I_6_476_0_0 Q<1>in ) ( I_6_485_0_0 Q<1>in ) ( I_6_494_0_0 Q<1>in ) ( I_6_503_0_0 Q<1>in ) ( I_6_512_0_0 Q<1>in ) ( I_6_521_0_0 Q<1>in ) ( I_6_530_0_0 Q<1>in ) ( I_6_539_0_0 Q<1>in ) ( I_6_548_0_0 Q<1>in ) ( I_6_557_0_0 Q<1>in ) ( I_6_566_0_0 Q<1>in ) ( I_6_575_0_0 Q<1>in ) ( I_6_584_0_0 Q<1>in ) ( I_6_593_0_0 Q<1>in ) ( I_6_602_0_0 Q<1>in ) ( I_6_611_0_0 Q<1>in ) ( I_6_620_0_0 Q<1>in ) ( I_6_629_0_0 Q<1>in ) ( I_6_638_0_0 Q<1>in ) ( I_6_647_0_0 Q<1>in ) ( I_6_656_0_0 Q<1>in ) ( I_6_665_0_0 Q<1>in ) ( I_6_674_0_0 Q<1>in ) ( I_6_683_0_0 Q<1>in ) ( I_6_692_0_0 Q<1>in ) ( I_6_701_0_0 Q<1>in ) ( I_6_710_0_0 Q<1>in ) ( I_6_719_0_0 Q<1>in ) ( I_6_728_0_0 Q<1>in ) ( I_6_737_0_0 Q<1>in ) ( I_6_746_0_0 Q<1>in ) ( I_6_755_0_0 Q<1>in ) ( I_6_764_0_0 Q<1>in ) ( I_6_773_0_0 Q<1>in ) ( I_6_782_0_0 Q<1>in ) ( I_6_791_0_0 Q<1>in ) ( I_6_800_0_0 Q<1>in ) ( I_6_809_0_0 Q<1>in ) ( I_6_818_0_0 Q<1>in ) ( I_6_827_0_0 Q<1>in ) ( I_8_0 SR_int<0>Q2 ) 
+;
+- net59375
+  ( I_6_422_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<183> ) 
+;
+- net56422
+  ( I_6_426_0_0 Out_En ) ( I_6_428_0_0 sample ) ( I_6_429_0_0 sample ) 
+;
+- net56423
+  ( I_6_427_0_0 Out_En ) ( I_6_430_0_0 sample ) ( I_6_431_0_0 sample ) 
+;
+- net59368
+  ( I_6_428_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<176> ) 
+;
+- net59369
+  ( I_6_429_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<177> ) 
+;
+- net59370
+  ( I_6_430_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<178> ) 
+;
+- net59371
+  ( I_6_431_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<179> ) 
+;
+- net55546
+  ( I_6_435_0_0 Out_En ) ( I_6_437_0_0 sample ) ( I_6_438_0_0 sample ) 
+;
+- net55547
+  ( I_6_436_0_0 Out_En ) ( I_6_439_0_0 sample ) ( I_6_440_0_0 sample ) 
+;
+- net59364
+  ( I_6_437_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<172> ) 
+;
+- net59365
+  ( I_6_438_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<173> ) 
+;
+- net59366
+  ( I_6_439_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<174> ) 
+;
+- net59367
+  ( I_6_440_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<175> ) 
+;
+- net54670
+  ( I_6_444_0_0 Out_En ) ( I_6_446_0_0 sample ) ( I_6_447_0_0 sample ) 
+;
+- net54671
+  ( I_6_445_0_0 Out_En ) ( I_6_448_0_0 sample ) ( I_6_449_0_0 sample ) 
+;
+- net59360
+  ( I_6_446_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<168> ) 
+;
+- net59361
+  ( I_6_447_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<169> ) 
+;
+- net59362
+  ( I_6_448_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<170> ) 
+;
+- net59363
+  ( I_6_449_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<171> ) 
+;
+- net53794
+  ( I_6_453_0_0 Out_En ) ( I_6_455_0_0 sample ) ( I_6_456_0_0 sample ) 
+;
+- net53795
+  ( I_6_454_0_0 Out_En ) ( I_6_457_0_0 sample ) ( I_6_458_0_0 sample ) 
+;
+- net59356
+  ( I_6_455_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<164> ) 
+;
+- net59357
+  ( I_6_456_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<165> ) 
+;
+- net59358
+  ( I_6_457_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<166> ) 
+;
+- net59359
+  ( I_6_458_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<167> ) 
+;
+- net52918
+  ( I_6_462_0_0 Out_En ) ( I_6_464_0_0 sample ) ( I_6_465_0_0 sample ) 
+;
+- net52919
+  ( I_6_463_0_0 Out_En ) ( I_6_466_0_0 sample ) ( I_6_467_0_0 sample ) 
+;
+- net59352
+  ( I_6_464_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<160> ) 
+;
+- net59353
+  ( I_6_465_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<161> ) 
+;
+- net59354
+  ( I_6_466_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<162> ) 
+;
+- net59355
+  ( I_6_467_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<163> ) 
+;
+- net52042
+  ( I_6_471_0_0 Out_En ) ( I_6_473_0_0 sample ) ( I_6_474_0_0 sample ) 
+;
+- net52043
+  ( I_6_472_0_0 Out_En ) ( I_6_475_0_0 sample ) ( I_6_476_0_0 sample ) 
+;
+- net59348
+  ( I_6_473_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<156> ) 
+;
+- net59349
+  ( I_6_474_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<157> ) 
+;
+- net59350
+  ( I_6_475_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<158> ) 
+;
+- net59351
+  ( I_6_476_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<159> ) 
+;
+- net51166
+  ( I_6_480_0_0 Out_En ) ( I_6_482_0_0 sample ) ( I_6_483_0_0 sample ) 
+;
+- net51167
+  ( I_6_481_0_0 Out_En ) ( I_6_484_0_0 sample ) ( I_6_485_0_0 sample ) 
+;
+- net59344
+  ( I_6_482_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<152> ) 
+;
+- net59345
+  ( I_6_483_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<153> ) 
+;
+- net59346
+  ( I_6_484_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<154> ) 
+;
+- net59347
+  ( I_6_485_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<155> ) 
+;
+- net50290
+  ( I_6_489_0_0 Out_En ) ( I_6_491_0_0 sample ) ( I_6_492_0_0 sample ) 
+;
+- net50291
+  ( I_6_490_0_0 Out_En ) ( I_6_493_0_0 sample ) ( I_6_494_0_0 sample ) 
+;
+- net59340
+  ( I_6_491_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<148> ) 
+;
+- net59341
+  ( I_6_492_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<149> ) 
+;
+- net59342
+  ( I_6_493_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<150> ) 
+;
+- net59343
+  ( I_6_494_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<151> ) 
+;
+- net49414
+  ( I_6_498_0_0 Out_En ) ( I_6_500_0_0 sample ) ( I_6_501_0_0 sample ) 
+;
+- net49415
+  ( I_6_499_0_0 Out_En ) ( I_6_502_0_0 sample ) ( I_6_503_0_0 sample ) 
+;
+- net59336
+  ( I_6_500_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<144> ) 
+;
+- net59337
+  ( I_6_501_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<145> ) 
+;
+- net59338
+  ( I_6_502_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<146> ) 
+;
+- net59339
+  ( I_6_503_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<147> ) 
+;
+- net48538
+  ( I_6_507_0_0 Out_En ) ( I_6_509_0_0 sample ) ( I_6_510_0_0 sample ) 
+;
+- net48539
+  ( I_6_508_0_0 Out_En ) ( I_6_511_0_0 sample ) ( I_6_512_0_0 sample ) 
+;
+- net59332
+  ( I_6_509_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<140> ) 
+;
+- net59333
+  ( I_6_510_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<141> ) 
+;
+- net59334
+  ( I_6_511_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<142> ) 
+;
+- net59335
+  ( I_6_512_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<143> ) 
+;
+- net47662
+  ( I_6_516_0_0 Out_En ) ( I_6_518_0_0 sample ) ( I_6_519_0_0 sample ) 
+;
+- net47663
+  ( I_6_517_0_0 Out_En ) ( I_6_520_0_0 sample ) ( I_6_521_0_0 sample ) 
+;
+- net59328
+  ( I_6_518_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<136> ) 
+;
+- net59329
+  ( I_6_519_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<137> ) 
+;
+- net59330
+  ( I_6_520_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<138> ) 
+;
+- net59331
+  ( I_6_521_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<139> ) 
+;
+- net46786
+  ( I_6_525_0_0 Out_En ) ( I_6_527_0_0 sample ) ( I_6_528_0_0 sample ) 
+;
+- net46787
+  ( I_6_526_0_0 Out_En ) ( I_6_529_0_0 sample ) ( I_6_530_0_0 sample ) 
+;
+- net59324
+  ( I_6_527_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<132> ) 
+;
+- net59325
+  ( I_6_528_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<133> ) 
+;
+- net59326
+  ( I_6_529_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<134> ) 
+;
+- net59327
+  ( I_6_530_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<135> ) 
+;
+- net45910
+  ( I_6_534_0_0 Out_En ) ( I_6_536_0_0 sample ) ( I_6_537_0_0 sample ) 
+;
+- net45911
+  ( I_6_535_0_0 Out_En ) ( I_6_538_0_0 sample ) ( I_6_539_0_0 sample ) 
+;
+- net59320
+  ( I_6_536_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<128> ) 
+;
+- net59321
+  ( I_6_537_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<129> ) 
+;
+- net59322
+  ( I_6_538_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<130> ) 
+;
+- net59323
+  ( I_6_539_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<131> ) 
+;
+- net45034
+  ( I_6_543_0_0 Out_En ) ( I_6_545_0_0 sample ) ( I_6_546_0_0 sample ) 
+;
+- net45035
+  ( I_6_544_0_0 Out_En ) ( I_6_547_0_0 sample ) ( I_6_548_0_0 sample ) 
+;
+- net59316
+  ( I_6_545_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<124> ) 
+;
+- net59317
+  ( I_6_546_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<125> ) 
+;
+- net59318
+  ( I_6_547_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<126> ) 
+;
+- net59319
+  ( I_6_548_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<127> ) 
+;
+- net44158
+  ( I_6_552_0_0 Out_En ) ( I_6_554_0_0 sample ) ( I_6_555_0_0 sample ) 
+;
+- net44159
+  ( I_6_553_0_0 Out_En ) ( I_6_556_0_0 sample ) ( I_6_557_0_0 sample ) 
+;
+- net59312
+  ( I_6_554_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<120> ) 
+;
+- net59313
+  ( I_6_555_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<121> ) 
+;
+- net59314
+  ( I_6_556_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<122> ) 
+;
+- net59315
+  ( I_6_557_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<123> ) 
+;
+- net43282
+  ( I_6_561_0_0 Out_En ) ( I_6_563_0_0 sample ) ( I_6_564_0_0 sample ) 
+;
+- net43283
+  ( I_6_562_0_0 Out_En ) ( I_6_565_0_0 sample ) ( I_6_566_0_0 sample ) 
+;
+- net59308
+  ( I_6_563_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<116> ) 
+;
+- net59309
+  ( I_6_564_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<117> ) 
+;
+- net59310
+  ( I_6_565_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<118> ) 
+;
+- net59311
+  ( I_6_566_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<119> ) 
+;
+- net42406
+  ( I_6_570_0_0 Out_En ) ( I_6_572_0_0 sample ) ( I_6_573_0_0 sample ) 
+;
+- net42407
+  ( I_6_571_0_0 Out_En ) ( I_6_574_0_0 sample ) ( I_6_575_0_0 sample ) 
+;
+- net59304
+  ( I_6_572_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<112> ) 
+;
+- net59305
+  ( I_6_573_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<113> ) 
+;
+- net59306
+  ( I_6_574_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<114> ) 
+;
+- net59307
+  ( I_6_575_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<115> ) 
+;
+- net41530
+  ( I_6_579_0_0 Out_En ) ( I_6_581_0_0 sample ) ( I_6_582_0_0 sample ) 
+;
+- net41531
+  ( I_6_580_0_0 Out_En ) ( I_6_583_0_0 sample ) ( I_6_584_0_0 sample ) 
+;
+- net59300
+  ( I_6_581_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<108> ) 
+;
+- net59301
+  ( I_6_582_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<109> ) 
+;
+- net59302
+  ( I_6_583_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<110> ) 
+;
+- net59303
+  ( I_6_584_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<111> ) 
+;
+- net40654
+  ( I_6_588_0_0 Out_En ) ( I_6_590_0_0 sample ) ( I_6_591_0_0 sample ) 
+;
+- net40655
+  ( I_6_589_0_0 Out_En ) ( I_6_592_0_0 sample ) ( I_6_593_0_0 sample ) 
+;
+- net59296
+  ( I_6_590_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<104> ) 
+;
+- net59297
+  ( I_6_591_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<105> ) 
+;
+- net59298
+  ( I_6_592_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<106> ) 
+;
+- net59299
+  ( I_6_593_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<107> ) 
+;
+- net39778
+  ( I_6_597_0_0 Out_En ) ( I_6_599_0_0 sample ) ( I_6_600_0_0 sample ) 
+;
+- net39779
+  ( I_6_598_0_0 Out_En ) ( I_6_601_0_0 sample ) ( I_6_602_0_0 sample ) 
+;
+- net59292
+  ( I_6_599_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<100> ) 
+;
+- net59293
+  ( I_6_600_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<101> ) 
+;
+- net59294
+  ( I_6_601_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<102> ) 
+;
+- net59295
+  ( I_6_602_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<103> ) 
+;
+- net38902
+  ( I_6_606_0_0 Out_En ) ( I_6_608_0_0 sample ) ( I_6_609_0_0 sample ) 
+;
+- net38903
+  ( I_6_607_0_0 Out_En ) ( I_6_610_0_0 sample ) ( I_6_611_0_0 sample ) 
+;
+- net59288
+  ( I_6_608_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<96> ) 
+;
+- net59289
+  ( I_6_609_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<97> ) 
+;
+- net59290
+  ( I_6_610_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<98> ) 
+;
+- net59291
+  ( I_6_611_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<99> ) 
+;
+- net38026
+  ( I_6_615_0_0 Out_En ) ( I_6_617_0_0 sample ) ( I_6_618_0_0 sample ) 
+;
+- net38027
+  ( I_6_616_0_0 Out_En ) ( I_6_619_0_0 sample ) ( I_6_620_0_0 sample ) 
+;
+- net59284
+  ( I_6_617_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<92> ) 
+;
+- net59285
+  ( I_6_618_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<93> ) 
+;
+- net59286
+  ( I_6_619_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<94> ) 
+;
+- net59287
+  ( I_6_620_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<95> ) 
+;
+- net37150
+  ( I_6_624_0_0 Out_En ) ( I_6_626_0_0 sample ) ( I_6_627_0_0 sample ) 
+;
+- net37151
+  ( I_6_625_0_0 Out_En ) ( I_6_628_0_0 sample ) ( I_6_629_0_0 sample ) 
+;
+- net59280
+  ( I_6_626_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<88> ) 
+;
+- net59281
+  ( I_6_627_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<89> ) 
+;
+- net59282
+  ( I_6_628_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<90> ) 
+;
+- net59283
+  ( I_6_629_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<91> ) 
+;
+- net36274
+  ( I_6_633_0_0 Out_En ) ( I_6_635_0_0 sample ) ( I_6_636_0_0 sample ) 
+;
+- net36275
+  ( I_6_634_0_0 Out_En ) ( I_6_637_0_0 sample ) ( I_6_638_0_0 sample ) 
+;
+- net59276
+  ( I_6_635_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<84> ) 
+;
+- net59277
+  ( I_6_636_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<85> ) 
+;
+- net59278
+  ( I_6_637_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<86> ) 
+;
+- net59279
+  ( I_6_638_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<87> ) 
+;
+- net35398
+  ( I_6_642_0_0 Out_En ) ( I_6_644_0_0 sample ) ( I_6_645_0_0 sample ) 
+;
+- net35399
+  ( I_6_643_0_0 Out_En ) ( I_6_646_0_0 sample ) ( I_6_647_0_0 sample ) 
+;
+- net59272
+  ( I_6_644_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<80> ) 
+;
+- net59273
+  ( I_6_645_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<81> ) 
+;
+- net59274
   ( I_6_646_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<82> ) 
 ;
-- net59102
+- net59275
   ( I_6_647_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<83> ) 
 ;
-- net34452
+- net34522
   ( I_6_651_0_0 Out_En ) ( I_6_653_0_0 sample ) ( I_6_654_0_0 sample ) 
 ;
-- net34453
+- net34523
   ( I_6_652_0_0 Out_En ) ( I_6_655_0_0 sample ) ( I_6_656_0_0 sample ) 
 ;
-- net59095
+- net59268
   ( I_6_653_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<76> ) 
 ;
-- net59096
+- net59269
   ( I_6_654_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<77> ) 
 ;
-- net59097
+- net59270
   ( I_6_655_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<78> ) 
 ;
-- net59098
+- net59271
   ( I_6_656_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<79> ) 
 ;
-- net33580
+- net33646
   ( I_6_660_0_0 Out_En ) ( I_6_662_0_0 sample ) ( I_6_663_0_0 sample ) 
 ;
-- net33581
+- net33647
   ( I_6_661_0_0 Out_En ) ( I_6_664_0_0 sample ) ( I_6_665_0_0 sample ) 
 ;
-- net59091
+- net59264
   ( I_6_662_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<72> ) 
 ;
-- net59092
+- net59265
   ( I_6_663_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<73> ) 
 ;
-- net59093
+- net59266
   ( I_6_664_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<74> ) 
 ;
-- net59094
+- net59267
   ( I_6_665_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<75> ) 
 ;
-- net32708
+- net32770
   ( I_6_669_0_0 Out_En ) ( I_6_671_0_0 sample ) ( I_6_672_0_0 sample ) 
 ;
-- net32709
+- net32771
   ( I_6_670_0_0 Out_En ) ( I_6_673_0_0 sample ) ( I_6_674_0_0 sample ) 
 ;
-- net59087
+- net59260
   ( I_6_671_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<68> ) 
 ;
-- net59088
+- net59261
   ( I_6_672_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<69> ) 
 ;
-- net59089
+- net59262
   ( I_6_673_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<70> ) 
 ;
-- net59090
+- net59263
   ( I_6_674_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<71> ) 
 ;
-- net31836
+- net31894
   ( I_6_678_0_0 Out_En ) ( I_6_680_0_0 sample ) ( I_6_681_0_0 sample ) 
 ;
-- net31837
+- net31895
   ( I_6_679_0_0 Out_En ) ( I_6_682_0_0 sample ) ( I_6_683_0_0 sample ) 
 ;
-- net59083
+- net59256
   ( I_6_680_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<64> ) 
 ;
-- net59084
+- net59257
   ( I_6_681_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<65> ) 
 ;
-- net59085
+- net59258
   ( I_6_682_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<66> ) 
 ;
-- net59086
+- net59259
   ( I_6_683_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<67> ) 
 ;
-- net30964
+- net31018
   ( I_6_687_0_0 Out_En ) ( I_6_689_0_0 sample ) ( I_6_690_0_0 sample ) 
 ;
-- net30965
+- net31019
   ( I_6_688_0_0 Out_En ) ( I_6_691_0_0 sample ) ( I_6_692_0_0 sample ) 
 ;
-- net59079
+- net59252
   ( I_6_689_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<60> ) 
 ;
-- net59080
+- net59253
   ( I_6_690_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<61> ) 
 ;
-- net59081
+- net59254
   ( I_6_691_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<62> ) 
 ;
-- net59082
+- net59255
   ( I_6_692_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<63> ) 
 ;
-- net30092
+- net30142
   ( I_6_696_0_0 Out_En ) ( I_6_698_0_0 sample ) ( I_6_699_0_0 sample ) 
 ;
-- net30093
+- net30143
   ( I_6_697_0_0 Out_En ) ( I_6_700_0_0 sample ) ( I_6_701_0_0 sample ) 
 ;
-- net59075
+- net59248
   ( I_6_698_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<56> ) 
 ;
-- net59076
+- net59249
   ( I_6_699_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<57> ) 
 ;
-- net59077
+- net59250
   ( I_6_700_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<58> ) 
 ;
-- net59078
+- net59251
   ( I_6_701_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<59> ) 
 ;
-- net29220
+- net29266
   ( I_6_705_0_0 Out_En ) ( I_6_707_0_0 sample ) ( I_6_708_0_0 sample ) 
 ;
-- net29221
+- net29267
   ( I_6_706_0_0 Out_En ) ( I_6_709_0_0 sample ) ( I_6_710_0_0 sample ) 
 ;
-- net59071
+- net59244
   ( I_6_707_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<52> ) 
 ;
-- net59072
+- net59245
   ( I_6_708_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<53> ) 
 ;
-- net59073
+- net59246
   ( I_6_709_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<54> ) 
 ;
-- net59074
+- net59247
   ( I_6_710_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<55> ) 
 ;
-- net28348
+- net28390
   ( I_6_714_0_0 Out_En ) ( I_6_716_0_0 sample ) ( I_6_717_0_0 sample ) 
 ;
-- net28349
+- net28391
   ( I_6_715_0_0 Out_En ) ( I_6_718_0_0 sample ) ( I_6_719_0_0 sample ) 
 ;
-- net59067
+- net59240
   ( I_6_716_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<48> ) 
 ;
-- net59068
+- net59241
   ( I_6_717_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<49> ) 
 ;
-- net59069
+- net59242
   ( I_6_718_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<50> ) 
 ;
-- net59070
+- net59243
   ( I_6_719_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<51> ) 
 ;
-- net27476
+- net27514
   ( I_6_723_0_0 Out_En ) ( I_6_725_0_0 sample ) ( I_6_726_0_0 sample ) 
 ;
-- net27477
+- net27515
   ( I_6_724_0_0 Out_En ) ( I_6_727_0_0 sample ) ( I_6_728_0_0 sample ) 
 ;
-- net59063
+- net59236
   ( I_6_725_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<44> ) 
 ;
-- net59064
+- net59237
   ( I_6_726_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<45> ) 
 ;
-- net59065
+- net59238
   ( I_6_727_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<46> ) 
 ;
-- net59066
+- net59239
   ( I_6_728_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<47> ) 
 ;
-- net26604
+- net26638
   ( I_6_732_0_0 Out_En ) ( I_6_734_0_0 sample ) ( I_6_735_0_0 sample ) 
 ;
-- net26605
+- net26639
   ( I_6_733_0_0 Out_En ) ( I_6_736_0_0 sample ) ( I_6_737_0_0 sample ) 
 ;
-- net59059
+- net59232
   ( I_6_734_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<40> ) 
 ;
-- net59060
+- net59233
   ( I_6_735_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<41> ) 
 ;
-- net59061
+- net59234
   ( I_6_736_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<42> ) 
 ;
-- net59062
+- net59235
   ( I_6_737_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<43> ) 
 ;
-- net25732
+- net25762
   ( I_6_741_0_0 Out_En ) ( I_6_743_0_0 sample ) ( I_6_744_0_0 sample ) 
 ;
-- net25733
+- net25763
   ( I_6_742_0_0 Out_En ) ( I_6_745_0_0 sample ) ( I_6_746_0_0 sample ) 
 ;
-- net59055
+- net59228
   ( I_6_743_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<36> ) 
 ;
-- net59056
+- net59229
   ( I_6_744_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<37> ) 
 ;
-- net59057
+- net59230
   ( I_6_745_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<38> ) 
 ;
-- net59058
+- net59231
   ( I_6_746_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<39> ) 
 ;
-- net24860
+- net24886
   ( I_6_750_0_0 Out_En ) ( I_6_752_0_0 sample ) ( I_6_753_0_0 sample ) 
 ;
-- net24861
+- net24887
   ( I_6_751_0_0 Out_En ) ( I_6_754_0_0 sample ) ( I_6_755_0_0 sample ) 
 ;
-- net59051
+- net59224
   ( I_6_752_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<32> ) 
 ;
-- net59052
+- net59225
   ( I_6_753_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<33> ) 
 ;
-- net59053
+- net59226
   ( I_6_754_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<34> ) 
 ;
-- net59054
+- net59227
   ( I_6_755_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<35> ) 
 ;
-- net23988
+- net24010
   ( I_6_759_0_0 Out_En ) ( I_6_761_0_0 sample ) ( I_6_762_0_0 sample ) 
 ;
-- net23989
+- net24011
   ( I_6_760_0_0 Out_En ) ( I_6_763_0_0 sample ) ( I_6_764_0_0 sample ) 
 ;
-- net59047
+- net59220
   ( I_6_761_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<28> ) 
 ;
-- net59048
+- net59221
   ( I_6_762_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<29> ) 
 ;
-- net59049
+- net59222
   ( I_6_763_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<30> ) 
 ;
-- net59050
+- net59223
   ( I_6_764_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<31> ) 
 ;
-- net23116
+- net23134
   ( I_6_768_0_0 Out_En ) ( I_6_770_0_0 sample ) ( I_6_771_0_0 sample ) 
 ;
-- net23117
+- net23135
   ( I_6_769_0_0 Out_En ) ( I_6_772_0_0 sample ) ( I_6_773_0_0 sample ) 
 ;
-- net59043
+- net59216
   ( I_6_770_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<24> ) 
 ;
-- net59044
+- net59217
   ( I_6_771_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<25> ) 
 ;
-- net59045
+- net59218
   ( I_6_772_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<26> ) 
 ;
-- net59046
+- net59219
   ( I_6_773_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<27> ) 
 ;
-- net22244
+- net22258
   ( I_6_777_0_0 Out_En ) ( I_6_779_0_0 sample ) ( I_6_780_0_0 sample ) 
 ;
-- net22245
+- net22259
   ( I_6_778_0_0 Out_En ) ( I_6_781_0_0 sample ) ( I_6_782_0_0 sample ) 
 ;
-- net59039
+- net59212
   ( I_6_779_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<20> ) 
 ;
-- net59040
+- net59213
   ( I_6_780_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<21> ) 
 ;
-- net59041
+- net59214
   ( I_6_781_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<22> ) 
 ;
-- net59042
+- net59215
   ( I_6_782_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<23> ) 
 ;
-- net21372
+- net21382
   ( I_6_786_0_0 Out_En ) ( I_6_788_0_0 sample ) ( I_6_789_0_0 sample ) 
 ;
-- net21373
+- net21383
   ( I_6_787_0_0 Out_En ) ( I_6_790_0_0 sample ) ( I_6_791_0_0 sample ) 
 ;
-- net59035
+- net59208
   ( I_6_788_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<16> ) 
 ;
-- net59036
+- net59209
   ( I_6_789_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<17> ) 
 ;
-- net59037
+- net59210
   ( I_6_790_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<18> ) 
 ;
-- net59038
+- net59211
   ( I_6_791_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<19> ) 
 ;
-- net20500
+- net20506
   ( I_6_795_0_0 Out_En ) ( I_6_797_0_0 sample ) ( I_6_798_0_0 sample ) 
 ;
-- net20501
+- net20507
   ( I_6_796_0_0 Out_En ) ( I_6_799_0_0 sample ) ( I_6_800_0_0 sample ) 
 ;
-- net59031
+- net59204
   ( I_6_797_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<12> ) 
 ;
-- net59032
+- net59205
   ( I_6_798_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<13> ) 
 ;
-- net59033
+- net59206
   ( I_6_799_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<14> ) 
 ;
-- net59034
+- net59207
   ( I_6_800_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<15> ) 
 ;
-- net19628
+- net19630
   ( I_6_804_0_0 Out_En ) ( I_6_806_0_0 sample ) ( I_6_807_0_0 sample ) 
 ;
-- net19629
+- net19631
   ( I_6_805_0_0 Out_En ) ( I_6_808_0_0 sample ) ( I_6_809_0_0 sample ) 
 ;
-- net59027
+- net59200
   ( I_6_806_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<8> ) 
 ;
-- net59028
+- net59201
   ( I_6_807_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<9> ) 
 ;
-- net59029
+- net59202
   ( I_6_808_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<10> ) 
 ;
-- net59030
+- net59203
   ( I_6_809_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<11> ) 
 ;
-- net18756
+- net18754
   ( I_6_813_0_0 Out_En ) ( I_6_815_0_0 sample ) ( I_6_816_0_0 sample ) 
 ;
-- net18757
+- net18755
   ( I_6_814_0_0 Out_En ) ( I_6_817_0_0 sample ) ( I_6_818_0_0 sample ) 
 ;
-- net59023
+- net59196
   ( I_6_815_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<4> ) 
 ;
-- net59024
+- net59197
   ( I_6_816_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<5> ) 
 ;
-- net59025
+- net59198
   ( I_6_817_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<6> ) 
 ;
-- net59026
+- net59199
   ( I_6_818_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<7> ) 
 ;
-- net59016
+- net59189
   ( I_6_820_0_0 CLKB ) ( cab_frame n_CNN_ly1_k_rw_CLKB ) 
 ;
-- net59018
+- net59191
   ( I_6_820_0_0 CLK ) ( cab_frame n_CNN_ly1_k_rw_CLK ) 
 ;
-- net59017
+- net59190
   ( I_6_820_0_0 RST_B ) ( cab_frame n_CNN_ly1_k_rw_RST_B ) 
 ;
-- net59015
+- net59188
   ( I_6_820_0_0 Din ) ( I_6_820_0_0 Din_Glb ) ( cab_frame n_CNN_ly1_k_rw_Din ) 
 ;
-- net58926
+- net59098
   ( I_6_820_0_0 Final_rw_out ) ( I_8_0 Final_rw ) 
 ;
-- net58930
+- net59102
   ( I_6_821_0_0 Readout_flag_in ) ( I_8_0 Readout_flag_gt ) 
 ;
-- net59013
+- net59186
   ( I_6_822_0_0 RST_B ) ( I_6_823_0_0 RST_B ) ( I_8_0 SR_int_RST_B ) ( cab_frame n_CNN_ly1_Intg_RST_B ) 
 ;
-- net58974_0
+- net59147_0
   ( I_6_822_0_0 VImg_CLK ) ( I_6_823_0_0 VImg_CLK ) ( I_7_72_0_0 CLK ) ( cab_frame n_CNN_ly1_k_col_CLK ) 
 ;
-- net59014
+- net59377
+  ( I_6_822_0_0 Vb ) ( I_6_823_0_0 Vb ) ( cab_frame n_Relu_Vb ) 
+;
+- net59187
   ( I_6_822_0_0 CLK ) ( I_6_823_0_0 CLK ) ( I_8_0 SR_int_CLK ) ( cab_frame n_CNN_ly1_Intg_CLK ) 
 ;
-- net59012
+- net59185
   ( I_6_822_0_0 CLKB ) ( I_6_823_0_0 CLKB ) ( I_8_0 SR_int_CLKB ) ( cab_frame n_CNN_ly1_Intg_CLKB ) 
 ;
-- net58924
+- net59096
   ( I_6_822_0_0 Q ) ( I_8_0 SR_int_0_Q<0> ) 
 ;
-- net17884
+- net17878
   ( I_6_822_0_0 Out_En ) ( I_6_824_0_0 sample ) ( I_6_825_0_0 sample ) 
 ;
-- net58925
+- net59097
   ( I_6_823_0_0 Q ) ( I_8_0 SR_int_0_Q<1> ) 
 ;
-- net17885
+- net17879
   ( I_6_823_0_0 Out_En ) ( I_6_826_0_0 sample ) ( I_6_827_0_0 sample ) 
 ;
-- net59019
+- net59103
+  ( I_6_824_0_0 nxt_rw ) ( I_6_825_0_0 nxt_rw ) ( I_6_826_0_0 nxt_rw ) ( I_6_827_0_0 nxt_rw ) ( I_8_0 sample_nxt_rw ) 
+;
+- net59376
+  ( I_6_824_0_0 Vb ) ( I_6_825_0_0 Vb ) ( I_6_826_0_0 Vb ) ( I_6_827_0_0 Vb ) ( cab_frame n_sample_buf_Vb ) 
+;
+- net59192
   ( I_6_824_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<0> ) 
 ;
-- net59020
+- net59193
   ( I_6_825_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<1> ) 
 ;
-- net59021
+- net59194
   ( I_6_826_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<2> ) 
 ;
-- net59022
+- net59195
   ( I_6_827_0_0 Sub_img_out ) ( cab_frame s_CNN_ly1_Out<3> ) 
 ;
-- net58960
+- net59133
   ( I_6_936 IN<1> ) ( cab_frame n_CNN_G_bit<5> ) 
 ;
-- net58959
+- net59132
   ( I_6_936 IN<0> ) ( cab_frame n_CNN_G_bit<4> ) 
 ;
-- net58851_0
+- net59023_0
   ( I_6_972 VGRUN<0> ) ( I_7_36_0_0 Vg_R ) 
 ;
-- net58852_0
+- net59024_0
   ( I_6_972 VGRUN<1> ) ( I_7_37_0_0 Vg_R ) 
 ;
-- net58853_0
+- net59025_0
   ( I_6_972 VGRUN<2> ) ( I_7_38 Vg_R ) 
 ;
-- net58854_0
+- net59026_0
   ( I_6_972 VGRUN<3> ) ( I_7_39_0_0 Vg_R ) 
 ;
-- net58954
+- net59127
   ( I_6_972 ENABLE ) ( cab_frame n_CNN_ly1_G_En ) 
 ;
-- net58961
+- net59134
   ( I_6_972 IN<0> ) ( cab_frame n_CNN_G_bit<6> ) 
 ;
-- net58855_0
+- net59027_0
   ( I_6_973 VGRUN<0> ) ( I_7_40 Vg_R ) 
 ;
-- net58856_0
+- net59028_0
   ( I_6_973 VGRUN<1> ) ( I_7_41_0_0 Vg_R ) 
 ;
-- net58857_0
+- net59029_0
   ( I_6_973 VGRUN<2> ) ( I_7_42 Vg_R ) 
 ;
-- net58858_0
+- net59030_0
   ( I_6_973 VGRUN<3> ) ( I_7_43_0_0 Vg_R ) 
 ;
-- net58859_0
+- net59031_0
   ( I_6_974 VGRUN<0> ) ( I_7_44 Vg_R ) 
 ;
-- net58860_0
+- net59032_0
   ( I_6_974 VGRUN<1> ) ( I_7_45_0_0 Vg_R ) 
 ;
-- net58861_0
+- net59033_0
   ( I_6_974 VGRUN<2> ) ( I_7_46 Vg_R ) 
 ;
-- net58862_0
+- net59034_0
   ( I_6_974 VGRUN<3> ) ( I_7_47_0_0 Vg_R ) 
 ;
-- net58863_0
+- net59035_0
   ( I_6_975 VGRUN<0> ) ( I_7_48 Vg_R ) 
 ;
-- net58864_0
+- net59036_0
   ( I_6_975 VGRUN<1> ) ( I_7_49_0_0 Vg_R ) 
 ;
-- net58865_0
+- net59037_0
   ( I_6_975 VGRUN<2> ) ( I_7_50 Vg_R ) 
 ;
-- net58866_0
+- net59038_0
   ( I_6_975 VGRUN<3> ) ( I_7_51_0_0 Vg_R ) 
 ;
-- net58867_0
+- net59039_0
   ( I_6_976 VGRUN<0> ) ( I_7_52 Vg_R ) 
 ;
-- net58868_0
+- net59040_0
   ( I_6_976 VGRUN<1> ) ( I_7_53_0_0 Vg_R ) 
 ;
-- net58869_0
+- net59041_0
   ( I_6_976 VGRUN<2> ) ( I_7_54 Vg_R ) 
 ;
-- net58870_0
+- net59042_0
   ( I_6_976 VGRUN<3> ) ( I_7_55_0_0 Vg_R ) 
 ;
-- net58871_0
+- net59043_0
   ( I_6_977 VGRUN<0> ) ( I_7_56 Vg_R ) 
 ;
-- net58872_0
+- net59044_0
   ( I_6_977 VGRUN<1> ) ( I_7_57_0_0 Vg_R ) 
 ;
-- net58873_0
+- net59045_0
   ( I_6_977 VGRUN<2> ) ( I_7_58 Vg_R ) 
 ;
-- net58874_0
+- net59046_0
   ( I_6_977 VGRUN<3> ) ( I_7_59_0_0 Vg_R ) 
 ;
-- net58875_0
+- net59047_0
   ( I_6_978 VGRUN<0> ) ( I_7_60 Vg_R ) 
 ;
-- net58876_0
+- net59048_0
   ( I_6_978 VGRUN<1> ) ( I_7_61_0_0 Vg_R ) 
 ;
-- net58877_0
+- net59049_0
   ( I_6_978 VGRUN<2> ) ( I_7_62 Vg_R ) 
 ;
-- net58878_0
+- net59050_0
   ( I_6_978 VGRUN<3> ) ( I_7_63_0_0 Vg_R ) 
 ;
-- net58879_0
+- net59051_0
   ( I_6_979 VGRUN<0> ) ( I_7_64 Vg_R ) 
 ;
-- net58880_0
+- net59052_0
   ( I_6_979 VGRUN<1> ) ( I_7_65_0_0 Vg_R ) 
 ;
-- net58881_0
+- net59053_0
   ( I_6_979 VGRUN<2> ) ( I_7_66 Vg_R ) 
 ;
-- net58882_0
+- net59054_0
   ( I_6_979 VGRUN<3> ) ( I_7_67_0_0 Vg_R ) 
 ;
-- net58883_0
+- net59055_0
   ( I_6_980 VGRUN<0> ) ( I_7_68 Vg_R ) 
 ;
-- net58884_0
+- net59056_0
   ( I_6_980 VGRUN<1> ) ( I_7_69_0_0 Vg_R ) 
 ;
-- net58885_0
+- net59057_0
   ( I_6_980 VGRUN<2> ) ( I_7_70 Vg_R ) 
 ;
-- net58886_0
+- net59058_0
   ( I_6_980 VGRUN<3> ) ( I_7_71_0_0 Vg_R ) 
 ;
-- net58887_0
+- net59059_0
   ( I_6_981 VGRUN<0> ) ( I_7_0 Vg_R ) 
 ;
-- net58888_0
+- net59060_0
   ( I_6_981 VGRUN<1> ) ( I_7_1_0_0 Vg_R ) 
 ;
-- net58889_0
+- net59061_0
   ( I_6_981 VGRUN<2> ) ( I_7_2 Vg_R ) 
 ;
-- net58890_0
+- net59062_0
   ( I_6_981 VGRUN<3> ) ( I_7_3_0_0 Vg_R ) 
 ;
-- net58891_0
+- net59063_0
   ( I_6_982 VGRUN<0> ) ( I_7_4 Vg_R ) 
 ;
-- net58892_0
+- net59064_0
   ( I_6_982 VGRUN<1> ) ( I_7_5_0_0 Vg_R ) 
 ;
-- net58893_0
+- net59065_0
   ( I_6_982 VGRUN<2> ) ( I_7_6 Vg_R ) 
 ;
-- net58894_0
+- net59066_0
   ( I_6_982 VGRUN<3> ) ( I_7_7_0_0 Vg_R ) 
 ;
-- net58895_0
+- net59067_0
   ( I_6_983 VGRUN<0> ) ( I_7_8 Vg_R ) 
 ;
-- net58896_0
+- net59068_0
   ( I_6_983 VGRUN<1> ) ( I_7_9_0_0 Vg_R ) 
 ;
-- net58897_0
+- net59069_0
   ( I_6_983 VGRUN<2> ) ( I_7_10 Vg_R ) 
 ;
-- net58898_0
+- net59070_0
   ( I_6_983 VGRUN<3> ) ( I_7_11_0_0 Vg_R ) 
 ;
-- net58899_0
+- net59071_0
   ( I_6_984 VGRUN<0> ) ( I_7_12 Vg_R ) 
 ;
-- net58900_0
+- net59072_0
   ( I_6_984 VGRUN<1> ) ( I_7_13_0_0 Vg_R ) 
 ;
-- net58901_0
+- net59073_0
   ( I_6_984 VGRUN<2> ) ( I_7_14 Vg_R ) 
 ;
-- net58902_0
+- net59074_0
   ( I_6_984 VGRUN<3> ) ( I_7_15_0_0 Vg_R ) 
 ;
-- net58903_0
+- net59075_0
   ( I_6_985 VGRUN<0> ) ( I_7_16 Vg_R ) 
 ;
-- net58904_0
+- net59076_0
   ( I_6_985 VGRUN<1> ) ( I_7_17_0_0 Vg_R ) 
 ;
-- net58905_0
+- net59077_0
   ( I_6_985 VGRUN<2> ) ( I_7_18 Vg_R ) 
 ;
-- net58906_0
+- net59078_0
   ( I_6_985 VGRUN<3> ) ( I_7_19_0_0 Vg_R ) 
 ;
-- net58907_0
+- net59079_0
   ( I_6_986 VGRUN<0> ) ( I_7_20 Vg_R ) 
 ;
-- net58908_0
+- net59080_0
   ( I_6_986 VGRUN<1> ) ( I_7_21_0_0 Vg_R ) 
 ;
-- net58909_0
+- net59081_0
   ( I_6_986 VGRUN<2> ) ( I_7_22 Vg_R ) 
 ;
-- net58910_0
+- net59082_0
   ( I_6_986 VGRUN<3> ) ( I_7_23_0_0 Vg_R ) 
 ;
-- net58911_0
+- net59083_0
   ( I_6_987 VGRUN<0> ) ( I_7_24 Vg_R ) 
 ;
-- net58912_0
+- net59084_0
   ( I_6_987 VGRUN<1> ) ( I_7_25_0_0 Vg_R ) 
 ;
-- net58913_0
+- net59085_0
   ( I_6_987 VGRUN<2> ) ( I_7_26 Vg_R ) 
 ;
-- net58914_0
+- net59086_0
   ( I_6_987 VGRUN<3> ) ( I_7_27_0_0 Vg_R ) 
 ;
-- net58915_0
+- net59087_0
   ( I_6_988 VGRUN<0> ) ( I_7_28 Vg_R ) 
 ;
-- net58916_0
+- net59088_0
   ( I_6_988 VGRUN<1> ) ( I_7_29_0_0 Vg_R ) 
 ;
-- net58917_0
+- net59089_0
   ( I_6_988 VGRUN<2> ) ( I_7_30 Vg_R ) 
 ;
-- net58918_0
+- net59090_0
   ( I_6_988 VGRUN<3> ) ( I_7_31_0_0 Vg_R ) 
 ;
-- net58919_0
+- net59091_0
   ( I_6_989 VGRUN<0> ) ( I_7_32 Vg_R ) 
 ;
-- net58920_0
+- net59092_0
   ( I_6_989 VGRUN<1> ) ( I_7_33_0_0 Vg_R ) 
 ;
-- net58921_0
+- net59093_0
   ( I_6_989 VGRUN<2> ) ( I_7_34 Vg_R ) 
 ;
-- net58922_0
+- net59094_0
   ( I_6_989 VGRUN<3> ) ( I_7_35_0_0 Vg_R ) 
 ;
-- net58923
+- net59095
   ( I_7_0 Q ) ( I_7_1_0_0 Q ) ( I_7_2 Q ) ( I_7_3_0_0 Q ) ( I_7_4 Q ) ( I_7_5_0_0 Q ) ( I_7_6 Q ) ( I_7_7_0_0 Q ) ( I_7_8 Q ) ( I_7_9_0_0 Q ) ( I_7_10 Q ) ( I_7_11_0_0 Q ) ( I_7_12 Q ) ( I_7_13_0_0 Q ) ( I_7_14 Q ) ( I_7_15_0_0 Q ) ( I_7_16 Q ) ( I_7_17_0_0 Q ) ( I_7_18 Q ) ( I_7_19_0_0 Q ) ( I_7_20 Q ) ( I_7_21_0_0 Q ) ( I_7_22 Q ) ( I_7_23_0_0 Q ) ( I_7_24 Q ) ( I_7_25_0_0 Q ) ( I_7_26 Q ) ( I_7_27_0_0 Q ) ( I_7_28 Q ) ( I_7_29_0_0 Q ) ( I_7_30 Q ) ( I_7_31_0_0 Q ) ( I_7_32 Q ) ( I_7_33_0_0 Q ) ( I_7_34 Q ) ( I_7_35_0_0 Q ) ( I_7_38 Q ) ( I_7_38 Q_bot ) ( I_7_39_0_0 Q ) ( I_7_40 Q ) ( I_7_41_0_0 Q ) ( I_7_42 Q ) ( I_7_43_0_0 Q ) ( I_7_44 Q ) ( I_7_45_0_0 Q ) ( I_7_46 Q ) ( I_7_47_0_0 Q ) ( I_7_48 Q ) ( I_7_49_0_0 Q ) ( I_7_50 Q ) ( I_7_51_0_0 Q ) ( I_7_52 Q ) ( I_7_53_0_0 Q ) ( I_7_54 Q ) ( I_7_55_0_0 Q ) ( I_7_56 Q ) ( I_7_57_0_0 Q ) ( I_7_58 Q ) ( I_7_59_0_0 Q ) ( I_7_60 Q ) ( I_7_61_0_0 Q ) ( I_7_62 Q ) ( I_7_63_0_0 Q ) ( I_7_64 Q ) ( I_7_65_0_0 Q ) ( I_7_66 Q ) ( I_7_67_0_0 Q ) ( I_7_68 Q ) ( I_7_69_0_0 Q ) ( I_7_70 Q ) ( I_7_71_0_0 Q ) 
 ;
-- net58973_0
+- net59144_0
+  ( I_7_72_0_0 Din ) ( cab_frame n_CNN_ly1_k_col_Din ) 
+;
+- net59146_0
   ( I_7_72_0_0 RST_B ) ( cab_frame n_CNN_ly1_k_col_RST_B ) 
 ;
-- net58972_0
+- net59145_0
   ( I_7_72_0_0 CLKB ) ( cab_frame n_CNN_ly1_k_col_CLKB ) 
 ;
 END NETS

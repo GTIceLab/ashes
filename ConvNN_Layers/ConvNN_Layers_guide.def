@@ -2218,7 +2218,7 @@ COMPONENTS 2193 ;
 - I_7_70 Tgate_swc_fr_Kernel_Vert + PLACED ( 3945480 1596000 ) N ;
 - I_7_71_0_0 Tgate_swc_fr_Kernel_Vert + PLACED ( 3956610 1596000 ) N ;
 - I_7_72_0_0 DynamicShiftReg_Rst_Lo + PLACED ( 3218560 1618000 ) N ;
-- I_8_0 Conv_TopDig + PLACED ( 4049060 1552000 ) N ;
+- I_8_0 Conv_TopDig + PLACED ( 3949060 1552000 ) N ;
 - I_9_0_0_0 Routes_GateDecodeSwc + PLACED ( 2151390 1544000 ) N ;
 END COMPONENTS
 

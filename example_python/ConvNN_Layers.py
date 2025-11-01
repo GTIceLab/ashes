@@ -736,7 +736,6 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
     }
 
 
-
 def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Flatten=1,Conv_Island=None,islandLoc=[0,0],debug=False):
     
     Top = circuit
@@ -962,8 +961,8 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
             Dmmy5 = [[Wire(Top) for _ in range(No_of_buffers//intg_rows)] for _ in range(out_channels*intg_rows)]
 
             ## Splitting intg reset when intg_rows==1
-            int_rst0 = Wire(Top)
-            int_rst1 = Wire(Top)
+            int_rst_0 = Wire(Top)
+            int_rst_1 = Wire(Top)
 
             ## Saving the Last Q_1 signal
             Q_1_tie = Wire(Top)
@@ -990,8 +989,8 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
         # Tieing all the int_rst between output_channels
         if (intg_rows==1):
             for j in range(intg_cols//2):
-                int_rst0 += Intgr[0][j].int_rst
-                int_rst1 += Intgr[0][(intg_cols//2)+j].int_rst
+                int_rst_0 += Intgr[0][j].int_rst
+                int_rst_1 += Intgr[0][(intg_cols//2)+j].int_rst
 
         # Tieing the Din and Q of Shift Registers in end and start of rows
         else:
@@ -1053,6 +1052,8 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
 
     Sub_Img_Out_glb = [Wire(Top) for _ in range(out_channels*(No_of_buffers))]
 
+    sample_buf_Vb = Wire(Top)
+
     ## Global Power lines
     VTUN = Wire(Top)
     DVDD = Wire(Top)
@@ -1066,6 +1067,8 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
     run_hv = Wire(Top)
 
     AVDD_by_2 = Wire(Top)
+
+    Relu_Vb = Wire(Top)
 
     ## Top_Digital
     Global_rst_b = Wire(Top)
@@ -1261,10 +1264,7 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
     Readout_flag_gt = Wire(Top)
     Readout_flag_gt += Top_Digital.Readout_flag_gt
 
-    int_rst_1 = Wire(Top)
     int_rst_1 += Top_Digital.int_rst[1]
-
-    int_rst_0 = Wire(Top)
     int_rst_0 += Top_Digital.int_rst[0]
 
     Global_rst_b += Top_Digital.Global_rst_b
@@ -1305,12 +1305,10 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
         SR_Intg_RST_B += Intgr_out_channel_1[0][i].RST_B
         SR_k_col_CLK += Intgr_out_channel_1[0][i].VImg_CLK
 
+        Relu_Vb+=Intgr_out_channel_1[0][i].Vb
         GND+=Intgr_out_channel_1[0][i].GND
-
         AVDD_by_2+=Intgr_out_channel_1[0][i].AVDD_by_2
-
         AVDD+=Intgr_out_channel_1[0][i].AVDD
-
         DVDD+=Intgr_out_channel_1[0][i].DVDD
         
 
@@ -1320,11 +1318,13 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
         for i in range(No_of_buffers//intg_rows):
             GND +=  Flatten_out_img[0][i].GND
             DVDD +=  Flatten_out_img[0][i].DVDD
+            sample_nxt_rw += Flatten_out_img[0][i].nxt_rw
+            sample_buf_Vb += Flatten_out_img[0][i].Vb
+
 
         for i in range(intg_rows*out_channels):
             for j in range(No_of_buffers//intg_rows):
                 Flatten_out_img[i][j].Sub_img_out+= Sub_Img_Out_glb[j + i*(No_of_buffers//intg_rows)]
-                Flatten_out_img[i][j].nxt_rw+= sample_nxt_rw
 
                 # if (i<intg_rows*out_channels/2):
                 #     Flatten_out_img[i][j].Sub_img_out+= Sub_Img_Out_glb_0[j + i*(No_of_buffers//intg_rows)]
@@ -1348,7 +1348,7 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
     SR_k_col_X = islandLoc[0] + (170+(27.46*(inp_channels*kernel_size)/2)+50)*1e3
     SR_k_col_Y = islandLoc[1] + (22*(kernel_size*2*out_channels)/4 + 30)*1e3
 
-    Top_Digital_X = SR_k_col_X + 680*1e3 + 130*1e3 # Currently hard coded, will need to change the placement of SR_K_col cells and eventually this cell placement coordinates
+    Top_Digital_X = SR_k_col_X + 680*1e3 + 30*1e3 # Currently hard coded, will need to change the placement of SR_K_col cells and eventually this cell placement coordinates
     Top_Digital_Y = SR_k_col_Y 
 
     location_islands = ((Kernel_VMM_X,Kernel_VMM_Y),
@@ -1389,8 +1389,9 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
         "run_hv": run_hv,
         "AVDD_by_2": AVDD_by_2,
         "Global_rst_b": Global_rst_b,
+        "sample_buf_Vb":sample_buf_Vb,
+        "Relu_Vb":Relu_Vb
     }
-
 
 ### Layer sizes ####
 first_layer = (32,3,38,4)
@@ -1479,6 +1480,9 @@ CNN_ly1_k_rw_CLK = outerPins.createPort("N","CNN_ly1_k_rw_CLK")
 
 CNN_ly1_Out = outerPins.createPort("S","CNN_ly1_Out", dimension=second_layer[2]* ((second_layer[0]//second_layer[3])**2) )
 
+sample_buf_Vb = outerPins.createPort("N","sample_buf_Vb")
+Relu_Vb = outerPins.createPort("N","Relu_Vb")
+
 ######## Layer0 connections #########
 
 CNN_ly0_G_En += CNN_layer0["Kvmm_G_En"]
@@ -1498,8 +1502,6 @@ for i in range(int(np.ceil(np.log2(first_layer[2]*first_layer[3])))):
 
 Prog_Drainline += CNN_layer0["Kvmm_AvgP_Prog_Drln"]
 Run_Drainline += CNN_layer0["Kvmm_AvgP_Run_Drln"]
-
-CNN_ly1_k_col_Din += CNN_layer0["SR_k_col_Din"]
 
 CNN_ly0_k_col_Din += CNN_layer0["SR_k_col_Din"]
 CNN_ly0_k_col_CLKB += CNN_layer0["SR_k_col_CLKB"]
@@ -1573,6 +1575,8 @@ CNN_ly1_k_rw_CLK += CNN_layer1["SR_k_rw_CLK"]
 for i in range(second_layer[2]* ((second_layer[0]//second_layer[3])**2)):
     CNN_ly1_Out[i] += CNN_layer1["Sub_Img_Out_glb"][i]
 
+sample_buf_Vb += CNN_layer1["sample_buf_Vb"]
+Relu_Vb += CNN_layer1["Relu_Vb"]
 
 VTUN += CNN_layer1["VTUN"]
 DVDD += CNN_layer1["DVDD"]
@@ -1596,9 +1600,9 @@ qparams["passes"] = 10
 qparams["via"] = 30
 qparams["jog"] = 60
 qparams["conflict"] = 50
-qparams["stage2"] = "mask none force effort 100"
-qparams["stage3"] = "mask none force effort 100"
+qparams["stage2"] = "mask none force effort 50"
+qparams["stage3"] = "mask none force effort 50"
 
 
-ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_Layers", p_and_r = True, route=True, design_limits = design_limits, location_islands = CNN_layer0["location_islands"] + CNN_layer1["location_islands"], qparams=qparams)
+ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_Layers", p_and_r = True, route=True, design_limits = design_limits, location_islands = CNN_layer0["location_islands"] +  CNN_layer1["location_islands"], qparams=qparams)
 

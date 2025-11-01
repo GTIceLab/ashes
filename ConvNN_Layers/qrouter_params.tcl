@@ -6,8 +6,8 @@ cost block 40
 cost conflict 50
 passes 10
 stage1 mask none force
-stage2 mask none force effort 100
-stage3 mask none force effort 100
+stage2 mask none force effort 50
+stage3 mask none force effort 50
 layers 4
 write_def ConvNN_Layers/ConvNN_Layers_qroute.def
 quit

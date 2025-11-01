@@ -236,8 +236,8 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
             Dmmy5 = [[Wire(Top) for _ in range(No_of_buffers//intg_rows)] for _ in range(out_channels*intg_rows)]
 
             ## Splitting intg reset when intg_rows==1
-            int_rst0 = Wire(Top)
-            int_rst1 = Wire(Top)
+            int_rst_0 = Wire(Top)
+            int_rst_1 = Wire(Top)
 
             ## Saving the Last Q_1 signal
             Q_1_tie = Wire(Top)
@@ -264,8 +264,8 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
         # Tieing all the int_rst between output_channels
         if (intg_rows==1):
             for j in range(intg_cols//2):
-                int_rst0 += Intgr[0][j].int_rst
-                int_rst1 += Intgr[0][(intg_cols//2)+j].int_rst
+                int_rst_0 += Intgr[0][j].int_rst
+                int_rst_1 += Intgr[0][(intg_cols//2)+j].int_rst
 
         # Tieing the Din and Q of Shift Registers in end and start of rows
         else:
@@ -327,6 +327,8 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
 
     Sub_Img_Out_glb = [Wire(Top) for _ in range(out_channels*(No_of_buffers))]
 
+    sample_buf_Vb = Wire(Top)
+
     ## Global Power lines
     VTUN = Wire(Top)
     DVDD = Wire(Top)
@@ -340,6 +342,8 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
     run_hv = Wire(Top)
 
     AVDD_by_2 = Wire(Top)
+
+    Relu_Vb = Wire(Top)
 
     ## Top_Digital
     Global_rst_b = Wire(Top)
@@ -535,10 +539,7 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
     Readout_flag_gt = Wire(Top)
     Readout_flag_gt += Top_Digital.Readout_flag_gt
 
-    int_rst_1 = Wire(Top)
     int_rst_1 += Top_Digital.int_rst[1]
-
-    int_rst_0 = Wire(Top)
     int_rst_0 += Top_Digital.int_rst[0]
 
     Global_rst_b += Top_Digital.Global_rst_b
@@ -579,12 +580,10 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
         SR_Intg_RST_B += Intgr_out_channel_1[0][i].RST_B
         SR_k_col_CLK += Intgr_out_channel_1[0][i].VImg_CLK
 
+        Relu_Vb+=Intgr_out_channel_1[0][i].Vb
         GND+=Intgr_out_channel_1[0][i].GND
-
         AVDD_by_2+=Intgr_out_channel_1[0][i].AVDD_by_2
-
         AVDD+=Intgr_out_channel_1[0][i].AVDD
-
         DVDD+=Intgr_out_channel_1[0][i].DVDD
         
 
@@ -594,11 +593,13 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
         for i in range(No_of_buffers//intg_rows):
             GND +=  Flatten_out_img[0][i].GND
             DVDD +=  Flatten_out_img[0][i].DVDD
+            sample_nxt_rw += Flatten_out_img[0][i].nxt_rw
+            sample_buf_Vb += Flatten_out_img[0][i].Vb
+
 
         for i in range(intg_rows*out_channels):
             for j in range(No_of_buffers//intg_rows):
                 Flatten_out_img[i][j].Sub_img_out+= Sub_Img_Out_glb[j + i*(No_of_buffers//intg_rows)]
-                Flatten_out_img[i][j].nxt_rw+= sample_nxt_rw
 
                 # if (i<intg_rows*out_channels/2):
                 #     Flatten_out_img[i][j].Sub_img_out+= Sub_Img_Out_glb_0[j + i*(No_of_buffers//intg_rows)]
@@ -663,6 +664,8 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
         "run_hv": run_hv,
         "AVDD_by_2": AVDD_by_2,
         "Global_rst_b": Global_rst_b,
+        "sample_buf_Vb":sample_buf_Vb,
+        "Relu_Vb":Relu_Vb
     }
 
 
