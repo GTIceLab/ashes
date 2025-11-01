@@ -1457,7 +1457,7 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
 
     # Copy the technology lef for the design
     tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '.lef')
-    tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '_toplevelroute.lef')
+    #tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '_toplevelroute.lef')
     if os.path.exists(tech_lef_path): shutil.copy(tech_lef_path, file_path)
     else: raise CellNotFound(f'Could not find the technology lef file {tech_process}.lef. Is it in the ./lib/tech_lef/ directory?')
 
