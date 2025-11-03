@@ -1,7 +1,7 @@
 read_lef ConvNN_AvgPool/ConvNN_AvgPool.lef
 read_def ConvNN_AvgPool/ConvNN_AvgPool.def
 cost via 20
-cost jog 40
+cost jog 60
 cost block 40
 cost conflict 50
 passes 100

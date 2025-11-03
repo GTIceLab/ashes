@@ -239,14 +239,14 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
     Kvmm_G_En = Wire(Top)
     Kvmm_G_bit = [Wire(Top) for _ in range(int(np.ceil(np.log2(inp_channels*kernel_size))))]
 
-    AvgPool_FGs_G_En = Wire(Top)
-    AvgPool_FGs_G_bit = [Wire(Top) for _ in range(int(np.ceil(np.log2(intg_cols*2))))]
+    AP_G_En = Wire(Top)
+    AP_G_bit = [Wire(Top) for _ in range(int(np.ceil(np.log2(intg_cols*2))))]
     
-    Kvmm_AvgP_Dr_En =  Wire(Top)
-    Kvmm_AvgP_Dr_bit =  [Wire(Top) for _ in range(int(np.ceil(np.log2(out_channels*kernel_size*2))))]
+    Kvmm_AP_Dr_En =  Wire(Top)
+    Kvmm_AP_Dr_bit =  [Wire(Top) for _ in range(int(np.ceil(np.log2(out_channels*kernel_size*2))))]
 
-    Kvmm_AvgP_Prog_Drln = Wire(Top)
-    Kvmm_AvgP_Run_Drln =  Wire(Top)
+    Kvmm_AP_Prog_Drln = Wire(Top)
+    Kvmm_AP_Run_Drln =  Wire(Top)
     
     ## Kernel Coloumn Shift Registers
     SR_k_col_Din = Wire(Top)
@@ -269,7 +269,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
     SR_k_rw_CLK = Wire(Top)
 
     # AvgPooling and Readout signals
-    AvgPool_Relu_Vb = Wire(Top)
+    AP_Relu_Vb = Wire(Top)
     Sub_Img_Out_glb = [Wire(Top) for _ in range(out_channels)]
     
 
@@ -298,7 +298,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
 
     # ## G/D Decoder and Swcs Signals
     # Kvmm_G_En = outerPins.createPort("N","Kvmm_G_En")
-    # AvgPool_FGs_G_En = outerPins.createPort("N","AvgPool_FGs_G_En")
+    # AP_G_En = outerPins.createPort("N","AP_G_En")
 
 
     # # Checking which island is bigger and assigning the Most bits needed
@@ -307,11 +307,11 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
     # else:
     #     Kvmm_AvgP_G_bit = outerPins.createPort("N","Kvmm_G_bit",dimension=int(np.ceil(np.log2(intg_cols*2))))
 
-    # Kvmm_AvgP_Dr_En =  outerPins.createPort("N","Kvmm_AvgP_Dr_En")
-    # Kvmm_AvgP_Dr_bit = outerPins.createPort("N","Kvmm_AvgP_Dr_bit",dimension=int(np.ceil(np.log2(out_channels*kernel_size*2))))
+    # Kvmm_AP_Dr_En =  outerPins.createPort("N","Kvmm_AP_Dr_En")
+    # Kvmm_AP_Dr_bit = outerPins.createPort("N","Kvmm_AP_Dr_bit",dimension=int(np.ceil(np.log2(out_channels*kernel_size*2))))
 
-    # Kvmm_AvgP_Prog_Drln =  outerPins.createPort("N","Kvmm_AvgP_Prog_Drln")
-    # Kvmm_AvgP_Run_Drln =  outerPins.createPort("N","Kvmm_AvgP_Run_Drln")
+    # Kvmm_AP_Prog_Drln =  outerPins.createPort("N","Kvmm_AP_Prog_Drln")
+    # Kvmm_AP_Run_Drln =  outerPins.createPort("N","Kvmm_AP_Run_Drln")
 
     # ## Shift Registers for Kernel Coloumn
     # SR_k_col_Din = outerPins.createPort("N","K_col_Din")
@@ -341,7 +341,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
 
 
     # ## Readout Relu for Integrators
-    # AvgPool_Relu_Vb = outerPins.createPort("N","AvgPool_Relu_Vb")
+    # AP_Relu_Vb = outerPins.createPort("N","AP_Relu_Vb")
     
     # Sub_Img_Out_glb = outerPins.createPort("E", "Sub_img_out",dimension=out_channels)
 
@@ -408,15 +408,15 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
 
     DrainSel.VINJ += VINJ
     DrainSel.GND += GND
-    DrainSel.prog_drainrail += Kvmm_AvgP_Prog_Drln
-    DrainSel.run_drainrail += Kvmm_AvgP_Run_Drln
+    DrainSel.prog_drainrail += Kvmm_AP_Prog_Drln
+    DrainSel.run_drainrail += Kvmm_AP_Run_Drln
 
     DrainDecoder.VINJ += VINJ
     DrainDecoder.GND += GND
-    DrainDecoder.ENABLE += Kvmm_AvgP_Dr_En
+    DrainDecoder.ENABLE += Kvmm_AP_Dr_En
 
     for i in range(drainBits):
-        DrainDecoder.IN[i] += Kvmm_AvgP_Dr_bit[i]
+        DrainDecoder.IN[i] += Kvmm_AP_Dr_bit[i]
         
 
     ##-------------- For AvgPooling FGs --------------##
@@ -453,10 +453,10 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
 
     GateDecoder_Avg_pool.VINJV += VINJ
     GateDecoder_Avg_pool.GNDV += GND
-    GateDecoder_Avg_pool.ENABLE += AvgPool_FGs_G_En
+    GateDecoder_Avg_pool.ENABLE += AP_G_En
 
     for i in range(gateBits_Avg_pool):
-        GateDecoder_Avg_pool.IN[i] += AvgPool_FGs_G_bit[i]
+        GateDecoder_Avg_pool.IN[i] += AP_G_bit[i]
 
     # for i in range(intg_cols):
     #     GateSwitches_Avg_pool.VINJ_T[i] += GateDecoder_Avg_pool.VINJ_b[i]
@@ -641,7 +641,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
 
     prog_hv +=  Readout_Relu_glb[0].prog_hv[0] 
     run_hv +=  Readout_Relu_glb[0].run_hv[0] 
-    AvgPool_Relu_Vb += Readout_Relu_glb[0].Vb[0] 
+    AP_Relu_Vb += Readout_Relu_glb[0].Vb[0] 
     AVDD += Readout_Relu_glb[0].AVDD[0]    
     VINJ += Readout_Relu_glb[0].VINJ[0] 
 
@@ -702,12 +702,12 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
         "location_islands": location_islands,
         "Kvmm_G_En": Kvmm_G_En,
         "Kvmm_G_bit": Kvmm_G_bit,
-        "AvgPool_FGs_G_En": AvgPool_FGs_G_En,
-        "AvgPool_FGs_G_bit": AvgPool_FGs_G_bit,
-        "Kvmm_AvgP_Dr_En": Kvmm_AvgP_Dr_En,
-        "Kvmm_AvgP_Dr_bit": Kvmm_AvgP_Dr_bit,
-        "Kvmm_AvgP_Prog_Drln": Kvmm_AvgP_Prog_Drln,
-        "Kvmm_AvgP_Run_Drln": Kvmm_AvgP_Run_Drln,
+        "AP_G_En": AP_G_En,
+        "AP_G_bit": AP_G_bit,
+        "Kvmm_AP_Dr_En": Kvmm_AP_Dr_En,
+        "Kvmm_AP_Dr_bit": Kvmm_AP_Dr_bit,
+        "Kvmm_AP_Prog_Drln": Kvmm_AP_Prog_Drln,
+        "Kvmm_AP_Run_Drln": Kvmm_AP_Run_Drln,
         "SR_k_col_Din": SR_k_col_Din,
         "SR_k_col_CLKB": SR_k_col_CLKB,
         "SR_k_col_RST_B": SR_k_col_RST_B,
@@ -721,7 +721,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
         "SR_k_rw_CLKB": SR_k_rw_CLKB,
         "SR_k_rw_RST_B": SR_k_rw_RST_B,
         "SR_k_rw_CLK": SR_k_rw_CLK,
-        "AvgPool_Relu_Vb": AvgPool_Relu_Vb,
+        "AP_Relu_Vb": AP_Relu_Vb,
         "Sub_Img_Out_glb": Sub_Img_Out_glb,
         "VTUN": VTUN,
         "DVDD": DVDD,
@@ -1398,8 +1398,8 @@ first_layer = (32,3,38,4)
 second_layer = (4,36,46,2)
 
 Top = ac.Circuit()
-CNN_layer0 = Conv_AvgPool(Top,image_size=first_layer[0],inp_channels=first_layer[1],out_channels=first_layer[2],kernel_size=first_layer[3],AvgPool_size=2,Conv_AvgP_Island=None,islandLoc=[100*1e3+200e3,200*1e3],debug=False)
-CNN_layer1 = ConvNN(Top,image_size=second_layer[0],inp_channels=second_layer[1],out_channels=second_layer[2],kernel_size=second_layer[3],Flatten=1,Conv_Island=None,islandLoc=[2000*1e3+200e3,200*1e3+400*1e3],debug=False)
+CNN_layer0 = Conv_AvgPool(Top,image_size=first_layer[0],inp_channels=first_layer[1],out_channels=first_layer[2],kernel_size=first_layer[3],AvgPool_size=2,Conv_AvgP_Island=None,islandLoc=[100*1e3+200e3,350*1e3],debug=False)
+CNN_layer1 = ConvNN(Top,image_size=second_layer[0],inp_channels=second_layer[1],out_channels=second_layer[2],kernel_size=second_layer[3],Flatten=1,Conv_Island=None,islandLoc=[2100*1e3+500e3,350*1e3+400*1e3],debug=False)
 
 
 ################ Write down conenctions between the layers and Create Ports #######################
@@ -1490,18 +1490,18 @@ CNN_ly0_G_En += CNN_layer0["Kvmm_G_En"]
 for i in range(int(np.ceil(np.log2(first_layer[1]*first_layer[3])))):
     CNN_G_bit[i]+=CNN_layer0["Kvmm_G_bit"][i]
 
-CNN_ly0_AP_G_En += CNN_layer0["AvgPool_FGs_G_En"]
+CNN_ly0_AP_G_En += CNN_layer0["AP_G_En"]
 
 for i in range(3): ## Need to return intg_Cols 
-    CNN_G_bit[i]+=CNN_layer0["AvgPool_FGs_G_bit"][i]
+    CNN_G_bit[i]+=CNN_layer0["AP_G_bit"][i]
 
-CNN_ly0_Dr_En += CNN_layer0["Kvmm_AvgP_Dr_En"]
+CNN_ly0_Dr_En += CNN_layer0["Kvmm_AP_Dr_En"]
 
 for i in range(int(np.ceil(np.log2(first_layer[2]*first_layer[3])))):
-    CNN_Dr_bit[i]+=CNN_layer0["Kvmm_AvgP_Dr_bit"][i]
+    CNN_Dr_bit[i]+=CNN_layer0["Kvmm_AP_Dr_bit"][i]
 
-Prog_Drainline += CNN_layer0["Kvmm_AvgP_Prog_Drln"]
-Run_Drainline += CNN_layer0["Kvmm_AvgP_Run_Drln"]
+Prog_Drainline += CNN_layer0["Kvmm_AP_Prog_Drln"]
+Run_Drainline += CNN_layer0["Kvmm_AP_Run_Drln"]
 
 CNN_ly0_k_col_Din += CNN_layer0["SR_k_col_Din"]
 CNN_ly0_k_col_CLKB += CNN_layer0["SR_k_col_CLKB"]
@@ -1521,7 +1521,7 @@ CNN_ly0_k_rw_CLKB += CNN_layer0["SR_k_rw_CLKB"]
 CNN_ly0_k_rw_RST_B += CNN_layer0["SR_k_rw_RST_B"]
 CNN_ly0_k_rw_CLK += CNN_layer0["SR_k_rw_CLK"]
 
-CNN_ly0_AP_Relu_Vb += CNN_layer0["AvgPool_Relu_Vb"]
+CNN_ly0_AP_Relu_Vb += CNN_layer0["AP_Relu_Vb"]
 
 first_layer_CNN_out = [Wire(Top) for _ in range(first_layer[2])]
 for i in range(first_layer[2]):
@@ -1590,7 +1590,7 @@ AVDD_by_2 += CNN_layer1["AVDD_by_2"]
 Global_rst_b += CNN_layer1["Global_rst_b"]
 
 #design_limits = [3e3*1e3, 1.9e3*1e3]
-design_limits = [4.5e3*1e3, 2.5e3*1e3]
+design_limits = [5e3*1e3, 2.7e3*1e3]
 
 
 with open('./ashes_fg/asic/qrouter_default.json') as file:
@@ -1604,5 +1604,5 @@ qparams["stage2"] = "mask none force effort 50"
 qparams["stage3"] = "mask none force effort 50"
 
 
-ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_Layers", p_and_r = True, route=False, design_limits = design_limits, location_islands = CNN_layer0["location_islands"] +  CNN_layer1["location_islands"], qparams=qparams)
+ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN_Layers", p_and_r = True, route=True, design_limits = design_limits, location_islands = CNN_layer0["location_islands"] +  CNN_layer1["location_islands"], qparams=qparams)
 
