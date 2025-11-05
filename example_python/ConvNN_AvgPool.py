@@ -659,7 +659,7 @@ def Conv_AvgPool(circuit,image_size=32,inp_channels=3,out_channels=34,kernel_siz
                 int_rst_0 += Readout_Relu_glb[i].int_rst_out[local]
 
             else:
-                int_rst_0 += Readout_Relu_glb[i].int_rst_out[local]
+                int_rst_1 += Readout_Relu_glb[i].int_rst_out[local]
                 Relu_en_b_1 += Readout_Relu_glb[i].Out_En_b[local]
 
    ################    Between Gateswcs and Decoders routing    ################

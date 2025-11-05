@@ -1,7 +1,7 @@
 read_lef ConvNN/ConvNN.lef
 read_def ConvNN/ConvNN.def
 cost via 20
-cost jog 60
+cost jog 50
 cost block 40
 cost conflict 50
 passes 100
