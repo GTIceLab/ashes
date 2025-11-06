@@ -5305,3 +5305,210 @@ class FakeCellGateDecoder(StandardCell):
 
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
+
+
+class ConvNN_AvgPool(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),n_AP_col_ctrl_dbg=None,n_Final_rw_dbg=None,n_Relu_en_b_dbg=None,n_SR_int_dbg_Q=None,n_int_rst_dbg=None,n_intg_nxt_rw_dbg=None,e_sub_img_out=None,n_AVDD=None,n_AVDD_by_2=None,n_DVDD=None,n_GND=None,n_VGPROG=None,n_VINJ=None,n_VTUN=None,n_Vint_dbg=None,n_AP_G_En=None,n_AP_G_bit=None,n_AP_Relu_Vb=None,n_Global_rst_b=None,n_Kvmm_AP_Dr_En=None,n_Kvmm_AP_Dr_bit=None,n_Kvmm_AP_Prog_Drln=None,n_Kvmm_AP_Run_Drln=None,n_Kvmm_G_En=None,n_Kvmm_G_bit=None,n_SR_Intg_CLK=None,n_SR_Intg_CLKB=None,n_SR_Intg_Din=None,n_SR_Intg_RST_B=None,n_SR_k_col_CLK=None,n_SR_k_col_CLKB=None,n_SR_k_col_Din=None,n_SR_k_col_RST_B=None,n_SR_k_rw_CLK=None,n_SR_k_rw_CLKB=None,n_SR_k_rw_Din=None,n_SR_k_rw_RST_B=None,n_Vin_inp_Ch=None,n_prog_hv=None,n_run_hv=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'ConvNN_AvgPool'
+
+		self.n_AP_col_ctrl_dbg = Port(circuit,self,'n_AP_col_ctrl_dbg','N',2*self.dim[1]) # Changed from 1 to 2 based on [0:1]
+		self.n_Final_rw_dbg = Port(circuit,self,'n_Final_rw_dbg','N',1*self.dim[1])
+		self.n_Relu_en_b_dbg = Port(circuit,self,'n_Relu_en_b_dbg','N',2*self.dim[1]) # Changed from 1 to 2 based on [0:1]
+		self.n_SR_int_dbg_Q = Port(circuit,self,'n_SR_int_dbg_Q','N',4*self.dim[1]) # Changed from 1 to 4 based on [0:3]
+		self.n_int_rst_dbg = Port(circuit,self,'n_int_rst_dbg','N',2*self.dim[1]) # Changed from 1 to 2 based on [0:1]
+		self.n_intg_nxt_rw_dbg = Port(circuit,self,'n_intg_nxt_rw_dbg','N',1*self.dim[1])
+		self.e_sub_img_out = Port(circuit,self,'e_sub_img_out','E',38*self.dim[0]) # Changed from 1 to 38 based on [0:37]
+		self.n_AVDD = Port(circuit,self,'n_AVDD','N',1*self.dim[1])
+		self.n_AVDD_by_2 = Port(circuit,self,'n_AVDD_by_2','N',1*self.dim[1])
+		self.n_DVDD = Port(circuit,self,'n_DVDD','N',1*self.dim[1])
+		self.n_GND = Port(circuit,self,'n_GND','N',1*self.dim[1])
+		self.n_VGPROG = Port(circuit,self,'n_VGPROG','N',1*self.dim[1])
+		self.n_VINJ = Port(circuit,self,'n_VINJ','N',1*self.dim[1])
+		self.n_VTUN = Port(circuit,self,'n_VTUN','N',1*self.dim[1])
+		self.n_Vint_dbg = Port(circuit,self,'n_Vint_dbg','N',2*self.dim[1]) # Changed from 1 to 2 based on [0:1]
+		self.n_AP_G_En = Port(circuit,self,'n_AP_G_En','N',1*self.dim[1])
+		self.n_AP_G_bit = Port(circuit,self,'n_AP_G_bit','N',3*self.dim[1]) # Changed from 1 to 3 based on [2:0]
+		self.n_AP_Relu_Vb = Port(circuit,self,'n_AP_Relu_Vb','N',1*self.dim[1])
+		self.n_Global_rst_b = Port(circuit,self,'n_Global_rst_b','N',1*self.dim[1])
+		self.n_Kvmm_AP_Dr_En = Port(circuit,self,'n_Kvmm_AP_Dr_En','N',1*self.dim[1])
+		self.n_Kvmm_AP_Dr_bit = Port(circuit,self,'n_Kvmm_AP_Dr_bit','N',10*self.dim[1]) # Changed from 1 to 10 based on [9:0]
+		self.n_Kvmm_AP_Prog_Drln = Port(circuit,self,'n_Kvmm_AP_Prog_Drln','N',1*self.dim[1])
+		self.n_Kvmm_AP_Run_Drln = Port(circuit,self,'n_Kvmm_AP_Run_Drln','N',1*self.dim[1])
+		self.n_Kvmm_G_En = Port(circuit,self,'n_Kvmm_G_En','N',1*self.dim[1])
+		self.n_Kvmm_G_bit = Port(circuit,self,'n_Kvmm_G_bit','N',4*self.dim[1]) # Changed from 1 to 4 based on [3:0]
+		self.n_SR_Intg_CLK = Port(circuit,self,'n_SR_Intg_CLK','N',1*self.dim[1])
+		self.n_SR_Intg_CLKB = Port(circuit,self,'n_SR_Intg_CLKB','N',1*self.dim[1])
+		self.n_SR_Intg_Din = Port(circuit,self,'n_SR_Intg_Din','N',1*self.dim[1])
+		self.n_SR_Intg_RST_B = Port(circuit,self,'n_SR_Intg_RST_B','N',1*self.dim[1])
+		self.n_SR_k_col_CLK = Port(circuit,self,'n_SR_k_col_CLK','N',1*self.dim[1])
+		self.n_SR_k_col_CLKB = Port(circuit,self,'n_SR_k_col_CLKB','N',1*self.dim[1])
+		self.n_SR_k_col_Din = Port(circuit,self,'n_SR_k_col_Din','N',1*self.dim[1])
+		self.n_SR_k_col_RST_B = Port(circuit,self,'n_SR_k_col_RST_B','N',1*self.dim[1])
+		self.n_SR_k_rw_CLK = Port(circuit,self,'n_SR_k_rw_CLK','N',1*self.dim[1])
+		self.n_SR_k_rw_CLKB = Port(circuit,self,'n_SR_k_rw_CLKB','N',1*self.dim[1])
+		self.n_SR_k_rw_Din = Port(circuit,self,'n_SR_k_rw_Din','N',1*self.dim[1])
+		self.n_SR_k_rw_RST_B = Port(circuit,self,'n_SR_k_rw_RST_B','N',1*self.dim[1])
+		self.n_Vin_inp_Ch = Port(circuit,self,'n_Vin_inp_Ch','N',3*self.dim[1]) # Changed from 1 to 3 based on [0:2]
+		self.n_prog_hv = Port(circuit,self,'n_prog_hv','N',1*self.dim[1])
+		self.n_run_hv = Port(circuit,self,'n_run_hv','N',1*self.dim[1])
+		
+
+		# Initialize ports with given values
+		portsInit = [n_AP_col_ctrl_dbg,n_Final_rw_dbg,n_Relu_en_b_dbg,n_SR_int_dbg_Q,n_int_rst_dbg,n_intg_nxt_rw_dbg,e_sub_img_out,n_AVDD,n_AVDD_by_2,n_DVDD,n_GND,n_VGPROG,n_VINJ,n_VTUN,n_Vint_dbg,n_AP_G_En,n_AP_G_bit,n_AP_Relu_Vb,n_Global_rst_b,n_Kvmm_AP_Dr_En,n_Kvmm_AP_Dr_bit,n_Kvmm_AP_Prog_Drln,n_Kvmm_AP_Run_Drln,n_Kvmm_G_En,n_Kvmm_G_bit,n_SR_Intg_CLK,n_SR_Intg_CLKB,n_SR_Intg_Din,n_SR_Intg_RST_B,n_SR_k_col_CLK,n_SR_k_col_CLKB,n_SR_k_col_Din,n_SR_k_col_RST_B,n_SR_k_rw_CLK,n_SR_k_rw_CLKB,n_SR_k_rw_Din,n_SR_k_rw_RST_B,n_Vin_inp_Ch,n_prog_hv,n_run_hv]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+
+class FullyCon_NN(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),n_Act_ly0_scan_Qout=None,n_Act_ly1_scan_Qout=None,n_FNN_Vsel_dbg=None,n_WTA_final_scan_Qout=None,n_AVDD=None,n_ActF_Vg_bias=None,n_Act_ly0_scan_out=None,n_Act_ly1_scan_out=None,n_DVDD=None,n_FNN_input=None,n_FNN_ly0_out_95=None,n_GND=None,n_Prog_Drainline=None,n_Run_Drainline=None,n_VGPROG=None,n_VGRUN=None,n_VINJ=None,n_VTUN=None,n_WTA_final_Vbias=None,n_WTA_final_Vmid=None,n_WTA_final_scan_out=None,s_FNN_diocon_dbg=None,s_FNN_ly1_out_63=None,s_VMM_WTA_out_10=None,s_VMM_WTA_out_11=None,n_ActF_sel=None,n_ActF_selb=None,n_Act_ly0_scan_CLK=None,n_Act_ly0_scan_Din=None,n_Act_ly0_scan_RSTB=None,n_Act_ly1_scan_CLK=None,n_Act_ly1_scan_Din=None,n_Act_ly1_scan_RSTB=None,n_FNN_final_Dr_En=None,n_FNN_final_G_En=None,n_FNN_ly0_ActF_G_En=None,n_FNN_ly0_Dr_En=None,n_FNN_ly0_G_En=None,n_FNN_ly1_ActF_G_En=None,n_FNN_ly1_Dr_En=None,n_FNN_ly1_G_En=None,n_FNN_shr_Dr_bit=None,n_FNN_shr_G_bit=None,n_WTA_final_scan_CLK=None,n_WTA_final_scan_Din=None,n_WTA_final_scan_RSTB=None,n_prog_hv=None,n_run_hv=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'FullyCon_NN'
+
+		self.n_Act_ly0_scan_Qout = Port(circuit,self,'n_Act_ly0_scan_Qout','N',1*self.dim[1])
+		self.n_Act_ly1_scan_Qout = Port(circuit,self,'n_Act_ly1_scan_Qout','N',1*self.dim[1])
+		self.n_FNN_Vsel_dbg = Port(circuit,self,'n_FNN_Vsel_dbg','N',1*self.dim[1])
+		self.n_WTA_final_scan_Qout = Port(circuit,self,'n_WTA_final_scan_Qout','N',1*self.dim[1])
+		self.n_AVDD = Port(circuit,self,'n_AVDD','N',1*self.dim[1])
+		self.n_ActF_Vg_bias = Port(circuit,self,'n_ActF_Vg_bias','N',1*self.dim[1])
+		self.n_Act_ly0_scan_out = Port(circuit,self,'n_Act_ly0_scan_out','N',1*self.dim[1])
+		self.n_Act_ly1_scan_out = Port(circuit,self,'n_Act_ly1_scan_out','N',1*self.dim[1])
+		self.n_DVDD = Port(circuit,self,'n_DVDD','N',1*self.dim[1])
+		self.n_FNN_input = Port(circuit,self,'n_FNN_input','N',176*self.dim[1]) # Changed from 1 to 176 based on [0:175]
+		self.n_FNN_ly0_out_95 = Port(circuit,self,'n_FNN_ly0_out_95','N',1*self.dim[1])
+		self.n_GND = Port(circuit,self,'n_GND','N',1*self.dim[1])
+		self.n_Prog_Drainline = Port(circuit,self,'n_Prog_Drainline','N',1*self.dim[1])
+		self.n_Run_Drainline = Port(circuit,self,'n_Run_Drainline','N',1*self.dim[1])
+		self.n_VGPROG = Port(circuit,self,'n_VGPROG','N',1*self.dim[1])
+		self.n_VGRUN = Port(circuit,self,'n_VGRUN','N',1*self.dim[1])
+		self.n_VINJ = Port(circuit,self,'n_VINJ','N',1*self.dim[1])
+		self.n_VTUN = Port(circuit,self,'n_VTUN','N',1*self.dim[1])
+		self.n_WTA_final_Vbias = Port(circuit,self,'n_WTA_final_Vbias','N',1*self.dim[1])
+		self.n_WTA_final_Vmid = Port(circuit,self,'n_WTA_final_Vmid','N',1*self.dim[1])
+		self.n_WTA_final_scan_out = Port(circuit,self,'n_WTA_final_scan_out','N',1*self.dim[1])
+		self.s_FNN_diocon_dbg = Port(circuit,self,'s_FNN_diocon_dbg','S',1*self.dim[1])
+		self.s_FNN_ly1_out_63 = Port(circuit,self,'s_FNN_ly1_out_63','S',1*self.dim[1])
+		self.s_VMM_WTA_out_10 = Port(circuit,self,'s_VMM_WTA_out_10','S',1*self.dim[1])
+		self.s_VMM_WTA_out_11 = Port(circuit,self,'s_VMM_WTA_out_11','S',1*self.dim[1])
+		self.n_ActF_sel = Port(circuit,self,'n_ActF_sel','N',1*self.dim[1])
+		self.n_ActF_selb = Port(circuit,self,'n_ActF_selb','N',1*self.dim[1])
+		self.n_Act_ly0_scan_CLK = Port(circuit,self,'n_Act_ly0_scan_CLK','N',1*self.dim[1])
+		self.n_Act_ly0_scan_Din = Port(circuit,self,'n_Act_ly0_scan_Din','N',1*self.dim[1])
+		self.n_Act_ly0_scan_RSTB = Port(circuit,self,'n_Act_ly0_scan_RSTB','N',1*self.dim[1])
+		self.n_Act_ly1_scan_CLK = Port(circuit,self,'n_Act_ly1_scan_CLK','N',1*self.dim[1])
+		self.n_Act_ly1_scan_Din = Port(circuit,self,'n_Act_ly1_scan_Din','N',1*self.dim[1])
+		self.n_Act_ly1_scan_RSTB = Port(circuit,self,'n_Act_ly1_scan_RSTB','N',1*self.dim[1])
+		self.n_FNN_final_Dr_En = Port(circuit,self,'n_FNN_final_Dr_En','N',1*self.dim[1])
+		self.n_FNN_final_G_En = Port(circuit,self,'n_FNN_final_G_En','N',1*self.dim[1])
+		self.n_FNN_ly0_ActF_G_En = Port(circuit,self,'n_FNN_ly0_ActF_G_En','N',1*self.dim[1])
+		self.n_FNN_ly0_Dr_En = Port(circuit,self,'n_FNN_ly0_Dr_En','N',1*self.dim[1])
+		self.n_FNN_ly0_G_En = Port(circuit,self,'n_FNN_ly0_G_En','N',1*self.dim[1])
+		self.n_FNN_ly1_ActF_G_En = Port(circuit,self,'n_FNN_ly1_ActF_G_En','N',1*self.dim[1])
+		self.n_FNN_ly1_Dr_En = Port(circuit,self,'n_FNN_ly1_Dr_En','N',1*self.dim[1])
+		self.n_FNN_ly1_G_En = Port(circuit,self,'n_FNN_ly1_G_En','N',1*self.dim[1])
+		self.n_FNN_shr_Dr_bit = Port(circuit,self,'n_FNN_shr_Dr_bit','N',8*self.dim[1]) # Changed from 1 to 8 based on [0:7]
+		self.n_FNN_shr_G_bit = Port(circuit,self,'n_FNN_shr_G_bit','N',8*self.dim[1]) # Changed from 1 to 8 based on [0:7]
+		self.n_WTA_final_scan_CLK = Port(circuit,self,'n_WTA_final_scan_CLK','N',1*self.dim[1])
+		self.n_WTA_final_scan_Din = Port(circuit,self,'n_WTA_final_scan_Din','N',1*self.dim[1])
+		self.n_WTA_final_scan_RSTB = Port(circuit,self,'n_WTA_final_scan_RSTB','N',1*self.dim[1])
+		self.n_prog_hv = Port(circuit,self,'n_prog_hv','N',1*self.dim[1])
+		self.n_run_hv = Port(circuit,self,'n_run_hv','N',1*self.dim[1])
+
+		# Initialize ports with given values
+		portsInit = [n_Act_ly0_scan_Qout,n_Act_ly1_scan_Qout,n_FNN_Vsel_dbg,n_WTA_final_scan_Qout,n_AVDD,n_ActF_Vg_bias,n_Act_ly0_scan_out,n_Act_ly1_scan_out,n_DVDD,n_FNN_input,n_FNN_ly0_out_95,n_GND,n_Prog_Drainline,n_Run_Drainline,n_VGPROG,n_VGRUN,n_VINJ,n_VTUN,n_WTA_final_Vbias,n_WTA_final_Vmid,n_WTA_final_scan_out,s_FNN_diocon_dbg,s_FNN_ly1_out_63,s_VMM_WTA_out_10,s_VMM_WTA_out_11,n_ActF_sel,n_ActF_selb,n_Act_ly0_scan_CLK,n_Act_ly0_scan_Din,n_Act_ly0_scan_RSTB,n_Act_ly1_scan_CLK,n_Act_ly1_scan_Din,n_Act_ly1_scan_RSTB,n_FNN_final_Dr_En,n_FNN_final_G_En,n_FNN_ly0_ActF_G_En,n_FNN_ly0_Dr_En,n_FNN_ly0_G_En,n_FNN_ly1_ActF_G_En,n_FNN_ly1_Dr_En,n_FNN_ly1_G_En,n_FNN_shr_Dr_bit,n_FNN_shr_G_bit,n_WTA_final_scan_CLK,n_WTA_final_scan_Din,n_WTA_final_scan_RSTB,n_prog_hv,n_run_hv]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+
+class ConvNN(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),n_Out_En_dbg=None,n_Rdout_flag_dbg=None,n_SR_Intg_dbg_Q=None,n_SR_int_0_Q2_dbg=None,n_int_rst_dbg=None,n_sample_nxt_rw_dbg=None,n_AVDD=None,n_AVDD_by_2=None,n_DVDD=None,n_GND=None,n_VGPROG=None,n_VINJ=None,n_VTUN=None,n_Vint_dbg=None,s_sub_img_out=None,w_sub_img_out=None,n_Global_rst_b=None,n_Kvmm_Dr_En=None,n_Kvmm_Dr_bit=None,n_Kvmm_G_En=None,n_Kvmm_G_bit=None,n_Kvmm_Prog_Drln=None,n_Kvmm_Run_Drln=None,n_Relu_Vb=None,n_SR_Intg_CLK=None,n_SR_Intg_CLKB=None,n_SR_Intg_Din=None,n_SR_Intg_RST_B=None,n_SR_k_col_CLK=None,n_SR_k_col_CLKB=None,n_SR_k_col_Din=None,n_SR_k_col_RST_B=None,n_SR_k_rw_CLK=None,n_SR_k_rw_CLKB=None,n_SR_k_rw_Din=None,n_SR_k_rw_RST_B=None,n_prog_hv=None,n_run_hv=None,n_sample_buf_Vb=None,w_Vin_inp_Ch=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'ConvNN'
+
+		self.n_Out_En_dbg = Port(circuit,self,'n_Out_En_dbg','N',2*self.dim[1]) # Changed from 1 to 2 based on [0:1]
+		self.n_Rdout_flag_dbg = Port(circuit,self,'n_Rdout_flag_dbg','N',1*self.dim[1])
+		self.n_SR_Intg_dbg_Q = Port(circuit,self,'n_SR_Intg_dbg_Q','N',2*self.dim[1]) # Changed from 1 to 2 based on [0:1]
+		self.n_SR_int_0_Q2_dbg = Port(circuit,self,'n_SR_int_0_Q2_dbg','N',1*self.dim[1])
+		self.n_int_rst_dbg = Port(circuit,self,'n_int_rst_dbg','N',2*self.dim[1]) # Changed from 1 to 2 based on [0:1]
+		self.n_sample_nxt_rw_dbg = Port(circuit,self,'n_sample_nxt_rw_dbg','N',1*self.dim[1])
+		self.n_AVDD = Port(circuit,self,'n_AVDD','N',1*self.dim[1])
+		self.n_AVDD_by_2 = Port(circuit,self,'n_AVDD_by_2','N',1*self.dim[1])
+		self.n_DVDD = Port(circuit,self,'n_DVDD','N',1*self.dim[1])
+		self.n_GND = Port(circuit,self,'n_GND','N',1*self.dim[1])
+		self.n_VGPROG = Port(circuit,self,'n_VGPROG','N',1*self.dim[1])
+		self.n_VINJ = Port(circuit,self,'n_VINJ','N',1*self.dim[1])
+		self.n_VTUN = Port(circuit,self,'n_VTUN','N',1*self.dim[1])
+		self.n_Vint_dbg = Port(circuit,self,'n_Vint_dbg','N',2*self.dim[1]) # Changed from 1 to 2 based on [0:1]
+		self.s_sub_img_out = Port(circuit,self,'s_sub_img_out','S',154*self.dim[1]) # Changed from 1 to 154 based on [0:153]
+		self.w_sub_img_out = Port(circuit,self,'w_sub_img_out','W',30*self.dim[0]) # Changed from 1 to 30 based on [0:29]
+		self.n_Global_rst_b = Port(circuit,self,'n_Global_rst_b','N',1*self.dim[1])
+		self.n_Kvmm_Dr_En = Port(circuit,self,'n_Kvmm_Dr_En','N',1*self.dim[1])
+		self.n_Kvmm_Dr_bit = Port(circuit,self,'n_Kvmm_Dr_bit','N',8*self.dim[1]) # Changed from 1 to 8 based on [7:0]
+		self.n_Kvmm_G_En = Port(circuit,self,'n_Kvmm_G_En','N',1*self.dim[1])
+		self.n_Kvmm_G_bit = Port(circuit,self,'n_Kvmm_G_bit','N',7*self.dim[1]) # Changed from 1 to 7 based on [6:0]
+		self.n_Kvmm_Prog_Drln = Port(circuit,self,'n_Kvmm_Prog_Drln','N',1*self.dim[1])
+		self.n_Kvmm_Run_Drln = Port(circuit,self,'n_Kvmm_Run_Drln','N',1*self.dim[1])
+		self.n_Relu_Vb = Port(circuit,self,'n_Relu_Vb','N',1*self.dim[1])
+		self.n_SR_Intg_CLK = Port(circuit,self,'n_SR_Intg_CLK','N',1*self.dim[1])
+		self.n_SR_Intg_CLKB = Port(circuit,self,'n_SR_Intg_CLKB','N',1*self.dim[1])
+		self.n_SR_Intg_Din = Port(circuit,self,'n_SR_Intg_Din','N',1*self.dim[1])
+		self.n_SR_Intg_RST_B = Port(circuit,self,'n_SR_Intg_RST_B','N',1*self.dim[1])
+		self.n_SR_k_col_CLK = Port(circuit,self,'n_SR_k_col_CLK','N',1*self.dim[1])
+		self.n_SR_k_col_CLKB = Port(circuit,self,'n_SR_k_col_CLKB','N',1*self.dim[1])
+		self.n_SR_k_col_Din = Port(circuit,self,'n_SR_k_col_Din','N',1*self.dim[1])
+		self.n_SR_k_col_RST_B = Port(circuit,self,'n_SR_k_col_RST_B','N',1*self.dim[1])
+		self.n_SR_k_rw_CLK = Port(circuit,self,'n_SR_k_rw_CLK','N',1*self.dim[1])
+		self.n_SR_k_rw_CLKB = Port(circuit,self,'n_SR_k_rw_CLKB','N',1*self.dim[1])
+		self.n_SR_k_rw_Din = Port(circuit,self,'n_SR_k_rw_Din','N',1*self.dim[1])
+		self.n_SR_k_rw_RST_B = Port(circuit,self,'n_SR_k_rw_RST_B','N',1*self.dim[1])
+		self.n_prog_hv = Port(circuit,self,'n_prog_hv','N',1*self.dim[1])
+		self.n_run_hv = Port(circuit,self,'n_run_hv','N',1*self.dim[1])
+		self.n_sample_buf_Vb = Port(circuit,self,'n_sample_buf_Vb','N',1*self.dim[1])
+		self.w_Vin_inp_Ch = Port(circuit,self,'w_Vin_inp_Ch','W',36*self.dim[0]) # Changed from 1 to 36 based on [0:35]
+
+		# Initialize ports with given values
+		portsInit = [n_Out_En_dbg,n_Rdout_flag_dbg,n_SR_Intg_dbg_Q,n_SR_int_0_Q2_dbg,n_int_rst_dbg,n_sample_nxt_rw_dbg,n_AVDD,n_AVDD_by_2,n_DVDD,n_GND,n_VGPROG,n_VINJ,n_VTUN,n_Vint_dbg,s_sub_img_out,w_sub_img_out,n_Global_rst_b,n_Kvmm_Dr_En,n_Kvmm_Dr_bit,n_Kvmm_G_En,n_Kvmm_G_bit,n_Kvmm_Prog_Drln,n_Kvmm_Run_Drln,n_Relu_Vb,n_SR_Intg_CLK,n_SR_Intg_CLKB,n_SR_Intg_Din,n_SR_Intg_RST_B,n_SR_k_col_CLK,n_SR_k_col_CLKB,n_SR_k_col_Din,n_SR_k_col_RST_B,n_SR_k_rw_CLK,n_SR_k_rw_CLKB,n_SR_k_rw_Din,n_SR_k_rw_RST_B,n_prog_hv,n_run_hv,n_sample_buf_Vb,w_Vin_inp_Ch]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)

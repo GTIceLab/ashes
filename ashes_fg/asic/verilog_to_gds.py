@@ -1795,7 +1795,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
                     def_file.write(f'  END\n\n')
         # Write blockages for any manually specified cells or islands
-        m3_except = ['TSMC350nm_drainSelect_progrundrains', 'S_BLOCK_SEC1_PINS', 'S_BLOCK_BUFFER', 'S_BLOCK_SPACE_UP_PINS', 'S_BLOCK_CONN_PINS', 'S_BLOCK_SPACE_DOWN_PINS', 'S_BLOCK_SEC2_PINS', 'S_BLOCK_23CONN', 'S_BLOCK_SEC3_PINS', 'TSMC350nm_Cap_Bank', 'Full_Macro_Edit','QDAC_synth','TILE_analog','ALICE_separate','NN_cab1','NN_cab2','optimized_cab2','optimized_cab1','PDE_cab1', 'sensor_cab1','sensor_cab2','AveragerDAC_synth','AlgorithmicADC_synth','RampADC_synth', 'TOP_LPF_DelayBlock', 'TOP_Filter_MeadSOS','Delaylines_Flip','Modulation_Flip','VMMWTA_FullRoute','Tgate_swc_fr_Kernel_Horiz_top_edge','Tgate_swc_fr_Kernel_Horiz_bot_only','Tgate_swc_fr_Kernel_Horiz_core','Tgate_swc_fr_Kernel_Horiz_bot_edge','FNN_Relu_and_Sig']
+        m3_except = ['TSMC350nm_drainSelect_progrundrains', 'S_BLOCK_SEC1_PINS', 'S_BLOCK_BUFFER', 'S_BLOCK_SPACE_UP_PINS', 'S_BLOCK_CONN_PINS', 'S_BLOCK_SPACE_DOWN_PINS', 'S_BLOCK_SEC2_PINS', 'S_BLOCK_23CONN', 'S_BLOCK_SEC3_PINS', 'TSMC350nm_Cap_Bank', 'Full_Macro_Edit','QDAC_synth','TILE_analog','ALICE_separate','NN_cab1','NN_cab2','optimized_cab2','optimized_cab1','PDE_cab1', 'sensor_cab1','sensor_cab2','AveragerDAC_synth','AlgorithmicADC_synth','RampADC_synth', 'TOP_LPF_DelayBlock', 'TOP_Filter_MeadSOS','Delaylines_Flip','Modulation_Flip','VMMWTA_FullRoute','Tgate_swc_fr_Kernel_Horiz_top_edge','Tgate_swc_fr_Kernel_Horiz_bot_only','Tgate_swc_fr_Kernel_Horiz_core','Tgate_swc_fr_Kernel_Horiz_bot_edge','FNN_Relu_and_Sig','ConvNN','FullyCon_NN','ConvNN_AvgPool']
         for val, island in cell_order_in_island.items():
             for idx, item in island['items'].items():
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m3_except:
@@ -1811,7 +1811,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     def_file.write(f'    RECT ( {block_x1} {block_y1} ) ( {block_x2} {block_y2} ) ;\n')
                     def_file.write(f'  END\n\n')
 
-        m4_except = ['Full_Macro_Edit', 'Full_Macro_Corner','QDAC_synth','TILE_analog','ALICE_separate','NN_cab1','NN_cab2','optimized_cab2','optimized_cab1','PDE_cab1', 'sensor_cab1','sensor_cab2','AveragerDAC_synth','AlgorithmicADC_synth','RampADC_synth', 'TOP_LPF_DelayBlock', 'TOP_Filter_MeadSOS','Delaylines_Flip','Modulation_Flip','VMMWTA_FullRoute']
+        m4_except = ['Full_Macro_Edit', 'Full_Macro_Corner','QDAC_synth','TILE_analog','ALICE_separate','NN_cab1','NN_cab2','optimized_cab2','optimized_cab1','PDE_cab1', 'sensor_cab1','sensor_cab2','AveragerDAC_synth','AlgorithmicADC_synth','RampADC_synth', 'TOP_LPF_DelayBlock', 'TOP_Filter_MeadSOS','Delaylines_Flip','Modulation_Flip','VMMWTA_FullRoute','ConvNN','FullyCon_NN','ConvNN_AvgPool']
         for val, island in cell_order_in_island.items():
             for idx, item in island['items'].items():
                 if item['type'] in ['cell', 'matrix'] and item['name'] in m4_except:

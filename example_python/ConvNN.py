@@ -476,7 +476,7 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
         if k_col_set > 0:
             
             if k_col_set==(inp_channels/2):
-                row_flag = 3
+                row_flag = 6
                 space_flag = space_flag - (inp_channels//2 -1)*kernel_size - (inp_channels//2) -2
                 
             space_flag = space_flag + 1
@@ -488,7 +488,7 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
             Tgate_fr_SR_k_col_ImgR[k_col + (kernel_size)*k_col_set] = lib_new.Tgate_swc_fr_Kernel_Vert(Top,SR_k_col_island,dim=[1,1])
             Tgate_fr_SR_k_col_ImgR[k_col + (kernel_size)*k_col_set].place([row_flag, k_col + (kernel_size)*(k_col_set) + space_flag])
            
-            if k_col==0 and k_col_set==0:
+            if (k_col==0 and k_col_set==0) or  k_col_set==(inp_channels/2):
                 Tgate_fr_SR_k_col_ImgR[k_col + (kernel_size)*k_col_set].markAbut()
 
             elif k_col!=0:
@@ -505,6 +505,7 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
         Tgate_fr_SR_k_col_ImgR[i].GND += GND
         Tgate_fr_SR_k_col_ImgR[i].Vimg+= Vin_inp_Ch[i//kernel_size]
 
+    ### I need to fix this connection, this is badly defined and shorts both the Qs
     for i in range(1,inp_channels,1):
         for j in range(kernel_size):
             Tgate_fr_SR_k_col_ImgR[kernel_size].Q_bot+= Tgate_fr_SR_k_col_ImgR[j + i*(kernel_size)].Q
@@ -621,10 +622,10 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
     Kernel_VMM_Y = islandLoc[1]
 
     SR_k_col_X = islandLoc[0] + (170+(27.46*(inp_channels*kernel_size)/2)+50)*1e3
-    SR_k_col_Y = islandLoc[1] + (22*(kernel_size*2*out_channels)/4 + 30)*1e3
+    SR_k_col_Y = islandLoc[1] + (22*(kernel_size*2*out_channels)/4 + 50)*1e3
 
-    Top_Digital_X = SR_k_col_X + 680*1e3 + 30*1e3 # Currently hard coded, will need to change the placement of SR_K_col cells and eventually this cell placement coordinates
-    Top_Digital_Y = SR_k_col_Y 
+    Top_Digital_X = SR_k_col_X + 630*1e3  # Currently hard coded, will need to change the placement of SR_K_col cells and eventually this cell placement coordinates
+    Top_Digital_Y = SR_k_col_Y + 150*1e3
 
     location_islands = ((Kernel_VMM_X,Kernel_VMM_Y),
                         (SR_k_col_X,SR_k_col_Y),
@@ -668,9 +669,108 @@ def ConvNN(circuit,image_size=4,inp_channels=32,out_channels=64,kernel_size=2,Fl
         "Relu_Vb":Relu_Vb
     }
 
+### Layer sizes ####
+second_layer = (4,36,46,2)
 
 Top = ac.Circuit()
-Conv_Layer = ConvNN(Top,out_channels=46,islandLoc=[10e4,4.1e4+5e4],debug=True)
+CNN_layer = ConvNN(Top,image_size=second_layer[0],inp_channels=second_layer[1],out_channels=second_layer[2],kernel_size=second_layer[3],Flatten=1,Conv_Island=None,islandLoc=[120e3,100e3],debug=False)
+
+
+################ Frame Pins if needed #######################
+
+outerPins = frame(Top)
+
+Kvmm_G_En = outerPins.createPort("N","Kvmm_G_En")
+Kvmm_G_bit = outerPins.createPort("N","Kvmm_G_bit", dimension = int(np.ceil(np.log2(second_layer[1]*second_layer[3]))) )  
+Kvmm_Dr_En = outerPins.createPort("N","Kvmm_Dr_En")
+Kvmm_Dr_bit = outerPins.createPort("N","Kvmm_Dr_bit", dimension = int(np.ceil(np.log2(second_layer[2]*second_layer[3]*2))) )
+Kvmm_Prog_Drln = outerPins.createPort("N","Kvmm_Prog_Drln")
+Kvmm_Run_Drln = outerPins.createPort("N","Kvmm_Run_Drln")
+SR_k_col_Din = outerPins.createPort("N","SR_k_col_Din")
+SR_k_col_CLKB = outerPins.createPort("N","SR_k_col_CLKB")
+SR_k_col_RST_B = outerPins.createPort("N","SR_k_col_RST_B")
+SR_k_col_CLK = outerPins.createPort("N","SR_k_col_CLK")
+Vin_inp_Ch = outerPins.createPort("W","Vin_inp_Ch", dimension = second_layer[1])
+SR_Intg_RST_B = outerPins.createPort("N","SR_Intg_RST_B")
+SR_Intg_Din = outerPins.createPort("N","SR_Intg_Din")
+SR_Intg_CLK = outerPins.createPort("N","SR_Intg_CLK")
+SR_Intg_CLKB = outerPins.createPort("N","SR_Intg_CLKB")
+SR_k_rw_Din = outerPins.createPort("N","SR_k_rw_Din")
+SR_k_rw_CLKB = outerPins.createPort("N","SR_k_rw_CLKB")
+SR_k_rw_RST_B = outerPins.createPort("N","SR_k_rw_RST_B")
+SR_k_rw_CLK = outerPins.createPort("N","SR_k_rw_CLK")
+
+#Sub_Img_Out = outerPins.createPort("S","sub_img_out",dimension=second_layer[2]* ((second_layer[0]//second_layer[3])**2) )
+split = 30
+Sub_Img_Out_s = outerPins.createPort("S","sub_img_out",dimension=second_layer[2]* ((second_layer[0]//second_layer[3])**2) -split )
+Sub_Img_Out_w = outerPins.createPort("W","sub_img_out",dimension=split )
+
+VTUN = outerPins.createPort("N","VTUN")
+DVDD = outerPins.createPort("N","DVDD")
+AVDD = outerPins.createPort("N","AVDD")
+GND = outerPins.createPort("N","GND")
+VINJ = outerPins.createPort("N","VINJ")
+VGPROG = outerPins.createPort("N","VGPROG")
+prog_hv = outerPins.createPort("N","prog_hv")
+run_hv = outerPins.createPort("N","run_hv")
+AVDD_by_2 = outerPins.createPort("N","AVDD_by_2")
+Global_rst_b = outerPins.createPort("N","Global_rst_b")
+sample_buf_Vb = outerPins.createPort("N","sample_buf_Vb")
+Relu_Vb = outerPins.createPort("N","Relu_Vb")
+
+############### Connections to Frame Pins ###############
+
+Kvmm_G_En += CNN_layer["Kvmm_G_En"]
+
+for i in range(int(np.ceil(np.log2(second_layer[1]*second_layer[3])))):
+    Kvmm_G_bit[i] += CNN_layer["Kvmm_G_bit"][i]
+
+Kvmm_Dr_En += CNN_layer["Kvmm_Dr_En"]
+
+for i in range( int(np.ceil(np.log2(second_layer[2]*second_layer[3]*2)))):
+    Kvmm_Dr_bit[i] += CNN_layer["Kvmm_Dr_bit"][i]
+
+Kvmm_Prog_Drln += CNN_layer["Kvmm_Prog_Drln"]
+Kvmm_Run_Drln += CNN_layer["Kvmm_Run_Drln"]
+SR_k_col_Din += CNN_layer["SR_k_col_Din"]
+SR_k_col_RST_B += CNN_layer["SR_k_col_RST_B"]
+SR_k_col_CLK += CNN_layer["SR_k_col_CLK"]
+
+for i in range(second_layer[1]):
+    Vin_inp_Ch[i] += CNN_layer["Vin_inp_Ch"][i]
+
+SR_Intg_RST_B += CNN_layer["SR_Intg_RST_B"]
+SR_Intg_Din += CNN_layer["SR_Intg_Din"]
+SR_Intg_CLK += CNN_layer["SR_Intg_CLK"]
+SR_Intg_CLKB += CNN_layer["SR_Intg_CLKB"]
+SR_k_rw_Din += CNN_layer["SR_k_rw_Din"]
+SR_k_rw_CLKB += CNN_layer["SR_k_rw_CLKB"]
+SR_k_rw_RST_B += CNN_layer["SR_k_rw_RST_B"]
+SR_k_rw_CLK += CNN_layer["SR_k_rw_CLK"]
+
+for i in range(second_layer[2]* ((second_layer[0]//second_layer[3])**2) - split ):
+    Sub_Img_Out_s[i] += CNN_layer["Sub_Img_Out_glb"][i]
+
+for i in range(split):
+    Sub_Img_Out_w[i] += CNN_layer["Sub_Img_Out_glb"][second_layer[2]* ((second_layer[0]//second_layer[3])**2) -split + i]
+
+VTUN += CNN_layer["VTUN"]
+DVDD += CNN_layer["DVDD"]
+AVDD += CNN_layer["AVDD"]
+GND += CNN_layer["GND"]
+VINJ += CNN_layer["VINJ"]
+VGPROG += CNN_layer["VGPROG"]
+prog_hv += CNN_layer["prog_hv"]
+run_hv += CNN_layer["run_hv"]
+AVDD_by_2 += CNN_layer["AVDD_by_2"]
+Global_rst_b += CNN_layer["Global_rst_b"]
+
+sample_buf_Vb += CNN_layer["sample_buf_Vb"]
+Relu_Vb += CNN_layer["Relu_Vb"]
+
+
+################################################################################
+
 
 #location_islands = ((10e4,4.1e4+5e4),(11e5+4.5e5,16e5+2e4))
 #location_islands = ((5e4,4.1e4),(7e5,7.9e5))
@@ -685,11 +785,11 @@ with open('./ashes_fg/asic/qrouter_default.json') as file:
 
 qparams["passes"] = 100
 qparams["via"] = 20
-qparams["jog"] = 60
+qparams["jog"] = 50
 qparams["conflict"] = 50
 qparams["stage2"] = "mask none force effort 100"
 qparams["stage3"] = "mask none force effort 100"
 
 
-ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN", p_and_r = True, route=True, design_limits = design_limits, location_islands = Conv_Layer["location_islands"], qparams=qparams,drainSpaceIdx=0,drainSpace=0,gateSpaceIdx=0,gateSpace=0)
+ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN", p_and_r = True, route=True, design_limits = design_limits, location_islands = CNN_layer["location_islands"], qparams=qparams)
 
