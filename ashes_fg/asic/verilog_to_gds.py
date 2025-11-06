@@ -613,7 +613,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 cab_dev_data[cab_dev_table[cab_dev_idx][0]]['rel_y'] = cab_dev_bottom
                 cab_dev_bottom = cab_dev_bottom + cab_dev_data[cab_dev_table[cab_dev_idx][0]]['height'] + cab_dev_spacing
             
-            mat_to_cell_padding = int(20.5*dbu)
+            mat_to_cell_padding = int(80.5*dbu)
             for idx in range(len(cell_order)):
                 # implicit assumption that col_widths has outlined every column up to requested value. 
                 # Fine to assume so because a violation would be the fault of py-to-verilog

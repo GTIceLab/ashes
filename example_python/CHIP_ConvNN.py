@@ -162,10 +162,10 @@ Dig_Scanner_dbg = TSMC350nm_VerticalScanner(Top,Dig_Scanner_dbg_Island,dim=[10,1
 Dig_Scanner_dbg.place([0,0])
 
 Tgts_fr_adc_meas = ST_BMatrix(Top,Dig_Scanner_dbg_Island,dim=[1,1])
-Tgts_fr_adc_meas.place([0,2])
+Tgts_fr_adc_meas.place([0,4])
 
 Tgts_fr_adc_meas1 = ST_BMatrix(Top,Dig_Scanner_dbg_Island,dim=[1,1])
-Tgts_fr_adc_meas1.place([0,4])
+Tgts_fr_adc_meas1.place([0,8])
 
 
 #############################Analog buffer: change number if need more than 4, change decoder size accordingly######################
@@ -175,8 +175,8 @@ AnalogBuffer = AnalogBuffer(Top,AnalogBufferIsland,[14,1])
 AnalogBuffer.place([0,0])
 
 DrainDecoder_buf = STD_DrainDecoder(Top,AnalogBufferIsland,bits=4)
-DrainSelect_buf = RunDrainSwitch(Top,AnalogBufferIsland,num=14)
-DrainSwitch_buf = DrainCutoff(Top,AnalogBufferIsland,num=14)    
+DrainSelect_buf = RunDrainSwitch(Top,AnalogBufferIsland,num=4)
+DrainSwitch_buf = DrainCutoff(Top,AnalogBufferIsland,num=4)    
 
 GateSwitch_buf = STD_IndirectGateSwitch(Top,AnalogBufferIsland,1)
 
@@ -254,7 +254,7 @@ AnalogBuffer.Vout[1] += chipframe.IO_E[14]
 Conv_Layer1.n_AVDD +=chipframe.avdd_W
 Conv_Layer1.n_AVDD_by_2 += chipframe.IO_W[19]
 Conv_Layer1.n_DVDD += DVDD_CONV
-Conv_Layer1.n_GND += chipframe.gnd_W[0] # Make sure this is closest 
+Conv_Layer1.n_GND += chipframe.gnd_W[2] # Make sure this is closest 
 
 Conv_Layer1.n_VGPROG += macro.VGPROG
 Conv_Layer1.n_VINJ += chipframe.VINJ_W # Make sure this is closest 
@@ -323,7 +323,7 @@ Conv_Layer2.n_sample_nxt_rw_dbg += Dig_Scanner_dbg.In[20]
 Conv_Layer2.n_AVDD +=chipframe.avdd_E
 Conv_Layer2.n_AVDD_by_2 += chipframe.IO_W[19]
 Conv_Layer2.n_DVDD += DVDD_CONV
-Conv_Layer2.n_GND += chipframe.gnd_E[0] # Make sure this is closest 
+Conv_Layer2.n_GND += chipframe.gnd_E[2] # Make sure this is closest 
 
 Conv_Layer2.n_VGPROG += macro.VGPROG
 Conv_Layer2.n_VINJ += chipframe.VINJ_E # Make sure this is closest 
@@ -404,7 +404,7 @@ AnalogBuffer.Vout[7] +=  chipframe.IO_E[42]
 
 Tgts_fr_adc_meas.Prog += macro.mmio_reg_7_bout[2]
 Tgts_fr_adc_meas.VDD += chipframe.DVDD_E
-Tgts_fr_adc_meas.GND += chipframe.DVDD_E
+Tgts_fr_adc_meas.GND += chipframe.gnd_E[2]
 
 FNN_layers.n_DVDD += DVDD_CONV
 
@@ -442,7 +442,7 @@ AnalogBuffer.Vout[9] +=  chipframe.IO_S[41]
 
 Tgts_fr_adc_meas1.Prog += macro.mmio_reg_7_bout[3]
 Tgts_fr_adc_meas1.VDD += chipframe.DVDD_E
-Tgts_fr_adc_meas1.GND += chipframe.DVDD_E
+Tgts_fr_adc_meas1.GND += chipframe.gnd_E[2]
 
 FNN_layers.s_FNN_diocon_dbg += AnalogBuffer.Vin[10]
 AnalogBuffer.Vout[10] += chipframe.IO_S[40]
@@ -528,8 +528,8 @@ location_islands = ((250.6*1e3, 4520*1e3), #macro
                     (660*1e3,2450*1e3), #ConvLy1
                     (3460*1e3,2600*1e3), #ConvLy2
                     (660*1e3,400*1e3), #FNN
-                    (5800*1e3,4400*1e3), #LVLShifter1
-                    (6200*1e3,4400*1e3), #LVLShifter2
+                    (3300*1e3,4540*1e3), #LVLShifter1
+                    (4100*1e3,4540*1e3), #LVLShifter2
                     (6000*1e3,4500*1e3), #DigBuffer
                     (6000*1e3,3400*1e3), #DigScanner, Tgates					
                     (6000*1e3,3900*1e3)) #Analog Buffer
@@ -539,9 +539,9 @@ with open('./ashes_fg/asic/qrouter_default.json') as file:
 
 qparams["passes"] = 100
 qparams["via"] = 20
-qparams["jog"] = 50
+qparams["jog"] = 80
 qparams["conflict"] = 50
 qparams["stage2"] = "mask none force effort 100"
 qparams["stage3"] = "mask none force effort 100"
 
-compile_asic(Top,process="TSMC350nm",fileName="CHIP_CONV",p_and_r = True,route=False,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=8,drainSpace=20,gateSpaceIdx=8,gateSpace=15)
+compile_asic(Top,process="TSMC350nm",fileName="CHIP_CONV",p_and_r = True,route=True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=9,drainSpace=20,gateSpaceIdx=9,gateSpace=15, qparams=qparams)
