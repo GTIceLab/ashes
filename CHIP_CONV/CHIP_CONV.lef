@@ -24,8 +24,8 @@ LAYER METAL1
   TYPE ROUTING ;
   DIRECTION HORIZONTAL ;
   PITCH 0 ;
-  WIDTH 0.8 ;
-  SPACING 0.45 ;
+  WIDTH 1.2 ;
+  SPACING 0.7 ;
   PROPERTY routingPitch 1.25 ;
 END METAL1
 
@@ -38,8 +38,8 @@ LAYER METAL2
   TYPE ROUTING ;
   DIRECTION VERTICAL ;
   PITCH 0 ;
-  WIDTH 0.8 ;
-  SPACING 0.5 ;
+  WIDTH 1.2 ;
+  SPACING 0.7 ;
   PROPERTY routingPitch 1.4 ;
 END METAL2
 
@@ -52,8 +52,8 @@ LAYER METAL3
   TYPE ROUTING ;
   DIRECTION HORIZONTAL ;
   PITCH 0 ;
-  WIDTH 1.0 ;
-  SPACING 0.5 ;
+  WIDTH 1 ;
+  SPACING 0.7 ;
   PROPERTY routingPitch 1.25 ;
 END METAL3
 
@@ -66,8 +66,8 @@ LAYER METAL4
   TYPE ROUTING ;
   DIRECTION VERTICAL ;
   PITCH 0 ;
-  WIDTH 1.0 ;
-  SPACING 0.6 ;
+  WIDTH 1 ;
+  SPACING 0.7 ;
   PROPERTY routingPitch 1.4 ;
 END METAL4
 
@@ -7824,6 +7824,129 @@ MACRO TSMC350nm_IndirectSwitches
   END vtun_l
 END TSMC350nm_IndirectSwitches
 
+MACRO TSMC350nm_AnalogBuffer
+  PIN Vd_P
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 9.34 1.4 10.74 ;
+    END
+  END Vd_P
+  PIN Vin
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL1 ;
+        RECT 0.0 1.34 1.4 2.74 ;
+    END
+  END Vin
+  PIN VDD_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 78.18 0.0 79.58 1.4 ;
+    END
+  END VDD_b
+  PIN GND_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 43.36 0.0 44.76 1.4 ;
+    END
+  END GND_b
+  PIN VTUN_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 1.9 0.0 3.3 1.4 ;
+    END
+  END VTUN_b
+  PIN Vg_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 4.75 0.0 6.15 1.4 ;
+    END
+  END Vg_b
+  PIN VINJ_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 8.37 0.0 9.77 1.4 ;
+    END
+  END VINJ_b
+  PIN Vsel_b
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 12.03 0.0 13.43 1.4 ;
+    END
+  END Vsel_b
+  PIN Vout
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 87.38 16.98 88.78 18.38 ;
+    END
+  END Vout
+  PIN VDD
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 78.18 20.6 79.58 22.0 ;
+    END
+  END VDD
+  PIN GND
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 43.36 20.6 44.76 22.0 ;
+    END
+  END GND
+  PIN Vsel
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 12.03 20.6 13.43 22.0 ;
+    END
+  END Vsel
+  PIN VINJ
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 8.37 20.6 9.77 22.0 ;
+    END
+  END VINJ
+  PIN Vg
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 4.75 20.6 6.15 22.0 ;
+    END
+  END Vg
+  PIN VTUN
+    DIRECTION INOUT ;
+    USE SIGNAL ;
+    PORT
+      LAYER METAL2 ;
+        RECT 1.9 20.6 3.3 22.0 ;
+    END
+  END VTUN
+END TSMC350nm_AnalogBuffer
+
 MACRO frame_6p9mm_6p2mm_digbuf
   PIN buf_vdd_W<6>
     DIRECTION INOUT ;
@@ -9842,129 +9965,6 @@ MACRO frame_6p9mm_6p2mm_digbuf
     END
   END ESDVDD
 END frame_6p9mm_6p2mm_digbuf
-
-MACRO TSMC350nm_AnalogBuffer
-  PIN Vd_P
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 9.34 1.4 10.74 ;
-    END
-  END Vd_P
-  PIN Vin
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL1 ;
-        RECT 0.0 1.34 1.4 2.74 ;
-    END
-  END Vin
-  PIN VDD_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 78.18 0.0 79.58 1.4 ;
-    END
-  END VDD_b
-  PIN GND_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 43.36 0.0 44.76 1.4 ;
-    END
-  END GND_b
-  PIN VTUN_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 1.9 0.0 3.3 1.4 ;
-    END
-  END VTUN_b
-  PIN Vg_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 4.75 0.0 6.15 1.4 ;
-    END
-  END Vg_b
-  PIN VINJ_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 8.37 0.0 9.77 1.4 ;
-    END
-  END VINJ_b
-  PIN Vsel_b
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 12.03 0.0 13.43 1.4 ;
-    END
-  END Vsel_b
-  PIN Vout
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 87.38 16.98 88.78 18.38 ;
-    END
-  END Vout
-  PIN VDD
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 78.18 20.6 79.58 22.0 ;
-    END
-  END VDD
-  PIN GND
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 43.36 20.6 44.76 22.0 ;
-    END
-  END GND
-  PIN Vsel
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 12.03 20.6 13.43 22.0 ;
-    END
-  END Vsel
-  PIN VINJ
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 8.37 20.6 9.77 22.0 ;
-    END
-  END VINJ
-  PIN Vg
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 4.75 20.6 6.15 22.0 ;
-    END
-  END Vg
-  PIN VTUN
-    DIRECTION INOUT ;
-    USE SIGNAL ;
-    PORT
-      LAYER METAL2 ;
-        RECT 1.9 20.6 3.3 22.0 ;
-    END
-  END VTUN
-END TSMC350nm_AnalogBuffer
 
 MACRO TSMC350nm_VerticalScanner_STD
   PIN In<3>
