@@ -791,5 +791,5 @@ qparams["stage2"] = "mask none force effort 100"
 qparams["stage3"] = "mask none force effort 100"
 
 
-ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN", p_and_r = True, route=True, design_limits = design_limits, location_islands = CNN_layer["location_islands"], qparams=qparams)
+ac.compile_asic(Top,process="TSMC350nm", fileName="ConvNN", p_and_r = True, route=False, design_limits = design_limits, location_islands = CNN_layer["location_islands"], qparams=qparams)
 

@@ -46,6 +46,7 @@ def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_
 		q_params.write("quit\n")
 		q_params.close()
 		command = ['qrouter', '-nog', '-s', param_file]
+		#command = ['qrouter', '-s', param_file]
 		process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 		# Read the output in real-time
 		while True:      
