@@ -1213,8 +1213,8 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
     # Go through the edges and calculate pin location on each edge. 
     # Make sure its on grid and spaced in multiples of tracks. if we run out of space, throw an error.
     # Append pin dimensions, pin center
-    frame_pin_spacing_horz = int(10*track_spacing)
-    frame_pin_spacing_vert = int(10*track_spacing)
+    frame_pin_spacing_horz = int(20*track_spacing)
+    frame_pin_spacing_vert = int(20*track_spacing)
     frame_pin_height = track_spacing
     pin_center_x = frame_left + frame_pin_spacing_horz
     pin_center_y = frame_top - int(track_spacing/2)

@@ -24,7 +24,7 @@ chipframe.markChipFrame()
 # Macro <--> Frame Connections
 # --------------------------------------------------------------------------------
 # ___ IO Pins ___
-#North IO Pins
+# North IO Pins
 macro.dco_enable_bout += chipframe.IO_N[0]
 macro.dco_wkup_bout += chipframe.IO_N[1]
 macro.lfxt_enable_bout += chipframe.IO_N[2]
@@ -69,8 +69,8 @@ macro.peri_spi_slave_clk += chipframe.IO_W[16]
 macro.peri_use_uP += chipframe.IO_W[17]
 macro.sram_CS_VBIAS += chipframe.IO_W[18]
 
-#East IO Pins
-#bottom right macro pins to east frame pins
+# East IO Pins
+# bottom right macro pins to east frame pins
 macro.Cal_IO += chipframe.IO_E[0]
 macro.Cal_Vin += chipframe.IO_E[1]
 macro.Debug_IO += chipframe.IO_E[2]
@@ -216,7 +216,7 @@ DrainDecoder_buf.IN += macro.mmio_reg_5_vinj[2:6]###########################drai
 
 #System connections
 
-# ############################################### Connections for Conv Layers ##########################
+############################################### Connections for Conv Layers ##########################
 
 #### Wire for Global Connections ####
 TEST_INP = Wire(Top)
@@ -410,12 +410,9 @@ FNN_layers.n_DVDD += DVDD_CONV
 
 for i in range(176):
     if (i<154):
-        FNN_layers.n_FNN_input[i] += Conv_Layer2.s_sub_img_out[153-i]
+        FNN_layers.n_FNN_input[i] += Conv_Layer2.s_sub_img_out[i]
     else:
         FNN_layers.n_FNN_input[i] += Conv_Layer2.w_sub_img_out[i-154]
-
-# for i in range(154,176,1):
-#     FNN_layers.n_FNN_input[i] += Conv_Layer2.w_sub_img_out[(i-154)]
 
 FNN_layers.n_FNN_ly0_out_95 += AnalogBuffer.Vin[8]
 FNN_layers.n_GND += chipframe.gnd_E[1] # Make sure this is closest 
@@ -528,11 +525,11 @@ chipframe.buf_vdd_E += chipframe.DVDD_E
 design_limits = [8e6, 8e6]
 location_islands = ((250.6*1e3, 4520*1e3), #macro
                     (20.6*1e3, 20*1e3), #frame
-                    (3859*1e3,2336*1e3), #ConvLy1
-                    (1020*1e3,2550*1e3), #ConvLy2
-                    (660*1e3,200*1e3), #FNN
-                    (3300*1e3,4440*1e3), #LVLShifter1
-                    (4100*1e3,4440*1e3), #LVLShifter2
+                    (660*1e3,2450*1e3), #ConvLy1
+                    (3260*1e3,2750*1e3), #ConvLy2
+                    (460*1e3,300*1e3), #FNN
+                    (3300*1e3,4500*1e3), #LVLShifter1
+                    (4100*1e3,4500*1e3), #LVLShifter2
                     (6000*1e3,4500*1e3), #DigBuffer
                     (6000*1e3,3400*1e3), #DigScanner, Tgates					
                     (6000*1e3,3900*1e3)) #Analog Buffer
@@ -540,24 +537,32 @@ location_islands = ((250.6*1e3, 4520*1e3), #macro
 with open('./ashes_fg/asic/qrouter_default.json') as file:
     qparams = json.load(file)
 
-qparams["passes"] = 80
-qparams["via"] = 20
-qparams["jog"] = 50
-qparams["conflict"] = 50
-qparams["stage2"] = "mask none force effort 100  limit 60 break"
-qparams["stage3"] = "mask none force effort 100"
-
+# qparams["passes"] = 100
 # qparams["via"] = 20
-# qparams["jog"] = 10
-# qparams["conflict"] = 5
+# qparams["jog"] = 80
+# qparams["conflict"] = 50
+# qparams["stage2"] = "mask none force effort 100"
+# qparams["stage3"] = "mask none force effort 100"
 
-# # GIVE STAGE 1 A LARGER MASK
-# qparams["stage1"] = "mask 6" # Use a mask value of 4 for stage1 (default for 'auto' in stage2)
+# qparams["passes"] = 80
+# qparams["via"] = 20
+# qparams["jog"] = 50
+# qparams["conflict"] = 50
+# qparams["stage2"] = "mask none force effort 100  limit 60 break"
+# qparams["stage3"] = "mask none force effort 100"
 
-# # Stage 2 for remaining failed nets with bbox and controlled rip-up
-# qparams["stage2"] = "mask bbox force effort 15 limit 45 break"
+qparams["via"] = 50
+qparams["jog"] = 30
+qparams["conflict"] = 25
 
-# # Stage 3 as the most aggressive fallback
-# qparams["stage3"] = "mask none force effort 30"
+# GIVE STAGE 1 A LARGER MASK
+qparams["stage1"] = "mask 6" # Use a mask value of 4 for stage1 (default for 'auto' in stage2)
+
+# Stage 2 for remaining failed nets with bbox and controlled rip-up
+qparams["stage2"] = "mask auto force effort 30 limit 45 break"
+
+# Stage 3 as the most aggressive fallback
+qparams["stage3"] = "mask bbox force effort 30"
+
 
 compile_asic(Top,process="TSMC350nm",fileName="CHIP_CONV",p_and_r = True,route=True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=9,drainSpace=20,gateSpaceIdx=9,gateSpace=15, qparams=qparams)
