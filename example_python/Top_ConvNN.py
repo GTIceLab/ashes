@@ -339,14 +339,14 @@ Tgts_fr_adc_meas.GND += CP_GND_E_2
 
 FNN_layers.n_DVDD += DVDD_CONV
 
-for i in range(176):
-    if (i<154):
-        FNN_layers.n_FNN_input[i] += Conv_Layer2.s_sub_img_out[i]
-    else:
-        FNN_layers.n_FNN_input[i] += Conv_Layer2.w_sub_img_out[i-154]
+# for i in range(176):
+#     if (i<154):
+#         FNN_layers.n_FNN_input[i] += Conv_Layer2.s_sub_img_out[i]
+#     else:
+#         FNN_layers.n_FNN_input[i] += Conv_Layer2.w_sub_img_out[i-154]
 
-# for i in range(154,176,1):
-#     FNN_layers.n_FNN_input[i] += Conv_Layer2.w_sub_img_out[(i-154)]
+for i in range(154,176,1):
+    FNN_layers.n_FNN_input[i] += Conv_Layer2.w_sub_img_out[(i-154)]
 
 FNN_layers.n_FNN_ly0_out_95 += AnalogBuffer.Vin[8]
 FNN_layers.n_GND += CP_GND_E_2 # Make sure this is closest 
@@ -449,13 +449,13 @@ FNN_Scanner_CLK +=M_mmio_rg_7_vinj[7]
 # Compilation
 #-------------------------------------------------------------------------------
 design_limits = [6e6, 5e6]
-location_islands = ((320*1e3,2350*1e3),#ConvLy1
-                    (3059*1e3,2536*1e3),#ConvLy2
-                    (160*1e3,200*1e3), #FNN
-                    (2800*1e3,4440*1e3), #LVLShifter1
-                    (3600*1e3,4440*1e3), #LVLShifter2
-                    (5500*1e3,4500*1e3), #DigBuffer
-                    (5600*1e3,3000*1e3), #DigScanner, Tgates					
+location_islands = ((320*1e3,2150*1e3),#ConvLy1
+                    (3158.6*1e3,1632.23*1e3),#ConvLy2
+                    (230*1e3,20*1e3), #FNN
+                    (2800*1e3,4240*1e3), #LVLShifter1
+                    (3600*1e3,4240*1e3), #LVLShifter2
+                    (5500*1e3,4200*1e3), #DigBuffer
+                    (4350*1e3,3400*1e3), #DigScanner, Tgates					
                     (4600*1e3,4200*1e3)) #Analog Buffer
 
 with open('./ashes_fg/asic/qrouter_default.json') as file:
