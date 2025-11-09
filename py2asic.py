@@ -47,9 +47,9 @@ import re
 
 #exec(open("./example_python/TestFullRoute.py").read())
 
-#exec(open("./example_python/CHIP_ConvNN.py").read())
+exec(open("./example_python/CHIP_ConvNN.py").read())
 
 #exec(open("./example_python/CHIP_ConvNN_nonflip.py").read())
 
-exec(open("./example_python/Top_ConvNN.py").read())
+#exec(open("./example_python/Top_ConvNN.py").read())
 

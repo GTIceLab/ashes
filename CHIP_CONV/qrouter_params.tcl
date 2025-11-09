@@ -1,12 +1,11 @@
 read_lef CHIP_CONV/CHIP_CONV.lef
 read_def CHIP_CONV/CHIP_CONV.def
-cost via 50
-cost jog 30
+cost via 30
+cost jog 60
 cost block 40
-cost conflict 25
-stage1 mask 6
-stage2 mask auto force effort 30 limit 45 break
-stage3 mask bbox force effort 30
+stage1 mask none force
+stage2 mask none force
+stage3 mask none force
 layers 4
 write_def CHIP_CONV/CHIP_CONV_qroute.def
 quit

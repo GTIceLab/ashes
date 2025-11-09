@@ -5512,3 +5512,58 @@ class ConvNN(StandardCell):
 
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
+
+
+class Top_Conv(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),M_VGPROG=None,M_VGRUN=None,M_mmio_rg_5_vinj=None,M_Sys_Drln=None,M_Sig_RampADC_in=None,M_mmio_rg_7=None,M_mmio_rg_9=None,M_mmio_rg_10=None,M_prog_hv=None,M_run_hv=None,CP_DVDD_W=None,CP_VINJ_W=None,CP_gnd_W_2=None,CP_IO_W_RES_0=None,CP_AVDD_W=None,CP_IO_W=None,CP_AVDD_E=None,CP_VINJ_E=None,CP_GND_E_2=None,CP_IO_E=None,CP_DVDD_E=None,CP_IO_S=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+		# Define cell information
+		self.name = 'Top_Conv'
+
+		# North Ports
+		self.M_VGPROG = Port(circuit,self,'M_VGPROG','N',1*self.dim[1])
+		self.M_VGRUN = Port(circuit,self,'M_VGRUN','N',1*self.dim[1])
+		self.M_mmio_rg_5_vinj = Port(circuit,self,'M_mmio_rg_5_vinj','N',6*self.dim[1])
+		self.M_Sys_Drln = Port(circuit,self,'M_Sys_Drln','N',2*self.dim[1])
+		self.M_Sig_RampADC_in = Port(circuit,self,'M_Sig_RampADC_in','N',4*self.dim[1])
+		self.M_mmio_rg_7 = Port(circuit,self,'M_mmio_rg_7','N',11*self.dim[1])
+		self.M_mmio_rg_9 = Port(circuit,self,'M_mmio_rg_9','N',16*self.dim[1])
+		self.M_mmio_rg_10 = Port(circuit,self,'M_mmio_rg_10','N',16*self.dim[1])
+		self.M_prog_hv = Port(circuit,self,'M_prog_hv','N',1*self.dim[1])
+		self.M_run_hv = Port(circuit,self,'M_run_hv','N',1*self.dim[1])
+
+		# West Ports
+		self.CP_DVDD_W = Port(circuit,self,'CP_DVDD_W','W',1*self.dim[0])
+		self.CP_VINJ_W = Port(circuit,self,'CP_VINJ_W','W',1*self.dim[0])
+		self.CP_gnd_W_2 = Port(circuit,self,'CP_gnd_W_2','W',1*self.dim[0])
+		self.CP_IO_W_RES_0 = Port(circuit,self,'CP_IO_W_RES_0','W',1*self.dim[0])
+		self.CP_AVDD_W = Port(circuit,self,'CP_AVDD_W','W',1*self.dim[0])
+		self.CP_IO_W = Port(circuit,self,'CP_IO_W','W',17*self.dim[0])
+
+		# East Ports
+		self.CP_AVDD_E = Port(circuit,self,'CP_AVDD_E','E',1*self.dim[0])
+		self.CP_VINJ_E = Port(circuit,self,'CP_VINJ_E','E',1*self.dim[0])
+		self.CP_GND_E_2 = Port(circuit,self,'CP_GND_E_2','E',1*self.dim[0])
+		self.CP_IO_E = Port(circuit,self,'CP_IO_E','E',30*self.dim[0])
+		self.CP_DVDD_E = Port(circuit,self,'CP_DVDD_E','E',1*self.dim[0])
+
+		self.CP_IO_S = Port(circuit,self,'CP_IO_S','E',13*self.dim[1])
+
+
+		# Initialize ports with given values
+		portsInit = [M_VGPROG,M_VGRUN,M_mmio_rg_5_vinj,M_Sys_Drln,M_Sig_RampADC_in,M_mmio_rg_7,M_mmio_rg_9,M_mmio_rg_10,M_prog_hv,M_run_hv,CP_DVDD_W,CP_VINJ_W,CP_gnd_W_2,CP_IO_W_RES_0,CP_AVDD_W,CP_IO_W,CP_AVDD_E,CP_VINJ_E,CP_GND_E_2,CP_IO_E,CP_DVDD_E,CP_IO_S]
+		
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
