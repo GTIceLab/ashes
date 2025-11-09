@@ -10125,495 +10125,585 @@ BLOCKAGES 264 ;
 
 END BLOCKAGES
 
-NETS 165 ;
-- net294
+NETS 195 ;
+- net234
   ( I_0_0 lfxt_clk ) ( frame IO_N_CLK<1> ) 
 ;
-- net295
+- net235
   ( I_0_0 fast_clk ) ( frame IO_N_CLK<2> ) 
 ;
-- net245
+- net185
   ( I_0_0 cpu_en ) ( frame IO_N<9> ) 
 ;
-- net246
+- net186
   ( I_0_0 dbg_en ) ( frame IO_N<10> ) 
 ;
-- net247
+- net187
   ( I_0_0 dbg_uart_rxd ) ( frame IO_N<11> ) 
 ;
-- net248
+- net188
   ( I_0_0 nmi ) ( frame IO_N<12> ) 
 ;
-- net249
+- net189
   ( I_0_0 reset_n ) ( frame IO_N<13> ) 
 ;
-- net250
+- net190
   ( I_0_0 scan_enable ) ( frame IO_N<14> ) 
 ;
-- net251
+- net191
   ( I_0_0 dbg_uart_txd ) ( frame IO_N<15> ) 
 ;
-- net252
+- net192
   ( I_0_0 scan_mode ) ( frame IO_N<16> ) 
 ;
-- net253
+- net193
   ( I_0_0 wkup ) ( frame IO_N<17> ) 
 ;
-- net254
+- net194
   ( I_0_0 scan_in1 ) ( frame IO_N<18> ) 
 ;
-- net255
+- net195
   ( I_0_0 scan_in2 ) ( frame IO_N<19> ) 
 ;
-- net296
+- net236
   ( I_0_0 dco_clk ) ( frame IO_N_CLK<3> ) 
 ;
-- net298
+- net238
   ( I_0_0 AVDD ) ( frame avdd_N<2> ) 
 ;
-- net275
+- net215
   ( I_0_0 Cal_IO ) ( frame IO_E<0> ) 
 ;
-- net299
+- net239
   ( I_0_0 VINJ ) ( frame VINJ_N<2> ) 
 ;
-- net289
+- net229
   ( I_0_0 ADC_Trim ) ( frame IO_Bare_E<0> ) 
 ;
-- net290
+- net230
   ( I_0_0 Bias_Trim ) ( frame IO_Bare_E<1> ) 
 ;
-- net276
+- net216
   ( I_0_0 Cal_Vin ) ( frame IO_E<1> ) 
 ;
-- net277
+- net217
   ( I_0_0 Debug_IO ) ( frame IO_E<2> ) 
 ;
-- net278
+- net218
   ( I_0_0 I_IO ) ( frame IO_E<3> ) 
 ;
-- net279
+- net219
   ( I_0_0 VD_IO ) ( frame IO_E<4> ) 
 ;
-- net300
-  ( I_0_0 VGPROG ) ( I_2_0 M_VGPROG ) 
+- net240
+  ( I_0_0 VGPROG ) ( I_2_0 n_M_VGPROG ) 
 ;
-- net280
+- net220
   ( I_0_0 VGPROG_IO ) ( frame IO_E<5> ) 
 ;
-- net301
-  ( I_0_0 VGRUN ) ( I_2_0 M_VGRUN ) 
+- net241
+  ( I_0_0 VGRUN ) ( I_2_0 n_M_VGRUN ) 
 ;
-- net281
+- net221
   ( I_0_0 VG_IO ) ( frame IO_E<6> ) 
 ;
-- net291
+- net231
   ( I_0_0 VTUN_AM ) ( frame IO_E_RES<0> ) 
 ;
-- net282
+- net222
   ( I_0_0 V_IO ) ( frame IO_E<7> ) 
 ;
-- net308
-  ( I_0_0 SystemDrainline<0> ) ( I_2_0 M_Sys_Drln<0> ) 
+- net248
+  ( I_0_0 SystemDrainline<0> ) ( I_2_0 n_M_Sys_Drln<0> ) 
 ;
-- net309
-  ( I_0_0 SystemDrainline<1> ) ( I_2_0 M_Sys_Drln<1> ) 
+- net249
+  ( I_0_0 SystemDrainline<1> ) ( I_2_0 n_M_Sys_Drln<1> ) 
 ;
-- net283
+- net223
   ( I_0_0 pulse_fr_drain ) ( frame IO_E<8> ) 
 ;
-- net310
-  ( I_0_0 Signal_RampADC_inp<0> ) ( I_2_0 M_Sig_RampADC_in<0> ) 
+- net250
+  ( I_0_0 Signal_RampADC_inp<0> ) ( I_2_0 n_M_Sig_RampADC_in<0> ) 
 ;
-- net311
-  ( I_0_0 Signal_RampADC_inp<1> ) ( I_2_0 M_Sig_RampADC_in<1> ) 
+- net251
+  ( I_0_0 Signal_RampADC_inp<1> ) ( I_2_0 n_M_Sig_RampADC_in<1> ) 
 ;
-- net312
-  ( I_0_0 Signal_RampADC_inp<2> ) ( I_2_0 M_Sig_RampADC_in<2> ) 
+- net252
+  ( I_0_0 Signal_RampADC_inp<2> ) ( I_2_0 n_M_Sig_RampADC_in<2> ) 
 ;
-- net313
-  ( I_0_0 Signal_RampADC_inp<3> ) ( I_2_0 M_Sig_RampADC_in<3> ) 
-;
-- net297
-  ( I_0_0 GND ) ( frame gnd_N<8> ) 
-;
-- net292
-  ( I_0_0 VTUN_fgmem ) ( frame IO_E_RES<1> ) 
-;
-- net396
-  ( I_0_0 DVDD ) ( frame DVDD_N<2> ) ( frame buf_vdd_N<0> ) ( frame buf_vdd_N<1> ) ( frame buf_vdd_N<2> ) ( frame buf_vdd_N<3> ) ( frame buf_vdd_N<4> ) ( frame buf_vdd_N<5> ) 
-;
-- net325
-  ( I_0_0 mmio_reg_9_bout<0> ) ( I_2_0 M_mmio_rg_9<0> ) 
-;
-- net326
-  ( I_0_0 mmio_reg_9_bout<1> ) ( I_2_0 M_mmio_rg_9<1> ) 
-;
-- net327
-  ( I_0_0 mmio_reg_9_bout<2> ) ( I_2_0 M_mmio_rg_9<2> ) 
-;
-- net328
-  ( I_0_0 mmio_reg_9_bout<3> ) ( I_2_0 M_mmio_rg_9<3> ) 
-;
-- net329
-  ( I_0_0 mmio_reg_9_bout<4> ) ( I_2_0 M_mmio_rg_9<4> ) 
-;
-- net330
-  ( I_0_0 mmio_reg_9_bout<5> ) ( I_2_0 M_mmio_rg_9<5> ) 
-;
-- net331
-  ( I_0_0 mmio_reg_9_bout<6> ) ( I_2_0 M_mmio_rg_9<6> ) 
-;
-- net332
-  ( I_0_0 mmio_reg_9_bout<7> ) ( I_2_0 M_mmio_rg_9<7> ) 
-;
-- net333
-  ( I_0_0 mmio_reg_9_bout<8> ) ( I_2_0 M_mmio_rg_9<8> ) 
-;
-- net334
-  ( I_0_0 mmio_reg_9_bout<9> ) ( I_2_0 M_mmio_rg_9<9> ) 
-;
-- net335
-  ( I_0_0 mmio_reg_9_bout<10> ) ( I_2_0 M_mmio_rg_9<10> ) 
-;
-- net336
-  ( I_0_0 mmio_reg_9_bout<11> ) ( I_2_0 M_mmio_rg_9<11> ) 
-;
-- net337
-  ( I_0_0 mmio_reg_9_bout<12> ) ( I_2_0 M_mmio_rg_9<12> ) 
-;
-- net338
-  ( I_0_0 mmio_reg_9_bout<13> ) ( I_2_0 M_mmio_rg_9<13> ) 
-;
-- net339
-  ( I_0_0 mmio_reg_9_bout<14> ) ( I_2_0 M_mmio_rg_9<14> ) 
-;
-- net340
-  ( I_0_0 mmio_reg_9_bout<15> ) ( I_2_0 M_mmio_rg_9<15> ) 
-;
-- net341
-  ( I_0_0 mmio_reg_10_bout<0> ) ( I_2_0 M_mmio_rg_10<0> ) 
-;
-- net342
-  ( I_0_0 mmio_reg_10_bout<1> ) ( I_2_0 M_mmio_rg_10<1> ) 
-;
-- net343
-  ( I_0_0 mmio_reg_10_bout<2> ) ( I_2_0 M_mmio_rg_10<2> ) 
-;
-- net344
-  ( I_0_0 mmio_reg_10_bout<3> ) ( I_2_0 M_mmio_rg_10<3> ) 
-;
-- net345
-  ( I_0_0 mmio_reg_10_bout<4> ) ( I_2_0 M_mmio_rg_10<4> ) 
-;
-- net346
-  ( I_0_0 mmio_reg_10_bout<5> ) ( I_2_0 M_mmio_rg_10<5> ) 
-;
-- net347
-  ( I_0_0 mmio_reg_10_bout<6> ) ( I_2_0 M_mmio_rg_10<6> ) 
-;
-- net348
-  ( I_0_0 mmio_reg_10_bout<7> ) ( I_2_0 M_mmio_rg_10<7> ) 
-;
-- net349
-  ( I_0_0 mmio_reg_10_bout<8> ) ( I_2_0 M_mmio_rg_10<8> ) 
-;
-- net350
-  ( I_0_0 mmio_reg_10_bout<9> ) ( I_2_0 M_mmio_rg_10<9> ) 
-;
-- net351
-  ( I_0_0 mmio_reg_10_bout<10> ) ( I_2_0 M_mmio_rg_10<10> ) 
-;
-- net352
-  ( I_0_0 mmio_reg_10_bout<11> ) ( I_2_0 M_mmio_rg_10<11> ) 
-;
-- net353
-  ( I_0_0 mmio_reg_10_bout<12> ) ( I_2_0 M_mmio_rg_10<12> ) 
-;
-- net354
-  ( I_0_0 mmio_reg_10_bout<13> ) ( I_2_0 M_mmio_rg_10<13> ) 
-;
-- net355
-  ( I_0_0 mmio_reg_10_bout<14> ) ( I_2_0 M_mmio_rg_10<14> ) 
-;
-- net356
-  ( I_0_0 mmio_reg_10_bout<15> ) ( I_2_0 M_mmio_rg_10<15> ) 
-;
-- net284
-  ( I_0_0 puc_rst_bout ) ( frame IO_E<9> ) 
-;
-- net285
-  ( I_0_0 irq<0> ) ( I_0_0 irq<1> ) ( frame gnd_N<2> ) 
-;
-- net286
-  ( I_0_0 irq<2> ) ( frame IO_E<10> ) 
-;
-- net287
-  ( I_0_0 irq<3> ) ( frame IO_E<11> ) 
-;
-- net288
-  ( I_0_0 irq<4> ) ( frame IO_E<12> ) 
-;
-- net357
-  ( I_0_0 PROG_HV ) ( I_2_0 M_prog_hv ) 
-;
-- net358
-  ( I_0_0 RUN_HV ) ( I_2_0 M_run_hv ) 
-;
-- net274
-  ( I_0_0 sram_CS_VBIAS ) ( frame IO_W<18> ) 
-;
-- net273
-  ( I_0_0 peri_use_uP ) ( frame IO_W<17> ) 
-;
-- net272
-  ( I_0_0 peri_spi_slave_clk ) ( frame IO_W<16> ) 
-;
-- net271
-  ( I_0_0 peri_spi_mstr_miso ) ( frame IO_W<15> ) 
-;
-- net270
-  ( I_0_0 peri_spi_slave_mosi ) ( frame IO_W<14> ) 
-;
-- net269
-  ( I_0_0 peri_spi_slave_cs_n ) ( frame IO_W<13> ) 
-;
-- net293
-  ( I_0_0 peri_spi_mstr_spiclk ) ( frame IO_N_CLK<0> ) 
-;
-- net268
-  ( I_0_0 peri_spi_slave_miso ) ( frame IO_W<12> ) 
-;
-- net267
-  ( I_0_0 peri_spi_mstr_mosi ) ( frame IO_W<11> ) 
-;
-- net266
-  ( I_0_0 peri_spi_mstr_cs_n_0 ) ( frame IO_W<10> ) 
-;
-- net265
-  ( I_0_0 peri_spi_mstr_cs_n_1 ) ( frame IO_W<9> ) 
-;
-- net264
-  ( I_0_0 peri_spi_mstr_cs_n_2 ) ( frame IO_W<8> ) 
-;
-- net263
-  ( I_0_0 peri_spi_mstr_cs_n_3 ) ( frame IO_W<7> ) 
-;
-- net262
-  ( I_0_0 mmio_reg_7_bout<0> ) ( frame IO_W<6> ) 
-;
-- net261
-  ( I_0_0 mmio_reg_7_bout<1> ) ( frame IO_W<5> ) 
-;
-- net314
-  ( I_0_0 mmio_reg_7_bout<2> ) ( I_2_0 M_mmio_rg_7<0> ) 
-;
-- net315
-  ( I_0_0 mmio_reg_7_bout<3> ) ( I_2_0 M_mmio_rg_7<1> ) 
-;
-- net316
-  ( I_0_0 mmio_reg_7_bout<4> ) ( I_2_0 M_mmio_rg_7<2> ) 
-;
-- net317
-  ( I_0_0 mmio_reg_7_bout<5> ) ( I_2_0 M_mmio_rg_7<3> ) 
-;
-- net318
-  ( I_0_0 mmio_reg_7_bout<6> ) ( I_2_0 M_mmio_rg_7<4> ) 
-;
-- net319
-  ( I_0_0 mmio_reg_7_bout<7> ) ( I_2_0 M_mmio_rg_7<5> ) 
-;
-- net320
-  ( I_0_0 mmio_reg_7_bout<8> ) ( I_2_0 M_mmio_rg_7<6> ) 
-;
-- net321
-  ( I_0_0 mmio_reg_7_bout<9> ) ( I_2_0 M_mmio_rg_7<7> ) 
-;
-- net322
-  ( I_0_0 mmio_reg_7_bout<10> ) ( I_2_0 M_mmio_rg_7<8> ) 
-;
-- net323
-  ( I_0_0 mmio_reg_7_bout<11> ) ( I_2_0 M_mmio_rg_7<9> ) 
-;
-- net324
-  ( I_0_0 mmio_reg_7_bout<12> ) ( I_2_0 M_mmio_rg_7<10> ) 
-;
-- net260
-  ( I_0_0 Macro_dbg_Scan_Vout ) ( frame IO_W<4> ) 
-;
-- net259
-  ( I_0_0 Macro_dbg_Scan_CLK ) ( frame IO_W<3> ) 
-;
-- net258
-  ( I_0_0 Macro_dbg_Scan_Din ) ( frame IO_W<2> ) 
-;
-- net257
-  ( I_0_0 Macro_dbg_Scan_RST ) ( frame IO_W<1> ) 
-;
-- net256
-  ( I_0_0 dbg_freeze_bout ) ( frame IO_W<0> ) 
-;
-- net236
-  ( I_0_0 dco_enable_bout ) ( frame IO_N<0> ) 
+- net253
+  ( I_0_0 Signal_RampADC_inp<3> ) ( I_2_0 n_M_Sig_RampADC_in<3> ) 
 ;
 - net237
-  ( I_0_0 dco_wkup_bout ) ( frame IO_N<1> ) 
+  ( I_0_0 GND ) ( frame gnd_N<8> ) 
 ;
-- net238
-  ( I_0_0 lfxt_enable_bout ) ( frame IO_N<2> ) 
-;
-- net239
-  ( I_0_0 lfxt_wkup_bout ) ( frame IO_N<3> ) 
-;
-- net240
-  ( I_0_0 scan_out2_bout ) ( frame IO_N<4> ) 
-;
-- net241
-  ( I_0_0 scan_out1_bout ) ( frame IO_N<5> ) 
-;
-- net242
-  ( I_0_0 fgmem_CS_VBIAS ) ( frame IO_N<6> ) 
-;
-- net244
-  ( I_0_0 mmio_reg_in_5<0> ) ( frame IO_N<8> ) 
-;
-- net243
-  ( I_0_0 mmio_reg_in_5<1> ) ( frame IO_N<7> ) 
-;
-- net302
-  ( I_0_0 mmio_reg_in_5<2> ) ( I_2_0 M_mmio_rg_5_vinj<0> ) 
-;
-- net303
-  ( I_0_0 mmio_reg_in_5<3> ) ( I_2_0 M_mmio_rg_5_vinj<1> ) 
-;
-- net304
-  ( I_0_0 mmio_reg_in_5<4> ) ( I_2_0 M_mmio_rg_5_vinj<2> ) 
-;
-- net305
-  ( I_0_0 mmio_reg_in_5<5> ) ( I_2_0 M_mmio_rg_5_vinj<3> ) 
-;
-- net306
-  ( I_0_0 mmio_reg_in_5<6> ) ( I_2_0 M_mmio_rg_5_vinj<4> ) 
-;
-- net307
-  ( I_0_0 mmio_reg_in_5<7> ) ( I_2_0 M_mmio_rg_5_vinj<5> ) 
-;
-- net397
-  ( I_2_0 CP_DVDD_W ) ( frame DVDD_W ) ( frame buf_vdd_W<0> ) ( frame buf_vdd_W<1> ) ( frame buf_vdd_W<2> ) ( frame buf_vdd_W<3> ) ( frame buf_vdd_W<4> ) ( frame buf_vdd_W<5> ) ( frame buf_vdd_W<6> ) ( frame buf_vdd_W<7> ) ( frame buf_vdd_W<8> ) ( frame buf_vdd_W<9> ) ( frame buf_vdd_W<10> ) 
-;
-- net359
-  ( I_2_0 CP_VINJ_W ) ( frame VINJ_W ) 
-;
-- net360
-  ( I_2_0 CP_gnd_W_2 ) ( frame gnd_W<2> ) 
-;
-- net361
-  ( I_2_0 CP_IO_W_RES_0 ) ( frame IO_W_RES<0> ) 
-;
-- net362
-  ( I_2_0 CP_AVDD_W ) ( frame avdd_W ) 
-;
-- net363
-  ( I_2_0 CP_IO_W<0> ) ( frame IO_W<20> ) 
-;
-- net364
-  ( I_2_0 CP_IO_W<1> ) ( frame IO_W<21> ) 
-;
-- net365
-  ( I_2_0 CP_IO_W<2> ) ( frame IO_W<22> ) 
+- net232
+  ( I_0_0 VTUN_fgmem ) ( frame IO_E_RES<1> ) 
 ;
 - net366
-  ( I_2_0 CP_IO_W<3> ) ( frame IO_W<23> ) 
+  ( I_0_0 DVDD ) ( frame DVDD_N<2> ) ( frame buf_vdd_N<0> ) ( frame buf_vdd_N<1> ) ( frame buf_vdd_N<2> ) ( frame buf_vdd_N<3> ) ( frame buf_vdd_N<4> ) ( frame buf_vdd_N<5> ) 
+;
+- net265
+  ( I_0_0 mmio_reg_9_bout<0> ) ( I_2_0 n_M_mmio_rg_9<0> ) 
+;
+- net266
+  ( I_0_0 mmio_reg_9_bout<1> ) ( I_2_0 n_M_mmio_rg_9<1> ) 
+;
+- net267
+  ( I_0_0 mmio_reg_9_bout<2> ) ( I_2_0 n_M_mmio_rg_9<2> ) 
+;
+- net268
+  ( I_0_0 mmio_reg_9_bout<3> ) ( I_2_0 n_M_mmio_rg_9<3> ) 
+;
+- net269
+  ( I_0_0 mmio_reg_9_bout<4> ) ( I_2_0 n_M_mmio_rg_9<4> ) 
+;
+- net270
+  ( I_0_0 mmio_reg_9_bout<5> ) ( I_2_0 n_M_mmio_rg_9<5> ) 
+;
+- net271
+  ( I_0_0 mmio_reg_9_bout<6> ) ( I_2_0 n_M_mmio_rg_9<6> ) 
+;
+- net272
+  ( I_0_0 mmio_reg_9_bout<7> ) ( I_2_0 n_M_mmio_rg_9<7> ) 
+;
+- net273
+  ( I_0_0 mmio_reg_9_bout<8> ) ( I_2_0 n_M_mmio_rg_9<8> ) 
+;
+- net274
+  ( I_0_0 mmio_reg_9_bout<9> ) ( I_2_0 n_M_mmio_rg_9<9> ) 
+;
+- net275
+  ( I_0_0 mmio_reg_9_bout<10> ) ( I_2_0 n_M_mmio_rg_9<10> ) 
+;
+- net276
+  ( I_0_0 mmio_reg_9_bout<11> ) ( I_2_0 n_M_mmio_rg_9<11> ) 
+;
+- net277
+  ( I_0_0 mmio_reg_9_bout<12> ) ( I_2_0 n_M_mmio_rg_9<12> ) 
+;
+- net278
+  ( I_0_0 mmio_reg_9_bout<13> ) ( I_2_0 n_M_mmio_rg_9<13> ) 
+;
+- net279
+  ( I_0_0 mmio_reg_9_bout<14> ) ( I_2_0 n_M_mmio_rg_9<14> ) 
+;
+- net280
+  ( I_0_0 mmio_reg_9_bout<15> ) ( I_2_0 n_M_mmio_rg_9<15> ) 
+;
+- net281
+  ( I_0_0 mmio_reg_10_bout<0> ) ( I_2_0 n_M_mmio_rg_10<0> ) 
+;
+- net282
+  ( I_0_0 mmio_reg_10_bout<1> ) ( I_2_0 n_M_mmio_rg_10<1> ) 
+;
+- net283
+  ( I_0_0 mmio_reg_10_bout<2> ) ( I_2_0 n_M_mmio_rg_10<2> ) 
+;
+- net284
+  ( I_0_0 mmio_reg_10_bout<3> ) ( I_2_0 n_M_mmio_rg_10<3> ) 
+;
+- net285
+  ( I_0_0 mmio_reg_10_bout<4> ) ( I_2_0 n_M_mmio_rg_10<4> ) 
+;
+- net286
+  ( I_0_0 mmio_reg_10_bout<5> ) ( I_2_0 n_M_mmio_rg_10<5> ) 
+;
+- net287
+  ( I_0_0 mmio_reg_10_bout<6> ) ( I_2_0 n_M_mmio_rg_10<6> ) 
+;
+- net288
+  ( I_0_0 mmio_reg_10_bout<7> ) ( I_2_0 n_M_mmio_rg_10<7> ) 
+;
+- net289
+  ( I_0_0 mmio_reg_10_bout<8> ) ( I_2_0 n_M_mmio_rg_10<8> ) 
+;
+- net290
+  ( I_0_0 mmio_reg_10_bout<9> ) ( I_2_0 n_M_mmio_rg_10<9> ) 
+;
+- net291
+  ( I_0_0 mmio_reg_10_bout<10> ) ( I_2_0 n_M_mmio_rg_10<10> ) 
+;
+- net292
+  ( I_0_0 mmio_reg_10_bout<11> ) ( I_2_0 n_M_mmio_rg_10<11> ) 
+;
+- net293
+  ( I_0_0 mmio_reg_10_bout<12> ) ( I_2_0 n_M_mmio_rg_10<12> ) 
+;
+- net294
+  ( I_0_0 mmio_reg_10_bout<13> ) ( I_2_0 n_M_mmio_rg_10<13> ) 
+;
+- net295
+  ( I_0_0 mmio_reg_10_bout<14> ) ( I_2_0 n_M_mmio_rg_10<14> ) 
+;
+- net296
+  ( I_0_0 mmio_reg_10_bout<15> ) ( I_2_0 n_M_mmio_rg_10<15> ) 
+;
+- net224
+  ( I_0_0 puc_rst_bout ) ( frame IO_E<9> ) 
+;
+- net225
+  ( I_0_0 irq<0> ) ( I_0_0 irq<1> ) ( frame gnd_N<2> ) 
+;
+- net226
+  ( I_0_0 irq<2> ) ( frame IO_E<10> ) 
+;
+- net227
+  ( I_0_0 irq<3> ) ( frame IO_E<11> ) 
+;
+- net228
+  ( I_0_0 irq<4> ) ( frame IO_E<12> ) 
+;
+- net297
+  ( I_0_0 PROG_HV ) ( I_2_0 n_M_prog_hv ) 
+;
+- net298
+  ( I_0_0 RUN_HV ) ( I_2_0 n_M_run_hv ) 
+;
+- net214
+  ( I_0_0 sram_CS_VBIAS ) ( frame IO_W<18> ) 
+;
+- net213
+  ( I_0_0 peri_use_uP ) ( frame IO_W<17> ) 
+;
+- net212
+  ( I_0_0 peri_spi_slave_clk ) ( frame IO_W<16> ) 
+;
+- net211
+  ( I_0_0 peri_spi_mstr_miso ) ( frame IO_W<15> ) 
+;
+- net210
+  ( I_0_0 peri_spi_slave_mosi ) ( frame IO_W<14> ) 
+;
+- net209
+  ( I_0_0 peri_spi_slave_cs_n ) ( frame IO_W<13> ) 
+;
+- net233
+  ( I_0_0 peri_spi_mstr_spiclk ) ( frame IO_N_CLK<0> ) 
+;
+- net208
+  ( I_0_0 peri_spi_slave_miso ) ( frame IO_W<12> ) 
+;
+- net207
+  ( I_0_0 peri_spi_mstr_mosi ) ( frame IO_W<11> ) 
+;
+- net206
+  ( I_0_0 peri_spi_mstr_cs_n_0 ) ( frame IO_W<10> ) 
+;
+- net205
+  ( I_0_0 peri_spi_mstr_cs_n_1 ) ( frame IO_W<9> ) 
+;
+- net204
+  ( I_0_0 peri_spi_mstr_cs_n_2 ) ( frame IO_W<8> ) 
+;
+- net203
+  ( I_0_0 peri_spi_mstr_cs_n_3 ) ( frame IO_W<7> ) 
+;
+- net202
+  ( I_0_0 mmio_reg_7_bout<0> ) ( frame IO_W<6> ) 
+;
+- net201
+  ( I_0_0 mmio_reg_7_bout<1> ) ( frame IO_W<5> ) 
+;
+- net254
+  ( I_0_0 mmio_reg_7_bout<2> ) ( I_2_0 n_M_mmio_rg_7<0> ) 
+;
+- net255
+  ( I_0_0 mmio_reg_7_bout<3> ) ( I_2_0 n_M_mmio_rg_7<1> ) 
+;
+- net256
+  ( I_0_0 mmio_reg_7_bout<4> ) ( I_2_0 n_M_mmio_rg_7<2> ) 
+;
+- net257
+  ( I_0_0 mmio_reg_7_bout<5> ) ( I_2_0 n_M_mmio_rg_7<3> ) 
+;
+- net258
+  ( I_0_0 mmio_reg_7_bout<6> ) ( I_2_0 n_M_mmio_rg_7<4> ) 
+;
+- net259
+  ( I_0_0 mmio_reg_7_bout<7> ) ( I_2_0 n_M_mmio_rg_7<5> ) 
+;
+- net260
+  ( I_0_0 mmio_reg_7_bout<8> ) ( I_2_0 n_M_mmio_rg_7<6> ) 
+;
+- net261
+  ( I_0_0 mmio_reg_7_bout<9> ) ( I_2_0 n_M_mmio_rg_7<7> ) 
+;
+- net262
+  ( I_0_0 mmio_reg_7_bout<10> ) ( I_2_0 n_M_mmio_rg_7<8> ) 
+;
+- net263
+  ( I_0_0 mmio_reg_7_bout<11> ) ( I_2_0 n_M_mmio_rg_7<9> ) 
+;
+- net264
+  ( I_0_0 mmio_reg_7_bout<12> ) ( I_2_0 n_M_mmio_rg_7<10> ) 
+;
+- net200
+  ( I_0_0 Macro_dbg_Scan_Vout ) ( frame IO_W<4> ) 
+;
+- net199
+  ( I_0_0 Macro_dbg_Scan_CLK ) ( frame IO_W<3> ) 
+;
+- net198
+  ( I_0_0 Macro_dbg_Scan_Din ) ( frame IO_W<2> ) 
+;
+- net197
+  ( I_0_0 Macro_dbg_Scan_RST ) ( frame IO_W<1> ) 
+;
+- net196
+  ( I_0_0 dbg_freeze_bout ) ( frame IO_W<0> ) 
+;
+- net176
+  ( I_0_0 dco_enable_bout ) ( frame IO_N<0> ) 
+;
+- net177
+  ( I_0_0 dco_wkup_bout ) ( frame IO_N<1> ) 
+;
+- net178
+  ( I_0_0 lfxt_enable_bout ) ( frame IO_N<2> ) 
+;
+- net179
+  ( I_0_0 lfxt_wkup_bout ) ( frame IO_N<3> ) 
+;
+- net180
+  ( I_0_0 scan_out2_bout ) ( frame IO_N<4> ) 
+;
+- net181
+  ( I_0_0 scan_out1_bout ) ( frame IO_N<5> ) 
+;
+- net182
+  ( I_0_0 fgmem_CS_VBIAS ) ( frame IO_N<6> ) 
+;
+- net184
+  ( I_0_0 mmio_reg_in_5<0> ) ( frame IO_N<8> ) 
+;
+- net183
+  ( I_0_0 mmio_reg_in_5<1> ) ( frame IO_N<7> ) 
+;
+- net242
+  ( I_0_0 mmio_reg_in_5<2> ) ( I_2_0 n_M_mmio_rg_5_vinj<0> ) 
+;
+- net243
+  ( I_0_0 mmio_reg_in_5<3> ) ( I_2_0 n_M_mmio_rg_5_vinj<1> ) 
+;
+- net244
+  ( I_0_0 mmio_reg_in_5<4> ) ( I_2_0 n_M_mmio_rg_5_vinj<2> ) 
+;
+- net245
+  ( I_0_0 mmio_reg_in_5<5> ) ( I_2_0 n_M_mmio_rg_5_vinj<3> ) 
+;
+- net246
+  ( I_0_0 mmio_reg_in_5<6> ) ( I_2_0 n_M_mmio_rg_5_vinj<4> ) 
+;
+- net247
+  ( I_0_0 mmio_reg_in_5<7> ) ( I_2_0 n_M_mmio_rg_5_vinj<5> ) 
 ;
 - net367
-  ( I_2_0 CP_IO_W<4> ) ( frame IO_W<24> ) 
+  ( I_2_0 w_CP_DVDD_W ) ( frame DVDD_W ) ( frame buf_vdd_W<0> ) ( frame buf_vdd_W<1> ) ( frame buf_vdd_W<2> ) ( frame buf_vdd_W<3> ) ( frame buf_vdd_W<4> ) ( frame buf_vdd_W<5> ) ( frame buf_vdd_W<6> ) ( frame buf_vdd_W<7> ) ( frame buf_vdd_W<8> ) ( frame buf_vdd_W<9> ) ( frame buf_vdd_W<10> ) 
+;
+- net299
+  ( I_2_0 w_CP_VINJ_W ) ( frame VINJ_W ) 
+;
+- net300
+  ( I_2_0 w_CP_gnd_W_2 ) ( frame gnd_W<2> ) 
+;
+- net301
+  ( I_2_0 w_CP_IO_W_RES_0 ) ( frame IO_W_RES<0> ) 
+;
+- net302
+  ( I_2_0 w_CP_AVDD_W ) ( frame avdd_W ) 
+;
+- net303
+  ( I_2_0 w_CP_IO_W<0> ) ( frame IO_W<20> ) 
+;
+- net304
+  ( I_2_0 w_CP_IO_W<1> ) ( frame IO_W<21> ) 
+;
+- net305
+  ( I_2_0 w_CP_IO_W<2> ) ( frame IO_W<22> ) 
+;
+- net306
+  ( I_2_0 w_CP_IO_W<3> ) ( frame IO_W<23> ) 
+;
+- net307
+  ( I_2_0 w_CP_IO_W<4> ) ( frame IO_W<24> ) 
+;
+- net308
+  ( I_2_0 w_CP_IO_W<5> ) ( frame IO_W<25> ) 
+;
+- net309
+  ( I_2_0 w_CP_IO_W<6> ) ( frame IO_W<26> ) 
+;
+- net310
+  ( I_2_0 w_CP_IO_W<7> ) ( frame IO_W<27> ) 
+;
+- net311
+  ( I_2_0 w_CP_IO_W<8> ) ( frame IO_W<28> ) 
+;
+- net312
+  ( I_2_0 w_CP_IO_W<9> ) ( frame IO_W<29> ) 
+;
+- net313
+  ( I_2_0 w_CP_IO_W<10> ) ( frame IO_W<30> ) 
+;
+- net314
+  ( I_2_0 w_CP_IO_W<11> ) ( frame IO_W<31> ) 
+;
+- net315
+  ( I_2_0 w_CP_IO_W<12> ) ( frame IO_W<32> ) 
+;
+- net316
+  ( I_2_0 w_CP_IO_W<13> ) ( frame IO_W<33> ) 
+;
+- net317
+  ( I_2_0 w_CP_IO_W<14> ) ( frame IO_W<34> ) 
+;
+- net318
+  ( I_2_0 w_CP_IO_W<15> ) ( frame IO_W<35> ) 
+;
+- net319
+  ( I_2_0 w_CP_IO_W<16> ) ( frame IO_W<36> ) 
+;
+- net320
+  ( I_2_0 e_CP_AVDD_E ) ( frame avdd_E ) 
+;
+- net321
+  ( I_2_0 e_CP_VINJ_E ) ( frame VINJ_E ) 
+;
+- net322
+  ( I_2_0 e_CP_GND_E_2 ) ( frame gnd_E<2> ) 
+;
+- net323
+  ( I_2_0 e_CP_IO_E<0> ) ( frame IO_E<13> ) 
+;
+- net324
+  ( I_2_0 e_CP_IO_E<1> ) ( frame IO_E<14> ) 
+;
+- net325
+  ( I_2_0 e_CP_IO_E<2> ) ( frame IO_E<15> ) 
+;
+- net326
+  ( I_2_0 e_CP_IO_E<3> ) ( frame IO_E<16> ) 
+;
+- net327
+  ( I_2_0 e_CP_IO_E<4> ) ( frame IO_E<17> ) 
+;
+- net328
+  ( I_2_0 e_CP_IO_E<5> ) ( frame IO_E<18> ) 
+;
+- net329
+  ( I_2_0 e_CP_IO_E<6> ) ( frame IO_E<19> ) 
+;
+- net330
+  ( I_2_0 e_CP_IO_E<7> ) ( frame IO_E<20> ) 
+;
+- net331
+  ( I_2_0 e_CP_IO_E<8> ) ( frame IO_E<21> ) 
+;
+- net332
+  ( I_2_0 e_CP_IO_E<9> ) ( frame IO_E<22> ) 
+;
+- net333
+  ( I_2_0 e_CP_IO_E<10> ) ( frame IO_E<23> ) 
+;
+- net334
+  ( I_2_0 e_CP_IO_E<11> ) ( frame IO_E<24> ) 
+;
+- net335
+  ( I_2_0 e_CP_IO_E<12> ) ( frame IO_E<25> ) 
+;
+- net336
+  ( I_2_0 e_CP_IO_E<13> ) ( frame IO_E<26> ) 
+;
+- net337
+  ( I_2_0 e_CP_IO_E<14> ) ( frame IO_E<27> ) 
+;
+- net338
+  ( I_2_0 e_CP_IO_E<15> ) ( frame IO_E<28> ) 
+;
+- net339
+  ( I_2_0 e_CP_IO_E<16> ) ( frame IO_E<29> ) 
+;
+- net340
+  ( I_2_0 e_CP_IO_E<17> ) ( frame IO_E<30> ) 
+;
+- net341
+  ( I_2_0 e_CP_IO_E<18> ) ( frame IO_E<31> ) 
+;
+- net342
+  ( I_2_0 e_CP_IO_E<19> ) ( frame IO_E<32> ) 
+;
+- net343
+  ( I_2_0 e_CP_IO_E<20> ) ( frame IO_E<33> ) 
+;
+- net344
+  ( I_2_0 e_CP_IO_E<21> ) ( frame IO_E<34> ) 
+;
+- net345
+  ( I_2_0 e_CP_IO_E<22> ) ( frame IO_E<35> ) 
+;
+- net346
+  ( I_2_0 e_CP_IO_E<23> ) ( frame IO_E<36> ) 
+;
+- net347
+  ( I_2_0 e_CP_IO_E<24> ) ( frame IO_E<37> ) 
+;
+- net348
+  ( I_2_0 e_CP_IO_E<25> ) ( frame IO_E<38> ) 
+;
+- net349
+  ( I_2_0 e_CP_IO_E<26> ) ( frame IO_E<39> ) 
+;
+- net350
+  ( I_2_0 e_CP_IO_E<27> ) ( frame IO_E<40> ) 
+;
+- net351
+  ( I_2_0 e_CP_IO_E<28> ) ( frame IO_E<41> ) 
+;
+- net352
+  ( I_2_0 e_CP_IO_E<29> ) ( frame IO_E<42> ) 
 ;
 - net368
-  ( I_2_0 CP_IO_W<5> ) ( frame IO_W<25> ) 
+  ( I_2_0 e_CP_DVDD_E ) ( frame DVDD_E ) ( frame buf_vdd_E ) 
 ;
-- net369
-  ( I_2_0 CP_IO_W<6> ) ( frame IO_W<26> ) 
+- net353
+  ( I_2_0 e_CP_IO_S<0> ) ( frame IO_S<33> ) 
 ;
-- net370
-  ( I_2_0 CP_IO_W<7> ) ( frame IO_W<27> ) 
+- net354
+  ( I_2_0 e_CP_IO_S<1> ) ( frame IO_S<34> ) 
 ;
-- net371
-  ( I_2_0 CP_IO_W<8> ) ( frame IO_W<28> ) 
+- net355
+  ( I_2_0 e_CP_IO_S<2> ) ( frame IO_S<35> ) 
 ;
-- net372
-  ( I_2_0 CP_IO_W<9> ) ( frame IO_W<29> ) 
+- net356
+  ( I_2_0 e_CP_IO_S<3> ) ( frame IO_S<36> ) 
 ;
-- net373
-  ( I_2_0 CP_IO_W<10> ) ( frame IO_W<30> ) 
+- net357
+  ( I_2_0 e_CP_IO_S<4> ) ( frame IO_S<37> ) 
 ;
-- net374
-  ( I_2_0 CP_IO_W<11> ) ( frame IO_W<31> ) 
+- net358
+  ( I_2_0 e_CP_IO_S<5> ) ( frame IO_S<38> ) 
 ;
-- net375
-  ( I_2_0 CP_IO_W<12> ) ( frame IO_W<32> ) 
+- net359
+  ( I_2_0 e_CP_IO_S<6> ) ( frame IO_S<39> ) 
 ;
-- net376
-  ( I_2_0 CP_IO_W<13> ) ( frame IO_W<33> ) 
+- net360
+  ( I_2_0 e_CP_IO_S<7> ) ( frame IO_S<40> ) 
 ;
-- net377
-  ( I_2_0 CP_IO_W<14> ) ( frame IO_W<34> ) 
+- net361
+  ( I_2_0 e_CP_IO_S<8> ) ( frame IO_S<41> ) 
 ;
-- net378
-  ( I_2_0 CP_IO_W<15> ) ( frame IO_W<35> ) 
+- net362
+  ( I_2_0 e_CP_IO_S<9> ) ( frame IO_S<42> ) 
 ;
-- net379
-  ( I_2_0 CP_IO_W<16> ) ( frame IO_W<36> ) 
+- net363
+  ( I_2_0 e_CP_IO_S<10> ) ( frame IO_S<43> ) 
 ;
-- net380
-  ( I_2_0 CP_AVDD_E ) ( frame avdd_E ) 
+- net364
+  ( I_2_0 e_CP_IO_S<11> ) ( frame IO_S<44> ) 
 ;
-- net381
-  ( I_2_0 CP_VINJ_E ) ( frame VINJ_E ) 
-;
-- net382
-  ( I_2_0 CP_GND_E_2 ) ( frame gnd_E<2> ) 
-;
-- net398
-  ( I_2_0 CP_DVDD_E ) ( frame DVDD_E ) ( frame buf_vdd_E ) 
-;
-- net383
-  ( I_2_0 CP_IO_S<0> ) ( frame IO_S<33> ) 
-;
-- net384
-  ( I_2_0 CP_IO_S<1> ) ( frame IO_S<34> ) 
-;
-- net385
-  ( I_2_0 CP_IO_S<2> ) ( frame IO_S<35> ) 
-;
-- net386
-  ( I_2_0 CP_IO_S<3> ) ( frame IO_S<36> ) 
-;
-- net387
-  ( I_2_0 CP_IO_S<4> ) ( frame IO_S<37> ) 
-;
-- net388
-  ( I_2_0 CP_IO_S<5> ) ( frame IO_S<38> ) 
-;
-- net389
-  ( I_2_0 CP_IO_S<6> ) ( frame IO_S<39> ) 
-;
-- net390
-  ( I_2_0 CP_IO_S<7> ) ( frame IO_S<40> ) 
-;
-- net391
-  ( I_2_0 CP_IO_S<8> ) ( frame IO_S<41> ) 
-;
-- net392
-  ( I_2_0 CP_IO_S<9> ) ( frame IO_S<42> ) 
-;
-- net393
-  ( I_2_0 CP_IO_S<10> ) ( frame IO_S<43> ) 
-;
-- net394
-  ( I_2_0 CP_IO_S<11> ) ( frame IO_S<44> ) 
-;
-- net395
-  ( I_2_0 CP_IO_S<12> ) ( frame IO_S<45> ) 
+- net365
+  ( I_2_0 e_CP_IO_S<12> ) ( frame IO_S<45> ) 
 ;
 - 0
   ( frame row ) ( frame col ) 
