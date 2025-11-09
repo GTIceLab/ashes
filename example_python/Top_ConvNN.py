@@ -14,10 +14,10 @@ outerPins = frame(Top)
 
 M_VGPROG = outerPins.createPort("N","M_VGPROG")
 M_VGRUN = outerPins.createPort("N","M_VGRUN")
-M_mmio_rg_5 = outerPins.createPort("N","M_mmio_rg_5",dimension=6)
+M_mmio_rg_5_vinj = outerPins.createPort("N","M_mmio_rg_5_vinj",dimension=6) 
 M_Sys_Drln = outerPins.createPort("N","M_Sys_Drln", dimension=2)
 M_Sig_RampADC_in = outerPins.createPort("N","M_Sig_RampADC_in",dimension=4)
-M_mmio_rg_7_vinj = outerPins.createPort("N","M_mmio_rg_7_vinj", dimension=8)
+M_mmio_rg_7 = outerPins.createPort("N","M_mmio_rg_7", dimension=11) 
 M_mmio_rg_9 = outerPins.createPort("N","M_mmio_rg_9",dimension=16)
 M_mmio_rg_10 = outerPins.createPort("N","M_mmio_rg_10",dimension=16)
 M_prog_hv = outerPins.createPort("N","M_prog_hv")
@@ -36,7 +36,7 @@ CP_GND_E_2 = outerPins.createPort("E","CP_GND_E_2")
 CP_IO_E = outerPins.createPort("E","CP_IO_E", dimension=30)
 CP_DVDD_E = outerPins.createPort("E","CP_DVDD_E")
 
-CP_IO_S = outerPins.createPort("S","CP_IO_S", dimension=12)
+CP_IO_S = outerPins.createPort("E","CP_IO_S", dimension=13)
 
 
 ##########################################add more system islands if needed, Praveen should have 3############################
@@ -92,6 +92,14 @@ Dig_Scanner_dbg_Island = Island(Top)
 Dig_Scanner_dbg = TSMC350nm_VerticalScanner(Top,Dig_Scanner_dbg_Island,dim=[10,1])
 Dig_Scanner_dbg.place([0,0])
 
+Dig_Scanner_dbg.GND[0] += CP_gnd_W_2
+Dig_Scanner_dbg.VDD[0] += CP_DVDD_E
+Dig_Scanner_dbg.Din[0] += M_mmio_rg_7[8]
+Dig_Scanner_dbg.RSTBar[0] += M_mmio_rg_7[9]
+Dig_Scanner_dbg.CLK[0] += M_mmio_rg_7[10]
+# Dig_Scanner_dbg.Qout[0] += Dig_Scanner_dbg.In[24]
+# Dig_Scanner_dbg.Out_b[0] += CP_IO_S[12]
+
 Tgts_fr_adc_meas = ST_BMatrix(Top,Dig_Scanner_dbg_Island,dim=[1,1])
 Tgts_fr_adc_meas.place([20,0])
 
@@ -129,7 +137,7 @@ GateSwitch_buf.VINJ_T += CP_VINJ_E
 GateSwitch_buf.GND_T += CP_GND_E_2
 GateSwitch_buf.RUN_IN[0] += M_VGRUN
 GateSwitch_buf.RUN_IN[1] += M_VGRUN
-GateSwitch_buf.decode[0] += M_mmio_rg_5[0]############################ gate decoder control for analog buffer####################
+GateSwitch_buf.decode[0] += M_mmio_rg_5_vinj[0]############################ gate decoder control for analog buffer####################
 
 DrainSwitch_buf.VDD += CP_VINJ_E
 DrainSwitch_buf.GND += CP_GND_E_2
@@ -138,12 +146,12 @@ DrainSwitch_buf.RUN += DigBuffer.Out[1]
 DrainSelect_buf.VINJ += CP_VINJ_E
 DrainSelect_buf.GND += CP_GND_E_2
 DrainSelect_buf.prog_drainrail += M_Sys_Drln[0]
-DrainSelect_buf.run_drainrail += M_Sys_Drln[1]
+#DrainSelect_buf.run_drainrail += M_Sys_Drln[1]
 
 #DrainDecoder_buf.VINJ += chipframe.VINJ_N[2]
 #DrainDecoder_buf.GND += chipframe.gnd_N[8]
-DrainDecoder_buf.ENABLE += M_mmio_rg_5[1]############################ drain decoder enable for analog buffer########################
-DrainDecoder_buf.IN += M_mmio_rg_5[2:6]###########################drain decoder bits for analog buffer#########################
+DrainDecoder_buf.ENABLE += M_mmio_rg_5_vinj[1]############################ drain decoder enable for analog buffer########################
+DrainDecoder_buf.IN += M_mmio_rg_5_vinj[2:6]###########################drain decoder bits for analog buffer#########################
 
 #System connections
 
@@ -333,7 +341,7 @@ Tgts_fr_adc_meas.A[1] += M_Sig_RampADC_in[1]
 Tgts_fr_adc_meas.A[3] += AnalogBuffer.Vin[7]
 AnalogBuffer.Vout[7] +=  CP_IO_E[29]
 
-Tgts_fr_adc_meas.Prog += M_mmio_rg_7_vinj[0]
+Tgts_fr_adc_meas.Prog += M_mmio_rg_7[0] # Wrong tie it to LV
 Tgts_fr_adc_meas.VDD += CP_DVDD_W
 Tgts_fr_adc_meas.GND += CP_GND_E_2
 
@@ -374,7 +382,7 @@ Tgts_fr_adc_meas1.A[1] += M_Sig_RampADC_in[3]
 Tgts_fr_adc_meas1.A[3] += AnalogBuffer.Vin[9]
 AnalogBuffer.Vout[9] +=  CP_IO_S[7]
 
-Tgts_fr_adc_meas1.Prog += M_mmio_rg_7_vinj[1]
+Tgts_fr_adc_meas1.Prog += M_mmio_rg_7[1]
 Tgts_fr_adc_meas1.VDD += CP_DVDD_E
 Tgts_fr_adc_meas1.GND += CP_GND_E_2
 
@@ -387,14 +395,14 @@ AnalogBuffer.Vout[12] += CP_IO_S[4]
 FNN_layers.s_VMM_WTA_out_11 += AnalogBuffer.Vin[13]
 AnalogBuffer.Vout[13] += CP_IO_S[3]
 
-FNN_layers.n_ActF_sel += M_mmio_rg_7_vinj[2]
+FNN_layers.n_ActF_sel += M_mmio_rg_7[2]
 # Add an inverter manually after synthesis for n_ActF_selb
 FNN_Scanner_CLK += FNN_layers.n_Act_ly0_scan_CLK
 FNN_Scanner_Din += FNN_layers.n_Act_ly0_scan_Din
-FNN_layers.n_Act_ly0_scan_RSTB += M_mmio_rg_7_vinj[3]
+FNN_layers.n_Act_ly0_scan_RSTB += M_mmio_rg_7[3]
 FNN_Scanner_CLK += FNN_layers.n_Act_ly1_scan_CLK
 FNN_Scanner_Din += FNN_layers.n_Act_ly1_scan_Din
-FNN_layers.n_Act_ly1_scan_RSTB += M_mmio_rg_7_vinj[4]
+FNN_layers.n_Act_ly1_scan_RSTB += M_mmio_rg_7[4]
 
 FNN_layers.n_FNN_final_Dr_En += LVLShifter1.OUT[5]
 FNN_layers.n_FNN_final_G_En += LVLShifter1.OUT[6]
@@ -413,7 +421,7 @@ for _ in range(8):
     
 FNN_Scanner_CLK += FNN_layers.n_WTA_final_scan_CLK
 FNN_Scanner_Din += FNN_layers.n_WTA_final_scan_Din
-FNN_layers.n_WTA_final_scan_RSTB +=M_mmio_rg_7_vinj[5]
+FNN_layers.n_WTA_final_scan_RSTB +=M_mmio_rg_7[5]
 
 FNN_layers.n_prog_hv += DigBuffer.Out[0]
 FNN_layers.n_run_hv += DigBuffer.Out[1]
@@ -441,44 +449,53 @@ Global_rst_b += CP_IO_S[0]
 Prog_Drln += M_Sys_Drln[0]
 Run_Drln += M_Sys_Drln[1]
 
-FNN_Scanner_Din += M_mmio_rg_7_vinj[6]
-FNN_Scanner_CLK +=M_mmio_rg_7_vinj[7]
+FNN_Scanner_Din += M_mmio_rg_7[6]
+FNN_Scanner_CLK +=M_mmio_rg_7[7]
 
 
 
 # Compilation
 #-------------------------------------------------------------------------------
-design_limits = [6e6, 5e6]
-location_islands = ((320*1e3,2150*1e3),#ConvLy1
+design_limits = [7e6, 5e6]
+location_islands = ((320*1e3,1650*1e3),#ConvLy1
                     (3158.6*1e3,1632.23*1e3),#ConvLy2
                     (230*1e3,20*1e3), #FNN
-                    (2800*1e3,4240*1e3), #LVLShifter1
-                    (3600*1e3,4240*1e3), #LVLShifter2
-                    (5500*1e3,4200*1e3), #DigBuffer
+                    (2800*1e3,3600*1e3), #LVLShifter1
+                    (3600*1e3,3600*1e3), #LVLShifter2
+                    (5500*1e3,3900*1e3), #DigBuffer
                     (4350*1e3,3400*1e3), #DigScanner, Tgates					
-                    (4600*1e3,4200*1e3)) #Analog Buffer
+                    (4850*1e3,3500*1e3)) #Analog Buffer
 
 with open('./ashes_fg/asic/qrouter_default.json') as file:
     qparams = json.load(file)
 
-qparams["passes"] = 100
+# qparams["passes"] = 100
+# qparams["via"] = 50
+# qparams["jog"] = 30
+# qparams["conflict"] = 10
+# qparams["stage2"] = "mask none force effort 100"
+# qparams["stage3"] = "mask none force effort 100"
+
 qparams["via"] = 50
 qparams["jog"] = 30
-qparams["conflict"] = 10
-qparams["stage2"] = "mask none force effort 100"
-qparams["stage3"] = "mask none force effort 100"
-
-# qparams["via"] = 20
-# qparams["jog"] = 10
-# qparams["conflict"] = 5
+#qparams["conflict"] = 10
 
 # # GIVE STAGE 1 A LARGER MASK
-# qparams["stage1"] = "mask 6" # Use a mask value of 4 for stage1 (default for 'auto' in stage2)
+# qparams["stage1"] = "mask 40" # Use a mask value of 4 for stage1 (default for 'auto' in stage2)
 
 # # Stage 2 for remaining failed nets with bbox and controlled rip-up
-# qparams["stage2"] = "mask bbox force effort 15 limit 45 break"
+# qparams["stage2"] = "mask none force effort 30 limit 100"
 
 # # Stage 3 as the most aggressive fallback
-# qparams["stage3"] = "mask none force effort 30"
+# qparams["stage3"] = "mask none force effort 50"
+
+# GIVE STAGE 1 A LARGER MASK
+qparams["stage1"] = "mask none force" # Use a mask value of 4 for stage1 (default for 'auto' in stage2)
+
+# Stage 2 for remaining failed nets with bbox and controlled rip-up
+qparams["stage2"] = "mask none limit 100 force"
+
+# Stage 3 as the most aggressive fallback
+qparams["stage3"] = "mask none force"
 
 compile_asic(Top,process="TSMC350nm",fileName="Top_Conv",p_and_r = True,route=True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=7,drainSpace=20,gateSpaceIdx=7,gateSpace=15, qparams=qparams)
