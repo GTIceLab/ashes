@@ -29,7 +29,7 @@ chipframe.markChipFrame()
 # Toplevel ConvNN
 # -------------------------------------------------------------------------------
 Top_CNN_Island = Island(Top)
-Top_CNN = Top_ConvNN(Top,Top_CNN_Island,[1,1])
+Top_CNN = Top_Conv(Top,Top_CNN_Island,[1,1])
 Top_CNN.place([0,0])
 
 
@@ -135,11 +135,11 @@ Top_CNN.M_run_hv += macro.RUN_HV
 Top_CNN.CP_DVDD_W += chipframe.DVDD_W
 Top_CNN.CP_VINJ_W += chipframe.VINJ_W
 Top_CNN.CP_gnd_W_2 += chipframe.gnd_W[2]
-Top_CNN.CP_IO_W_RES_0 += chipframe.IO_W_RES_0
-Top_CNN.CP_AVDD_W += chipframe.ADD_w
+Top_CNN.CP_IO_W_RES_0 += chipframe.IO_W_RES[0]
+Top_CNN.CP_AVDD_W += chipframe.avdd_W
 Top_CNN.CP_IO_W += chipframe.IO_W[20:37]
 
-Top_CNN.CP_AVDD_E += chipframe.ADD_E
+Top_CNN.CP_AVDD_E += chipframe.avdd_E
 Top_CNN.CP_VINJ_E += chipframe.VINJ_E
 Top_CNN.CP_GND_E_2 += chipframe.gnd_E[2]
 Top_CNN.CP_DVDD_E += chipframe.DVDD_E
@@ -160,13 +160,13 @@ chipframe.buf_vdd_E += chipframe.DVDD_E
 design_limits = [8e6, 8e6]
 location_islands = ((250.6*1e3, 4520*1e3), #macro
                     (20.6*1e3, 20*1e3), #frame				
-                    (200*1e3,200*1e3)) #Top_CNN
+                    (350*1e3,400*1e3)) #Top_CNN
 
 with open('./ashes_fg/asic/qrouter_default.json') as file:
     qparams = json.load(file)
 
-qparams["via"] = 60
-qparams["jog"] = 30
+qparams["via"] = 30
+qparams["jog"] = 60
 
 # GIVE STAGE 1 A LARGER MASK
 qparams["stage1"] = "mask none force" # Use a mask value of 4 for stage1 (default for 'auto' in stage2)
