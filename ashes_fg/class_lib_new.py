@@ -5554,7 +5554,7 @@ class Top_Conv(StandardCell):
 		self.e_CP_IO_E = Port(circuit,self,'e_CP_IO_E','E',30*self.dim[0])
 		self.e_CP_DVDD_E = Port(circuit,self,'e_CP_DVDD_E','E',1*self.dim[0])
 
-		self.e_CP_IO_S = Port(circuit,self,'e_CP_IO_S','E',13*self.dim[1])
+		self.e_CP_IO_S = Port(circuit,self,'e_CP_IO_S','E',15*self.dim[1])
 
 
 		# Initialize ports with given values

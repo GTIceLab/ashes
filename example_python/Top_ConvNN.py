@@ -356,7 +356,7 @@ FNN_layers.n_DVDD += DVDD_CONV
 for i in range(154,176,1):
     FNN_layers.n_FNN_input[i] += Conv_Layer2.w_sub_img_out[(i-154)]
 
-FNN_layers.n_FNN_ly0_out_95 += AnalogBuffer.Vin[8]
+FNN_layers.n_FNN_ly0_out_95 += AnalogBuffer.Vin[8] # Used this buffer multiple times
 FNN_layers.n_GND += CP_GND_E_2 # Make sure this is closest 
 
 Prog_Drln += FNN_layers.n_Prog_Drainline
