@@ -120,31 +120,32 @@ macro.DVDD += chipframe.DVDD_N[2]
 
 ###################### Connections between Top_ConvNN ######################
 
-Top_CNN.M_VGPROG += macro.VGPROG
-Top_CNN.M_VGRUN += macro.VGRUN
-Top_CNN.M_mmio_rg_5_vinj += macro.mmio_reg_in_5[2:8]
-Top_CNN.M_Sys_Drln += macro.SystemDrainline[0:2]
-Top_CNN.M_Sig_RampADC_in += macro.Signal_RampADC_inp[0:4]
-Top_CNN.M_mmio_rg_7 += macro.mmio_reg_7_bout[2:13]
-Top_CNN.M_mmio_rg_9 += macro.mmio_reg_9_bout[0:16]
-Top_CNN.M_mmio_rg_10 += macro.mmio_reg_10_bout[0:16]
-Top_CNN.M_prog_hv += macro.PROG_HV
-Top_CNN.M_run_hv += macro.RUN_HV
+Top_CNN.n_M_VGPROG += macro.VGPROG
+Top_CNN.n_M_VGRUN += macro.VGRUN
+Top_CNN.n_M_mmio_rg_5_vinj += macro.mmio_reg_5_vinj[0:6]
+Top_CNN.n_M_Sys_Drln += macro.SystemDrainline[0:2]
+Top_CNN.n_M_Sig_RampADC_in += macro.Signal_RampADC_inp[0:4]
+Top_CNN.n_M_mmio_rg_7 += macro.mmio_reg_7_bout[2:13]
+Top_CNN.n_M_mmio_rg_9 += macro.mmio_reg_9_bout[0:16]
+Top_CNN.n_M_mmio_rg_10 += macro.mmio_reg_10_bout[0:16]
+Top_CNN.n_M_prog_hv += macro.PROG_HV
+Top_CNN.n_M_run_hv += macro.RUN_HV
 
 
-Top_CNN.CP_DVDD_W += chipframe.DVDD_W
-Top_CNN.CP_VINJ_W += chipframe.VINJ_W
-Top_CNN.CP_gnd_W_2 += chipframe.gnd_W[2]
-Top_CNN.CP_IO_W_RES_0 += chipframe.IO_W_RES[0]
-Top_CNN.CP_AVDD_W += chipframe.avdd_W
-Top_CNN.CP_IO_W += chipframe.IO_W[20:37]
+Top_CNN.w_CP_DVDD_W += chipframe.DVDD_W
+Top_CNN.w_CP_VINJ_W += chipframe.VINJ_W
+Top_CNN.w_CP_gnd_W_2 += chipframe.gnd_W[2]
+Top_CNN.w_CP_IO_W_RES_0 += chipframe.IO_W_RES[0]
+Top_CNN.w_CP_AVDD_W += chipframe.avdd_W
+Top_CNN.w_CP_IO_W += chipframe.IO_W[20:37]
 
-Top_CNN.CP_AVDD_E += chipframe.avdd_E
-Top_CNN.CP_VINJ_E += chipframe.VINJ_E
-Top_CNN.CP_GND_E_2 += chipframe.gnd_E[2]
-Top_CNN.CP_DVDD_E += chipframe.DVDD_E
+Top_CNN.e_CP_AVDD_E += chipframe.avdd_E
+Top_CNN.e_CP_VINJ_E += chipframe.VINJ_E
+Top_CNN.e_CP_GND_E_2 += chipframe.gnd_E[2]
+Top_CNN.e_CP_IO_E += chipframe.IO_E[13:43]
+Top_CNN.e_CP_DVDD_E += chipframe.DVDD_E
 
-Top_CNN.CP_IO_S += chipframe.IO_S[33:46]
+Top_CNN.e_CP_IO_S += chipframe.IO_S[31:46]
 
 
 #Padframe buffer connections
@@ -158,9 +159,9 @@ chipframe.buf_vdd_E += chipframe.DVDD_E
 # Compilation
 #-------------------------------------------------------------------------------
 design_limits = [8e6, 8e6]
-location_islands = ((250.6*1e3, 4520*1e3), #macro
+location_islands = ((250.6*1e3, 4470*1e3), #macro
                     (20.6*1e3, 20*1e3), #frame				
-                    (350*1e3,400*1e3)) #Top_CNN
+                    (350*1e3,350*1e3)) #Top_CNN
 
 with open('./ashes_fg/asic/qrouter_default.json') as file:
     qparams = json.load(file)

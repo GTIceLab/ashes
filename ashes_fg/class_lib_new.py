@@ -5515,7 +5515,7 @@ class ConvNN(StandardCell):
 
 
 class Top_Conv(StandardCell):
-	def __init__(self,circuit,island=None,dim=(1,1),M_VGPROG=None,M_VGRUN=None,M_mmio_rg_5_vinj=None,M_Sys_Drln=None,M_Sig_RampADC_in=None,M_mmio_rg_7=None,M_mmio_rg_9=None,M_mmio_rg_10=None,M_prog_hv=None,M_run_hv=None,CP_DVDD_W=None,CP_VINJ_W=None,CP_gnd_W_2=None,CP_IO_W_RES_0=None,CP_AVDD_W=None,CP_IO_W=None,CP_AVDD_E=None,CP_VINJ_E=None,CP_GND_E_2=None,CP_IO_E=None,CP_DVDD_E=None,CP_IO_S=None):
+	def __init__(self,circuit,island=None,dim=(1,1),n_M_VGPROG=None,n_M_VGRUN=None,n_M_mmio_rg_5_vinj=None,n_M_Sys_Drln=None,n_M_Sig_RampADC_in=None,n_M_mmio_rg_7=None,n_M_mmio_rg_9=None,n_M_mmio_rg_10=None,n_M_prog_hv=None,n_M_run_hv=None,w_CP_DVDD_W=None,w_CP_VINJ_W=None,w_CP_gnd_W_2=None,w_CP_IO_W_RES_0=None,w_CP_AVDD_W=None,w_CP_IO_W=None,e_CP_AVDD_E=None,e_CP_VINJ_E=None,e_CP_GND_E_2=None,e_CP_IO_E=None,e_CP_DVDD_E=None,e_CP_IO_S=None):
 
 		# Define variables
 		self.circuit = circuit
@@ -5528,37 +5528,37 @@ class Top_Conv(StandardCell):
 		self.name = 'Top_Conv'
 
 		# North Ports
-		self.M_VGPROG = Port(circuit,self,'M_VGPROG','N',1*self.dim[1])
-		self.M_VGRUN = Port(circuit,self,'M_VGRUN','N',1*self.dim[1])
-		self.M_mmio_rg_5_vinj = Port(circuit,self,'M_mmio_rg_5_vinj','N',6*self.dim[1])
-		self.M_Sys_Drln = Port(circuit,self,'M_Sys_Drln','N',2*self.dim[1])
-		self.M_Sig_RampADC_in = Port(circuit,self,'M_Sig_RampADC_in','N',4*self.dim[1])
-		self.M_mmio_rg_7 = Port(circuit,self,'M_mmio_rg_7','N',11*self.dim[1])
-		self.M_mmio_rg_9 = Port(circuit,self,'M_mmio_rg_9','N',16*self.dim[1])
-		self.M_mmio_rg_10 = Port(circuit,self,'M_mmio_rg_10','N',16*self.dim[1])
-		self.M_prog_hv = Port(circuit,self,'M_prog_hv','N',1*self.dim[1])
-		self.M_run_hv = Port(circuit,self,'M_run_hv','N',1*self.dim[1])
+		self.n_M_VGPROG = Port(circuit,self,'n_M_VGPROG','N',1*self.dim[1])
+		self.n_M_VGRUN = Port(circuit,self,'n_M_VGRUN','N',1*self.dim[1])
+		self.n_M_mmio_rg_5_vinj = Port(circuit,self,'n_M_mmio_rg_5_vinj','N',6*self.dim[1])
+		self.n_M_Sys_Drln = Port(circuit,self,'n_M_Sys_Drln','N',2*self.dim[1])
+		self.n_M_Sig_RampADC_in = Port(circuit,self,'n_M_Sig_RampADC_in','N',4*self.dim[1])
+		self.n_M_mmio_rg_7 = Port(circuit,self,'n_M_mmio_rg_7','N',11*self.dim[1])
+		self.n_M_mmio_rg_9 = Port(circuit,self,'n_M_mmio_rg_9','N',16*self.dim[1])
+		self.n_M_mmio_rg_10 = Port(circuit,self,'n_M_mmio_rg_10','N',16*self.dim[1])
+		self.n_M_prog_hv = Port(circuit,self,'n_M_prog_hv','N',1*self.dim[1])
+		self.n_M_run_hv = Port(circuit,self,'n_M_run_hv','N',1*self.dim[1])
 
 		# West Ports
-		self.CP_DVDD_W = Port(circuit,self,'CP_DVDD_W','W',1*self.dim[0])
-		self.CP_VINJ_W = Port(circuit,self,'CP_VINJ_W','W',1*self.dim[0])
-		self.CP_gnd_W_2 = Port(circuit,self,'CP_gnd_W_2','W',1*self.dim[0])
-		self.CP_IO_W_RES_0 = Port(circuit,self,'CP_IO_W_RES_0','W',1*self.dim[0])
-		self.CP_AVDD_W = Port(circuit,self,'CP_AVDD_W','W',1*self.dim[0])
-		self.CP_IO_W = Port(circuit,self,'CP_IO_W','W',17*self.dim[0])
+		self.w_CP_DVDD_W = Port(circuit,self,'w_CP_DVDD_W','W',1*self.dim[0])
+		self.w_CP_VINJ_W = Port(circuit,self,'w_CP_VINJ_W','W',1*self.dim[0])
+		self.w_CP_gnd_W_2 = Port(circuit,self,'w_CP_gnd_W_2','W',1*self.dim[0])
+		self.w_CP_IO_W_RES_0 = Port(circuit,self,'w_CP_IO_W_RES_0','W',1*self.dim[0])
+		self.w_CP_AVDD_W = Port(circuit,self,'w_CP_AVDD_W','W',1*self.dim[0])
+		self.w_CP_IO_W = Port(circuit,self,'w_CP_IO_W','W',17*self.dim[0])
 
 		# East Ports
-		self.CP_AVDD_E = Port(circuit,self,'CP_AVDD_E','E',1*self.dim[0])
-		self.CP_VINJ_E = Port(circuit,self,'CP_VINJ_E','E',1*self.dim[0])
-		self.CP_GND_E_2 = Port(circuit,self,'CP_GND_E_2','E',1*self.dim[0])
-		self.CP_IO_E = Port(circuit,self,'CP_IO_E','E',30*self.dim[0])
-		self.CP_DVDD_E = Port(circuit,self,'CP_DVDD_E','E',1*self.dim[0])
+		self.e_CP_AVDD_E = Port(circuit,self,'e_CP_AVDD_E','E',1*self.dim[0])
+		self.e_CP_VINJ_E = Port(circuit,self,'e_CP_VINJ_E','E',1*self.dim[0])
+		self.e_CP_GND_E_2 = Port(circuit,self,'e_CP_GND_E_2','E',1*self.dim[0])
+		self.e_CP_IO_E = Port(circuit,self,'e_CP_IO_E','E',30*self.dim[0])
+		self.e_CP_DVDD_E = Port(circuit,self,'e_CP_DVDD_E','E',1*self.dim[0])
 
-		self.CP_IO_S = Port(circuit,self,'CP_IO_S','E',13*self.dim[1])
+		self.e_CP_IO_S = Port(circuit,self,'e_CP_IO_S','E',15*self.dim[1])
 
 
 		# Initialize ports with given values
-		portsInit = [M_VGPROG,M_VGRUN,M_mmio_rg_5_vinj,M_Sys_Drln,M_Sig_RampADC_in,M_mmio_rg_7,M_mmio_rg_9,M_mmio_rg_10,M_prog_hv,M_run_hv,CP_DVDD_W,CP_VINJ_W,CP_gnd_W_2,CP_IO_W_RES_0,CP_AVDD_W,CP_IO_W,CP_AVDD_E,CP_VINJ_E,CP_GND_E_2,CP_IO_E,CP_DVDD_E,CP_IO_S]
+		portsInit = [n_M_VGPROG,n_M_VGRUN,n_M_mmio_rg_5_vinj,n_M_Sys_Drln,n_M_Sig_RampADC_in,n_M_mmio_rg_7,n_M_mmio_rg_9,n_M_mmio_rg_10,n_M_prog_hv,n_M_run_hv,w_CP_DVDD_W,w_CP_VINJ_W,w_CP_gnd_W_2,w_CP_IO_W_RES_0,w_CP_AVDD_W,w_CP_IO_W,e_CP_AVDD_E,e_CP_VINJ_E,e_CP_GND_E_2,e_CP_IO_E,e_CP_DVDD_E,e_CP_IO_S]
 		
 		i=0
 		for p in self.ports:

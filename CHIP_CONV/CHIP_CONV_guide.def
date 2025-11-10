@@ -28,7 +28,7 @@ TRACKS Y 0 DO 5714 STEP 1400 LAYER METAL1 ;
 
 COMPONENTS 3 ;
 - frame frame_6p9mm_6p2mm_digbuf + PLACED ( 0 0 ) N ;
-- I_0_0 Full_Macro_2p0_abstract + PLACED ( 331100 4520000 ) N ;
-- I_2_0 Top_Conv + PLACED ( 430500 400000 ) N ;
+- I_0_0 Full_Macro_2p0_abstract + PLACED ( 331100 4470000 ) N ;
+- I_2_0 Top_Conv + PLACED ( 430500 350000 ) N ;
 END COMPONENTS
 
