@@ -223,7 +223,8 @@ location_islands = QDAC(Top,5,islandLoc=[2750,3050],debug=True)
 design_limits = [4e5, 4e5]
 
 
-ac.compile_asic(Top,process="TSMC350nm",fileName="QDAC",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=0,drainSpace = 15,gateSpaceIdx=0,gateSpace=15)
+
+ac.compile_asic(Top,process="TSMC350nm",fileName="QDAC",p_and_r = True,design_limits = design_limits, location_islands = location_islands,drainSpaceIdx=0,drainSpace = 15,gateSpaceIdx=0,gateSpace=15,route=True)
 
 
 

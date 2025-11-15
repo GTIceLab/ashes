@@ -17,7 +17,7 @@ import re
 
 #exec(open("./Wafer5_Synthesis/Macro_SmallFrame_Route.py").read())
 
-#exec(open("./example_python/FPAA_general.py").read())
+exec(open("./example_python/AlgorithmicADC.py").read())
 
 #exec(open("./example_python/Mod_WTA.py").read())
 
@@ -47,7 +47,7 @@ import re
 
 #exec(open("./example_python/TestFullRoute.py").read())
 
-exec(open("./example_python/CHIP_ConvNN.py").read())
+#exec(open("./example_python/CHIP_ConvNN.py").read())
 
 #exec(open("./example_python/CHIP_ConvNN_nonflip.py").read())
 

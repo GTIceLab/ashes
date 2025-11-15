@@ -1,12 +1,12 @@
 {
 	"segment": null,
-	"via": 20,
-	"jog": 40,
+	"via": 90,
+	"jog": null,
 	"crossover": null,
-	"block": 40,
+	"block": null,
 	"conflict": null,
 	"passes": null,
-	"stage1": "mask none force",
-	"stage2": "mask none limit 100 force",
-	"stage3": "mask none force"
+	"stage1": "mask none",
+	"stage2": "mask none limit 100",
+	"stage3": "mask none"
 }

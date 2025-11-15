@@ -25,6 +25,7 @@ def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_
 	triton_route = os.path.exists(os.path.join('TritonRoute','build','TritonRoute'))
 	lef_file = os.path.join(project_name, project_name + '.lef')
 	def_file = os.path.join(project_name, project_name + '.def')
+	report_file = os.path.join(project_name, project_name + '_report.txt')
 	if qrouter and route==True:
 		base_cost = 10
 		out_file = os.path.join(project_name, project_name + '_qroute.def')
@@ -43,6 +44,7 @@ def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_
 				
 		q_params.write("layers 4\n")
 		q_params.write(f"write_def {out_file}\n")
+		q_params.write(f"write_failed {report_file}\n")
 		q_params.write("quit\n")
 		q_params.close()
 		command = ['qrouter', '-nog', '-s', param_file]
@@ -63,6 +65,12 @@ def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_
 		merge_time = round(fin_end - rt_end, 3)
 		total_time = round(fin_end - pl_start, 3)
 		print(f"placement took {pl_time} s, routing took {rt_time} s, merging took {merge_time} s, total time {total_time} s")
+
+		with open(report_file,"a") as file:
+			file.write("Placement Time: "+ str(pl_time)+"\n")
+			file.write("Routing Time: "+ str(rt_time)+"\n")
+			file.write("Merge Time: "+ str(merge_time)+"\n")
+			file.write("Total Time: "+ str(total_time)+"\n")
 
 	elif triton_route:
 		tr_executable = os.path.join('TritonRoute','build','TritonRoute')
