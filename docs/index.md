@@ -1,26 +1,13 @@
-# ASHES Documentation
+# Welcome to ASHES
 
-Analog Synthesis for High Level Systems (ASHES) is an in-development tool that 
-is capable of programmig Field Programmable Analog Array (FPAAs) or generating 
-tapeout files (.gds) for analog computing applications using a programmable 
+![ashes_flow_v3](./figures/ashes_flow_v3.jpg)
+
+**Analog Synthesis for High Level Systems (ASHES)** is an in-development open-source framework that is capable of programming Field Programmable Analog Array (FPAAs) or generating tapeout files (.gds) for analog computing applications using a programmable 
 analog standard cell library.
 
-This site contains an ongoing documentation of the Python toolflow of ASHES. The 
-current purpose of this documentation is to create an accessible and formal 
-record of all the Python functions and behaviors, with the end goal being a 
-formal documentation of the entire ASHES library.
+This site contains an ongoing documentation of the Python toolflow of ASHES. The current purpose of this documentation is to create an accessible and formal record of all the Python functions and behaviors, ith the end goal being a formal documentation of the entire ASHES library.
 
-## Table of Contents
-
-The documentation follows the best practice for project documentation as 
-described by Daniele Procida in the 
-[Diátaxis documentation framework](https://diataxis.fr/) and consists of four 
-separate parts:
-
-1. [Tutorials](tutorials.md)
-2. [How-To Guides](how-to-guides.md)
-3. [Reference](reference.md)
-4. [Explanation](explanation.md)
+<!-- ## Table of Contents -->
 
 <!-- ## Commands
 
