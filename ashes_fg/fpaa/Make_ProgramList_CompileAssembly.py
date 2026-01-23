@@ -2,11 +2,14 @@ import os
 import numpy as np
 
 KAPPA_CONSTANT = 30 # relationship of target current between subVt and lowsubVt range.
+ASHESPATH = os.getenv("ASHESPATH","/home/ubuntu/ashes")
+RASPPATH = os.getenv("RASPPATH", "/home/ubuntu/rasp30")
 
 def compile(project_name, board_type, chip_num):
 
 	# set path
-	path = os.path.join("/home/ubuntu/ashes/",project_name)
+	#path = os.path.join("/home/ubuntu/ashes/",project_name)
+	path = os.path.join(f"{ASHESPATH}/",project_name)
 	extension = ".swcs"
 	
 	# set brdtype
@@ -20,20 +23,20 @@ def compile(project_name, board_type, chip_num):
 	print(path)
 	
 	# copy chip parameters (?) to local path
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_debug.asm {path}/chip_para_debug.asm")
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_TR_chip{chip_num}{brdtype}.asm {path}/chip_para_TR.asm")
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_SP_chip{chip_num}{brdtype}.asm {path}/chip_para_SP.asm")
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_RI_chip{chip_num}{brdtype}.asm {path}/chip_para_RI.asm")
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_CP_chip{chip_num}{brdtype}.asm {path}/chip_para_CP.asm")
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/chip_para/chip_para_FP_chip{chip_num}{brdtype}.asm {path}/chip_para_FP.asm")
-	os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/Vd_table/Vd_table_30mV_chip{chip_num}{brdtype} {path}/Vd_table_30mV")
+	os.system(f"cp {RASPPATH}/prog_assembly/libs/chip_parameters/chip_para/chip_para_debug.asm {path}/chip_para_debug.asm")
+	os.system(f"cp {RASPPATH}/prog_assembly/libs/chip_parameters/chip_para/chip_para_TR_chip{chip_num}{brdtype}.asm {path}/chip_para_TR.asm")
+	os.system(f"cp {RASPPATH}/prog_assembly/libs/chip_parameters/chip_para/chip_para_SP_chip{chip_num}{brdtype}.asm {path}/chip_para_SP.asm")
+	os.system(f"cp {RASPPATH}/prog_assembly/libs/chip_parameters/chip_para/chip_para_RI_chip{chip_num}{brdtype}.asm {path}/chip_para_RI.asm")
+	os.system(f"cp {RASPPATH}/prog_assembly/libs/chip_parameters/chip_para/chip_para_CP_chip{chip_num}{brdtype}.asm {path}/chip_para_CP.asm")
+	os.system(f"cp {RASPPATH}/prog_assembly/libs/chip_parameters/chip_para/chip_para_FP_chip{chip_num}{brdtype}.asm {path}/chip_para_FP.asm")
+	os.system(f"cp {RASPPATH}/prog_assembly/libs/chip_parameters/Vd_table/Vd_table_30mV_chip{chip_num}{brdtype} {path}/Vd_table_30mV")
 		
 	zip_list = ' '
 
 	#########################################
 	## Make programm reverse program files ##
 	#########################################
-	os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh tunnel_revtun_SWC_CAB ~/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 16384 16384 16384 {path}")
+	os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh tunnel_revtun_SWC_CAB {RASPPATH}/prog_assembly/libs/asm_code/tunnel_revtun_SWC_CAB_ver00.s43 16384 16384 16384 {path}")
 	zip_list = zip_list + "tunnel_revtun_SWC_CAB.elf "; # run in program_fpaa.py
 	
 	###############################
@@ -63,7 +66,7 @@ def compile(project_name, board_type, chip_num):
 	fd.write(temp)
 	fd.close()
 	
-	os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh switch_program ~/rasp30/prog_assembly/libs/asm_code/switch_program_ver04.s43 16384 16384 16384 {path}")
+	os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh switch_program {RASPPATH}/prog_assembly/libs/asm_code/switch_program_ver04.s43 16384 16384 16384 {path}")
 	zip_list = zip_list + "switch_program.elf "
 	
 	hid_dir = f"{path}/hid_dir"
@@ -97,11 +100,11 @@ def compile(project_name, board_type, chip_num):
 		fd = open(f"{path}/switch_info_ble", "w")
 		fd.write(temp)
 		fd.close()
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh tunnel_clb "
-				  f"~/rasp30/prog_assembly/libs/asm_code/tunnel_revtun_CLB_ver00.s43 "
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh tunnel_clb "
+				  f"{RASPPATH}/prog_assembly/libs/asm_code/tunnel_revtun_CLB_ver00.s43 "
 				  f"16384 16384 16384 {path}")
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh switch_program_ble "
-				  f"~/rasp30/prog_assembly/libs/asm_code/switch_program_ble_ver00.s43 "
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh switch_program_ble "
+				  f"{RASPPATH}/prog_assembly/libs/asm_code/switch_program_ble_ver00.s43 "
 				  f"16384 16384 16384 {path}")
 		os.system(f"mv switch_list_ble switch_info_ble {hid_dir}")
 
@@ -266,17 +269,17 @@ def compile(project_name, board_type, chip_num):
 	
 	def if_statements(name, name2, table, chip_num, brdtype, path):
 		nonlocal zip_list
-		os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/pulse_width_table/{table}_chip{chip_num}{brdtype} {path}/{table}")
+		os.system(f"cp {RASPPATH}/prog_assembly/libs/chip_parameters/pulse_width_table/{table}_chip{chip_num}{brdtype} {path}/{table}")
 		np.savetxt(f"{path}/target_list_{name}", eval(f"target_l_{name}"), "%5.15f", ' ')
 		temp1 = f"0x{eval(f'n_target_{name}'):04x}"
 		temp = temp1 + eval(f"temp2_{name}")
 		fd = open(f"{path}/target_info_{name}", "w")
 		fd.write(temp)
 		fd.close()
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh recover_inject_{name2[0]}_{name2[1]} ~/rasp30/prog_assembly/libs/asm_code/recover_inject_{name2[0]}_{name2[1]}.s43 16384 16384 16384 {path}")
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh first_coarse_program_{name2[0]}_{name2[1]} ~/rasp30/prog_assembly/libs/asm_code/first_coarse_program_{name2[0]}_{name2[1]}.s43 16384 16384 16384 {path}")
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh measured_coarse_program_{name2[0]}_{name2[1]} ~/rasp30/prog_assembly/libs/asm_code/measured_coarse_program_{name2[0]}_{name2[1]}.s43 16384 16384 16384 {path}")
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh fine_program_{name2[0]}_m_ave_04_{name2[1]} ~/rasp30/prog_assembly/libs/asm_code/fine_program_{name2[0]}_m_ave_04_{name2[1]}.s43 16384 16384 16384 {path}")
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh recover_inject_{name2[0]}_{name2[1]} {RASPPATH}/prog_assembly/libs/asm_code/recover_inject_{name2[0]}_{name2[1]}.s43 16384 16384 16384 {path}")
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh first_coarse_program_{name2[0]}_{name2[1]} {RASPPATH}/prog_assembly/libs/asm_code/first_coarse_program_{name2[0]}_{name2[1]}.s43 16384 16384 16384 {path}")
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh measured_coarse_program_{name2[0]}_{name2[1]} {RASPPATH}/prog_assembly/libs/asm_code/measured_coarse_program_{name2[0]}_{name2[1]}.s43 16384 16384 16384 {path}")
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh fine_program_{name2[0]}_m_ave_04_{name2[1]} {RASPPATH}/prog_assembly/libs/asm_code/fine_program_{name2[0]}_m_ave_04_{name2[1]}.s43 16384 16384 16384 {path}")
 		zip_list = zip_list + f"target_info_{name} {table} recover_inject_{name2[0]}_{name2[1]}.elf first_coarse_program_{name2[0]}_{name2[1]}.elf measured_coarse_program_{name2[0]}_{name2[1]}.elf fine_program_{name2[0]}_m_ave_04_{name2[1]}.elf "
 
 
@@ -316,7 +319,7 @@ def compile(project_name, board_type, chip_num):
 		if_statements("lowsubVt_otaref",["lowsubVt","CAB_ota_ref"],"pulse_width_table_lowsubVt_otaref",chip_num,brdtype,path)
 
 	if n_target_aboveVt_mite != 0:
-		os.system(f"cp ~/rasp30/prog_assembly/libs/chip_parameters/pulse_width_table/pulse_width_table_mite_chip{chip_num}{brdtype} {path}/pulse_width_table_mite");
+		os.system(f"cp {RASPPATH}/prog_assembly/libs/chip_parameters/pulse_width_table/pulse_width_table_mite_chip{chip_num}{brdtype} {path}/pulse_width_table_mite");
 		fprintfMat('target_list_aboveVt_mite', target_l_aboveVt_mite, "%5.15f");
 		np.savetxt(f"{path}/target_list_aboveVt_mite", target_l_aboveVt_mite, "%5.15f", ' ')
 		temp1 = f"0x{(n_target_aboveVt_mite):04x}"
@@ -324,10 +327,10 @@ def compile(project_name, board_type, chip_num):
 		fd = open(f"{path}/target_info_aboveVt_mite", "w") 
 		fd.write(temp)
 		fd.close()
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh recover_inject_aboveVt_CAB_mite ~/rasp30/prog_assembly/libs/asm_code/recover_inject_CAB_mite.s43 16384 16384 16384 {path}");
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh first_coarse_program_aboveVt_CAB_mite ~/rasp30/prog_assembly/libs/asm_code/first_coarse_program_CAB_mite.s43 16384 16384 16384 {path}");
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh measured_coarse_program_aboveVt_CAB_mite ~/rasp30/prog_assembly/libs/asm_code/measured_coarse_program_aboveVt_CAB_mite.s43 16384 16384 16384 {path}");
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh fine_program_aboveVt_m_ave_04_CAB_mite ~/rasp30/prog_assembly/libs/asm_code/fine_program_aboveVt_m_ave_04_CAB_mite.s43 16384 16384 16384 {path}");
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh recover_inject_aboveVt_CAB_mite {RASPPATH}/prog_assembly/libs/asm_code/recover_inject_CAB_mite.s43 16384 16384 16384 {path}");
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh first_coarse_program_aboveVt_CAB_mite {RASPPATH}/prog_assembly/libs/asm_code/first_coarse_program_CAB_mite.s43 16384 16384 16384 {path}");
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh measured_coarse_program_aboveVt_CAB_mite {RASPPATH}/prog_assembly/libs/asm_code/measured_coarse_program_aboveVt_CAB_mite.s43 16384 16384 16384 {path}");
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh fine_program_aboveVt_m_ave_04_CAB_mite {RASPPATH}/prog_assembly/libs/asm_code/fine_program_aboveVt_m_ave_04_CAB_mite.s43 16384 16384 16384 {path}");
 		zip_list = zip_list + "target_info_aboveVt_mite pulse_width_table_mite recover_inject_aboveVt_CAB_mite.elf first_coarse_program_aboveVt_CAB_mite.elf measured_coarse_program_aboveVt_CAB_mite.elf fine_program_aboveVt_m_ave_04_CAB_mite.elf ";
 
 
@@ -365,7 +368,7 @@ def compile(project_name, board_type, chip_num):
 	fd.write(temp)
 	fd.close()
 
-	os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh run_mode_after_program ~/rasp30/prog_assembly/libs/asm_code/voltage_measurement_ver01_afterprogram.s43 16384 16384 16384 {path}");
+	os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh run_mode_after_program {RASPPATH}/prog_assembly/libs/asm_code/voltage_measurement_ver01_afterprogram.s43 16384 16384 16384 {path}");
 
 	#global RAMP_ADC_check sftreg_check Signal_DAC_check GPIO_IN_check MITE_ADC_check ONchip_ADC Counter_class;
 	if n_target_mite != 0:
@@ -373,54 +376,54 @@ def compile(project_name, board_type, chip_num):
 
 	if(extension == '.swcs'):    # When it uses swcs for programming, this is default set.
 		RAMP_ADC_check=0; sftreg_check=0; Signal_DAC_check=0; GPIO_IN_check=0; MITE_ADC_check=0;
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/voltage_measurement_ver01_withoutMITE.s43 16384 16384 16384 {path}");
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas {RASPPATH}/prog_assembly/libs/asm_code/voltage_measurement_ver01_withoutMITE.s43 16384 16384 16384 {path}");
 		zip_list = zip_list + "voltage_meas.elf ";
 
 	if (Signal_DAC_check==1) and (GPIO_IN_check==0) and (MITE_ADC_check==0):
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/voltage_measurement_ver01_withoutMITE.s43 16384 16384 16384 {path}");
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas {RASPPATH}/prog_assembly/libs/asm_code/voltage_measurement_ver01_withoutMITE.s43 16384 16384 16384 {path}");
 		zip_list = zip_list + 'voltage_meas.elf ';
 
 	if (Signal_DAC_check==1) and (GPIO_IN_check==0) and (MITE_ADC_check==1):
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/voltage_measurement_ver01_withMITE.s43 16384 16384 16384 {path}");
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas {RASPPATH}/prog_assembly/libs/asm_code/voltage_measurement_ver01_withMITE.s43 16384 16384 16384 {path}");
 		zip_list = zip_list + 'output_info voltage_meas.elf ';
 
 	if (Signal_DAC_check==1) and (GPIO_IN_check==1) and (MITE_ADC_check==1):
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/runmode_signalDAC_gpin_miteADC.s43 16384 16384 16384 {path}");
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas{RASPPATH}/prog_assembly/libs/asm_code/runmode_signalDAC_gpin_miteADC.s43 16384 16384 16384 {path}");
 		zip_list = zip_list + 'gpin_vector output_info voltage_meas.elf ';
 
 	if (Signal_DAC_check==1) and (GPIO_IN_check==0) and (RAMP_ADC_check==1):
 		if sftreg_check==1: 
-			os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/sftreg_adc.s43 16384 16384 16384 {path}"); 
+			os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas {RASPPATH}/prog_assembly/libs/asm_code/sftreg_adc.s43 16384 16384 16384 {path}"); 
 			print("shift here");
 		#else os.system("~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/Ramp_ADC_DAC.s43 16384 16384 16384 {path}"); print
 		#print("RAMP here");
 		else:
-			os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/Ramp_ADC_DAC.s43 16384 16384 16384 {path}");#please use this it creates issues in remote
+			os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas {RASPPATH}/prog_assembly/libs/asm_code/Ramp_ADC_DAC.s43 16384 16384 16384 {path}");#please use this it creates issues in remote
 		print("RAMP here");
 		zip_list = zip_list + 'output_info voltage_meas.elf ';
 
 	if (Signal_DAC_check==1) and (GPIO_IN_check==1) and (RAMP_ADC_check==1):
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/runmode_signalDAC_gpin_rampADC.s43 16384 16384 16384 {path}");
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas {RASPPATH}/prog_assembly/libs/asm_code/runmode_signalDAC_gpin_rampADC.s43 16384 16384 16384 {path}");
 		zip_list = zip_list + 'gpin_vector output_info output_info voltage_meas.elf ';
 		
 	if (Signal_DAC_check==1) and (ONchip_ADC==1):
-		unix_g(f"echo ashes1234 | sudo -S ~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/ADC_onchip.s43 16384 16384 16384 {path}")
+		unix_g(f"echo ashes1234 | sudo -S {RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas {RASPPATH}/prog_assembly/libs/asm_code/ADC_onchip.s43 16384 16384 16384 {path}")
 		zip_list = zip_list + 'output_info output_info voltage_meas.elf ';
 		
 	if (Signal_DAC_check==1) and (Counter_class==1):
-		unix_g(f"echo ashes1234 | sudo -S ~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/Counter.s43 16384 16384 16384 {path}")
+		unix_g(f"echo ashes1234 | sudo -S {RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas {RASPPATH}/prog_assembly/libs/asm_code/Counter.s43 16384 16384 16384 {path}")
 		zip_list = zip_list + 'output_info output_info voltage_meas.elf ';
 		print("here")
 
 	if (Signal_DAC_check==1) and (Counter_class==1) and (GPIO_IN_check==1):
-		unix_g(f"echo ashes1234 | sudo -S ~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/Counter.s43 16384 16384 16384 {path}")
+		unix_g(f"echo ashes1234 | sudo -S {RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas {RASPPATH}/prog_assembly/libs/asm_code/Counter.s43 16384 16384 16384 {path}")
 		zip_list = zip_list + 'output_info output_info voltage_meas.elf ';
 		print("here1")
 
 
 	input_vector_temp = np.loadtxt(f"{path}/input_vector", converters={_:lambda s: int(s, 16) for _ in range(4)})
 	if input_vector_temp[1] == 0:
-		os.system(f"~/rasp30/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas ~/rasp30/prog_assembly/libs/asm_code/voltage_measurement_ver01_just_runmode.s43 16384 16384 16384 {path}")
+		os.system(f"{RASPPATH}/prog_assembly/libs/sh/asm2ihex2.sh voltage_meas {RASPPATH}/prog_assembly/libs/asm_code/voltage_measurement_ver01_just_runmode.s43 16384 16384 16384 {path}")
 	zip_list = zip_list + "input_vector "
 '''
 	os.system(f"rm {project_name}.zip");
@@ -432,7 +435,7 @@ def compile(project_name, board_type, chip_num):
 '''
 def diodeADC_v2i(Vfg, chip_num, brdtype):
 	vdd=2.5;
-	EKV_diodeADC_para = np.loadtxt(f"/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/EKV_diodeADC/EKV_diodeADC_chip{chip_num}{brdtype}", delimiter = ',')
+	EKV_diodeADC_para = np.loadtxt(f"{RASPPATH}/prog_assembly/libs/chip_parameters/EKV_diodeADC/EKV_diodeADC_chip{chip_num}{brdtype}", delimiter = ',')
 	Is=EKV_diodeADC_para[0]
 	VT=EKV_diodeADC_para[1]
 	kappa=EKV_diodeADC_para[2]
@@ -443,7 +446,7 @@ def diodeADC_v2i(Vfg, chip_num, brdtype):
 
 def diodeADC_i2v(Isat, chip_num, brdtype):
 	vdd=2.5;
-	EKV_diodeADC_para = np.loadtxt(f"/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/EKV_diodeADC/EKV_diodeADC_chip{chip_num}{brdtype}", delimiter = ',')
+	EKV_diodeADC_para = np.loadtxt(f"{RASPPATH}/prog_assembly/libs/chip_parameters/EKV_diodeADC/EKV_diodeADC_chip{chip_num}{brdtype}", delimiter = ',')
 	Is=EKV_diodeADC_para[0]
 	VT=EKV_diodeADC_para[1]
 	kappa=EKV_diodeADC_para[2]
@@ -454,7 +457,7 @@ def diodeADC_i2v(Isat, chip_num, brdtype):
 
 def diodeADC_v2h(Vfg, chip_num, brdtype):
 	vdd=2.5;
-	EKV_diodeADC_para = np.loadtxt(f"/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/EKV_diodeADC/EKV_diodeADC_chip{chip_num}{brdtype}", delimiter = ',')
+	EKV_diodeADC_para = np.loadtxt(f"{RASPPATH}/prog_assembly/libs/chip_parameters/EKV_diodeADC/EKV_diodeADC_chip{chip_num}{brdtype}", delimiter = ',')
 	Is=EKV_diodeADC_para[0]
 	VT=EKV_diodeADC_para[1]
 	kappa=EKV_diodeADC_para[2]
@@ -465,7 +468,7 @@ def diodeADC_v2h(Vfg, chip_num, brdtype):
 
 def diodeADC_h2v(hex, chip_num, brdtype):
 	vdd=2.5;
-	EKV_diodeADC_para = np.loadtxt(f"/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/EKV_diodeADC/EKV_diodeADC_chip{chip_num}{brdtype}", delimiter = ',')
+	EKV_diodeADC_para = np.loadtxt(f"{RASPPATH}/prog_assembly/libs/chip_parameters/EKV_diodeADC/EKV_diodeADC_chip{chip_num}{brdtype}", delimiter = ',')
 	Is=EKV_diodeADC_para[0]
 	VT=EKV_diodeADC_para[1]
 	kappa=EKV_diodeADC_para[2]
@@ -475,10 +478,10 @@ def diodeADC_h2v(hex, chip_num, brdtype):
 	return Vfg
 
 def mismatch_map_compensation(target_list, chip_num, brdtype, path, switch_list_ble):
-	b1 = os.system(f"ls ~/rasp30/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}")
+	b1 = os.system(f"ls {RASPPATH}/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}")
 
 	if b1 == 0: # 0 if no error occurred, 1 if error.
-		mismatch_map = np.loadtxt(fname = f"/home/ubuntu/rasp30/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}", delimiter = ',', ndmin = 2)
+		mismatch_map = np.loadtxt(fname = f"{RASPPATH}/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}", delimiter = ',', ndmin = 2)
 		r_size_mmap = len(mismatch_map)
 		n = len(target_list)
 
@@ -513,4 +516,3 @@ def mismatch_map_compensation(target_list, chip_num, brdtype, path, switch_list_
 		
 		return target_list_copy
 	
-
