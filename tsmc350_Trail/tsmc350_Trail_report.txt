@@ -1,8 +1,0 @@
-3 nets failed to route:
- net1_2
- net1_1
- net122
-Placement Time: 0.153
-Routing Time: 5.316
-Merge Time: 0.165
-Total Time: 5.634
