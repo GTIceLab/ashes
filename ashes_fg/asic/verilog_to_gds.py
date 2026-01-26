@@ -2311,7 +2311,9 @@ def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, rou
         key_def2 = line[0] == '' and line[2] == 'NEW'
         if key_def1 or key_def2:
             route_layer_name = line[2] if key_def1 else line[3]
-            layer_type = layer_map[route_layer_name+'_drawing']['layer_type']
+            lookup_key = route_layer_name.upper() + '_drawing'
+            layer_type_raw = layer_map[lookup_key]['layer_type']
+            layer_type = layer_type_raw.split(',')
             num_coords = line.count('(')
             cur_x, cur_y, prev_x, prev_y = None, None, None, None
             first_paren_ind, second_paren_ind = None, None
