@@ -32,13 +32,26 @@ def compile_asic(circuit,process="Process",fileName = "compiled",path = "./examp
     # copy over the verilog file
     shutil.copy(os.path.join('.', 'example_verilog', f'{test_project}.v'), test_path)
 
-    # All units in nanometers
-    tech_process = 'vis350'
-    cell_pitch = 22000
-    dbu = 1000
-    track_spacing = 1400
-    # placement offset to make space for pin routing
-    x_offset, y_offset = 400*track_spacing, 2000*track_spacing 
+    # Find the process node and define tech parameters
+    if (process.split('_')[0].lower() == "tsmc" and process.split('_')[1].lower() == "350nm"):
+        # All units in nanometers
+        tech_process = 'vis350'
+        cell_pitch = 22000
+        dbu = 1000
+        track_spacing = 1400
+        # placement offset to make space for pin routing
+        x_offset, y_offset = 400*track_spacing, 2000*track_spacing
+
+    elif (process.split('_')[0].lower() == "sky" and process.split('_')[1].lower() == "130nm"):
+        # All units in nanometers
+        tech_process = 'sky130'
+        cell_pitch = 6500
+        dbu = 1000
+        track_spacing = 1600 # M5 metal spacing
+        # placement offset to make space for pin routing
+        x_offset, y_offset = 400*track_spacing, 2000*track_spacing
+
+
 
     design_area = (0, 0, design_limits[0], design_limits[1], x_offset, y_offset)
 
