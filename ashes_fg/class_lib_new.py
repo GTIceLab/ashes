@@ -2731,6 +2731,148 @@ class AvgPool_TopDig(StandardCell):
 		# Add cell to circuit
 		circuit.addInstance(self,self.island)
 
+##################################################             350NM  STD CELLS END        #######################################################
+
+# class IndirectVMM_4x2(StandardCell):
+# 	def __init__(self,circuit,island=None,dim=(1,1),Vd_P=None,Vd_R=None,Vs=None,VINJ=None,Vsel=None,Vg=None,GND=None,VTUN=None):
+# 		# Define variables
+# 		self.circuit = circuit
+# 		self.pins = []
+# 		self.ports = []
+# 		self.island = island
+# 		self.dim = dim
+# 		# Define cell information
+# 		self.name = 'IndirectVMM_4x2'
+# 		self.Vd_P = Port(circuit,self,'Vd_P','E',4*self.dim[0])
+# 		self.Vd_R = Port(circuit,self,'Vd_R','E',4*self.dim[0])
+# 		self.Vs = Port(circuit,self,'Vs','N',2*self.dim[1])
+# 		self.VINJ = Port(circuit,self,'VINJ','N',2*self.dim[1])
+# 		self.Vsel = Port(circuit,self,'Vsel','N',2*self.dim[1])
+# 		self.Vg = Port(circuit,self,'Vg','N',2*self.dim[1])
+# 		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+# 		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+
+# 		# Initialize ports with given values
+# 		portsInit = [Vd_P,Vd_R,Vs,VINJ,Vsel,Vg,GND,VTUN]
+# 		i=0
+# 		for p in self.ports:
+# 			self.assignPort(p,portsInit[i])
+# 			i+=1
+# 		# Add cell to circuit
+# 		circuit.addInstance(self,self.island)
+
+class IndirectVMM_4x2(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),Vd_P_e=None,Vd_P_w=None,Vd_R_e=None,Vd_R_w=None,Vs_n=None,Vs_s=None,VINJ_n=None,VINJ_s=None,Vsel_n=None,Vsel_s=None,Vg_n=None,Vg_s=None,GND_n=None,GND_s=None,VTUN_n=None,VTUN_s=None):
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+		# Define cell information
+		self.name = 'IndirectVMM_4x2'
+		self.Vd_P_e = Port(circuit,self,'Vd_P_e','E',4*self.dim[0])
+		self.Vd_P_w = Port(circuit,self,'Vd_P_w','W',4*self.dim[0])
+		self.Vd_R_e = Port(circuit,self,'Vd_R_e','E',4*self.dim[0])
+		self.Vd_R_w = Port(circuit,self,'Vd_R_w','W',4*self.dim[0])
+		self.Vs_n = Port(circuit,self,'Vs_n','N',2*self.dim[1])
+		self.Vs_s = Port(circuit,self,'Vs_s','S',2*self.dim[1])
+		self.VINJ_n = Port(circuit,self,'VINJ_n','N',2*self.dim[1])
+		self.VINJ_s = Port(circuit,self,'VINJ_s','S',2*self.dim[1])
+		self.Vsel_n = Port(circuit,self,'Vsel_n','N',2*self.dim[1])
+		self.Vsel_s = Port(circuit,self,'Vsel_s','S',2*self.dim[1])
+		self.Vg_n = Port(circuit,self,'Vg_n','N',2*self.dim[1])
+		self.Vg_s = Port(circuit,self,'Vg_s','S',2*self.dim[1])
+		self.GND_n = Port(circuit,self,'GND_n','N',4*self.dim[1])
+		self.GND_s = Port(circuit,self,'GND_s','S',4*self.dim[1])
+		self.VTUN_n = Port(circuit,self,'VTUN_n','N',2*self.dim[1])
+		self.VTUN_s = Port(circuit,self,'VTUN_s','S',2*self.dim[1])
+
+		# Initialize ports with given values
+		portsInit = [Vd_P_e,Vd_P_w,Vd_R_e,Vd_R_w,Vs_n,Vs_s,VINJ_n,VINJ_s,Vsel_n,Vsel_s,Vg_n,Vg_s,GND_n,GND_s,VTUN_n,VTUN_s]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
+
+
+# class TA_FGbias_1x2(StandardCell):
+# 	def __init__(self,circuit,island=None,dim=(1,1),Vd_P=None,Vin_P=None,Vin_M=None,OUTPUT=None,VTUN=None,Vg=None,Vsel=None,VINJ=None,GND=None,AVDD=None):
+
+# 		# Define variables
+# 		self.circuit = circuit
+# 		self.pins = []
+# 		self.ports = []
+# 		self.island = island
+# 		self.dim = dim
+
+
+# 		# Define cell information
+# 		self.name = 'TA_FGbias_1x2'
+# 		self.Vd_P = Port(circuit,self,'Vd_P','W',2*self.dim[0])
+# 		self.Vin_P = Port(circuit,self,'Vin_P','W',2*self.dim[0])
+# 		self.Vin_M = Port(circuit,self,'Vin_M','W',2*self.dim[0])
+# 		self.OUTPUT = Port(circuit,self,'OUTPUT','E',2*self.dim[0])
+# 		self.VTUN = Port(circuit,self,'VTUN','N',1*self.dim[1])
+# 		self.Vg = Port(circuit,self,'Vg','N',1*self.dim[1])
+# 		self.Vsel = Port(circuit,self,'Vsel','N',1*self.dim[1])
+# 		self.VINJ = Port(circuit,self,'VINJ','N',1*self.dim[1])
+# 		self.GND = Port(circuit,self,'GND','N',1*self.dim[1])
+# 		self.AVDD = Port(circuit,self,'AVDD','N',1*self.dim[1])
+
+# 		# Initialize ports with given values
+# 		portsInit = [Vd_P,Vin_P,Vin_M,OUTPUT,VTUN,Vg,Vsel,VINJ,GND,AVDD]
+# 		i=0
+# 		for p in self.ports:
+# 			self.assignPort(p,portsInit[i])
+# 			i+=1
+
+# 		# Add cell to circuit
+# 		circuit.addInstance(self,self.island)
+
+class TA_FGbias_1x2(StandardCell):
+	def __init__(self,circuit,island=None,dim=(1,1),Vd_P_w=None,Vin_P_w=None,Vin_M_w=None,OUTPUT_e=None,VTUN_n=None,VTUN_s=None,Vg_n=None,Vg_s=None,Vsel_n=None,VINJ_n=None,VINJ_s=None,GND_n=None,GND_s=None,GND_e=None,AVDD_n=None,AVDD_s=None):
+
+		# Define variables
+		self.circuit = circuit
+		self.pins = []
+		self.ports = []
+		self.island = island
+		self.dim = dim
+
+
+		# Define cell information
+		self.name = 'TA_FGbias_1x2'
+		self.Vd_P_w = Port(circuit,self,'Vd_P_w','W',2*self.dim[0])
+		self.Vin_P_w = Port(circuit,self,'Vin_P_w','W',2*self.dim[0])
+		self.Vin_M_w = Port(circuit,self,'Vin_M_w','W',2*self.dim[0])
+		self.OUTPUT_e = Port(circuit,self,'OUTPUT_e','E',2*self.dim[0])
+		self.VTUN_n = Port(circuit,self,'VTUN_n','N',1*self.dim[1])
+		self.VTUN_s = Port(circuit,self,'VTUN_s','S',1*self.dim[1])
+		self.Vg_n = Port(circuit,self,'Vg_n','N',1*self.dim[1])
+		self.Vg_s = Port(circuit,self,'Vg_s','S',1*self.dim[1])
+		self.Vsel_n = Port(circuit,self,'Vsel_n','N',1*self.dim[1])
+		self.Vsel_s = Port(circuit,self,'Vsel_s','S',1*self.dim[1])
+		self.VINJ_n = Port(circuit,self,'VINJ_n','N',1*self.dim[1])
+		self.VINJ_s = Port(circuit,self,'VINJ_s','S',1*self.dim[1])
+		self.GND_n = Port(circuit,self,'GND_n','N',2*self.dim[1])
+		self.GND_s = Port(circuit,self,'GND_s','S',2*self.dim[1])
+		self.AVDD_n = Port(circuit,self,'AVDD_n','N',2*self.dim[1])
+		self.AVDD_s = Port(circuit,self,'AVDD_s','S',2*self.dim[1])
+
+		# Initialize ports with given values
+		portsInit = [Vd_P_w,Vin_P_w,Vin_M_w,OUTPUT_e,VTUN_n,VTUN_s,Vg_n,Vg_s,Vsel_n,VINJ_n,VINJ_s,GND_n,GND_s,GND_e,AVDD_n,AVDD_s]
+		i=0
+		for p in self.ports:
+			self.assignPort(p,portsInit[i])
+			i+=1
+
+		# Add cell to circuit
+		circuit.addInstance(self,self.island)
+
 
 ############################################################################################################################################	
 ############################################################################################################################################

@@ -30,6 +30,7 @@ def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_
 		base_cost = 10
 		out_file = os.path.join(project_name, project_name + '_qroute.def')
 		param_file = os.path.join(project_name, "qrouter_params.tcl")
+		info_file = os.path.join(project_name, "layers_info.lef") ##Added
 		q_params = open(param_file, "w")
 		q_params.write(f"read_lef {lef_file}\n")
 		q_params.write(f"read_def {def_file}\n")
@@ -42,11 +43,12 @@ def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_
 				else:
 					q_params.write("cost " + param +" "+ str(qrouterParams[param])+"\n")
 				
-		q_params.write("layers 4\n")
+		#q_params.write("layers 5\n")
 		q_params.write(f"write_def {out_file}\n")
 		q_params.write(f"write_failed {report_file}\n")
 		q_params.write("quit\n")
 		q_params.close()
+   
 		command = ['qrouter', '-nog', '-s', param_file]
 		#command = ['qrouter', '-s', param_file]
 		process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -58,6 +60,42 @@ def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_
 			if output:
 				print(output.strip())
 		rt_end = time.time()
+
+##############################################################################################################
+		# log_filename = os.path.join(project_name, "qrouter_full_log.txt")
+		# command = ['qrouter', '-noc', '-v', '2', '-s', param_file]
+		# #command = ['qrouter', '-v', '2', '-s', param_file]
+
+		# # 1. Open the file for writing
+		# with open(log_filename, "w") as log_file:
+		# 	# 2. Use stderr=subprocess.STDOUT to merge Errors and Output into one stream
+		# 	process = subprocess.Popen(
+		# 		command, 
+		# 		stdout=subprocess.PIPE, 
+		# 		stderr=subprocess.STDOUT, 
+		# 		text=True,
+		# 		bufsize=1  # Line buffered
+		# 	)
+
+		# 	rt_start = time.time()
+
+		# 	# 3. Read the merged stream
+		# 	for line in iter(process.stdout.readline, ''):
+		# 		# Print to terminal
+		# 		print(line.strip())
+				
+		# 		# Write to file
+		# 		log_file.write(line)
+		# 		log_file.flush() # Ensure it writes to disk immediately
+
+		# 	process.wait()
+		# 	rt_end = time.time()
+
+		# print(f"\nExecution finished in {rt_end - rt_start:.2f}s")
+		# print(f"Full report saved to: {log_filename}")
+
+##############################################################################################################
+
 		gds_synthesis(process_params, design_area, project_name, routed_def=True, router_tool='qrouter')
 		fin_end = time.time()
 		pl_time = round(pl_end - pl_start, 3)

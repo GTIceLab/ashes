@@ -17,7 +17,7 @@ import re
 
 #exec(open("./Wafer5_Synthesis/Macro_SmallFrame_Route.py").read())
 
-exec(open("./example_python/AlgorithmicADC.py").read())
+#exec(open("./example_python/AlgorithmicADC.py").read())
 
 #exec(open("./example_python/Mod_WTA.py").read())
 
@@ -53,3 +53,6 @@ exec(open("./example_python/AlgorithmicADC.py").read())
 
 #exec(open("./example_python/Top_ConvNN.py").read())
 
+#exec(open("./example_python/sky130/Trail.py").read())
+
+exec(open("./example_python/Trail.py").read())

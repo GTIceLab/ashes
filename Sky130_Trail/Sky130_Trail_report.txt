@@ -1,0 +1,8 @@
+3 nets failed to route:
+ net153_2
+ net133_3
+ net142
+Placement Time: 0.144
+Routing Time: 9.053
+Merge Time: 0.147
+Total Time: 9.344

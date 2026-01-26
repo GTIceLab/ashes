@@ -100,7 +100,7 @@ def gds_synthesis(process_params, design_area, proj_name, isle_loc=None, routed_
             if p_key not in excluded_ports and matches:
                 # Reverse to catch last _num_ pattern
                 p_key = p_key[::-1]
-                replacement = r'>\1<'
+                replacement = r']\1[' if tech_process == "sky130" else r'>\1<'
                 p_key = re.sub(pattern, replacement, p_key, count=1)
                 p_key = p_key[::-1]
             pattern = r'(?i)_PLUS_'
@@ -204,9 +204,10 @@ def gds_synthesis(process_params, design_area, proj_name, isle_loc=None, routed_
 
         generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu, cell_order_in_island)
 
-        metal_layers = count_metal_layers(layer_map, tech_process)
+        #metal_layers = count_metal_layers(layer_map, tech_process)
+        metal_layers = count_metal_layers_drawing(layer_map, tech_process)
         def_params = (track_spacing, def_file_path, dbu, design_area, file_name_no_ext, frame_module, router_tool)
-        def_blocks, def_nets = generate_def(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table)
+        def_blocks, def_nets = generate_def(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table,lef_file_path)
 
         #island_info = sanitize_island_info(island_info)
         if verbose:
@@ -370,7 +371,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                     # if the cell is not rotated and there is a sub cell width available, update the max width
                     elif not rotated_cell and sub_cell_width and sref_name:
                         max_x = max(sub_cell_width, max_x) if max_x else sub_cell_width
-                    
+                              
                     if rec.tag_name == 'COLROW':
                         matrix_inst = True
 
@@ -407,6 +408,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                                     temp_max = int(item) + cell_info[sref_name]['width'] + cell_info[sref_name]['origin'][0]
                                     #if (sub_cell_name == 'ArbGen'): print(f"temp max {temp_max}, sref name {sref_name} cell_width {cell_info[sref_name]['width']} item val {item}")
                                     max_x = temp_max if max_x is None else max(temp_max, max_x) 
+
                         sref_name = None
                         #if (sub_cell_name == 'ArbGen'):
                         #    print(f'Tracking ArbGen max x: {max_x}')
@@ -1213,8 +1215,8 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
     # Go through the edges and calculate pin location on each edge. 
     # Make sure its on grid and spaced in multiples of tracks. if we run out of space, throw an error.
     # Append pin dimensions, pin center
-    frame_pin_spacing_horz = int(10*track_spacing)
-    frame_pin_spacing_vert = int(10*track_spacing)
+    frame_pin_spacing_horz = int(3*track_spacing + track_spacing/10)
+    frame_pin_spacing_vert = int(3*track_spacing + track_spacing/10)
     frame_pin_height = track_spacing
     pin_center_x = frame_left + frame_pin_spacing_horz
     pin_center_y = frame_top - int(track_spacing/2)
@@ -1457,7 +1459,7 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
 
     # Copy the technology lef for the design
     tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '.lef')
-    tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '_toplevelroute.lef')
+    #tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '_toplevelroute.lef')
     if os.path.exists(tech_lef_path): shutil.copy(tech_lef_path, file_path)
     else: raise CellNotFound(f'Could not find the technology lef file {tech_process}.lef. Is it in the ./lib/tech_lef/ directory?')
 
@@ -1519,7 +1521,8 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
     lef_file.write('END LIBRARY')
     lef_file.close()
 
-def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table):
+
+def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table, lef_file_path):
     '''
     Create a def file for the design
     - Place def instances around the edge for matrices
@@ -1540,13 +1543,14 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     def_file.write(f'DESIGN {file_name} ;\n\n')
     def_file.write(f'UNITS DISTANCE MICRONS {dbu} ;\n\n')
     def_file.write(f'DIEAREA ( {design_area[0]} {design_area[1]} ) ( {design_area[2]} {design_area[3]} ) ;\n\n')
+    
     # Generate Tracks
     track_string = []
     for val in range(len(metal_layers), 0, -1):
-        lef_path = os.path.join(file_name, file_name)
-        m_width = find_metal_in_lef(metal_layers[val-1], lef_path, dbu)
-        m_width = None # make all track widths the same for each layer because i see better results
-        m_width = track_spacing if m_width is None else int(m_width + 0.1*dbu)
+        m_width = find_pitch_in_lef(metal_layers[val-1], lef_file_path, dbu)
+        #m_width = None # make all track widths the same for each layer because i see better results fpr 350nm
+        #print (f'###############################{metal_layers[val-1]} == {m_width}###############################')
+        m_width = track_spacing if m_width is None else int(m_width)
         m_id = val-1
         m_track_num = (round(design_area[2]/m_width), round(design_area[3]/m_width))
         track_def = f'TRACKS X {m_id} DO {m_track_num[0]} STEP {m_width} LAYER {metal_layers[val-1]} ;\n'
@@ -1599,6 +1603,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
 
     # Place blockages in def file
     pin_const = 1 # this is for amount of distance between blockage edge and true cell edge
+    pin_const = 0.5 # this is for amount of distance between blockage edge and true cell edge
     pin_spacing = 1*dbu # this is for space from pin block to pin
     pin_threshold = 1.5*dbu # this is the minimum distance between pins for a blockage to be inserted
     block_ext_len = 1*dbu # this is how far the block should extend from the internal blockage
@@ -2066,7 +2071,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                             def_file.write(f'  END\n\n')       
         # Write blockages for the frame to keep routes internal
         if frame_module:
-            # print(f"\n\n frame-module-blockages for loop now \n\n")
+            #print(f"\n\n frame-module-blockages for loop now \n\n")
             frame_name = frame_module.module_name
             frame_origin = cell_info[frame_name]['origin']
             frame_w, frame_h = cell_info[frame_name]['width'], cell_info[frame_name]['height']
@@ -2084,13 +2089,13 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 print(f"Left: {int(pin_left_name_int['RECT'][0])}\n Loc: {loc[0]}")
                 pin_ref_left = int(pin_left_name_int['RECT'][0]) - 10000            
                 pin_ref_bot  = int(pin_bot_name_int['RECT'][1]) - 10000
-                # print(f'\n\nleft side: {pin_ref_left}\n bottom side: {pin_ref_bot}\n')
+                #print(f'\n\nleft side: {pin_ref_left}\n bottom side: {pin_ref_bot}\n')
                 # frame_blockage_size = int(1*dbu+pin_ref_left) # specify in micron, convert to database units (nm)
                 frame_blockage_W_E = pin_ref_left
                 frame_blockage_N_S = pin_ref_bot
             else:
                 print(f"Pin {ref_left_pin_name} or {ref_bot_pin_name} not found.")
-                frame_blockage_size = int(1*dbu) # specify in micron, convert to database units (nm)
+                frame_blockage_size = int(track_spacing/1000 * dbu) # specify in micron, convert to database units (nm)
                 frame_blockage_N_S = frame_blockage_size
                 frame_blockage_W_E = frame_blockage_size    
 
@@ -2307,7 +2312,6 @@ def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, rou
         if key_def1 or key_def2:
             route_layer_name = line[2] if key_def1 else line[3]
             layer_type = layer_map[route_layer_name+'_drawing']['layer_type']
-            layer_type = layer_type.split(',')
             num_coords = line.count('(')
             cur_x, cur_y, prev_x, prev_y = None, None, None, None
             first_paren_ind, second_paren_ind = None, None
@@ -2343,7 +2347,11 @@ def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, rou
                     via_doc[via_ref] = via_def
                 via_def = via_doc[via_ref]
                 for via in via_def:
-                    layer_type = layer_map[via[0]+'_drawing']['layer_type']
+                    #layer_type = layer_map[via[0]+'_drawing']['layer_type']
+                    # Standardize to UPPERCASE
+                    lookup_key = via[0].upper() + '_drawing'
+                    layer_type = layer_map[lookup_key]['layer_type']
+
                     layer_type = layer_type.split(',')
                     update_routed_str(int(cur_x)+int(via[1]), int(cur_y)+int(via[2]), int(cur_x)+int(via[3]), int(cur_y)+int(via[4]), via[0], layer_type, parse_vias=True)
 

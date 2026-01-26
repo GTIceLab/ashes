@@ -1,0 +1,1252 @@
+VERSION 5.5 ;
+NAMESCASESENSITIVE ON ;
+DIVIDERCHAR "/" ;
+BUSBITCHARS "[]" ;
+
+DESIGN tsmc350_Trail ;
+
+UNITS DISTANCE MICRONS 1000 ;
+
+DIEAREA ( 0 0 ) ( 500000.0 500000.0 ) ;
+
+TRACKS X 3 DO 357 STEP 1400 LAYER METAL4 ;
+TRACKS Y 3 DO 357 STEP 1400 LAYER METAL4 ;
+TRACKS X 2 DO 400 STEP 1250 LAYER METAL3 ;
+TRACKS Y 2 DO 400 STEP 1250 LAYER METAL3 ;
+TRACKS X 1 DO 357 STEP 1400 LAYER METAL2 ;
+TRACKS Y 1 DO 357 STEP 1400 LAYER METAL2 ;
+TRACKS X 0 DO 400 STEP 1250 LAYER METAL1 ;
+TRACKS Y 0 DO 400 STEP 1250 LAYER METAL1 ;
+
+COMPONENTS 13 ;
+- cab_frame tile_analog_frame + PLACED ( 0 0 ) N ;
+- I_0_0_0_3 TSMC350nm_4x2_Indirect + PLACED ( 132380 136000 ) N ;
+- I_0_0_1_3 TSMC350nm_4x2_Indirect + PLACED ( 132380 114000 ) N ;
+- I_0_0_2_3 TSMC350nm_4x2_Indirect + PLACED ( 132380 92000 ) N ;
+- I_0_0_3_3 TSMC350nm_4x2_Indirect + PLACED ( 132380 70000 ) N ;
+- I_0_0_0_0 TSMC350nm_4x2_Indirect + PLACED ( 50000 136000 ) N ;
+- I_0_0_0_1 TSMC350nm_4x2_Indirect + PLACED ( 77460 136000 ) N ;
+- I_0_0_0_2 TSMC350nm_4x2_Indirect + PLACED ( 104920 136000 ) N ;
+- I_1_0_0_0 TSMC350nm_TA2Cell_NoFG + PLACED ( 250000 136000 ) N ;
+- I_1_0_1_0 TSMC350nm_TA2Cell_NoFG + PLACED ( 250000 114000 ) N ;
+- I_1_0_2_0 TSMC350nm_TA2Cell_NoFG + PLACED ( 250000 92000 ) N ;
+- I_1_0_3_0 TSMC350nm_TA2Cell_NoFG + PLACED ( 250000 70000 ) N ;
+- I_1_0_0_1 TSMC350nm_TA2Cell_NoFG + PLACED ( 355000 136000 ) N ;
+END COMPONENTS
+
+BLOCKAGES 194 ;
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 50500.0 70500.0 ) ( 159340.0 157500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 250500.0 70500.0 ) ( 354500.0 157500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 249000 139100 ) ( 250500.0 139900 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 249000 154500 ) ( 250500.0 157500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 250500.0 157500.0 ) ( 251100 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 254500 157500.0 ) ( 259500 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 262900 157500.0 ) ( 287500 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 290900 157500.0 ) ( 293100 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 296500 157500.0 ) ( 328100 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 331500 157500.0 ) ( 342100 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 345500 157500.0 ) ( 354500.0 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354500.0 150300 ) ( 356000 157500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354500.0 146100 ) ( 356000 146900 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354500.0 136500.0 ) ( 356000 142700 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 345500 135000 ) ( 354500.0 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 331500 135000 ) ( 342100 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 296500 135000 ) ( 328100 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 290900 135000 ) ( 293100 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 262900 135000 ) ( 287500 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 254500 135000 ) ( 259500 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 250500.0 135000 ) ( 251100 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 249000 117100 ) ( 250500.0 117900 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 249000 132500 ) ( 250500.0 135500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 250500.0 135500.0 ) ( 251100 137000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 254500 135500.0 ) ( 259500 137000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 262900 135500.0 ) ( 287500 137000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 290900 135500.0 ) ( 293100 137000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 296500 135500.0 ) ( 328100 137000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 331500 135500.0 ) ( 342100 137000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 345500 135500.0 ) ( 354500.0 137000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354500.0 128300 ) ( 356000 135500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354500.0 124100 ) ( 356000 124900 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354500.0 114500.0 ) ( 356000 120700 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 345500 113000 ) ( 354500.0 114500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 331500 113000 ) ( 342100 114500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 296500 113000 ) ( 328100 114500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 290900 113000 ) ( 293100 114500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 262900 113000 ) ( 287500 114500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 254500 113000 ) ( 259500 114500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 250500.0 113000 ) ( 251100 114500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 249000 95100 ) ( 250500.0 95900 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 249000 110500 ) ( 250500.0 113500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 250500.0 113500.0 ) ( 251100 115000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 254500 113500.0 ) ( 259500 115000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 262900 113500.0 ) ( 287500 115000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 290900 113500.0 ) ( 293100 115000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 296500 113500.0 ) ( 328100 115000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 331500 113500.0 ) ( 342100 115000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 345500 113500.0 ) ( 354500.0 115000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354500.0 106300 ) ( 356000 113500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354500.0 102100 ) ( 356000 102900 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354500.0 92500.0 ) ( 356000 98700 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 345500 91000 ) ( 354500.0 92500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 331500 91000 ) ( 342100 92500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 296500 91000 ) ( 328100 92500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 290900 91000 ) ( 293100 92500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 262900 91000 ) ( 287500 92500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 254500 91000 ) ( 259500 92500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 250500.0 91000 ) ( 251100 92500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 249000 73100 ) ( 250500.0 73900 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 249000 88500 ) ( 250500.0 91500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 250500.0 91500.0 ) ( 251100 93000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 254500 91500.0 ) ( 259500 93000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 262900 91500.0 ) ( 287500 93000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 290900 91500.0 ) ( 293100 93000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 296500 91500.0 ) ( 328100 93000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 331500 91500.0 ) ( 342100 93000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 345500 91500.0 ) ( 354500.0 93000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354500.0 84300 ) ( 356000 91500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354500.0 80100 ) ( 356000 80900 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354500.0 70500.0 ) ( 356000 76700 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 345500 69000 ) ( 354500.0 70500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 331500 69000 ) ( 342100 70500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 296500 69000 ) ( 328100 70500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 290900 69000 ) ( 293100 70500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 262900 69000 ) ( 287500 70500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 254500 69000 ) ( 259500 70500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 250500.0 69000 ) ( 251100 70500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354000 139100 ) ( 355500.0 139900 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 354000 154500 ) ( 355500.0 157500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 355500.0 157500.0 ) ( 356100 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 359500 157500.0 ) ( 364500 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 367900 157500.0 ) ( 392500 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 395900 157500.0 ) ( 398100 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 401500 157500.0 ) ( 433100 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 436500 157500.0 ) ( 447100 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 450500 157500.0 ) ( 459500.0 159000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 459500.0 150300 ) ( 461000 157500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 459500.0 146100 ) ( 461000 146900 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 459500.0 136500.0 ) ( 461000 142700 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 450500 135000 ) ( 459500.0 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 436500 135000 ) ( 447100 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 401500 135000 ) ( 433100 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 395900 135000 ) ( 398100 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 367900 135000 ) ( 392500 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 359500 135000 ) ( 364500 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 355500.0 135000 ) ( 356100 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 50500.0 70500.0 ) ( 159340.0 157500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 250500.0 70500.0 ) ( 354500.0 157500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 249000 139100 ) ( 250500.0 139900 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 249000 154500 ) ( 250500.0 157500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 250500.0 157500.0 ) ( 251100 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 254500 157500.0 ) ( 259500 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 262900 157500.0 ) ( 287500 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 290900 157500.0 ) ( 293100 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 296500 157500.0 ) ( 328100 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 331500 157500.0 ) ( 342100 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 345500 157500.0 ) ( 354500.0 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354500.0 150300 ) ( 356000 157500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354500.0 146100 ) ( 356000 146900 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354500.0 136500.0 ) ( 356000 142700 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 345500 135000 ) ( 354500.0 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 331500 135000 ) ( 342100 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 296500 135000 ) ( 328100 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 290900 135000 ) ( 293100 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 262900 135000 ) ( 287500 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 254500 135000 ) ( 259500 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 250500.0 135000 ) ( 251100 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 249000 117100 ) ( 250500.0 117900 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 249000 132500 ) ( 250500.0 135500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 250500.0 135500.0 ) ( 251100 137000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 254500 135500.0 ) ( 259500 137000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 262900 135500.0 ) ( 287500 137000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 290900 135500.0 ) ( 293100 137000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 296500 135500.0 ) ( 328100 137000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 331500 135500.0 ) ( 342100 137000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 345500 135500.0 ) ( 354500.0 137000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354500.0 128300 ) ( 356000 135500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354500.0 124100 ) ( 356000 124900 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354500.0 114500.0 ) ( 356000 120700 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 345500 113000 ) ( 354500.0 114500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 331500 113000 ) ( 342100 114500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 296500 113000 ) ( 328100 114500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 290900 113000 ) ( 293100 114500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 262900 113000 ) ( 287500 114500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 254500 113000 ) ( 259500 114500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 250500.0 113000 ) ( 251100 114500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 249000 95100 ) ( 250500.0 95900 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 249000 110500 ) ( 250500.0 113500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 250500.0 113500.0 ) ( 251100 115000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 254500 113500.0 ) ( 259500 115000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 262900 113500.0 ) ( 287500 115000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 290900 113500.0 ) ( 293100 115000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 296500 113500.0 ) ( 328100 115000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 331500 113500.0 ) ( 342100 115000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 345500 113500.0 ) ( 354500.0 115000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354500.0 106300 ) ( 356000 113500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354500.0 102100 ) ( 356000 102900 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354500.0 92500.0 ) ( 356000 98700 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 345500 91000 ) ( 354500.0 92500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 331500 91000 ) ( 342100 92500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 296500 91000 ) ( 328100 92500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 290900 91000 ) ( 293100 92500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 262900 91000 ) ( 287500 92500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 254500 91000 ) ( 259500 92500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 250500.0 91000 ) ( 251100 92500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 249000 73100 ) ( 250500.0 73900 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 249000 88500 ) ( 250500.0 91500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 250500.0 91500.0 ) ( 251100 93000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 254500 91500.0 ) ( 259500 93000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 262900 91500.0 ) ( 287500 93000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 290900 91500.0 ) ( 293100 93000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 296500 91500.0 ) ( 328100 93000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 331500 91500.0 ) ( 342100 93000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 345500 91500.0 ) ( 354500.0 93000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354500.0 84300 ) ( 356000 91500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354500.0 80100 ) ( 356000 80900 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354500.0 70500.0 ) ( 356000 76700 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 345500 69000 ) ( 354500.0 70500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 331500 69000 ) ( 342100 70500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 296500 69000 ) ( 328100 70500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 290900 69000 ) ( 293100 70500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 262900 69000 ) ( 287500 70500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 254500 69000 ) ( 259500 70500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 250500.0 69000 ) ( 251100 70500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354000 139100 ) ( 355500.0 139900 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 354000 154500 ) ( 355500.0 157500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 355500.0 157500.0 ) ( 356100 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 359500 157500.0 ) ( 364500 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 367900 157500.0 ) ( 392500 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 395900 157500.0 ) ( 398100 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 401500 157500.0 ) ( 433100 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 436500 157500.0 ) ( 447100 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 450500 157500.0 ) ( 459500.0 159000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 459500.0 150300 ) ( 461000 157500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 459500.0 146100 ) ( 461000 146900 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 459500.0 136500.0 ) ( 461000 142700 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 450500 135000 ) ( 459500.0 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 436500 135000 ) ( 447100 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 401500 135000 ) ( 433100 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 395900 135000 ) ( 398100 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 367900 135000 ) ( 392500 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 359500 135000 ) ( 364500 136500.0 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 355500.0 135000 ) ( 356100 136500.0 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 0 0 ) ( 1400 228000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 403600 0 ) ( 405000 228000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 0 226600 ) ( 405000 228000 ) ;
+  END
+
+  - METAL1
+    LAYER METAL1 ;
+    RECT ( 0 0 ) ( 405000 1400 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 0 0 ) ( 1400 228000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 403600 0 ) ( 405000 228000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 0 226600 ) ( 405000 228000 ) ;
+  END
+
+  - METAL2
+    LAYER METAL2 ;
+    RECT ( 0 0 ) ( 405000 1400 ) ;
+  END
+
+  - METAL3
+    LAYER METAL3 ;
+    RECT ( 0 0 ) ( 1400 228000 ) ;
+  END
+
+  - METAL3
+    LAYER METAL3 ;
+    RECT ( 403600 0 ) ( 405000 228000 ) ;
+  END
+
+  - METAL3
+    LAYER METAL3 ;
+    RECT ( 0 226600 ) ( 405000 228000 ) ;
+  END
+
+  - METAL3
+    LAYER METAL3 ;
+    RECT ( 0 0 ) ( 405000 1400 ) ;
+  END
+
+  - METAL4
+    LAYER METAL4 ;
+    RECT ( 0 0 ) ( 1400 228000 ) ;
+  END
+
+  - METAL4
+    LAYER METAL4 ;
+    RECT ( 403600 0 ) ( 405000 228000 ) ;
+  END
+
+  - METAL4
+    LAYER METAL4 ;
+    RECT ( 0 226600 ) ( 405000 228000 ) ;
+  END
+
+  - METAL4
+    LAYER METAL4 ;
+    RECT ( 0 0 ) ( 405000 1400 ) ;
+  END
+
+END BLOCKAGES
+
+NETS 69 ;
+- net110_0
+  ( I_0_0_0_3 Vd_P<0> ) ( I_1_0_0_0 VD_P<0> ) ( cab_frame w_Vd_P<0> ) 
+;
+- net111_0
+  ( I_0_0_0_3 Vd_P<1> ) ( I_1_0_0_0 VD_P<1> ) ( cab_frame w_Vd_P<1> ) 
+;
+- net112_0
+  ( I_0_0_0_3 Vd_P<2> ) ( cab_frame w_Vd_P<2> ) 
+;
+- net113_0
+  ( I_0_0_0_3 Vd_P<3> ) ( cab_frame w_Vd_P<3> ) 
+;
+- net80_0
+  ( I_0_0_0_3 Vd_R<0> ) ( I_0_0_0_3 Vd_R<1> ) ( I_0_0_0_3 Vd_R<2> ) ( I_1_0_0_0 VIN1_PLUS ) 
+;
+- net125
+  ( I_0_0_0_3 Vs<0> ) ( I_0_0_0_3 Vs<1> ) ( I_0_0_0_0 Vs<0> ) ( I_0_0_0_0 Vs<1> ) ( I_0_0_0_1 Vs<0> ) ( I_0_0_0_1 Vs<1> ) ( I_0_0_0_2 Vs<0> ) ( I_0_0_0_2 Vs<1> ) ( I_1_0_0_0 VPWR ) 
+;
+- net122
+  ( I_0_0_0_3 VINJ<0> ) ( I_0_0_0_3 VINJ<1> ) ( I_0_0_0_0 VINJ<0> ) ( I_0_0_0_0 VINJ<1> ) ( I_0_0_0_1 VINJ<0> ) ( I_0_0_0_1 VINJ<1> ) ( I_0_0_0_2 VINJ<0> ) ( I_0_0_0_2 VINJ<1> ) ( I_1_0_0_0 VINJ ) 
+;
+- net95_3
+  ( I_0_0_0_3 Vsel<0> ) ( cab_frame n_Vsel<6> ) 
+;
+- net97_3
+  ( I_0_0_0_3 Vsel<1> ) ( cab_frame n_Vsel<7> ) 
+;
+- net94_3
+  ( I_0_0_0_3 Vg<0> ) ( cab_frame n_Vg<6> ) 
+;
+- net96_3
+  ( I_0_0_0_3 Vg<1> ) ( cab_frame n_Vg<7> ) 
+;
+- net1_3
+  ( I_0_0_0_3 GND<0> ) ( I_0_0_0_3 GND<1> ) 
+;
+- net124
+  ( I_0_0_0_3 VTUN ) ( I_0_0_0_0 VTUN ) ( I_0_0_0_1 VTUN ) ( I_0_0_0_2 VTUN ) ( I_1_0_0_0 VTUN ) 
+;
+- net110_1
+  ( I_0_0_1_3 Vd_P<0> ) ( I_1_0_1_0 VD_P<0> ) ( cab_frame w_Vd_P<4> ) 
+;
+- net111_1
+  ( I_0_0_1_3 Vd_P<1> ) ( I_1_0_1_0 VD_P<1> ) ( cab_frame w_Vd_P<5> ) 
+;
+- net112_1
+  ( I_0_0_1_3 Vd_P<2> ) ( cab_frame w_Vd_P<6> ) 
+;
+- net113_1
+  ( I_0_0_1_3 Vd_P<3> ) ( cab_frame w_Vd_P<7> ) 
+;
+- net80_1
+  ( I_0_0_1_3 Vd_R<0> ) ( I_0_0_1_3 Vd_R<1> ) ( I_0_0_1_3 Vd_R<2> ) ( I_1_0_1_0 VIN1_PLUS ) 
+;
+- net110_2
+  ( I_0_0_2_3 Vd_P<0> ) ( I_1_0_2_0 VD_P<0> ) ( cab_frame w_Vd_P<8> ) 
+;
+- net111_2
+  ( I_0_0_2_3 Vd_P<1> ) ( I_1_0_2_0 VD_P<1> ) ( cab_frame w_Vd_P<9> ) 
+;
+- net112_2
+  ( I_0_0_2_3 Vd_P<2> ) ( cab_frame w_Vd_P<10> ) 
+;
+- net113_2
+  ( I_0_0_2_3 Vd_P<3> ) ( cab_frame w_Vd_P<11> ) 
+;
+- net80_2
+  ( I_0_0_2_3 Vd_R<0> ) ( I_0_0_2_3 Vd_R<1> ) ( I_0_0_2_3 Vd_R<2> ) ( I_1_0_2_0 VIN1_PLUS ) 
+;
+- net110_3
+  ( I_0_0_3_3 Vd_P<0> ) ( I_1_0_3_0 VD_P<0> ) ( cab_frame w_Vd_P<12> ) 
+;
+- net111_3
+  ( I_0_0_3_3 Vd_P<1> ) ( I_1_0_3_0 VD_P<1> ) ( cab_frame w_Vd_P<13> ) 
+;
+- net112_3
+  ( I_0_0_3_3 Vd_P<2> ) ( cab_frame w_Vd_P<14> ) 
+;
+- net113_3
+  ( I_0_0_3_3 Vd_P<3> ) ( cab_frame w_Vd_P<15> ) 
+;
+- net80_3
+  ( I_0_0_3_3 Vd_R<0> ) ( I_0_0_3_3 Vd_R<1> ) ( I_0_0_3_3 Vd_R<2> ) ( I_1_0_3_0 VIN1_PLUS ) 
+;
+- net95_0
+  ( I_0_0_0_0 Vsel<0> ) ( cab_frame n_Vsel<0> ) 
+;
+- net97_0
+  ( I_0_0_0_0 Vsel<1> ) ( cab_frame n_Vsel<1> ) 
+;
+- net94_0
+  ( I_0_0_0_0 Vg<0> ) ( cab_frame n_Vg<0> ) 
+;
+- net96_0
+  ( I_0_0_0_0 Vg<1> ) ( cab_frame n_Vg<1> ) 
+;
+- net1_0
+  ( I_0_0_0_0 GND<0> ) ( I_0_0_0_0 GND<1> ) 
+;
+- net95_1
+  ( I_0_0_0_1 Vsel<0> ) ( cab_frame n_Vsel<2> ) 
+;
+- net97_1
+  ( I_0_0_0_1 Vsel<1> ) ( cab_frame n_Vsel<3> ) 
+;
+- net94_1
+  ( I_0_0_0_1 Vg<0> ) ( cab_frame n_Vg<2> ) 
+;
+- net96_1
+  ( I_0_0_0_1 Vg<1> ) ( cab_frame n_Vg<3> ) 
+;
+- net1_1
+  ( I_0_0_0_1 GND<0> ) ( I_0_0_0_1 GND<1> ) ( I_1_0_0_1 GND ) 
+;
+- net95_2
+  ( I_0_0_0_2 Vsel<0> ) ( cab_frame n_Vsel<4> ) 
+;
+- net97_2
+  ( I_0_0_0_2 Vsel<1> ) ( cab_frame n_Vsel<5> ) 
+;
+- net94_2
+  ( I_0_0_0_2 Vg<0> ) ( cab_frame n_Vg<4> ) 
+;
+- net96_2
+  ( I_0_0_0_2 Vg<1> ) ( cab_frame n_Vg<5> ) 
+;
+- net1_2
+  ( I_0_0_0_2 GND<0> ) ( I_0_0_0_2 GND<1> ) 
+;
+- net144_0
+  ( I_1_0_0_0 OUTPUT<0> ) ( cab_frame e_Output<0> ) 
+;
+- net145_0
+  ( I_1_0_0_0 OUTPUT<1> ) ( cab_frame e_Output<1> ) 
+;
+- net126_0
+  ( I_1_0_0_0 Vg ) ( cab_frame n_Vg<8> ) 
+;
+- net127_0
+  ( I_1_0_0_0 Vsel ) ( cab_frame n_Vsel<8> ) 
+;
+- net144_1
+  ( I_1_0_1_0 OUTPUT<0> ) ( cab_frame e_Output<2> ) 
+;
+- net145_1
+  ( I_1_0_1_0 OUTPUT<1> ) ( cab_frame e_Output<3> ) 
+;
+- net144_2
+  ( I_1_0_2_0 OUTPUT<0> ) ( cab_frame e_Output<4> ) 
+;
+- net145_2
+  ( I_1_0_2_0 OUTPUT<1> ) ( cab_frame e_Output<5> ) 
+;
+- net144_3
+  ( I_1_0_3_0 OUTPUT<0> ) ( cab_frame e_Output<6> ) 
+;
+- net145_3
+  ( I_1_0_3_0 OUTPUT<1> ) ( cab_frame e_Output<7> ) 
+;
+END NETS
+
+END DESIGN

@@ -82,6 +82,139 @@ def count_metal_layers(layer_map, tech_process):
     
     return metal_layers
 
+def count_metal_layers_drawing(layer_map, tech_process):
+    '''
+    Return a list of metal routing layers with purpose 'DRAWING' available in PDK
+    '''
+    metal_layers = []
+    for item, value in layer_map.items():
+        if value['layer'][:5] == 'metal' and value['purpose'] == 'drawing':
+            metal_layers.append(value['pdk_name'])
+    
+    if not metal_layers: 
+        raise PinNotDefined(f'Cannot find any metal layers in {tech_process}.json')
+    
+    return metal_layers
+
+def find_pitch_in_lef(layer_name, lef_path, dbu=1000):
+    '''
+    Returns the routing pitch of layer_name from the LEF file (converted to DBU)
+    '''
+    pitch = None
+    in_target_layer = False
+    target_layer_upper = layer_name.upper()
+    # Ensure file extension is handled
+    path = f'{lef_path}.lef' if not lef_path.endswith('.lef') else lef_path
+
+    try:
+        with open(path, 'r') as f:
+            for line in f:
+                # Clean line and split into tokens
+                tokens = line.strip().split()
+                if not tokens:
+                    continue
+                
+                # Check for start of the layer: LAYER METAL1
+                if tokens[0].upper() == "LAYER" and len(tokens) > 1:
+                    if tokens[1].upper() == target_layer_upper:
+                        in_target_layer = True
+                    continue
+
+                if in_target_layer:
+                    # Check for PITCH: PITCH 0.2 ;
+                    if tokens[0].upper() == "PITCH" and len(tokens) > 1:
+                        # Remove semicolon if it's attached to the number
+                        val_str = tokens[1].rstrip(';')
+                        pitch_microns = float(val_str)
+                        
+                        if pitch_microns > 0:
+                            return pitch_microns * dbu
+                        else:
+                            pitch = 0.0
+
+                    # Check for PROPERTY: PROPERTY routingPitch 0.2 ;
+                    elif tokens[0].upper() == "PROPERTY" and len(tokens) > 2:
+                        if tokens[1] == "routingPitch":
+                            val_str = tokens[2].rstrip(';')
+                            pitch_microns = float(val_str)
+                            if pitch_microns > 0:
+                                return pitch_microns * dbu
+
+                    # Check for end of the layer: END METAL1
+                    if tokens[0].upper() == "END" and len(tokens) > 1:
+                        if tokens[1].upper() == target_layer_upper:
+                            break
+                            
+    except Exception as e:
+        print(f"An error occurred while reading LEF: {e}")
+        return None
+
+    return pitch
+
+
+# def find_pitch_in_lef(layer_name, lef_path, dbu=1000):
+#     '''
+#     Returns the pitch of given layer_name from LEF file
+#     This is using the general expression method
+#     '''
+        
+#     lef_path = lef_path + '.lef' if not lef_path.endswith('.lef') else lef_path
+#     if not os.path.exists(lef_path):
+#         print(f"Error: LEF file not found at {lef_path}")
+#         return None
+
+#     pitch = None
+#     in_target_layer = False
+    
+#     # 1. Matches "LAYER METAL1"
+#     layer_pattern = re.compile(rf"^\s*LAYER\s+{layer_name}\s*$", re.IGNORECASE)
+    
+#     # 2. Matches "PITCH value ;" or "PROPERTY routingPitch value ;"
+#     # Group 1 captures the first number. Group 2 captures the second optional number.
+#     pitch_pattern = re.compile(
+#         r"^\s*(?:PITCH|PROPERTY\s+routingPitch)\s+([\d\.]+)(?:\s+([\d\.]+))?\s*;", 
+#         re.IGNORECASE
+#     )
+    
+#     # 3. Matches "END METAL1"
+#     end_pattern = re.compile(rf"^\s*END\s+{layer_name}\s*$", re.IGNORECASE)
+
+#     try:
+#         with open(lef_path, 'r') as f:
+#             for line in f:
+#                 if layer_pattern.match(line):
+#                     in_target_layer = True
+#                     continue
+                
+#                 if in_target_layer:
+#                     match = pitch_pattern.search(line)
+#                     if match:
+#                         # FIX 1: Use group(1) for the primary value
+#                         pitch_microns = float(match.group(1))
+                        
+#                         # FIX 2: Logic to handle "PITCH 0". 
+#                         # If PITCH is 0, keep looking for "routingPitch". 
+#                         # If value is > 0, we found our valid pitch.
+#                         if pitch_microns > 0:
+#                             pitch = pitch_microns * dbu
+#                             break 
+#                         else:
+#                             # If we found 0, store it but keep looking for a better one 
+#                             # inside the same LAYER block.
+#                             pitch = 0.0
+                    
+#                     if end_pattern.match(line):
+#                         in_target_layer = False
+#                         break
+#     except Exception as e:
+#         print(f"An error occurred while reading LEF: {e}")
+#         return None
+
+#     return pitch
+
+
+
+
 def sanitize_island_info(island_info):
     '''
     Return a dictionary of island info with instnce name as key. 
@@ -95,26 +228,72 @@ def sanitize_island_info(island_info):
             ret_doc[inst.instance_name]['module_name'] = inst.module_name
     return ret_doc
 
+# def find_via_in_lef(via_name, file_name, dbu):
+#     '''
+#     Given a via name and file name, return the via definition from the lef file
+#     '''
+#     print(f'############################# {via_name} ########################')
+#     lef_file = open(f'{file_name}.lef')
+#     store_via, rect_toggle, leave_file = False, False, False
+#     temp_via = None
+#     ret_val = []
+#     for line in lef_file:
+#         line = line.split(' ')
+#         print(f'############################# {line} ########################')
+#         if len(line) > 1 and line[1] == f'{via_name}\n' and line[0] == 'VIA': 
+#             store_via = True
+#         elif store_via:
+#             if line[0] == 'END': 
+#                 store_via = False
+#                 lef_file.close()
+#                 return ret_val
+#             elif ~rect_toggle: temp_via = line[3]
+#             elif rect_toggle: ret_val.append((temp_via, float(line[5])*dbu, float(line[6])*dbu, float(line[7])*dbu, float(line[8])*dbu))
+#             rect_toggle = ~rect_toggle
+
 def find_via_in_lef(via_name, file_name, dbu):
     '''
     Given a via name and file name, return the via definition from the lef file
     '''
+    via_name = via_name.upper()
+    #print(f'############################# {via_name} ########################')
     lef_file = open(f'{file_name}.lef')
-    store_via, rect_toggle, leave_file = False, False, False
+    store_via = False
     temp_via = None
     ret_val = []
+    
     for line in lef_file:
-        line = line.split(' ')
-        if len(line) > 1 and line[1] == f'{via_name}\n' and line[0] == 'VIA': 
+        # Change 1: Use strip().split() to remove '\n' and empty '' elements from your log
+        tokens = line.strip().split()
+        if not tokens: 
+            continue
+        
+        # Change 2: Match tokens[0] and tokens[1] (this ignores 'DEFAULT' at the end)
+        if tokens[0] == 'VIA' and tokens[1] == via_name.upper(): 
             store_via = True
+            continue
+            
         elif store_via:
-            if line[0] == 'END': 
+            # Change 3: Cleanly check for keywords
+            if tokens[0] == 'END': 
                 store_via = False
                 lef_file.close()
                 return ret_val
-            elif ~rect_toggle: temp_via = line[3]
-            elif rect_toggle: ret_val.append((temp_via, float(line[5])*dbu, float(line[6])*dbu, float(line[7])*dbu, float(line[8])*dbu))
-            rect_toggle = ~rect_toggle
+            
+            # Change 4: Detect LAYER and RECT directly (safer than toggling)
+            if tokens[0] == 'LAYER':
+                temp_via = tokens[1].rstrip(';')
+            
+            elif tokens[0] == 'RECT':
+                # rstrip(';') handles cases where the semicolon is touching the number
+                v1 = float(tokens[1].rstrip(';')) * dbu
+                v2 = float(tokens[2].rstrip(';')) * dbu
+                v3 = float(tokens[3].rstrip(';')) * dbu
+                v4 = float(tokens[4].rstrip(';')) * dbu
+                ret_val.append((temp_via, v1, v2, v3, v4))
+                
+    lef_file.close()
+    return ret_val
 
 def get_island_adjacent(island_place, neighbors):
     '''

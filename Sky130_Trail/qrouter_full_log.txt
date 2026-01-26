@@ -1,0 +1,565 @@
+Qrouter detail maze router version 1.4.88.T
+Reading LEF data from file Sky130_Trail/Sky130_Trail.lef.
+LEF file:  Defines site unithd (ignored)
+LEF file:  Defines site unit (ignored)
+LEF file:  Defines site unithv (ignored)
+LEF Read, Line 65: Unknown keyword "ANTENNADIFFSIDEAREARATIO" in LEF file; ignoring.
+LEF Read, Line 85: Unknown keyword "MINENCLOSEDAREA" in LEF file; ignoring.
+LEF Read, Line 100: Unknown keyword "ANTENNADIFFSIDEAREARATIO" in LEF file; ignoring.
+LEF Read, Line 121: Unknown keyword "MINENCLOSEDAREA" in LEF file; ignoring.
+LEF Read, Line 136: Unknown keyword "ANTENNADIFFSIDEAREARATIO" in LEF file; ignoring.
+LEF Read, Line 170: Unknown keyword "ANTENNADIFFSIDEAREARATIO" in LEF file; ignoring.
+LEF Read, Line 204: Unknown keyword "ANTENNADIFFSIDEAREARATIO" in LEF file; ignoring.
+LEF Read, Line 234: Unknown keyword "ANTENNADIFFSIDEAREARATIO" in LEF file; ignoring.
+LEF Read, Line 1179: Gate IndirectVMM_4x2 has no size information!
+LEF Read, Line 1294: Gate TA_FGbias_1x2 has no size information!
+LEF read: Processed 1296 lines.
+LEF Read: encountered 2 errors and 8 warnings total.
+Vertical route layer at non-minimum pitch 0.68.  Using smaller pitch 0.34, will route on 1-of-2 tracks for layer METAL2.
+Vertical route layer at non-minimum pitch 0.68.  Using smaller pitch 0.34, will route on 1-of-2 tracks for layer METAL3.
+Horizontal route layer at non-minimum pitch 0.68.  Using smaller pitch 0.34, will route on 1-of-2 tracks for layer METAL3.
+Vertical route layer at non-minimum pitch 1.36.  Using smaller pitch 0.34, will route on 1-of-4 tracks for layer METAL4.
+Horizontal route layer at non-minimum pitch 0.68.  Using smaller pitch 0.34, will route on 1-of-2 tracks for layer METAL4.
+Vertical route layer at non-minimum pitch 1.36.  Using smaller pitch 0.34, will route on 1-of-4 tracks for layer METAL5.
+Horizontal route layer at non-minimum pitch 3.4.  Using smaller pitch 0.34, will route on 1-of-10 tracks for layer METAL5.
+Vertical route layer at non-minimum pitch 20.  Using smaller pitch 0.34, will route on 1-of-59 tracks for layer rdl.
+Horizontal route layer at non-minimum pitch 3.4.  Using smaller pitch 0.34, will route on 1-of-10 tracks for layer rdl.
+Reading DEF data from file Sky130_Trail/Sky130_Trail.def.
+Diagnostic: Design name: "Sky130_Trail"
+DEF Read, Line 13: Only one TRACKS line per layer allowed; last one is used.DEF Read, Line 15: Only one TRACKS line per layer allowed; last one is used.DEF Read, Line 17: Only one TRACKS line per layer allowed; last one is used.DEF Read, Line 19: Only one TRACKS line per layer allowed; last one is used.DEF Read, Line 21: Only one TRACKS line per layer allowed; last one is used.  Processed 11 subcell instances total.
+  Processed 116 blockages total.
+Number of x channels is 1473
+Number of y channels is 1473
+DEF Read, Line 705: Warning:  Number of nets read (28) does not match the number declared (62).
+DEF read: Processed 707 lines.
+DEF Read: encountered 5 errors and 1 warning total.
+Output scale = microns / 1000, precision 1
+Diagnostic: memory block is 8678916 bytes
+Gate instance I_1_0_3_0 unconnected node Vin_P[0]
+Gate instance I_1_0_3_0 unconnected node Vin_M[1]
+Gate instance I_1_0_3_0 unconnected node Vin_M[0]
+Gate instance I_1_0_3_0 unconnected node Vd_P[0]
+Gate instance I_1_0_3_0 unconnected node Vin_P[1]
+Gate instance I_1_0_3_0 unconnected node Vd_P[1]
+Gate instance I_1_0_3_0 unconnected node GND
+Gate instance I_1_0_3_0 unconnected node OUTPUT[0]
+Gate instance I_1_0_3_0 unconnected node OUTPUT[1]
+Gate instance I_1_0_3_0 unconnected node VTUN
+Gate instance I_1_0_3_0 unconnected node Vg
+Gate instance I_1_0_3_0 unconnected node VINJ
+Gate instance I_1_0_3_0 unconnected node Vsel
+Gate instance I_1_0_3_0 unconnected node AVDD
+Gate instance I_1_0_2_0 unconnected node Vin_P[0]
+Gate instance I_1_0_2_0 unconnected node Vin_M[1]
+Gate instance I_1_0_2_0 unconnected node Vin_M[0]
+Gate instance I_1_0_2_0 unconnected node Vd_P[0]
+Gate instance I_1_0_2_0 unconnected node Vin_P[1]
+Gate instance I_1_0_2_0 unconnected node Vd_P[1]
+Gate instance I_1_0_2_0 unconnected node GND
+Gate instance I_1_0_2_0 unconnected node OUTPUT[0]
+Gate instance I_1_0_2_0 unconnected node OUTPUT[1]
+Gate instance I_1_0_2_0 unconnected node VTUN
+Gate instance I_1_0_2_0 unconnected node Vg
+Gate instance I_1_0_2_0 unconnected node VINJ
+Gate instance I_1_0_2_0 unconnected node Vsel
+Gate instance I_1_0_2_0 unconnected node AVDD
+Gate instance I_1_0_1_0 unconnected node Vin_P[0]
+Gate instance I_1_0_1_0 unconnected node Vin_M[1]
+Gate instance I_1_0_1_0 unconnected node Vin_M[0]
+Gate instance I_1_0_1_0 unconnected node Vd_P[0]
+Gate instance I_1_0_1_0 unconnected node Vin_P[1]
+Gate instance I_1_0_1_0 unconnected node Vd_P[1]
+Gate instance I_1_0_1_0 unconnected node GND
+Gate instance I_1_0_1_0 unconnected node OUTPUT[0]
+Gate instance I_1_0_1_0 unconnected node OUTPUT[1]
+Gate instance I_1_0_1_0 unconnected node VTUN
+Gate instance I_1_0_1_0 unconnected node Vg
+Gate instance I_1_0_1_0 unconnected node VINJ
+Gate instance I_1_0_1_0 unconnected node Vsel
+Gate instance I_1_0_1_0 unconnected node AVDD
+Gate instance I_1_0_0_0 unconnected node Vin_P[0]
+Gate instance I_1_0_0_0 unconnected node Vin_M[1]
+Gate instance I_1_0_0_0 unconnected node Vin_M[0]
+Gate instance I_1_0_0_0 unconnected node Vd_P[0]
+Gate instance I_1_0_0_0 unconnected node Vin_P[1]
+Gate instance I_1_0_0_0 unconnected node Vd_P[1]
+Gate instance I_1_0_0_0 unconnected node OUTPUT[0]
+Gate instance I_1_0_0_0 unconnected node OUTPUT[1]
+Gate instance I_1_0_0_0 unconnected node Vg
+Gate instance I_1_0_0_0 unconnected node Vsel
+Gate instance I_0_0_0_2 unconnected node Vg<0>
+Gate instance I_0_0_0_2 unconnected node Vg<1>
+Gate instance I_0_0_0_2 unconnected node VINJ
+Gate instance I_0_0_0_2 unconnected node Vg
+Gate instance I_0_0_0_2 unconnected node Vs
+Gate instance I_0_0_0_2 unconnected node Vsel
+Gate instance I_0_0_0_2 unconnected node Vsel[0]
+Gate instance I_0_0_0_2 unconnected node VINJ[0]
+Gate instance I_0_0_0_2 unconnected node VINJ[1]
+Gate instance I_0_0_0_2 unconnected node Vsel[1]
+Gate instance I_0_0_0_2 unconnected node VD_P<0>
+Gate instance I_0_0_0_2 unconnected node VD_P<3>
+Gate instance I_0_0_0_2 unconnected node VD_R<3>
+Gate instance I_0_0_0_2 unconnected node VD_R<2>
+Gate instance I_0_0_0_2 unconnected node VD_P<2>
+Gate instance I_0_0_0_2 unconnected node VD_P<1>
+Gate instance I_0_0_0_2 unconnected node VD_R<1>
+Gate instance I_0_0_0_2 unconnected node VD_R<0>
+Gate instance I_0_0_0_2 unconnected node VD_P[3]
+Gate instance I_0_0_0_2 unconnected node VD_R[3]
+Gate instance I_0_0_0_2 unconnected node VD_R[2]
+Gate instance I_0_0_0_2 unconnected node VD_P[2]
+Gate instance I_0_0_0_2 unconnected node VD_P[1]
+Gate instance I_0_0_0_2 unconnected node VD_R[1]
+Gate instance I_0_0_0_2 unconnected node VD_R[0]
+Gate instance I_0_0_0_2 unconnected node VD_P[0]
+Gate instance I_0_0_0_2 unconnected node Vd_P[3]
+Gate instance I_0_0_0_2 unconnected node Vd_R[3]
+Gate instance I_0_0_0_2 unconnected node Vd_R[2]
+Gate instance I_0_0_0_2 unconnected node Vd_P[2]
+Gate instance I_0_0_0_2 unconnected node Vd_P[1]
+Gate instance I_0_0_0_2 unconnected node Vd_R[1]
+Gate instance I_0_0_0_2 unconnected node Vd_R[0]
+Gate instance I_0_0_0_2 unconnected node Vd_P[0]
+Gate instance I_0_0_0_1 unconnected node Vg<0>
+Gate instance I_0_0_0_1 unconnected node Vg<1>
+Gate instance I_0_0_0_1 unconnected node VINJ
+Gate instance I_0_0_0_1 unconnected node Vg
+Gate instance I_0_0_0_1 unconnected node Vs
+Gate instance I_0_0_0_1 unconnected node Vsel
+Gate instance I_0_0_0_1 unconnected node Vsel[0]
+Gate instance I_0_0_0_1 unconnected node VINJ[0]
+Gate instance I_0_0_0_1 unconnected node VINJ[1]
+Gate instance I_0_0_0_1 unconnected node Vsel[1]
+Gate instance I_0_0_0_1 unconnected node VD_P<0>
+Gate instance I_0_0_0_1 unconnected node VD_P<3>
+Gate instance I_0_0_0_1 unconnected node VD_R<3>
+Gate instance I_0_0_0_1 unconnected node VD_R<2>
+Gate instance I_0_0_0_1 unconnected node VD_P<2>
+Gate instance I_0_0_0_1 unconnected node VD_P<1>
+Gate instance I_0_0_0_1 unconnected node VD_R<1>
+Gate instance I_0_0_0_1 unconnected node VD_R<0>
+Gate instance I_0_0_0_1 unconnected node VD_P[3]
+Gate instance I_0_0_0_1 unconnected node VD_R[3]
+Gate instance I_0_0_0_1 unconnected node VD_R[2]
+Gate instance I_0_0_0_1 unconnected node VD_P[2]
+Gate instance I_0_0_0_1 unconnected node VD_P[1]
+Gate instance I_0_0_0_1 unconnected node VD_R[1]
+Gate instance I_0_0_0_1 unconnected node VD_R[0]
+Gate instance I_0_0_0_1 unconnected node VD_P[0]
+Gate instance I_0_0_0_1 unconnected node Vd_P[3]
+Gate instance I_0_0_0_1 unconnected node Vd_R[3]
+Gate instance I_0_0_0_1 unconnected node Vd_R[2]
+Gate instance I_0_0_0_1 unconnected node Vd_P[2]
+Gate instance I_0_0_0_1 unconnected node Vd_P[1]
+Gate instance I_0_0_0_1 unconnected node Vd_R[1]
+Gate instance I_0_0_0_1 unconnected node Vd_R[0]
+Gate instance I_0_0_0_1 unconnected node Vd_P[0]
+Gate instance I_0_0_0_0 unconnected node Vg<0>
+Gate instance I_0_0_0_0 unconnected node Vg<1>
+Gate instance I_0_0_0_0 unconnected node VINJ
+Gate instance I_0_0_0_0 unconnected node Vg
+Gate instance I_0_0_0_0 unconnected node Vs
+Gate instance I_0_0_0_0 unconnected node Vsel
+Gate instance I_0_0_0_0 unconnected node Vsel[0]
+Gate instance I_0_0_0_0 unconnected node VINJ[0]
+Gate instance I_0_0_0_0 unconnected node VINJ[1]
+Gate instance I_0_0_0_0 unconnected node Vsel[1]
+Gate instance I_0_0_0_0 unconnected node VD_P<0>
+Gate instance I_0_0_0_0 unconnected node VD_P<3>
+Gate instance I_0_0_0_0 unconnected node VD_R<3>
+Gate instance I_0_0_0_0 unconnected node VD_R<2>
+Gate instance I_0_0_0_0 unconnected node VD_P<2>
+Gate instance I_0_0_0_0 unconnected node VD_P<1>
+Gate instance I_0_0_0_0 unconnected node VD_R<1>
+Gate instance I_0_0_0_0 unconnected node VD_R<0>
+Gate instance I_0_0_0_0 unconnected node VD_P[3]
+Gate instance I_0_0_0_0 unconnected node VD_R[3]
+Gate instance I_0_0_0_0 unconnected node VD_R[2]
+Gate instance I_0_0_0_0 unconnected node VD_P[2]
+Gate instance I_0_0_0_0 unconnected node VD_P[1]
+Gate instance I_0_0_0_0 unconnected node VD_R[1]
+Gate instance I_0_0_0_0 unconnected node VD_R[0]
+Gate instance I_0_0_0_0 unconnected node VD_P[0]
+Gate instance I_0_0_0_0 unconnected node Vd_P[3]
+Gate instance I_0_0_0_0 unconnected node Vd_R[3]
+Gate instance I_0_0_0_0 unconnected node Vd_R[2]
+Gate instance I_0_0_0_0 unconnected node Vd_P[2]
+Gate instance I_0_0_0_0 unconnected node Vd_P[1]
+Gate instance I_0_0_0_0 unconnected node Vd_R[1]
+Gate instance I_0_0_0_0 unconnected node Vd_R[0]
+Gate instance I_0_0_0_0 unconnected node Vd_P[0]
+Gate instance I_0_0_3_3 unconnected node Vs<0>
+Gate instance I_0_0_3_3 unconnected node Vg<0>
+Gate instance I_0_0_3_3 unconnected node Vg<1>
+Gate instance I_0_0_3_3 unconnected node Vs<1>
+Gate instance I_0_0_3_3 unconnected node GND
+Gate instance I_0_0_3_3 unconnected node VINJ
+Gate instance I_0_0_3_3 unconnected node VTUN
+Gate instance I_0_0_3_3 unconnected node Vg
+Gate instance I_0_0_3_3 unconnected node Vs
+Gate instance I_0_0_3_3 unconnected node Vsel
+Gate instance I_0_0_3_3 unconnected node Vsel[0]
+Gate instance I_0_0_3_3 unconnected node VINJ[0]
+Gate instance I_0_0_3_3 unconnected node VINJ[1]
+Gate instance I_0_0_3_3 unconnected node Vsel[1]
+Gate instance I_0_0_3_3 unconnected node VD_P<3>
+Gate instance I_0_0_3_3 unconnected node VD_P<2>
+Gate instance I_0_0_3_3 unconnected node VD_P[3]
+Gate instance I_0_0_3_3 unconnected node VD_R[3]
+Gate instance I_0_0_3_3 unconnected node VD_R[2]
+Gate instance I_0_0_3_3 unconnected node VD_P[2]
+Gate instance I_0_0_3_3 unconnected node VD_P[1]
+Gate instance I_0_0_3_3 unconnected node VD_R[1]
+Gate instance I_0_0_3_3 unconnected node VD_R[0]
+Gate instance I_0_0_3_3 unconnected node VD_P[0]
+Gate instance I_0_0_3_3 unconnected node Vd_P[3]
+Gate instance I_0_0_3_3 unconnected node Vd_R[3]
+Gate instance I_0_0_3_3 unconnected node Vd_R[2]
+Gate instance I_0_0_3_3 unconnected node Vd_P[2]
+Gate instance I_0_0_3_3 unconnected node Vd_P[1]
+Gate instance I_0_0_3_3 unconnected node Vd_R[1]
+Gate instance I_0_0_3_3 unconnected node Vd_R[0]
+Gate instance I_0_0_3_3 unconnected node Vd_P[0]
+Gate instance I_0_0_2_3 unconnected node Vs<0>
+Gate instance I_0_0_2_3 unconnected node Vg<0>
+Gate instance I_0_0_2_3 unconnected node Vg<1>
+Gate instance I_0_0_2_3 unconnected node Vs<1>
+Gate instance I_0_0_2_3 unconnected node GND
+Gate instance I_0_0_2_3 unconnected node VINJ
+Gate instance I_0_0_2_3 unconnected node VTUN
+Gate instance I_0_0_2_3 unconnected node Vg
+Gate instance I_0_0_2_3 unconnected node Vs
+Gate instance I_0_0_2_3 unconnected node Vsel
+Gate instance I_0_0_2_3 unconnected node Vsel[0]
+Gate instance I_0_0_2_3 unconnected node VINJ[0]
+Gate instance I_0_0_2_3 unconnected node VINJ[1]
+Gate instance I_0_0_2_3 unconnected node Vsel[1]
+Gate instance I_0_0_2_3 unconnected node VD_P<3>
+Gate instance I_0_0_2_3 unconnected node VD_P<2>
+Gate instance I_0_0_2_3 unconnected node VD_P[3]
+Gate instance I_0_0_2_3 unconnected node VD_R[3]
+Gate instance I_0_0_2_3 unconnected node VD_R[2]
+Gate instance I_0_0_2_3 unconnected node VD_P[2]
+Gate instance I_0_0_2_3 unconnected node VD_P[1]
+Gate instance I_0_0_2_3 unconnected node VD_R[1]
+Gate instance I_0_0_2_3 unconnected node VD_R[0]
+Gate instance I_0_0_2_3 unconnected node VD_P[0]
+Gate instance I_0_0_2_3 unconnected node Vd_P[3]
+Gate instance I_0_0_2_3 unconnected node Vd_R[3]
+Gate instance I_0_0_2_3 unconnected node Vd_R[2]
+Gate instance I_0_0_2_3 unconnected node Vd_P[2]
+Gate instance I_0_0_2_3 unconnected node Vd_P[1]
+Gate instance I_0_0_2_3 unconnected node Vd_R[1]
+Gate instance I_0_0_2_3 unconnected node Vd_R[0]
+Gate instance I_0_0_2_3 unconnected node Vd_P[0]
+Gate instance I_0_0_1_3 unconnected node Vs<0>
+Gate instance I_0_0_1_3 unconnected node Vg<0>
+Gate instance I_0_0_1_3 unconnected node Vg<1>
+Gate instance I_0_0_1_3 unconnected node Vs<1>
+Gate instance I_0_0_1_3 unconnected node GND
+Gate instance I_0_0_1_3 unconnected node VINJ
+Gate instance I_0_0_1_3 unconnected node VTUN
+Gate instance I_0_0_1_3 unconnected node Vg
+Gate instance I_0_0_1_3 unconnected node Vs
+Gate instance I_0_0_1_3 unconnected node Vsel
+Gate instance I_0_0_1_3 unconnected node Vsel[0]
+Gate instance I_0_0_1_3 unconnected node VINJ[0]
+Gate instance I_0_0_1_3 unconnected node VINJ[1]
+Gate instance I_0_0_1_3 unconnected node Vsel[1]
+Gate instance I_0_0_1_3 unconnected node VD_P<3>
+Gate instance I_0_0_1_3 unconnected node VD_P<2>
+Gate instance I_0_0_1_3 unconnected node VD_P[3]
+Gate instance I_0_0_1_3 unconnected node VD_R[3]
+Gate instance I_0_0_1_3 unconnected node VD_R[2]
+Gate instance I_0_0_1_3 unconnected node VD_P[2]
+Gate instance I_0_0_1_3 unconnected node VD_P[1]
+Gate instance I_0_0_1_3 unconnected node VD_R[1]
+Gate instance I_0_0_1_3 unconnected node VD_R[0]
+Gate instance I_0_0_1_3 unconnected node VD_P[0]
+Gate instance I_0_0_1_3 unconnected node Vd_P[3]
+Gate instance I_0_0_1_3 unconnected node Vd_R[3]
+Gate instance I_0_0_1_3 unconnected node Vd_R[2]
+Gate instance I_0_0_1_3 unconnected node Vd_P[2]
+Gate instance I_0_0_1_3 unconnected node Vd_P[1]
+Gate instance I_0_0_1_3 unconnected node Vd_R[1]
+Gate instance I_0_0_1_3 unconnected node Vd_R[0]
+Gate instance I_0_0_1_3 unconnected node Vd_P[0]
+Gate instance I_0_0_0_3 unconnected node Vg<0>
+Gate instance I_0_0_0_3 unconnected node Vg<1>
+Gate instance I_0_0_0_3 unconnected node VINJ
+Gate instance I_0_0_0_3 unconnected node Vg
+Gate instance I_0_0_0_3 unconnected node Vs
+Gate instance I_0_0_0_3 unconnected node Vsel
+Gate instance I_0_0_0_3 unconnected node Vsel[0]
+Gate instance I_0_0_0_3 unconnected node VINJ[0]
+Gate instance I_0_0_0_3 unconnected node VINJ[1]
+Gate instance I_0_0_0_3 unconnected node Vsel[1]
+Gate instance I_0_0_0_3 unconnected node VD_P<3>
+Gate instance I_0_0_0_3 unconnected node VD_P<2>
+Gate instance I_0_0_0_3 unconnected node VD_P[3]
+Gate instance I_0_0_0_3 unconnected node VD_R[3]
+Gate instance I_0_0_0_3 unconnected node VD_R[2]
+Gate instance I_0_0_0_3 unconnected node VD_P[2]
+Gate instance I_0_0_0_3 unconnected node VD_P[1]
+Gate instance I_0_0_0_3 unconnected node VD_R[1]
+Gate instance I_0_0_0_3 unconnected node VD_R[0]
+Gate instance I_0_0_0_3 unconnected node VD_P[0]
+Gate instance I_0_0_0_3 unconnected node Vd_P[3]
+Gate instance I_0_0_0_3 unconnected node Vd_R[3]
+Gate instance I_0_0_0_3 unconnected node Vd_R[2]
+Gate instance I_0_0_0_3 unconnected node Vd_P[2]
+Gate instance I_0_0_0_3 unconnected node Vd_P[1]
+Gate instance I_0_0_0_3 unconnected node Vd_R[1]
+Gate instance I_0_0_0_3 unconnected node Vd_R[0]
+Gate instance I_0_0_0_3 unconnected node Vd_P[0]
+Error: Node I_0_0_0_2/Vs<0> of net "net27" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (205.39 125.88) to (205.62 126):
+Grid position (604 370) at (205.36 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+Grid position (605 370) at (205.7 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+0 grid positions were found inside tap geometry
+2 grid positions were found nearby tap geometry
+Error: Node I_0_0_0_2/Vs<1> of net "net27" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (219.93 125.88) to (220.16 126):
+Grid position (647 370) at (219.98 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+Grid position (648 370) at (220.32 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+0 grid positions were found inside tap geometry
+2 grid positions were found nearby tap geometry
+Error: Node I_0_0_0_1/Vs<0> of net "net27" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (188.28 125.88) to (188.51 126):
+Grid position (554 370) at (188.36 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+0 grid positions were found inside tap geometry
+1 grid position was found nearby tap geometry
+Error: Node I_0_0_0_1/Vs<1> of net "net27" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (202.82 125.88) to (203.05 126):
+Grid position (597 370) at (202.98 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+0 grid positions were found inside tap geometry
+1 grid position was found nearby tap geometry
+Error: Node I_0_0_0_0/Vs<0> of net "net27" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (171.17 125.88) to (171.4 126):
+Grid position (503 370) at (171.02 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+Grid position (504 370) at (171.36 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+0 grid positions were found inside tap geometry
+2 grid positions were found nearby tap geometry
+Error: Node I_0_0_0_0/Vs<1> of net "net27" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (185.71 125.88) to (185.94 126):
+Grid position (546 370) at (185.64 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+Grid position (547 370) at (185.98 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+0 grid positions were found inside tap geometry
+2 grid positions were found nearby tap geometry
+Error: Node I_0_0_3_3/VD_R<3> of net "net47_3" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (238.21 101.4) to (238.44 101.66):
+Grid position (701 298) at (238.34 101.32) layer 2 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+Grid position (701 299) at (238.34 101.66) layer 2 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position cannot be reached from the south.
+Grid position cannot be reached from the east.
+Grid position cannot be reached from the west.
+Grid position cannot be reached from above.
+Grid position cannot be reached from below.
+0 grid positions were found inside tap geometry
+2 grid positions were found nearby tap geometry
+Error: Node I_0_0_3_3/VD_R<0> of net "net38_3" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (238.21 105.12) to (238.44 105.38):
+Grid position (701 309) at (238.34 105.06) layer 2 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position cannot be reached from the north.
+Grid position cannot be reached from the east.
+Grid position cannot be reached from the west.
+Grid position cannot be reached from above.
+Grid position cannot be reached from below.
+Grid position (701 310) at (238.34 105.4) layer 2 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+0 grid positions were found inside tap geometry
+2 grid positions were found nearby tap geometry
+Error: Node I_0_0_2_3/VD_R<3> of net "net47_2" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (238.21 107.9) to (238.44 108.16):
+Grid position (701 317) at (238.34 107.78) layer 2 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position (701 318) at (238.34 108.12) layer 2 is inside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+1 grid position was found inside tap geometry
+2 grid positions were found nearby tap geometry
+Error: Node I_0_0_2_3/VD_R<0> of net "net38_2" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (238.21 111.62) to (238.44 111.88):
+Grid position (701 328) at (238.34 111.52) layer 2 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+Grid position (701 329) at (238.34 111.86) layer 2 is inside tap geometry.
+Grid position is not associated with a node tap.
+1 grid position was found inside tap geometry
+2 grid positions were found nearby tap geometry
+Error: Node I_0_0_1_3/VD_R<3> of net "net47_1" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (238.21 114.4) to (238.44 114.66):
+Grid position (701 337) at (238.34 114.58) layer 2 is inside tap geometry.
+Grid position is not associated with a node tap.
+1 grid position was found inside tap geometry
+1 grid position was found nearby tap geometry
+Error: Node I_0_0_0_3/Vs<0> of net "net27" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (222.5 125.88) to (222.73 126):
+Grid position (654 370) at (222.36 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+Grid position (655 370) at (222.7 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+0 grid positions were found inside tap geometry
+2 grid positions were found nearby tap geometry
+Error: Node I_0_0_0_3/Vs<1> of net "net27" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (237.04 125.88) to (237.27 126):
+Grid position (697 370) at (236.98 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+Grid position (698 370) at (237.32 125.8) layer 1 is outside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+0 grid positions were found inside tap geometry
+2 grid positions were found nearby tap geometry
+Error: Node I_0_0_0_3/VD_R<3> of net "net47_0" has no taps!
+Qrouter will not be able to completely route this net.
+Tap position blockage analysis:
+Tap geometry (238.21 120.9) to (238.44 121.16):
+Grid position (701 356) at (238.34 121.04) layer 2 is inside tap geometry.
+Grid position is not associated with a node tap.
+Grid position is completely obstructed
+1 grid position was found inside tap geometry
+1 grid position was found nearby tap geometry
+There are 28 nets in this design.
+Node I_0_0_0_2/Vs<1> of net net27 has no tap points---forcing a tap point.
+Failed to route net net27
+netname = net25, route number 0
+
+Commit: TotalRoutes = 0
+netname = net25, route number 1
+
+Commit: TotalRoutes = 1
+netname = net25, route number 2
+
+Commit: TotalRoutes = 2
+netname = net25, route number 3
+
+Commit: TotalRoutes = 3
+Finished routing net net25
+Nets remaining: 27
+netname = net26, route number 4
+
+Commit: TotalRoutes = 4
+netname = net26, route number 5
+
+Commit: TotalRoutes = 5
+netname = net26, route number 6
+
+Commit: TotalRoutes = 6
+netname = net26, route number 7
+
+Commit: TotalRoutes = 7
+Finished routing net net26
+Nets remaining: 26
+
+----------------------------------------------
+Progress: Stage 1 total routes completed: 8
+Failed net routes: 1
+----------------------------------------------
+------------------------------
+Nets remaining: 1
+------------------------------
+Node I_0_0_0_2/Vs<1> of net net27 has no tap points---forcing a tap point.
+Failure on net net27:  Abandoning for now.
+
+----------------------------------------------
+Progress: Stage 2 total routes completed: 8
+Failed net routes: 1
+----------------------------------------------
+Node I_0_0_0_2/Vs<1> of net net27 has no tap points---forcing a tap point.
+Failed to route net net27.
+netname = net25, route number 8
+
+Commit: TotalRoutes = 8
+netname = net25, route number 9
+
+Commit: TotalRoutes = 9
+netname = net25, route number 10
+
+Commit: TotalRoutes = 10
+netname = net25, route number 11
+
+Commit: TotalRoutes = 11
+Finished routing net net25
+Nets remaining: 27
+netname = net26, route number 12
+
+Commit: TotalRoutes = 12
+netname = net26, route number 13
+
+Commit: TotalRoutes = 13
+netname = net26, route number 14
+
+Commit: TotalRoutes = 14
+netname = net26, route number 15
+
+Commit: TotalRoutes = 15
+Finished routing net net26
+Nets remaining: 26
+
+----------------------------------------------
+Progress: Stage 3 total routes completed: 16
+Failed net routes: 1
+----------------------------------------------
+emit_routes():  DEF file has 62 nets and 0 specialnets.
+but qrouter wants to write 28 nets and specialnets.
+----------------------------------------------
+Final: Failed net routes: 1
+List of failed nets follows:
+ net27
+
+----------------------------------------------
