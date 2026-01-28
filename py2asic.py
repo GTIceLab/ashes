@@ -55,4 +55,7 @@ import re
 
 #exec(open("./example_python/sky130/Trail.py").read())
 
-exec(open("./example_python/Trail.py").read())
+#exec(open("./example_python/Trail.py").read())
+#
+
+exec(open("./py2asic_test/LPF_MeadSOS.py").read())
