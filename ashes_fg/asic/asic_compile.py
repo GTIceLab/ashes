@@ -18,19 +18,15 @@ def compile_asic(circuit,process="Process",fileName = "compiled",path = "./examp
     - Calls P&R tools
     """
 
-    filePathandName = os.path.join(path,fileName+".v")
-    f = open(filePathandName, "w")
+    # Create project directory
+    projectPath = os.path.join('.', fileName, 'verilog_files')
+    if not os.path.exists(projectPath):
+        os.makedirs(projectPath)
+
+    verilogPath = os.path.join(projectPath,fileName+".v")
+    f = open(verilogPath, "w")
     f.write(circuit.print(process))
     f.close() # Close file so that P&R can access netlist
-
-    test_project = fileName
-    test_path = os.path.join('.', test_project, 'verilog_files')
-    # create a working directory for project. 
-    if not os.path.exists(test_path):
-        os.makedirs(test_path)
-
-    # copy over the verilog file
-    shutil.copy(os.path.join('.', 'example_verilog', f'{test_project}.v'), test_path)
 
     # Find the process node and define tech parameters
     if (process.split('_')[0].lower() == "tsmc" and process.split('_')[1].lower() == "350nm"):
@@ -58,7 +54,7 @@ def compile_asic(circuit,process="Process",fileName = "compiled",path = "./examp
     # Run P&R if desired
     if p_and_r == True:
         compile(None, 
-        project_name=test_project, 
+        project_name=fileName,
         tech_process=tech_process, 
         dbu=dbu, 
         track_spacing=track_spacing,
