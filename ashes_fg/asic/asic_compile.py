@@ -9,67 +9,6 @@ from ashes_fg.asic import compile
 
 # Functions
 # ---------------------------------------------------------------------------------------------------------------------------
-def compile_asic(circuit,process="Process",fileName = "compiled",path = "./example_verilog", p_and_r = True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,route=True,qparams=None):
-
-    """
-    Main ASIC compilation function
-    - Makes Verilog netlist for a given Circuit
-    - Creates directory for physical design
-    - Calls P&R tools
-    """
-
-    # Create project directory
-    projectPath = os.path.join('.', fileName, 'verilog_files')
-    if not os.path.exists(projectPath):
-        os.makedirs(projectPath)
-
-    verilogPath = os.path.join(projectPath,fileName+".v")
-    f = open(verilogPath, "w")
-    f.write(circuit.print(process))
-    f.close() # Close file so that P&R can access netlist
-
-    # Find the process node and define tech parameters
-    if (process.split('_')[0].lower() == "tsmc" and process.split('_')[1].lower() == "350nm"):
-        # All units in nanometers
-        tech_process = 'vis350'
-        cell_pitch = 22000
-        dbu = 1000
-        track_spacing = 1400
-        # placement offset to make space for pin routing
-        x_offset, y_offset = 400*track_spacing, 2000*track_spacing
-
-    elif (process.split('_')[0].lower() == "sky" and process.split('_')[1].lower() == "130nm"):
-        # All units in nanometers
-        tech_process = 'sky130'
-        cell_pitch = 6500
-        dbu = 1000
-        track_spacing = 1600 # M5 metal spacing
-        # placement offset to make space for pin routing
-        x_offset, y_offset = 400*track_spacing, 2000*track_spacing
-
-
-
-    design_area = (0, 0, design_limits[0], design_limits[1], x_offset, y_offset)
-
-    # Run P&R if desired
-    if p_and_r == True:
-        compile(None, 
-        project_name=fileName,
-        tech_process=tech_process, 
-        dbu=dbu, 
-        track_spacing=track_spacing,
-        cell_pitch=cell_pitch,
-        x_offset=x_offset, y_offset=y_offset,
-        design_area=design_area,
-        location_islands=location_islands,
-        drainmux_space_isle_idx=drainSpaceIdx,
-        drainmux_space = drainSpace,
-        gatemux_space_isle_idx=gateSpaceIdx,
-        gatemux_space = gateSpace,
-        route = route,
-        qparams = qparams)
-
-
 def printPlacement(island,fileName = "island_placement",path = "./"):
     """
     Debug aid for placement
