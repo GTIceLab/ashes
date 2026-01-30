@@ -68,9 +68,8 @@ def gds_synthesis(process_params, design_area, proj_name, isle_loc=None, routed_
             if os.path.isfile(item):
                 os.remove(item)
 
-    
     # Get pin list from technology layer map
-    layer_map_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'layer_map', tech_process + '.json')
+    layer_map_path = os.path.join(Path(__file__).parent, 'lib', 'layer_map', tech_process + '.json')
     if not os.path.exists(layer_map_path): 
         raise CellNotFound(f'Could not open layer map {tech_process}.json. Is it in the ./lib/layer_map/ directory?')
     layer_map = json.load(open(layer_map_path))
@@ -184,13 +183,13 @@ def gds_synthesis(process_params, design_area, proj_name, isle_loc=None, routed_
     # Note how this is different from placing a frame that already exists
     frame_text = None
     if generate_cells_list:
-        process_misc = (dbu, os.path.join('ashes_fg', 'asic', 'lib', 'tech_lef', f'{tech_process}'))
+        process_misc = (dbu, os.path.join(Path(__file__).parent, 'lib', 'tech_lef', f'{tech_process}'))
         frame_text, frame_module = generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc)
         if verbose:
             print("Post frame generation, relative ordering within islands")
             pprint.pprint(cell_order_in_island)
 
-    txt2gds_path = os.path.join('.','ashes_fg','asic','txt2gds.py')
+    txt2gds_path = os.path.join(Path(__file__).parent,'txt2gds.py')
     if not routed_def:
         #get_island_adjacent(island_place, island_neighbor)
         
@@ -246,7 +245,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
 
     # add process variable 
     try:
-        with open(os.path.join('.','ashes_fg','asic', 'lib', 'gds', tech_process, name + '.gds'),'rb') as bin_file:
+        with open(os.path.join(Path(__file__).parent, 'lib', 'gds', tech_process, name + '.gds'),'rb') as bin_file:
             for rec in Record.iterate(bin_file):
                 if omit_record:
                     if rec.tag_name == 'ENDSTR':
@@ -1456,9 +1455,8 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
     - Start with a copy of the technology lef
     - Use the module list to define any pins found
     '''
-
     # Copy the technology lef for the design
-    tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '.lef')
+    tech_lef_path = os.path.join(Path(__file__).parent, 'lib', 'tech_lef', tech_process + '.lef')
     #tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '_toplevelroute.lef')
     if os.path.exists(tech_lef_path): shutil.copy(tech_lef_path, file_path)
     else: raise CellNotFound(f'Could not find the technology lef file {tech_process}.lef. Is it in the ./lib/tech_lef/ directory?')

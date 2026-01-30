@@ -34,10 +34,10 @@ def main():
     with open(design_path) as f:
         exec(f.read(), globals_dict)
 
-    if "design" not in globals_dict:
-        raise SystemExit("design.py must define `design`")
+    if "Top" not in globals_dict:
+        raise SystemExit("Algorithm must define `Top` Circuit object")
 
-    design = globals_dict["design"]
+    design = globals_dict["Top"]
 
     # ---- load config ----
     config_path = project_dir / "ashes.json"
@@ -50,4 +50,7 @@ def main():
     if args.flow == "fpaa":
         af.fpaa.compile(design, **compile_args)
     elif args.flow == "asic":
-        af.asic.asic_compile(design, **compile_args)
+        af.asic.compile(design,process="tsmc_350nm",fileName="LPFMeadSOS")
+
+if __name__ == "__main__":
+    main()

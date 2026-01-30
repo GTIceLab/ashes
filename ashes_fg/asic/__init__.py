@@ -5,6 +5,7 @@ import subprocess
 import re
 import time
 import json
+from pathlib import Path
 
 #def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_spacing=250, cell_pitch=22000, x_offset=None, y_offset=None, design_area=(0,0,1,1), location_islands=None,drainmux_space_isle_idx=0, drainmux_space = 4.2, gatemux_space_isle_idx=None, gatemux_space=10,route=True,qparams=None):
 def compile(circuit,process="Process",fileName = "compiled",path = "./example_verilog", p_and_r = True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,route=True,qparams=None):
@@ -64,7 +65,8 @@ def compile(circuit,process="Process",fileName = "compiled",path = "./example_ve
 
 
                 if qparams == None:
-                        with open('./ashes_fg/asic/qrouter_default.json') as file:
+                        qdefpath = os.path.join(Path(__file__).parent,'qrouter_default.json')
+                        with open(qdefpath) as file:
                                 qrouterParams = json.load(file)
                 else:
                         qrouterParams = qparams

@@ -16,3 +16,4 @@ Workspace/
 ashes_fg/asic/lib/gds/vis350
 ashes_fg/asic/lib/gds/privA_65
 py2asic.py
+/ASHES.egg-info
