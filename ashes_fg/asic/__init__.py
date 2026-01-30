@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 
 #def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_spacing=250, cell_pitch=22000, x_offset=None, y_offset=None, design_area=(0,0,1,1), location_islands=None,drainmux_space_isle_idx=0, drainmux_space = 4.2, gatemux_space_isle_idx=None, gatemux_space=10,route=True,qparams=None):
-def compile(circuit,process="Process",fileName = "compiled",path = "./example_verilog", p_and_r = True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,route=True,qparams=None):
+def compile(circuit,process="Process",project_path = ".",project_name = "project", p_and_r = True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,route=True,qparams=None):
         """
         Main ASIC compilation function
         - Makes Verilog netlist for a given Circuit
@@ -22,13 +22,16 @@ def compile(circuit,process="Process",fileName = "compiled",path = "./example_ve
         gatemux_space = gateSpace
 
         # Create project directory
-        project_name = fileName
-        projectPath = os.path.join('.', project_name, 'verilog_files')
-        if not os.path.exists(projectPath):
-                os.makedirs(projectPath)
+        #project_name = fileName
+        #projectPath = os.path.join('.','syn', 'verilog_files')
+        #if not os.path.exists(projectPath):
+        #        os.makedirs(projectPath)
 
 
-        verilogPath = os.path.join(projectPath,fileName+".v")
+        synPath = os.path.join(project_path,'syn')
+        if not os.path.exists(synPath):
+                os.makedirs(synPath)
+        verilogPath = os.path.join(synPath,project_name+'.v')
         f = open(verilogPath, "w")
         f.write(circuit.print(process))
         f.close() # Close file so that P&R can access netlist
@@ -60,7 +63,7 @@ def compile(circuit,process="Process",fileName = "compiled",path = "./example_ve
                 #drainmux_space_isle_idx = 0
                 process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space)
                 pl_start = time.time()
-                gds_synthesis(process_params, design_area, project_name, isle_loc=location_islands)
+                gds_synthesis(process_params, design_area, project_name,project_path,isle_loc=location_islands)
                 pl_end = time.time()
 
 

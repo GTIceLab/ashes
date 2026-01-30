@@ -10,6 +10,7 @@ def main():
     import json
     from pathlib import Path
     import ashes_fg as af
+    import os
 
 
     parser = argparse.ArgumentParser(prog="ashes")
@@ -40,17 +41,19 @@ def main():
     design = globals_dict["Top"]
 
     # ---- load config ----
-    config_path = project_dir / "ashes.json"
+    config_path = project_dir / "synthesis_settings.json"
     compile_args = {}
     if config_path.exists():
         with open(config_path) as f:
             compile_args = json.load(f)
 
+    project_name = Path(args.design).stem
+
     # ---- dispatch ----
     if args.flow == "fpaa":
         af.fpaa.compile(design, **compile_args)
     elif args.flow == "asic":
-        af.asic.compile(design,process="tsmc_350nm",fileName="LPFMeadSOS")
+        af.asic.compile(design,project_path = project_dir,project_name=project_name, **compile_args)
 
 if __name__ == "__main__":
     main()

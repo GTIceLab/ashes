@@ -37,11 +37,14 @@ verbose = False
 pypath = sys.executable
 
 
-def gds_synthesis(process_params, design_area, proj_name, isle_loc=None, routed_def=False, router_tool='qrouter'):
+def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None, routed_def=False, router_tool='qrouter'):
     verilog_file_name = proj_name + '.v'
     file_name_no_ext = proj_name
-    file_path = os.path.join('.', file_name_no_ext)
-    ver_file = open(os.path.join('.', proj_name, 'verilog_files', verilog_file_name), 'r')
+    #file_path = os.path.join('.', file_name_no_ext)
+    file_path = os.path.join(proj_path,'pd')
+    if not os.path.exists(file_path):
+            os.makedirs(file_path)
+    ver_file = open(os.path.join(proj_path,'syn',verilog_file_name), 'r')
     ver_file_content = ver_file.read()
     ver_file.close()
     tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space = process_params
