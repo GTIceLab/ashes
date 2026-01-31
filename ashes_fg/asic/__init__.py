@@ -145,7 +145,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
 
                 ##############################################################################################################
 
-                        gds_synthesis(process_params, design_area, project_name, routed_def=True, router_tool='qrouter')
+                        gds_synthesis(process_params, design_area, project_name,project_path,routed_def=True, router_tool='qrouter')
                         fin_end = time.time()
                         pl_time = round(pl_end - pl_start, 3)
                         rt_time = round(rt_end - pl_end, 3)
