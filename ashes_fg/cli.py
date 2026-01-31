@@ -11,6 +11,7 @@ def main():
     from pathlib import Path
     import ashes_fg as af
     import os
+    import sys
 
 
     parser = argparse.ArgumentParser(prog="ashes")
@@ -30,10 +31,16 @@ def main():
     design_path = Path(args.design).resolve()
     project_dir = design_path.parent
 
+    # Make local imports work
+    sys.path.insert(0, str(project_dir))
+
    # ---- load design ----
     globals_dict = {}
     with open(design_path) as f:
         exec(f.read(), globals_dict)
+
+    # Remove local modules from path
+    sys.path.pop(0)
 
     if "Top" not in globals_dict:
         raise SystemExit("Algorithm must define `Top` Circuit object")
