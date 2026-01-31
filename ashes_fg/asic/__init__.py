@@ -21,13 +21,6 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
         gatemux_space_isle_idx=gateSpaceIdx
         gatemux_space = gateSpace
 
-        # Create project directory
-        #project_name = fileName
-        #projectPath = os.path.join('.','syn', 'verilog_files')
-        #if not os.path.exists(projectPath):
-        #        os.makedirs(projectPath)
-
-
         synPath = os.path.join(project_path,'syn')
         if not os.path.exists(synPath):
                 os.makedirs(synPath)
@@ -60,6 +53,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
         design_area = (0, 0, design_limits[0], design_limits[1], x_offset, y_offset)
 
         if p_and_r == True:
+                pdPath = os.path.join(project_path,'pd')
                 #drainmux_space_isle_idx = 0
                 process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space)
                 pl_start = time.time()
@@ -78,14 +72,14 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 # Pick the detailed router and default to qrouter. If not available, check for Triton.
                 qrouter = True if os.system('command -v qrouter') == 0 else False
                 triton_route = os.path.exists(os.path.join('TritonRoute','build','TritonRoute'))
-                lef_file = os.path.join(project_name, project_name + '.lef')
-                def_file = os.path.join(project_name, project_name + '.def')
-                report_file = os.path.join(project_name, project_name + '_report.txt')
+                lef_file = os.path.join(pdPath , project_name + '.lef')
+                def_file = os.path.join(pdPath , project_name + '.def')
+                report_file = os.path.join(pdPath , project_name + '_report.txt')
                 if qrouter and route==True:
                         base_cost = 10
-                        out_file = os.path.join(project_name, project_name + '_qroute.def')
-                        param_file = os.path.join(project_name, "qrouter_params.tcl")
-                        info_file = os.path.join(project_name, "layers_info.lef") ##Added
+                        out_file = os.path.join(pdPath , project_name + '_qroute.def')
+                        param_file = os.path.join(pdPath, "qrouter_params.tcl")
+                        info_file = os.path.join(pdPath , "layers_info.lef") ##Added
                         q_params = open(param_file, "w")
                         q_params.write(f"read_lef {lef_file}\n")
                         q_params.write(f"read_def {def_file}\n")
