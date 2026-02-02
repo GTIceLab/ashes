@@ -47,7 +47,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     ver_file = open(os.path.join(proj_path,'syn',verilog_file_name), 'r')
     ver_file_content = ver_file.read()
     ver_file.close()
-    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space = process_params
+    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path = process_params
   
     ast = parse_verilog(ver_file_content)
     module_list = set()
@@ -63,6 +63,9 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     guide_file_path = os.path.join(file_path, f'{file_name_no_ext}.guide')
     merged_gds_file_path = os.path.join(file_path, f'{file_name_no_ext}_merged.gds')
     text_merged_layout_path = os.path.join(file_path, f'{file_name_no_ext}_merged.txt')
+    if lib_path == None:
+        lib_path = os.path.join(Path(__file__).parent,'lib')
+    
 
     # Delete previously generated files if not merging routes
     if not routed_def:
@@ -72,9 +75,9 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
                 os.remove(item)
 
     # Get pin list from technology layer map
-    layer_map_path = os.path.join(Path(__file__).parent, 'lib', 'layer_map', tech_process + '.json')
+    layer_map_path = os.path.join(lib_path, 'layer_map', tech_process + '.json')
     if not os.path.exists(layer_map_path): 
-        raise CellNotFound(f'Could not open layer map {tech_process}.json. Is it in the ./lib/layer_map/ directory?')
+        raise CellNotFound(f'Could not open layer map {tech_process}.json. ')
     layer_map = json.load(open(layer_map_path))
     pin_list = make_pin_list(layer_map, tech_process)
 
@@ -118,7 +121,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     generate_cells_list = []
     for inst in top_module.module_instances:
         if inst.module_name in module_list and inst.instance_name.lower() not in inst_except_list:
-            cell_text = parse_cell_gds(inst.module_name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process)
+            cell_text = parse_cell_gds(inst.module_name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process,lib_path)
             if not routed_def: update_output_layout(cell_text, text_layout_path)
             first_cell = False
         elif inst.instance_name.lower() in inst_except_list:
@@ -176,7 +179,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     cell_order_in_island = {}
     island_params = (track_spacing, cell_pitch, cells_only_module, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space)
     parse_cell_params = (module_list, pin_list, layer_map, tech_process, dbu, text_layout_path)
-    island_text, island_dims = generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc)
+    island_text, island_dims = generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc,lib_path)
     if verbose: 
         print(f'Island Placements:\n {island_place}')
         print('Post island gen, island info')
@@ -186,7 +189,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     # Note how this is different from placing a frame that already exists
     frame_text = None
     if generate_cells_list:
-        process_misc = (dbu, os.path.join(Path(__file__).parent, 'lib', 'tech_lef', f'{tech_process}'))
+        process_misc = (dbu, os.path.join(lib_path, 'tech_lef', f'{tech_process}'))
         frame_text, frame_module = generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc)
         if verbose:
             print("Post frame generation, relative ordering within islands")
@@ -227,7 +230,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
         os.system(f'{pypath} {txt2gds_path} -o {merged_gds_file_path} {text_merged_layout_path}')
     
 
-def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process):
+def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process,lib_path):
     """
     Convert the cell gds to text
     - Omit header and libary tags for subsequent cells
@@ -248,7 +251,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
 
     # add process variable 
     try:
-        with open(os.path.join(Path(__file__).parent, 'lib', 'gds', tech_process, name + '.gds'),'rb') as bin_file:
+        with open(os.path.join(lib_path,'gds', name + '.gds'),'rb') as bin_file:
             for rec in Record.iterate(bin_file):
                 if omit_record:
                     if rec.tag_name == 'ENDSTR':
@@ -427,7 +430,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     return ''.join(ret_string)
     
 
-def generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc):
+def generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc,lib_path):
     ''' 
     Generate gds output for islands 
     - Place all cells and matrices into islands
@@ -687,7 +690,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     if name in cell_info: 
                         del cell_info[name]
                         should_update_layout = False
-                    cell_text = parse_cell_gds(name, False, cell_info, decoder_helper_cell_names, pin_list, layer_map, tech_process)
+                    cell_text = parse_cell_gds(name, False, cell_info, decoder_helper_cell_names, pin_list, layer_map, tech_process,lib_path)
                     if should_update_layout: update_output_layout(cell_text, text_layout_path)  
                 total_outputs = 2**bit_width
                 #decoder_cols = int(math.ceil(math.log2(bit_width))+ math.ceil(math.log2(bit_width))-1)

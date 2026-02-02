@@ -7,8 +7,7 @@ import time
 import json
 from pathlib import Path
 
-#def compile(system, project_name=None, tech_process='privA_65', dbu=1000, track_spacing=250, cell_pitch=22000, x_offset=None, y_offset=None, design_area=(0,0,1,1), location_islands=None,drainmux_space_isle_idx=0, drainmux_space = 4.2, gatemux_space_isle_idx=None, gatemux_space=10,route=True,qparams=None):
-def compile(circuit,process="Process",project_path = ".",project_name = "project", place=True, route=True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,qparams=None):
+def compile(circuit,process="Process",project_path = ".",project_name = "project",lib_path = None, place=True, route=True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,qparams=None):
         """
         Main ASIC compilation function
         - Makes Verilog netlist for a given Circuit
@@ -55,7 +54,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
         if place == True:
                 pdPath = os.path.join(project_path,'pd')
                 #drainmux_space_isle_idx = 0
-                process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space)
+                process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path)
                 pl_start = time.time()
                 gds_synthesis(process_params, design_area, project_name,project_path,isle_loc=location_islands)
                 pl_end = time.time()
