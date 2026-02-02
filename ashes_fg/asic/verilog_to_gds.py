@@ -64,7 +64,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     merged_gds_file_path = os.path.join(file_path, f'{file_name_no_ext}_merged.gds')
     text_merged_layout_path = os.path.join(file_path, f'{file_name_no_ext}_merged.txt')
     if lib_path == None:
-        lib_path = os.path.join(Path(__file__).parent,'lib')
+        lib_path = os.path.join(Path(__file__).parent,'lib', tech_process)
     
 
     # Delete previously generated files if not merging routes
