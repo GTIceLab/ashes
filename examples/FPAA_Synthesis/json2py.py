@@ -58,9 +58,15 @@ for cab in cab_list:
     CEW_col_inst = int(CEW_col/2)
     CNS_col_inst = int(CNS_col/2)
        
-    Amatrix_row = len(block_list)
+    if "NeuralNetworkProgActFunc" in block_list[0]:
+        Amatrix_row = len(block_list)+2
+    else:
+        Amatrix_row = len(block_list)
     Amatrix_col = int(data[cab+"_Amatrix_cols"]/2)
-    Bmatrix_row = len(block_list)-1
+    if "NeuralNetworkProgActFunc" in block_list[0]:
+        Bmatrix_row = len(block_list)+1
+    else:
+        Bmatrix_row = len(block_list)-1
     Bmatrix_col = math.ceil(cab_output_num/2)
                         
                         
@@ -187,6 +193,13 @@ for cab in cab_list:
     f.write("Bswitch"+str(len(block_list))+" = ST_BMatrix(Top,CABIsland)\n")
     f.write("Bswitch"+str(len(block_list))+".place(["+str(len(block_list))+","+str(Amatrix_col+Bmatrix_col)+"])\n")
     f.write("Bswitch"+str(len(block_list))+".markAbut()\n\n")
+    if "NeuralNetworkProgActFunc" in block_list[0]:
+        f.write("Bswitch"+str(len(block_list)+1)+" = ST_BMatrix(Top,CABIsland)\n")
+        f.write("Bswitch"+str(len(block_list)+1)+".place(["+str(len(block_list)+1)+","+str(Amatrix_col+Bmatrix_col)+"])\n")
+        f.write("Bswitch"+str(len(block_list)+1)+".markAbut()\n\n")
+        f.write("Bswitch"+str(len(block_list)+2)+" = ST_BMatrix(Top,CABIsland)\n")
+        f.write("Bswitch"+str(len(block_list)+2)+".place(["+str(len(block_list)+2)+","+str(Amatrix_col+Bmatrix_col)+"])\n")
+        f.write("Bswitch"+str(len(block_list)+2)+".markAbut()\n\n")
     
     f.write("BtoOut = OutSwitch(Top,CABIsland,[1,"+str(Bmatrix_col)+"])\n")
     f.write("BtoOut.place(["+str(Bmatrix_row+3)+","+str(Amatrix_col)+"])\n\n")
@@ -270,7 +283,7 @@ for cab in cab_list:
                     for port in lib[block.split("__")[0]]["W"]:
                         if prog_offset_flag == 0:
                             if port == "VD_P":
-                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P\n")
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0]\n")
                             elif port == "VD_P[0:1]":
                                 f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:2]\n")
                             elif port == "VD_P[0:2]":
@@ -286,7 +299,7 @@ for cab in cab_list:
                                 f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[1:4]\n")
                             elif port == "VD_P[0:3]":
                                 for k in range(3):
-                                    f.write(block+".VD_P"+str(k)+" += Bswitch"+str(CAB_net_counter)+".P["+str(k+1)+"]\n")
+                                    f.write(block+".VD_P["+str(k)+"] += Bswitch"+str(CAB_net_counter)+".P["+str(k+1)+"]\n")
                                 f.write(block+".VD_P[3] += Bswitch"+str(CAB_net_counter+1)+".P[0]\n")
                         if input_offset_flag == 0:
                             if "[0:1]" in port and "VD_P" not in port:
@@ -302,7 +315,10 @@ for cab in cab_list:
                                 f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+"]\n")
                                 port_counter += 1
                         else:
-                            if "[0:1]" in port and "VD_P" not in port:
+                            if "NeuralNetworkProgActFunc" in block:
+                                f.write(block+"."+port+" += Bswitch"+str(CAB_net_counter+2)+".A["+str(port_counter-1)+"]\n")
+                                port_counter += 1
+                            elif "[0:1]" in port and "VD_P" not in port:
                                 f.write(block+"."+port.split("[")[0]+" += Bswitch"+str(CAB_net_counter)+".A["+str(port_counter)+":"+str(port_counter+2)+"]\n")
                                 port_counter += 2
                             elif "[0:2]" in port and "VD_P" not in port:
@@ -334,7 +350,19 @@ for cab in cab_list:
                             feedback_counter += 1
                     if block_list.index(block) == 0:
                         for top_port in lib[block.split("__")[0]]["N"]:
-                            if top_port == "Vs" and "4WTA_IndirectProg" in block:
+                            if "NeuralNetworkProgActFunc" in block and top_port=="VG_P":
+                                f.write(block+".VG_P += Bswitch0.A[1]\n")
+                            elif "NeuralNetworkProgActFunc" in block and "VG_N" in top_port:
+                                f.write(block+".VG_N += Bswitch0.A[2]\n")
+                            elif "NeuralNetworkProgActFunc" in block and "VC" in top_port:
+                                f.write(block+".VC += Bswitch0.A[3]\n")
+                            elif "NeuralNetworkProgActFunc" in block and top_port=="WTA":
+                                f.write(block+".WTA += Bswitch1.A[0]\n")
+                            elif "NeuralNetworkProgActFunc" in block and top_port=="VG_PFET":
+                                f.write(block+".VG_PFET += Bswitch1.A[1]\n")
+                            elif "NeuralNetworkProgActFunc" in block and top_port=="WTA_":
+                                f.write(block+".WTA_ += Bswitch1.A[2]\n")
+                            elif top_port == "Vs" and "4WTA_IndirectProg" in block:
                                 f.write(block+"."+top_port+" += CABElements_GateSwitch.VDD[1]\n")
                             elif top_port == "Vsel[0:1]":
                                 f.write(block+"."+top_port.split("[")[0]+" += CABElements_GateSwitch.CTRL_B\n")
@@ -358,7 +386,19 @@ for cab in cab_list:
                                 f.write(block+"."+top_port.split("[")[0]+" += CABElements_GateSwitch.VDD[1]\n")
                     else:
                         for top_port in lib[block.split("__")[0]]["N"]:
-                            if top_port == "Vs" and "4WTA_IndirectProg" in block:
+                            if "NeuralNetworkProgActFunc" in block and top_port=="VG_P":
+                                f.write(block+".VG_P += "+block_list[block_list.index(block)-1]+".VG_P_b\n")
+                            elif "NeuralNetworkProgActFunc" in block and "VG_N" in top_port:
+                                f.write(block+".VG_N += "+block_list[block_list.index(block)-1]+".VG_N_b\n")
+                            elif "NeuralNetworkProgActFunc" in block and "VC" in top_port:
+                                f.write(block+".VC += "+block_list[block_list.index(block)-1]+".VC_b\n")
+                            elif "NeuralNetworkProgActFunc" in block and top_port=="WTA":
+                                f.write(block+".WTA += "+block_list[block_list.index(block)-1]+".WTA_b\n")
+                            elif "NeuralNetworkProgActFunc" in block and top_port=="VG_PFET":
+                                f.write(block+".VG_PFET += "+block_list[block_list.index(block)-1]+".VG_PFET_b\n")
+                            elif "NeuralNetworkProgActFunc" in block and top_port=="WTA_":
+                                f.write(block+".WTA_ += "+block_list[block_list.index(block)-1]+".WTA__b\n")
+                            elif top_port == "Vs" and "4WTA_IndirectProg" in block:
                                 f.write(block+"."+top_port+" += CABElements_GateSwitch.VDD[1]\n")
                             elif top_port == "Vsel[0:1]":
                                 if block_list[block_list.index(block)-1][-1].isnumeric():
@@ -541,7 +581,7 @@ for cab in cab_list:
                     for port in lib[block]["W"]:
                         if prog_offset_flag == 0:
                             if port == "VD_P":
-                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P\n")
+                                f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0]\n")
                             elif port == "VD_P[0:1]":
                                 f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[0:2]\n")
                             elif port == "VD_P[0:2]":
@@ -557,7 +597,7 @@ for cab in cab_list:
                                 f.write(block+".VD_P += Bswitch"+str(CAB_net_counter)+".P[1:4]\n")
                             elif port == "VD_P[0:3]":
                                 for k in range(3):
-                                    f.write(block+".VD_P"+str(k)+" += Bswitch"+str(CAB_net_counter)+".P["+str(k+1)+"]\n")
+                                    f.write(block+".VD_P["+str(k)+"] += Bswitch"+str(CAB_net_counter)+".P["+str(k+1)+"]\n")
                                 f.write(block+".VD_P[3] += Bswitch"+str(CAB_net_counter+1)+".P[0]\n")
                         if input_offset_flag == 0:
                             if "[0:1]" in port and "VD_P" not in port:
@@ -910,11 +950,15 @@ for cab in cab_list:
             #f.write("Block_GateDecode.RUN_OUT["+str(i*2)+"] += Block_GateSwitch.VPWR["+str((Cblock_row_inst+1+i)*2)+"]\n")
             #f.write("Block_GateDecode.RUN_OUT["+str(i*2+1)+"] += Block_GateSwitch.VPWR["+str((Cblock_row_inst+1+i)*2+1)+"]\n")
     else:
+        f.write("Block_GateDecode.VINJ_b["+str(CEW_col_inst+1)+"] += Block_GateSwitch.VINJ_T["+str(CEW_col_inst+Cblock_row_inst+2)+"]\n")
+        f.write("Block_GateDecode.GND_b["+str(CEW_col_inst+1)+"] += Block_GateSwitch.GND_T["+str(CEW_col_inst+Cblock_row_inst+2)+"]\n")
+        f.write("Block_GateDecode.OUT["+str((CEW_col_inst+1)*2)+"] += Block_GateSwitch.decode["+str((CEW_col_inst+Cblock_row_inst+2)*2)+"]\n")
+        f.write("Block_GateDecode.OUT["+str((CEW_col_inst+1)*2+1)+"] += Block_GateSwitch.decode["+str((CEW_col_inst+Cblock_row_inst+2)*2+1)+"]\n")
         for i in range(CEW_col_inst+2,CEW_col_inst+2+CNS_col_inst+1):
-            f.write("Block_GateDecode.VINJ_b["+str(i)+"] += Block_GateSwitch.VINJ_T["+str(Cblock_row_inst+1+i)+"]\n")
-            f.write("Block_GateDecode.GND_b["+str(i)+"] += Block_GateSwitch.GND_T["+str(Cblock_row_inst+1+i)+"]\n")
-            f.write("Block_GateDecode.OUT["+str(i*2)+"] += Block_GateSwitch.decode["+str((Cblock_row_inst+1+i)*2)+"]\n")
-            f.write("Block_GateDecode.OUT["+str(i*2+1)+"] += Block_GateSwitch.decode["+str((Cblock_row_inst+1+i)*2+1)+"]\n")
+            f.write("Block_GateDecode.VINJ_b["+str(i)+"] += Block_GateSwitch.VINJ_T["+str(Cblock_row_inst+2+i)+"]\n")
+            f.write("Block_GateDecode.GND_b["+str(i)+"] += Block_GateSwitch.GND_T["+str(Cblock_row_inst+2+i)+"]\n")
+            f.write("Block_GateDecode.OUT["+str(i*2)+"] += Block_GateSwitch.decode["+str((Cblock_row_inst+2+i)*2)+"]\n")
+            f.write("Block_GateDecode.OUT["+str(i*2+1)+"] += Block_GateSwitch.decode["+str((Cblock_row_inst+2+i)*2+1)+"]\n")
             #f.write("Block_GateDecode.RUN_OUT["+str(i*2)+"] += Block_GateSwitch.VPWR["+str((Cblock_row_inst+1+i)*2)+"]\n")
             #f.write("Block_GateDecode.RUN_OUT["+str(i*2+1)+"] += Block_GateSwitch.VPWR["+str((Cblock_row_inst+1+i)*2+1)+"]\n")
             
@@ -982,6 +1026,7 @@ for cab in cab_list:
     f.write("VolSwitch.D += C_EW.Vs_b["+str((CEW_col_inst-1)*2)+"]\n")
     f.write("VolSwitch.CLK += C_EW.Vs_b["+str((CEW_col_inst-1)*2+1)+"]\n")
     f.write("VolSwitch.Q += C_NS.Vs_b["+str(CNS_col-5)+"]\n")
+    f.write("VolSwitch.RESET += Oswitch.Prog_b\n")
     if cab_output_num%2 ==1:
         f.write("VolSwitch.com += CAB_GateSwitch.Input["+str(Amatrix_col*2)+"]\n")
     else:
@@ -989,10 +1034,14 @@ for cab in cab_list:
     f.write("CABElements_GateSwitch.VDD[1] += VolSwitch.VDD\n")
     f.write("VolSwitch.Vd_P += CAB_DrainSwitch.PR["+str((Amatrix_row+1)*4+3)+"]\n")
     for i in range(4):
-        f.write("VolSwitch.Vd_in["+str(i)+"] += CAB_DrainSwitch.In["+str((Amatrix_row+1)*4+i)+"]\n")
-        f.write("VolSwitch.Vd_in["+str(i+4)+"] += CAB_DrainSwitch.PR["+str((Amatrix_row+1)*4+i)+"]\n")
+        f.write("VolSwitch.Vd_in["+str(i)+"] += CAB_DrainSwitch.In["+str((Amatrix_row+2)*4+i)+"]\n")
+        f.write("VolSwitch.Vd_in["+str(i+4)+"] += CAB_DrainSwitch.PR["+str((Amatrix_row+2)*4+i)+"]\n")
         f.write("VolSwitch.Vd_o["+str(i)+"] += Outmatrix.Vd_Rl["+str(i)+"]\n")
         f.write("VolSwitch.Vd_o["+str(i+4)+"] += Outmatrix.Vd_Pl["+str(i)+"]\n")
+        
+    for i in range(4,8):
+        f.write("Outmatrix.Vd_Rl["+str(i)+"] += CAB_DrainSwitch.In["+str((Amatrix_row+2)*4+i)+"]\n")
+        f.write("Outmatrix.Vd_Pl["+str(i)+"] += CAB_DrainSwitch.PR["+str((Amatrix_row+2)*4+i)+"]\n")
         
         
     #-------------------------------f.write("BtoOut.Vgrun_r += CAB_GateSwitch.Vgrun_r\n")
@@ -1004,21 +1053,30 @@ for cab in cab_list:
     f.write("Block_Switch.VDD += Block_GateSwitch.VINJ_T["+str(CEW_col_inst+Cblock_row_inst+5+CNS_col_inst-1)+"]\n")
     f.write("Block_Switch.GND += Block_GateSwitch.GND_T["+str(CEW_col_inst+Cblock_row_inst+5+CNS_col_inst-1)+"]\n")
     f.write("Oswitch.GND_b += Outmatrix.GND_b["+str(Bmatrix_col*2-1)+"]\n")
+    f.write("Oswitch.VDD_b += Outmatrix.VINJ_b["+str(Bmatrix_col*2-1)+"]\n")
     f.write("CABElements_GateSwitch.PROG += CAB_GateSwitch.prog_r\n")
     f.write("Block_GateSwitch.prog_r += Block_Switch.Prog\n")
     f.write("CABElements_GateSwitch.RUN += CAB_GateSwitch.run_r\n")
     f.write("CAB_GateSwitch.run_r += Block_GateSwitch.run_r\n")
     f.write("CABElements_GateSwitch.prog_r += Block_Switch.Prog_b\n")
-    f.write("Block_Switch.GND_b += CABElements_GateSwitch.GND_T\n")
-    f.write("Block_Switch.VDD_b += CABElements_GateSwitch.VPWR[1]\n")
+    f.write("Block_Switch.GND_b += Bswitch0.GND\n")
+    f.write("Block_Switch.VDD_b += Bswitch0.VDD\n")
     f.write("Bswitch0.GND += CABElements_GateSwitch.GND_T\n")
-    f.write("Bswitch0.VDD += CABElements_GateSwitch.VPWR[1]\n")
+    f.write("Bswitch0.VDD += CABElements_GateSwitch.VINJ_T\n")
     f.write("Bswitch0.Prog += CAB_GateSwitch.prog_r\n")
     f.write("Oswitch.GND += Bswitch"+str(Bmatrix_row+1)+".GND_b\n")
     f.write("Oswitch.VDD += Bswitch"+str(Bmatrix_row+1)+".VDD_b\n")
     f.write("Oswitch.Prog += Bswitch"+str(Bmatrix_row+1)+".Prog_b\n")
     f.write("CABElements_GateSwitch.RUN_IN[1] += CAB_GateSwitch.Vgrun_r\n")
     f.write("CABElements_GateSwitch.RUN_IN[0] += CAB_GateSwitch.Vgrun_r\n")
+    #f.write("SEC1.prog_r += SEC2.PROG\n")
+    #f.write("SEC1.run_r += SEC2.RUN\n")
+    #f.write("SEC1.vgsel_r += SEC2.Vgsel\n")
+    #f.write("SEC1.vtun_r += SEC2.vtun_l\n")
+    #f.write("SEC2.prog_r += SEC3.PROG\n")
+    #f.write("SEC2.run_r += SEC3.RUN\n")
+    #f.write("SEC2.vgsel_r += SEC3.Vgsel\n")
+    #f.write("SEC2.vtun_r += SEC3.vtun_l\n")
     for i in range(CEW_col+2):
         f.write("Block_GateSwitch.RUN_IN["+str(i)+"] += CAB_GateSwitch.Vgrun\n")
     f.write("Block_GateSwitch.RUN_IN["+str(CEW_col+2+Cblock_row_inst*2+2)+"] += CAB_GateSwitch.Vgrun\n")
@@ -1044,30 +1102,44 @@ for cab in cab_list:
     f.write('outerFrame.createPort("N","cew2",connection = Block_GateDecode.VGRUN['+str(CEW_col-4)+'])\n')
     f.write('outerFrame.createPort("N","cew3",connection = Block_GateDecode.VGRUN['+str(CEW_col-3)+'])\n')
     f.write('outerFrame.createPort("N","vtun",connection = Block_GateSwitch.VTUN_T[0])\n')
-    f.write('VINJN = outerFrame.createPort("N","vinj",dimension=3)\n')
-    f.write('VINJN[0] += Block_GateDecode.VINJV\n')
-    f.write('VINJN[1] += Block_DrainSelect.VINJ\n')
+    f.write('outerFrame.createPort("N","vinj",connection = Block_GateDecode.VINJV)\n')
+    f.write('Block_GateDecode.VINJV += Block_DrainSelect.VINJ\n')
+    f.write('Block_GateDecode.VINJV += CABElements_GateSwitch.VINJ_T\n')
+    #f.write('VINJN = outerFrame.createPort("N","vinj",dimension=3)\n')
+    #f.write('VINJN[0] += Block_GateDecode.VINJV\n')
+    #f.write('VINJN[1] += Block_DrainSelect.VINJ\n')
     f.write('Block_DrainSelect.VINJ += Block_DrainCutoff.VDD\n')
-    f.write('VINJN[2] += CABElements_GateSwitch.VINJ_T\n')
-    f.write('GNDN = outerFrame.createPort("N","gnd",dimension=3)\n')
-    f.write('GNDN[0] += Block_GateDecode.GNDV\n')
-    f.write('GNDN[1] += Block_DrainSelect.GND\n')
+    f.write('Block_DrainSelect.VINJ_b += Block_DrainCutoff.VDD_b\n')
+    f.write('CAB_DrainSwitch.VDD += CAB_DrainSelect.VINJ\n')
+    f.write('CAB_DrainSwitch.VDD_b += CAB_DrainSelect.VINJ_b\n')
+    f.write('CAB_DrainSwitch.VDD += Block_DrainCutoff.VDD_b\n')
+    f.write('outerFrame.createPort("N","gnd",connection = Block_GateDecode.GNDV)\n')
+    f.write('Block_GateDecode.GNDV += Block_DrainSelect.GND\n')
+    f.write('Block_GateDecode.GNDV += CABElements_GateSwitch.GND_T\n')
+    #f.write('VINJN[2] += CABElements_GateSwitch.VINJ_T\n')
+    #f.write('GNDN = outerFrame.createPort("N","gnd",dimension=3)\n')
+    #f.write('GNDN[0] += Block_GateDecode.GNDV\n')
+    #f.write('GNDN[1] += Block_DrainSelect.GND\n')
     f.write('Block_DrainSelect.GND += Block_DrainCutoff.GND\n')
-    f.write('GNDN[2] += CABElements_GateSwitch.GND_T\n')
+    f.write('Block_DrainSelect.GND_b += Block_DrainCutoff.GND_b\n')
+    f.write('CAB_DrainSwitch.GND += CAB_DrainSelect.GND\n')
+    f.write('CAB_DrainSwitch.GND_b += CAB_DrainSelect.GND_b\n')
+    f.write('CAB_DrainSwitch.GND += Block_DrainCutoff.GND_b\n')
+    #f.write('GNDN[2] += CABElements_GateSwitch.GND_T\n')
     f.write('outerFrame.createPort("N","avdd",connection = CAB_GateSwitch.Input[0])\n')
     for i in range(Cblock_row_inst-1):
-        f.write('outerFrame.createPort("N","s'+str(i*4)+'",connection = SpaceUp_'+str(i)+'.n[0])\n')
-        f.write('outerFrame.createPort("N","s'+str(i*4+1)+'",connection = SpaceUp_'+str(i)+'.n[1])\n')
-        f.write('outerFrame.createPort("N","s'+str(i*4+2)+'",connection = SpaceUp_'+str(i)+'.n[2])\n')
-        f.write('outerFrame.createPort("N","s'+str(i*4+3)+'",connection = SpaceUp_'+str(i)+'.n[3])\n')
-    f.write('outerFrame.createPort("N","s'+str(Cblock_row_inst*4-4)+'",connection = Conn_'+str(Cblock_row_inst-1)+'.n[0])\n')
-    f.write('outerFrame.createPort("N","s'+str(Cblock_row_inst*4-3)+'",connection = Conn_'+str(Cblock_row_inst-1)+'.n[1])\n')
-    f.write('outerFrame.createPort("N","s'+str(Cblock_row_inst*4-2)+'",connection = Conn_'+str(Cblock_row_inst-1)+'.n[2])\n')
-    f.write('outerFrame.createPort("N","s'+str(Cblock_row_inst*4-1)+'",connection = Conn_'+str(Cblock_row_inst-1)+'.n[3])\n')
+        f.write('outerFrame.createPort("E","s'+str(i*4)+'",connection = SpaceUp_'+str(i)+'.n[0])\n')
+        f.write('outerFrame.createPort("E","s'+str(i*4+1)+'",connection = SpaceUp_'+str(i)+'.n[1])\n')
+        f.write('outerFrame.createPort("E","s'+str(i*4+2)+'",connection = SpaceUp_'+str(i)+'.n[2])\n')
+        f.write('outerFrame.createPort("E","s'+str(i*4+3)+'",connection = SpaceUp_'+str(i)+'.n[3])\n')
+    f.write('outerFrame.createPort("E","s'+str(Cblock_row_inst*4-4)+'",connection = Conn_'+str(Cblock_row_inst-1)+'.n[0])\n')
+    f.write('outerFrame.createPort("E","s'+str(Cblock_row_inst*4-3)+'",connection = Conn_'+str(Cblock_row_inst-1)+'.n[1])\n')
+    f.write('outerFrame.createPort("E","s'+str(Cblock_row_inst*4-2)+'",connection = Conn_'+str(Cblock_row_inst-1)+'.n[2])\n')
+    f.write('outerFrame.createPort("E","s'+str(Cblock_row_inst*4-1)+'",connection = Conn_'+str(Cblock_row_inst-1)+'.n[3])\n')
     f.write('outerFrame.createPort("N","prog",connection = Block_Switch.Prog)\n')
     f.write('outerFrame.createPort("N","run",connection = Block_GateSwitch.run_r)\n')
     f.write('Block_GateSwitch.RUN += Block_DrainCutoff.RUN\n')
-    f.write('Block_GateSwitch.RUN += CAB_GateSwitch.run\n')
+    #f.write('Block_GateSwitch.RUN += CAB_GateSwitch.run\n')
     f.write('CAB_GateSwitch.run += CAB_DrainSwitch.RUN\n')
     f.write('outerFrame.createPort("N","vgsel",connection = Block_GateSwitch.vgsel_r)\n')
     f.write("CABElements_GateSwitch.vgsel_r += Block_GateSwitch.vgsel_r\n")
@@ -1082,14 +1154,16 @@ for cab in cab_list:
     for i in range(4):
         f.write('outerFrame.createPort("S","cew'+str(i)+'",connection = Oswitch.A['+str(i)+'])\n')
     f.write('outerFrame.createPort("S","vtun",connection = Block_GateSwitch.VTUN_T[0])\n')
-    f.write('VINJS = outerFrame.createPort("S","vinj",dimension=3)\n')
-    f.write('VINJS[0] += Block_GateDecode.VINJV\n')
-    f.write('VINJS[1] += Block_DrainSelect.VINJ\n')
-    f.write('VINJS[2] += CABElements_GateSwitch.VINJ_T\n')
-    f.write('GNDS = outerFrame.createPort("S","gnd",dimension=3)\n')
-    f.write('GNDS[0] += Block_GateDecode.GNDV\n')
-    f.write('GNDS[1] += Block_DrainSelect.GND\n')
-    f.write('GNDS[2] += CABElements_GateSwitch.GND_T\n')
+    f.write('outerFrame.createPort("S","vinj",connection = Block_GateDecode.VINJV)\n')
+    #f.write('VINJS = outerFrame.createPort("S","vinj",dimension=3)\n')
+    #f.write('VINJS[0] += Block_GateDecode.VINJV\n')
+    #f.write('VINJS[1] += CAB_DrainSelect.VINJ_b\n')
+    #f.write('VINJS[2] += CABElements_GateSwitch.VINJ_T\n')
+    f.write('outerFrame.createPort("S","gnd",connection = Block_GateDecode.GNDV)\n')
+    #f.write('GNDS = outerFrame.createPort("S","gnd",dimension=3)\n')
+    #f.write('GNDS[0] += Block_GateDecode.GNDV\n')
+    #f.write('GNDS[1] += CAB_DrainSelect.GND_b\n')
+    #f.write('GNDS[2] += CABElements_GateSwitch.GND_T\n')
     f.write('outerFrame.createPort("S","avdd",connection = CAB_GateSwitch.Input[0])\n')
     f.write('outerFrame.createPort("S","s'+str(0)+'",connection = Conn_'+str(0)+'.s[0])\n')
     f.write('outerFrame.createPort("S","s'+str(1)+'",connection = Conn_'+str(0)+'.s[1])\n')
@@ -1107,7 +1181,7 @@ for cab in cab_list:
     #W ports
     for i in range(4):
         f.write('outerFrame.createPort("W","cns'+str(i)+'",connection = Oswitch.A['+str(i+4)+'])\n')
-    f.write('outerFrame.createPort("W","vgrun",connection = CABElements_GateSwitch.RUN_IN[0])\n')
+    f.write('outerFrame.createPort("W","vgrun",connection = CAB_GateSwitch.Vgrun)\n')
     f.write('outerFrame.createPort("W","vtun",connection = Block_GateSwitch.VTUN_T[0])\n')
     f.write('outerFrame.createPort("W","vinj",connection = CABElements_GateSwitch.VINJ_T)\n')
     f.write('outerFrame.createPort("W","gnd",connection = CABElements_GateSwitch.GND_T)\n')
@@ -1135,7 +1209,7 @@ for cab in cab_list:
     for i in range(C_drain_bit):
         f.write('outerFrame.createPort("E","drainbit'+str(C_drain_bit-1-i)+'",connection = Block_DrainDecode.IN['+str(C_drain_bit-1-i)+'])\n')
     for i in range(Cblock_row):
-        f.write('outerFrame.createPort("E","s'+str(i)+'",connection = Block_Switch.A['+str(i)+'])\n')
+        f.write('outerFrame.createPort("N","s'+str(i)+'",connection = Block_Switch.A['+str(i)+'])\n')
     for i in range(CAB_drain_bit):
         f.write('outerFrame.createPort("E","drainbit'+str(CAB_drain_bit+C_drain_bit-1-i)+'",connection = CAB_DrainDecoder.IN['+str(CAB_drain_bit-1-i)+'])\n')
     f.write('outerFrame.createPort("E","drainEN",connection = CAB_DrainDecoder.ENABLE)\n')
@@ -1168,4 +1242,3 @@ for cab in cab_list:
     os.remove('cab.py')
     
         
-
