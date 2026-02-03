@@ -6,7 +6,7 @@ ASHES is an (in-progress) tool that is capable of programming Field Programmable
 - Learn more about FPAAs. [IEEE Link](https://ieeexplore.ieee.org/document/8915721), [PDF](https://hasler.ece.gatech.edu/FPAA_IEEEXPlore_2020.pdf)
 - Learn more about the programmable analog standard cell flow across process nodes. [65nm](https://ieeexplore.ieee.org/document/10639182), [130nm](https://ieeexplore.ieee.org/document/10431551) 
 
-![Architecture](figures/ashes_flow_v3.jpg)
+![Architecture](doc/ashes_flow_v3.jpg)
 
 ## Project Requirements
 - **Operating system:** The project has been tested in a linux environment on an Ubuntu 22 distro.  
@@ -21,6 +21,28 @@ pip install numpy verilog-parser
 ```
 
 However, to use the full capabilities of the tool please follow the instructions below.
+
+### Installation
+To install the tool as a local package, follow the following steps
+```
+git clone https://github.com/GTIceLab/ashes
+cd ashes
+
+python3 -m venv venv
+source venv/bin/activate
+
+pip install -e .
+```
+To run,
+```
+ashes asic /path/to/design.py
+```
+or 
+```
+ashes fpaa /path/to/design.py
+```
+Depending on if you want to target an FPAA or synthesize an ASIC
+
 
 ### ASIC Flow: Detailed Router
 For the detailed router we use the same tool from the [open circuit design flow by Tim Edwards](http://opencircuitdesign.com/qrouter/). The following instructions are copied verbatim from the [qrouter repository](https://github.com/RTimothyEdwards/qrouter). The tool has been tested using version 1.4.
