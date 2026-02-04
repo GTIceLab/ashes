@@ -77,7 +77,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     # Get pin list from technology layer map
     layer_map_path = os.path.join(lib_path, 'layer_map', tech_process + '.json')
     if not os.path.exists(layer_map_path): 
-        raise CellNotFound(f'Could not open layer map {tech_process}.json. ')
+        raise CellNotFound(f'Could not open layer map {layer_map_path}. ')
     layer_map = json.load(open(layer_map_path))
     pin_list = make_pin_list(layer_map, tech_process)
 
