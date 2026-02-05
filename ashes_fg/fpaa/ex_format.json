@@ -1,0 +1,51 @@
+// need in,out,fgswc,fgota,ota,cap
+// addressses, biases, caps, etc
+// matrices in original 
+// generate_MC_callback
+
+{
+    "fgswc": {
+        "connect": "-",
+        "bias": {
+            "name": "FGSWC_BIAS",
+            "default": 0.5
+        },
+        "fg_address": {
+            "row": 10,
+            "col": 5
+        },
+        "routing_exception": "%T"   
+    },
+    "fgota0": {
+        "select": "-",
+        "biases": [
+            {
+                "name": "FGOTA0_BIAS1",
+                "default": 0.3
+                "capacitance": 2e-12
+            },
+        ],
+        "fg_address": {
+            "row": 8,
+            "col": 12
+        }
+    },
+    "ota1": {
+        "bias": {
+            "name": "OTA1_BIAS",
+            "default": 0.4
+        },
+        "fg_address": {
+            "row": 6,
+            "col": 14
+        }
+    },
+    "cap0": {
+        "capacitance_name": "CAP0_NAME",
+        "fg_addresses": {
+            "row": 6,
+            "col": 9
+        }
+    }
+
+}
