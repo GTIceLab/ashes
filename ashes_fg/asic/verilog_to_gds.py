@@ -207,7 +207,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
         update_output_layout('ENDLIB\n', text_layout_path)
         os.system(f'{pypath} {txt2gds_path} -o {gds_path} {text_layout_path}')
 
-        generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu, cell_order_in_island)
+        generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu, cell_order_in_island,lib_path)
 
         #metal_layers = count_metal_layers(layer_map, tech_process)
         metal_layers = count_metal_layers_drawing(layer_map, tech_process)
@@ -1455,14 +1455,14 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
     return ''.join(ret_string), frame_module
 
 
-def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_order_in_island):
+def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_order_in_island,lib_path):
     '''
     Create a lef file for the design
     - Start with a copy of the technology lef
     - Use the module list to define any pins found
     '''
     # Copy the technology lef for the design
-    tech_lef_path = os.path.join(Path(__file__).parent, 'lib', 'tech_lef', tech_process + '.lef')
+    tech_lef_path = os.path.join(lib_path, 'tech_lef', tech_process + '.lef')
     #tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '_toplevelroute.lef')
     if os.path.exists(tech_lef_path): shutil.copy(tech_lef_path, file_path)
     else: raise CellNotFound(f'Could not find the technology lef file {tech_process}.lef. Is it in the ./lib/tech_lef/ directory?')
