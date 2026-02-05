@@ -33,7 +33,7 @@ from ashes_fg.asic.utils import *
 # - Why are island numbers zero indexed but row and cols are 1 indexed?
 
 
-verbose = False 
+verbose = True
 pypath = sys.executable
 
 
@@ -470,6 +470,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
             for inst in island['deq']:
                 details = inst.ports
                 cell_width = int(cell_info[str(inst.module_name)]['width'])
+                #cell_width = int(1632);
                 cell_height = int(cell_info[str(inst.module_name)]['height'])
                 curr_row = int(details['row'])
                 curr_col = int(details['col'])
@@ -1153,8 +1154,9 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 array = island['coords']
                 left, bottom, right, top = array[idx][0], array[idx][1], array[idx][2], array[idx][3]
                 # careful with dbu conversion
-                mat_col = int( int(right - left) / int(cell_info[c_name]['width']) )
-                mat_row = int( int(top - bottom) / int(cell_info[c_name]['height']) )
+                mat_info = item['mat_info']
+                mat_col = int(mat_info['mat_col'])
+                mat_row = int(mat_info['mat_row'])
                 ret_string.append(f'COLROW: {mat_col}, {mat_row}\n')
                 ret_string.append(f'XY: {left}, {bottom}, {right}, {bottom}, {left}, {top}\n')
                 ret_string.append(f'ENDEL\n')
