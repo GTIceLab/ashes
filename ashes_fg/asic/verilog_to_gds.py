@@ -33,7 +33,7 @@ from ashes_fg.asic.utils import *
 # - Why are island numbers zero indexed but row and cols are 1 indexed?
 
 
-verbose = True
+verbose = False
 pypath = sys.executable
 
 
@@ -47,7 +47,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     ver_file = open(os.path.join(proj_path,'syn',verilog_file_name), 'r')
     ver_file_content = ver_file.read()
     ver_file.close()
-    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path = process_params
+    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer = process_params
   
     ast = parse_verilog(ver_file_content)
     module_list = set()
@@ -121,7 +121,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     generate_cells_list = []
     for inst in top_module.module_instances:
         if inst.module_name in module_list and inst.instance_name.lower() not in inst_except_list:
-            cell_text = parse_cell_gds(inst.module_name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process,lib_path)
+            cell_text = parse_cell_gds(inst.module_name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process,lib_path,prBoundary_layer)
             if not routed_def: update_output_layout(cell_text, text_layout_path)
             first_cell = False
         elif inst.instance_name.lower() in inst_except_list:
@@ -230,7 +230,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
         os.system(f'{pypath} {txt2gds_path} -o {merged_gds_file_path} {text_merged_layout_path}')
     
 
-def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process,lib_path):
+def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process,lib_path,prBoundary_layer):
     """
     Convert the cell gds to text
     - Omit header and libary tags for subsequent cells
@@ -248,6 +248,8 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     sref_name, aref_flag = None, False
     rotated_cell, matrix_inst = False, False
     sub_cell_width = None
+
+    prBoundary_flag = False
 
     # add process variable 
     try:
@@ -283,6 +285,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                         check_poly_layer = True
                         poly_pin_layer = None
                         poly_left, poly_bottom, poly_right, poly_top = None, None, None, None
+
                     # Indicate an AREF record. Track this to treat its XY values differently
                     if rec.tag_name == 'AREF':
                         aref_flag = True
@@ -304,7 +307,10 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                     
                     if rec.tag_name == 'ENDEL' and rotated_cell:
                         rotated_cell = False
-                    
+
+                    if rec.tag_name == 'ENDEL' and prBoundary_flag:
+                        prBoundary_flag = False
+
                     if rec.tag_name == 'ENDEL':
                         sub_cell_width = None
                         sref_name = None
@@ -358,9 +364,14 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                         text_layer = rec.data[0] if (str(rec.data[0]), pin_list[0][1]) in pin_list else text_layer
                     
                     # If in a boundary record, check if layer is in pin list
+                    # Also check to see if its a prBoundary layer
                     if rec.tag_name == 'LAYER' and check_poly_layer:
                         poly_pin_layer = rec.data[0] if (str(rec.data[0]), pin_list[0][1]) in pin_list else poly_pin_layer
-                    
+
+                        if prBoundary_layer == None or int(rec.data[0]) == int(prBoundary_layer):
+                            prBoundary_flag = True
+
+
                     # If the datatype does not match pin list dataype, then reset poly pin layer
                     if rec.tag_name == 'DATATYPE' and poly_pin_layer:
                         poly_pin_layer = None if int(rec.data[0]) != int(pin_list[0][1]) else poly_pin_layer
@@ -382,7 +393,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
 
                     # Check for height and width of the cell
                     # Get location of pin
-                    if rec.tag_name == 'XY':
+                    if rec.tag_name == 'XY' and prBoundary_flag == True:
                         for idx, item in enumerate(rec.data):
                             if idx % 2:
                                 # keep track of min and max y
@@ -419,11 +430,8 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                         #    print(f'Tracking ArbGen max x: {max_x}')
                         #    print(f'Rec Data: {rec.data}')        
                         # For a text record on a pin layer, get pin location
-                        if check_pin_text_layer and text_layer:
-                            text_loc_X, text_loc_Y = rec.data[0], rec.data[1]
-                        # For a boundary record on a pin layer, get polygon location
-                        if check_poly_layer and poly_pin_layer:
-                            poly_left, poly_bottom, poly_right, poly_top = rec.data[0], rec.data[1], rec.data[4], rec.data[5]   
+
+
       
     except:
         raise CellNotFound(f'Problem opening and parsing cell {name}.gds file.')
@@ -691,7 +699,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     if name in cell_info: 
                         del cell_info[name]
                         should_update_layout = False
-                    cell_text = parse_cell_gds(name, False, cell_info, decoder_helper_cell_names, pin_list, layer_map, tech_process,lib_path)
+                    cela_text = parse_cell_gds(name, False, cell_info, decoder_helper_cell_names, pin_list, layer_map, tech_process,lib_path)
                     if should_update_layout: update_output_layout(cell_text, text_layout_path)  
                 total_outputs = 2**bit_width
                 #decoder_cols = int(math.ceil(math.log2(bit_width))+ math.ceil(math.log2(bit_width))-1)
@@ -1154,6 +1162,8 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 array = island['coords']
                 left, bottom, right, top = array[idx][0], array[idx][1], array[idx][2], array[idx][3]
                 # careful with dbu conversion
+                #mat_col = int( int(right - left) / int(cell_info[c_name]['width']) )
+                #mat_row = int( int(top - bottom) / int(cell_info[c_name]['height']) )
                 mat_info = item['mat_info']
                 mat_col = int(mat_info['mat_col'])
                 mat_row = int(mat_info['mat_row'])
