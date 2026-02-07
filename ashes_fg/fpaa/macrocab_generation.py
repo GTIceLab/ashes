@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 '''
 Macrocab generation transferred from rasp30.
@@ -14,12 +15,40 @@ High level (macrocab_gen_fcn.sce):
     - saved xcos
 '''
 
+# python3 macrocab_generation.py path_name block_name block_level
+# python3 macrocab_generation.py make_macrocab
+if len(sys.argv) == 4:
+    global path_name
+    path_name = sys.argv[1]
+    global block_name
+    block_name = sys.argv[2]
+    global block_level
+    block_name = sys.argv[3]
+elif len(sys.argv) == 2:
+    if sys.argv[1] == "make_macrocab":
+        # call make macrocab function
+        pass
+    elif sys.argv[1] == "delete_macrocab":
+        # call delete macrocab function
+        pass
+    else:
+        raise ValueError("Invalid command.")
+else:
+    raise ValueError("Commands: python3 macrocab_generation.py path_name block_name block_level \nOR python3 macrocab_generation.py make_macrocab \nOR python3 macrocab_generation.py delete_macrocab")
+
+
+
+
+
+
+    
+
 # data to specify: folder name, block name, block level
 # assume this is in json/csv/txt/yaml/etc
 
 # for the following arguments, either provided directly through command file or from txt file
 
-def verify_starting_parameters(path_name, block_name, block_level):
+def verify_starting_parameters():
     # check folder vs path
     if os.path.exists(path_name):
         raise ValueError(f"Path {path_name} does not exist.")
@@ -36,12 +65,12 @@ def verify_starting_parameters(path_name, block_name, block_level):
     
     subprocess.run(f"mkdir {RASPPATH}/{path_name}")
     subprocess.run(f"cd {RASPPATH}/{path_name}")
-    subprocess.run("touch {block_name}.filextension")  
+    subprocess.run(f"touch {block_name}.filextension")  
 
     return path_name, block_name, block_level
 
     
-def create_mc_block(path_name, block_name, block_level):
+def create_mc_block():
     # parameters from macrocab design
     with open("../class_lib.py", "r") as file:
         lines = file.readlines()
@@ -62,7 +91,7 @@ def create_mc_block(path_name, block_name, block_level):
 
     
 
-def delete_macrocab(block_name, path_name):
+def delete_macrocab():
     file_path = os.path.join(path_name, f"{block_name}.filextension")
     if os.path.exists(file_path):
         os.remove(file_path)
