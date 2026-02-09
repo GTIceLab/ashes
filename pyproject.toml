@@ -11,8 +11,12 @@ dependencies = [
   "numpy",
   "shapely",
   "verilog-parser",
-  "lxml"
+  "lxml",
+
+  "argparse",
+  "gdstk"
 ]
 
 [project.scripts]
 ashes = "ashes_fg.cli:main"
+gen_stdcell_defs = "ashes_fg.gds_to_celldef.gen_stdcell_defs:main"

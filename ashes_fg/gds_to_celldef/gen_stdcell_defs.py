@@ -2,12 +2,12 @@ import argparse
 import os
 from pathlib import Path
 
-import gds2text
-import text2json
-import json2python
+from ashes_fg.gds_to_celldef import gds2text
+from ashes_fg.gds_to_celldef import text2json
+from ashes_fg.gds_to_celldef import json2python
 
 
-def orchestrate(file_path: str, single_file: Path | None, per_class: bool) -> Path:
+def gen_stdcell_defs(file_path: str, single_file: Path | None, per_class: bool) -> Path:
 	# Step 1: GDS -> text output
 	txt_path = gds2text.process_gds(file_path)
 
@@ -46,7 +46,7 @@ def main():
 		raise FileNotFoundError(f"File not found: {file}")
 
 	single_file = Path(args.single_file) if args.single_file and not args.per_class else None
-	final_py = orchestrate(file, single_file, args.per_class)
+	final_py = gen_stdcell_defs(file, single_file, args.per_class)
 	print(f"Generated Python cell(s) written to: {final_py}")
 
 

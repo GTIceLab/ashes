@@ -43,6 +43,10 @@ ashes fpaa /path/to/design.py
 ```
 Depending on if you want to target an FPAA or synthesize an ASIC
 
+To add std cell def (json or py) from GDS, run,
+```
+gen_stdcell_defs /path/to/gds.gds
+```
 
 ### ASIC Flow: Detailed Router
 For the detailed router we use the same tool from the [open circuit design flow by Tim Edwards](http://opencircuitdesign.com/qrouter/). The following instructions are copied verbatim from the [qrouter repository](https://github.com/RTimothyEdwards/qrouter). The tool has been tested using version 1.4.
