@@ -1,0 +1,9 @@
+QUICKSTART GUIDE
+
+1. navigate to /home/(your_gtusername)/.bashrc
+2. add the following line to your .bashrc file: 
+
+alias create = 'python3 (path_path_to_orchestrator.py)'
+
+3. run the command 
+create (path_to_gds)
