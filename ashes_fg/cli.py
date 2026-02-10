@@ -45,22 +45,36 @@ def main():
     if "Top" not in globals_dict:
         raise SystemExit("Algorithm must define `Top` Circuit object")
 
+    # Variables from design
     design = globals_dict["Top"]
+    design_limits = globals_dict["design_limits"]
+    location_islands = globals_dict["location_islands"]
 
-    # ---- load config ----
+
+    # ---- load synthesis settings ----
     config_path = project_dir / "synthesis_settings.json"
     compile_args = {}
     if config_path.exists():
         with open(config_path) as f:
             compile_args = json.load(f)
 
+    # ---- load routing settings ----
+    config_path = project_dir / "router_settings.json"
+    qparams = {}
+    if config_path.exists():
+        with open(config_path) as f:
+            qparams = json.load(f)
+    else:
+        qparams = None
+
+    # Assume project name is folder name
     project_name = Path(args.design).stem
 
     # ---- dispatch ----
     if args.flow == "fpaa":
         af.fpaa.compile(design, **compile_args)
     elif args.flow == "asic":
-        af.asic.compile(design,project_path = project_dir,project_name=project_name, **compile_args)
+        af.asic.compile(design,project_path = project_dir,project_name=project_name,design_limits=design_limits,location_islands=location_islands,qparams=qparams,**compile_args)
 
 if __name__ == "__main__":
     main()

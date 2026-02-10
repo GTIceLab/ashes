@@ -1,7 +1,5 @@
 {
     "process": "tsmc_350nm",
-    "design_limits": [5e5,5e5],
-    "location_islands": [[50000,25000],[0,0]],
     "drainSpaceIdx": 0,
     "drainSpace": 15,
     "gateSpaceIdx": 0,
