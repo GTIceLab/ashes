@@ -179,7 +179,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     cell_order_in_island = {}
     island_params = (track_spacing, cell_pitch, cells_only_module, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space)
     parse_cell_params = (module_list, pin_list, layer_map, tech_process, dbu, text_layout_path)
-    island_text, island_dims = generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc,lib_path)
+    island_text, island_dims = generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc,lib_path,prBoundary_layer)
     if verbose: 
         print(f'Island Placements:\n {island_place}')
         print('Post island gen, island info')
@@ -431,6 +431,12 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                         #    print(f'Rec Data: {rec.data}')        
                         # For a text record on a pin layer, get pin location
 
+                    if rec.tag_name == 'XY':
+                        if check_pin_text_layer and text_layer:
+                            text_loc_X, text_loc_Y = rec.data[0], rec.data[1]
+                        # For a boundary record on a pin layer, get polygon location
+                        if check_poly_layer and poly_pin_layer:
+                            poly_left, poly_bottom, poly_right, poly_top = rec.data[0], rec.data[1], rec.data[4], rec.data[5]  
 
       
     except:
@@ -438,7 +444,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     return ''.join(ret_string)
     
 
-def generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc,lib_path):
+def generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc,lib_path,prBoundary_layer):
     ''' 
     Generate gds output for islands 
     - Place all cells and matrices into islands
@@ -699,7 +705,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     if name in cell_info: 
                         del cell_info[name]
                         should_update_layout = False
-                    cela_text = parse_cell_gds(name, False, cell_info, decoder_helper_cell_names, pin_list, layer_map, tech_process,lib_path)
+                    cell_text = parse_cell_gds(name, False, cell_info, decoder_helper_cell_names, pin_list, layer_map, tech_process,lib_path,prBoundary_layer)
                     if should_update_layout: update_output_layout(cell_text, text_layout_path)  
                 total_outputs = 2**bit_width
                 #decoder_cols = int(math.ceil(math.log2(bit_width))+ math.ceil(math.log2(bit_width))-1)
