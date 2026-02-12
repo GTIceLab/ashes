@@ -1,7 +1,7 @@
 import os
 import subprocess
 import sys
-
+import json
 '''
 Macrocab generation transferred from rasp30.
 
@@ -69,25 +69,58 @@ def verify_starting_parameters():
 
     return path_name, block_name, block_level
 
+with open("ashes_fg/fpaa/ex_format.json") as f:
+    data = json.load(f); #loads user's data from json file
     
 def create_mc_block():
     # parameters from macrocab design
+    """
+    Creates macrocab class using JSON data from user
+    
+    path_name (str): folder path to save macrocab
+    block_name (str): macrocab name
+    data (dict): JSON-loaded macrocab info
+    """
+    parameters =[]
+
+    #build the parameters from the JSON data
+    for name, block in data.items():
+        #bias
+        if "bias" in block:
+            parameters.append((f"{name}_bias", block["bias"]["default"]))
+        elif "biases" in block: 
+            for b in block["biases"]:
+                parameters.append((b["name"], b["default"]))
+                if "capacitance" in b:
+                    parameters.append((f"{b['name']}_cap", b["capacitance"]))
+
+        #capacitance
+        if "capacitance" in block:
+            parameters.append((f"{name}_capacitance", block["capacitance"]))
+
+        # FG addresses
+        if "fg_address" in block:
+            parameters.append((f"{name}_row", block["fg_address"]["row"]))
+            parameters.append((f"{name}_col", block["fg_address"]["col"]))
+
+        # Inputs/outputs
+        if "inputs" in block:
+            parameters.append((f"{name}_inputs", block["inputs"]))
+        if "outputs" in block:
+            parameters.append((f"{name}_outputs", block["outputs"]))
+
     with open("../class_lib.py", "r") as file:
         lines = file.readlines()
 
-
-    # needs fleshing out
-    lines.append(f"class {block_name}:\n")
+    lines.append(f"\nclass {block_name}:\n")
     lines.append("    def __init__(self):\n")
-    for p in parameters:
-        lines.append(f"        {p},\n")
-    
-    for p in parameters:
-        lines.append(f"    self.{p} = {p}\n")
-    
-    with open ("../class_lib.py", "w") as file:
-        file.writelines(lines)
 
+    # Write all parameters as self attributes
+    for param_name, param_value in parameters:
+        lines.append(f"        self.{param_name} = {repr(param_value)}\n")
+
+    with open("../class_lib.py", "w") as file:
+        file.writelines(lines)
 
     
 
