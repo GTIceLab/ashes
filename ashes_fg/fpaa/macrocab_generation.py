@@ -15,6 +15,9 @@ High level (macrocab_gen_fcn.sce):
     - saved xcos
 '''
 
+ASHESPATH = os.getenv("ASHESPATH","/home/ubuntu/ashes")
+RASPPATH = os.getenv("RASPPATH", "/home/ubuntu/rasp30")
+
 # python3 macrocab_generation.py path_name block_name block_level
 # python3 macrocab_generation.py make_macrocab
 if len(sys.argv) == 4:
@@ -112,15 +115,22 @@ def create_mc_block():
     with open("../class_lib.py", "r") as file:
         lines = file.readlines()
 
-    lines.append(f"\nclass {block_name}:\n")
-    lines.append("    def __init__(self):\n")
+    global classlines
+    classlines = ""
+    classlines.append(f"\nclass {block_name}:\n")
+    classlines.append("    def __init__(self,\ninput,\nnum_instances='1',\ntype='FPAA',\nboard=['3.0','3.0a'],\n")
 
     # Write all parameters as self attributes
     for param_name, param_value in parameters:
-        lines.append(f"        self.{param_name} = {repr(param_value)}\n")
+        classlines.append(f"\n{param_name}={param_value},")
+
+    classlines[-1].replace(",","):")
+
+    for param_name, param_value in parameters:
+        classlines.append(f"        self.{param_name} = {repr(param_value)}\n") # thought this was supposed to be param name? like self.common_source_ibias = common_source_ibias
 
     with open("../class_lib.py", "w") as file:
-        file.writelines(lines)
+        file.write(classlines)
 
     
 
@@ -130,3 +140,44 @@ def delete_macrocab():
         os.remove(file_path)
     else:
         raise ValueError(f"Macrocab {block_name} does not exist in the specified path.")
+    
+    with open("../class_lib.py", "r") as file:
+        lines = file.readlines()
+
+    global classlines
+
+    lines = [line for line in lines if line != classlines]
+
+    with open("../class_lib.py", "w") as file:
+        file.writelines(lines)
+
+
+
+'''
+rasp3a_arch.xml example for hh neuron
+</model>
+		<model name="hhneuron"> 
+			<input_ports>
+				<port name="in"/>
+			</input_ports>
+			<output_ports>
+				<port name="out"/>
+			</output_ports>
+
+            
+ </pb_type>
+			<pb_type name="hhneuron" num_pb="1" blif_model=".hhneuron">
+				<input name="in" num_pins="4"/>
+				<output name="out" num_pins="3"/>
+				<delay_matrix type="max" in_port="hhneuron.in" out_port="hhneuron.out"> 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10 2.69e-10</delay_matrix>
+			           
+
+<complete name="direct" input="hhneuron[0].out[2:0]" output="cab.O[3:1] "/>
+				<complete name="crossbar" input="cab.I[11:8]" output="hhneuron.in[3:0] c4_sp.in[1:0] fgota.in[1:0]"/>                
+                
+                '''
+
+    
+
+
+    
