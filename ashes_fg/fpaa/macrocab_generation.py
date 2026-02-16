@@ -177,6 +177,18 @@ rasp3a_arch.xml example for hh neuron
                 
                 '''
 
+
+'''
+for generic macrocab:
+- model defines name, input, output
+- device: transistor sizing, timing, area, switch block
+- routing fabric
+- segment list (wire definition)
+- complexblocklist
+= cab type
+    - instantiate model, physical block
+
+'''
     
 
 
