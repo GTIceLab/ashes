@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 import json
+
 '''
 Macrocab generation transferred from rasp30.
 
@@ -18,14 +19,10 @@ High level (macrocab_gen_fcn.sce):
 ASHESPATH = os.getenv("ASHESPATH","/home/ubuntu/ashes")
 RASPPATH = os.getenv("RASPPATH", "/home/ubuntu/rasp30")
 
-# python3 macrocab_generation.py path_name block_name block_level
-# python3 macrocab_generation.py make_macrocab
+
 if len(sys.argv) == 4:
-    global path_name
     path_name = sys.argv[1]
-    global block_name
     block_name = sys.argv[2]
-    global block_level
     block_name = sys.argv[3]
 elif len(sys.argv) == 2:
     if sys.argv[1] == "make_macrocab":
@@ -40,37 +37,36 @@ else:
     raise ValueError("Commands: python3 macrocab_generation.py path_name block_name block_level \nOR python3 macrocab_generation.py make_macrocab \nOR python3 macrocab_generation.py delete_macrocab")
 
 
-
-
-
-
-    
-
 # data to specify: folder name, block name, block level
 # assume this is in json/csv/txt/yaml/etc
 
 # for the following arguments, either provided directly through command file or from txt file
 
-def verify_starting_parameters():
+def verify_starting_parameters(path_name, block_name, block_level):
+    """
+    Verifies starting parameters for generation: block name, folder name, block level.
+    
+    path_name (str): folder name to save macrocab
+    block_name (str): macrocab name
+    block_level (int): level of macrocab (1 or 2)
+    """
     # check folder vs path
-    if os.path.exists(path_name):
-        raise ValueError(f"Path {path_name} does not exist.")
+    if os.path.exists(f"{ASHESPATH}/{path_name}"):
+        raise ValueError(f"Path {path_name} already exists.")
+        
     # name errors
     if block_name == "":
         raise ValueError("Macrocab name cannot be empty.")
     elif block_name and block_name[0].isdigit():
         raise ValueError("Macrocab name cannot start with a digit.")
-    elif f"{path_name}/{block_name}.filextension".exists():
+    elif os.path.exists(f"{ASHESPATH}/{path_name}/{block_name}.json"):
         raise ValueError("Macrocab name already exists in the specified path.")
     # level errors
     if block_level != 1 and block_level != 2:
         raise ValueError("Block level must be either 1 or 2.")
     
-    subprocess.run(f"mkdir {RASPPATH}/{path_name}")
-    subprocess.run(f"cd {RASPPATH}/{path_name}")
-    subprocess.run(f"touch {block_name}.filextension")  
-
-    return path_name, block_name, block_level
+    subprocess.run(f"mkdir {ASHESPATH}/{path_name}")
+    subprocess.run(f"mv {ASHESPATH}/ex_format.json {ASHESPATH}/{path_name}/{block_name}.json")
 
 with open("ashes_fg/fpaa/ex_format.json") as f:
     data = json.load(f); #loads user's data from json file
@@ -112,41 +108,42 @@ def create_mc_block():
         if "outputs" in block:
             parameters.append((f"{name}_outputs", block["outputs"]))
 
-    with open("../class_lib.py", "r") as file:
-        lines = file.readlines()
+    with open("../class_lib.py", "a") as file:
 
-    global classlines
-    classlines = ""
-    classlines.append(f"\nclass {block_name}:\n")
-    classlines.append("    def __init__(self,\ninput,\nnum_instances='1',\ntype='FPAA',\nboard=['3.0','3.0a'],\n")
+        file.writelines(f"\nclass {block_name}:\n")
+        file.writelines("    def __init__(self,\ninput,\nnum_instances='1',\ntype='FPAA',\nboard=['3.0','3.0a'],\n")
 
-    # Write all parameters as self attributes
-    for param_name, param_value in parameters:
-        classlines.append(f"\n{param_name}={param_value},")
+        # Write all parameters as self attributes
+        for param_name, param_value in parameters:
+            file.writelines(f"\n{param_name}={param_value},")
 
-    classlines[-1].replace(",","):")
+        # Replace last comma with closing parenthesis
+        file.seek(0)
+        content = file.read()
+        content = content[:-1] + ")"
+        file.seek(0)
+        file.write(content)
 
-    for param_name, param_value in parameters:
-        classlines.append(f"        self.{param_name} = {repr(param_value)}\n") # thought this was supposed to be param name? like self.common_source_ibias = common_source_ibias
+        for param_name, param_value in parameters:
+            file.writelines(f"        self.{param_name} = {repr(param_value)}\n") # thought this was supposed to be param name? like self.common_source_ibias = common_source_ibias
 
-    with open("../class_lib.py", "w") as file:
-        file.write(classlines)
+     
 
-    
-
-def delete_macrocab():
-    file_path = os.path.join(path_name, f"{block_name}.filextension")
-    if os.path.exists(file_path):
-        os.remove(file_path)
+def delete_macrocab(path_name, block_name):
+    if os.path.exists(f"{ASHESPATH}/{path_name}/{block_name}.json"):
+        os.remove(f"{ASHESPATH}/{path_name}/{block_name}.json")
+        os.rmdir(f"{ASHESPATH}/{path_name}")
     else:
         raise ValueError(f"Macrocab {block_name} does not exist in the specified path.")
     
     with open("../class_lib.py", "r") as file:
         lines = file.readlines()
-
-    global classlines
-
-    lines = [line for line in lines if line != classlines]
+        removeline = False
+        for line in lines:
+            if f"class {block_name}:" in line:
+                removeline = True
+            if removeline:
+                lines.remove(line)
 
     with open("../class_lib.py", "w") as file:
         file.writelines(lines)
