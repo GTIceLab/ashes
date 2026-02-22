@@ -2,6 +2,8 @@ import os
 import subprocess
 import sys
 import json
+from lxml import etree
+from io import StringIO, BytesIO
 
 '''
 Macrocab generation transferred from rasp30.
@@ -23,7 +25,7 @@ RASPPATH = os.getenv("RASPPATH", "/home/ubuntu/rasp30")
 if len(sys.argv) == 4:
     path_name = sys.argv[1]
     block_name = sys.argv[2]
-    block_name = sys.argv[3]
+    block_level = sys.argv[3]
 elif len(sys.argv) == 2:
     if sys.argv[1] == "make_macrocab":
         # call make macrocab function
@@ -186,6 +188,40 @@ for generic macrocab:
     - instantiate model, physical block
 
 '''
+
+def edit_xml(xml_file, macrocab):
+    root = etree.parse(xml_file).getroot()
+    models = root.find('models')
+    model = etree.SubElement(models, 'model', name=macrocab.name)
+    inn = etree.SubElement(model, 'input_ports')
+    etree.SubElements(inn,'port',name='in')
+    out = etree.SubElement(model, 'output_ports')
+    etree.SubElement(out, 'port', name=out)
+    
+    cab = root.find(".//pb_type[@name='cab']")
+    pb = etree.SubElement(cab, "pb_type", name=macrocab.name,blif_model=f".{macrocab.name}",num_pb="1")
+
+    etree.SubElement(pb, 'input', name='in', num_pins=str(macrocab.num_inputs))
+    etree.SubElement(pb, 'output', name='out', num_pins=str(macrocab.num_outputs))
+
+    etree.SubElement(pb, "delay_constant",max="1.667e-9",in_port=f"{macrocab.name}.in",out_port=f"{macrocab.name}.out")
+    
+    interconnect = cab.find("interconnect")
+
+    # routing
+
+    etree.write(xml_file,pretty_print=True,xml_declaration=True,encoding='UTF-8')
+    
+
+
+
+
+
+
+
+
+
+
     
 
 

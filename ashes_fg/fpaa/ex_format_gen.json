@@ -1,0 +1,118 @@
+{
+  "diagram_title": "macrocab_xcosref_30_30a",
+  "components": [
+    {
+      "type": "FGOTA",
+      "simulation_function": "fgota_c",
+      "instances": [
+        {
+          "interface": "macrocab_fgota1",
+          "id": "106a334e:182947f75da:-75a9",
+          "bias_current": "2e-6",
+          "hardware_address": { "row": 31.0, "column": 63.0 },
+          "default_states": { "nbZerosCrossing": 0.0, "nmode": 0.0, "state": 0.0, "dependsOnU": 1 }
+        }
+      ]
+    },
+    {
+      "type": "OTA",
+      "simulation_function": "ota_c",
+      "instances": [
+        {
+          "interface": "macrocab_ota0",
+          "id": "4632dc0e:1577438522b:-7c07",
+          "bias_current": "2e-6",
+          "hardware_address": { "row": 32.0, "column": 62.0 }
+        },
+        {
+          "interface": "macrocab_ota1",
+          "id": "-2e0c08de:157743de228:-7c0b",
+          "bias_current": "2e-6",
+          "hardware_address": { "row": 32.0, "column": 63.0 }
+        }
+      ]
+    },
+    {
+      "type": "Capacitor",
+      "simulation_function": "cap_c",
+      "instances": [
+        {
+          "interface": "macrocab_cap0",
+          "id": "74c7b8a8:15777a60f39:-7b90",
+          "hardware_addresses": [
+            { "row": 28.0, "column": 57.0 }, { "row": 28.0, "column": 58.0 }, { "row": 28.0, "column": 59.0 }
+          ]
+        },
+        {
+          "interface": "macrocab_cap2",
+          "id": "74c7b8a8:15777a60f39:-7b87",
+          "hardware_addresses": [
+            { "row": 29.0, "column": 57.0 }, { "row": 29.0, "column": 58.0 }, { "row": 29.0, "column": 59.0 }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Floating-Gate Switch",
+      "simulation_function": "fgswitch_c",
+      "default_bias": "50e-9",
+      "instances": [
+        { "id": "-bb850cc:157a60c4468:-6f77", "row": 33.0, "column": 21.0 },
+        { "id": "-bb850cc:157a60c4468:-6f76", "row": 33.0, "column": 22.0 },
+        { "id": "-bb850cc:157a60c4468:-6f0d", "row": 28.0, "column": 17.0 },
+        { "id": "-bb850cc:157a60c4468:-6f0c", "row": 28.0, "column": 18.0 },
+        { "id": "-bb850cc:157a60c4468:-6efb", "row": 27.0, "column": 25.0 },
+        { "id": "-bb850cc:157a60c4468:-6ef7", "row": 27.0, "column": 29.0 },
+        { "id": "-bb850cc:157a60c4468:-6ef6", "row": 27.0, "column": 30.0 },
+        { "id": "-bb850cc:157a60c4468:-6ef5", "row": 27.0, "column": 31.0 },
+        { "id": "-bb850cc:157a60c4468:-6ee7", "row": 26.0, "column": 25.0 },
+        { "id": "-bb850cc:157a60c4468:-6ee6", "row": 26.0, "column": 26.0 },
+        { "id": "-bb850cc:157a60c4468:-6e59", "row": 19.0, "column": 27.0 },
+        { "id": "-bb850cc:157a60c4468:-6e58", "row": 19.0, "column": 28.0 },
+        { "id": "-bb850cc:157a60c4468:-6de9", "row": 13.0, "column": 19.0 },
+        { "id": "-bb850cc:157a60c4468:-6de0", "row": 13.0, "column": 1.0 },
+        { "id": "-bb850cc:157a60c4468:-6dd9", "row": 12.0, "column": 15.0 },
+        { "id": "-bb850cc:157a60c4468:-6d7a", "row": 8.0, "column": 30.0 },
+        { "id": "-bb850cc:157a60c4468:-6d6a", "row": 7.0, "column": 26.0 },
+        { "id": "-bb850cc:157a60c4468:-6d69", "row": 7.0, "column": 27.0 },
+        { "id": "-bb850cc:157a60c4468:-6d68", "row": 7.0, "column": 28.0 },
+        { "id": "-10b0755:1827deb9d77:-7605", "row": 28.0, "column": 11.0 },
+        { "id": "-10b0755:1827deb9d77:-757d", "row": 22.0, "column": 3.0 },
+        { "id": "-10b0755:1827deb9d77:-7562", "row": 21.0, "column": 6.0 },
+        { "id": "-10b0755:1827deb9d77:-7561", "row": 21.0, "column": 7.0 },
+        { "id": "-10b0755:1827deb9d77:-7443", "row": 9.0, "column": 5.0 },
+        { "id": "-10b0755:1827deb9d77:-7442", "row": 9.0, "column": 6.0 },
+        { "id": "106a334e:182947f75da:-71c1", "row": 29.0, "column": 14.0 }
+      ]
+    },
+    {
+      "type": "Transistors and Mirrors",
+      "default_states": { "nbZerosCrossing": 0.0, "nmode": 0.0, "state": 0.0, "dependsOnU": 1 },
+      "instances": [
+        { "interface": "macrocab_nfet0", "id": "587e8c7f:157734135e6:-7bfa", "simulation": "nfet_c" },
+        { "interface": "macrocab_nfet1", "id": "587e8c7f:157734135e6:-7c06", "simulation": "nfet_c" },
+        { "interface": "macrocab_pfet0", "id": "7138c360:157744ace35:-7bf8", "simulation": "pfet_c" },
+        { "interface": "macrocab_pfet1", "id": "7138c360:157744ace35:-7bec", "simulation": "pfet_c" },
+        { "interface": "macrocab_nmirror0", "id": "74c7b8a8:15777a60f39:-7ba2", "simulation": "nmirror_c" },
+        { "interface": "macrocab_nmirror1", "id": "74c7b8a8:15777a60f39:-7b99", "simulation": "nmirror_c" }
+      ]
+    },
+    {
+      "type": "Transmission Gates",
+      "simulation_function": "tgate_c",
+      "instances": [
+        { "interface": "macrocab_tgate0", "id": "147256e4:15777693ae7:-7bb8" },
+        { "interface": "macrocab_tgate1", "id": "147256e4:15777693ae7:-7bc4" },
+        { "interface": "macrocab_tgate2", "id": "147256e4:15777693ae7:-7bd0" },
+        { "interface": "macrocab_tgate3", "id": "147256e4:15777693ae7:-7b94" }
+      ]
+    },
+    {
+      "type": "I/O Ports",
+      "instances": [
+        { "interface": "macrocab_in", "id": "587e8c7f:157734135e6:-7959", "port_address": 7 },
+        { "interface": "macrocab_out", "id": "587e8c7f:157734135e6:-795b", "port_address": 26 }
+      ]
+    }
+  ]
+}
