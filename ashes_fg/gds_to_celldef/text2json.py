@@ -54,9 +54,9 @@ def process_text_output(file: str) -> str:
         name_without_ext = name_without_ext[:-7]
 
     # Extract directory name for type
-    directory_name = os.path.basename(os.path.dirname(file))
-    if not directory_name:
-        directory_name = os.path.basename(os.getcwd())
+    # directory_name = os.path.basename(os.path.dirname(file))
+    # if not directory_name:
+    #     directory_name = os.path.basename(os.getcwd())
 
     # Extract foundry (letters before first number) and process node
     foundry_match = re.match(r'^([A-Za-z]+)', name_without_ext)
@@ -181,7 +181,7 @@ def process_text_output(file: str) -> str:
 
     # Create nested dict and format it on one line
     nested_dict = {
-        'type': directory_name,
+        'type': 'ASIC',
         'foundry': foundry,
         'process_node': process_node,
         'W': directions['W'],
