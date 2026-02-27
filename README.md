@@ -45,7 +45,8 @@ Depending on if you want to target an FPAA or synthesize an ASIC
 
 To add std cell def (json or py) from GDS, run,
 ```
-gen_stdcell_defs /path/to/gds.gds
+gen_stdcell_defs <gds_path_input> <json_lib_path_output> <py_defs_path_output>
+
 ```
 
 ### ASIC Flow: Detailed Router
