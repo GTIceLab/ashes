@@ -211,7 +211,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
 
         #metal_layers = count_metal_layers(layer_map, tech_process)
         metal_layers = count_metal_layers_drawing(layer_map, tech_process)
-        def_params = (track_spacing, def_file_path, dbu, design_area, file_name_no_ext, frame_module, router_tool)
+        def_params = (track_spacing, def_file_path, dbu, design_area, file_name_no_ext, frame_module, router_tool, tech_process)
         def_blocks, def_nets = generate_def(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table,lef_file_path)
 
         #island_info = sanitize_island_info(island_info)
@@ -1551,7 +1551,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     - Route correct nets to correct instances
     - Create correct obstructions for routing
     '''
-    track_spacing, file_path, dbu, design_area, file_name, frame_module, router_tool = def_params
+    track_spacing, file_path, dbu, design_area, file_name, frame_module, router_tool,tech_process = def_params
 
     # Calculate num of tracks based on die area 
     num_tracks = (round(design_area[2]/track_spacing), round(design_area[3]/track_spacing))
@@ -1624,11 +1624,23 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     m1_m2_except = ['Full_Macro_Corner', 'Full_Macro_2p0','Full_Macro_2p0_abstract','FakeCellGateDecoder']
 
     # Place blockages in def file
-    pin_const = 1 # this is for amount of distance between blockage edge and true cell edge
-    pin_const = 0.5 # this is for amount of distance between blockage edge and true cell edge
-    pin_spacing = 1*dbu # this is for space from pin block to pin
-    pin_threshold = 1.5*dbu # this is the minimum distance between pins for a blockage to be inserted
-    block_ext_len = 1*dbu # this is how far the block should extend from the internal blockage
+    if tech_process == "vis350":
+        pin_const = 1 # this is for amount of distance between blockage edge and true cell edge
+        pin_spacing = 1*dbu # this is for space from pin block to pin
+        pin_threshold = 1.5*dbu # this is the minimum distance between pins for a blockage to be inserted
+        block_ext_len = 1*dbu # this is how far the block should extend from the internal blockage
+
+    elif tech_process == "sky130":
+        pin_const = 1 # this is for amount of distance between blockage edge and true cell edge
+        pin_const = 0.5 # this is for amount of distance between blockage edge and true cell edge
+        pin_spacing = 1*dbu # this is for space from pin block to pin
+        pin_threshold = 1.5*dbu # this is the minimum distance between pins for a blockage to be inserted
+        block_ext_len = 1*dbu # this is how far the block should extend from the internal blockage
+    
+    else:
+        sys.exit("Error: Please update the pin constants and spacing for this process node")
+
+        
     for val, island in cell_order_in_island.items():
         for idx, item in island['items'].items():
             insts_list = []

@@ -1,6 +1,7 @@
 read_lef /home/payyappan3/ashes/examples/FPAA_fabric_eg/pd/cab.lef
 read_def /home/payyappan3/ashes/examples/FPAA_fabric_eg/pd/cab.def
-cost via 90
+cost via 40
+cost jog 80
 stage1 mask none
 stage2 mask none limit 100
 stage3 mask none

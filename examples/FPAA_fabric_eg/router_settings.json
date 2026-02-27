@@ -1,7 +1,7 @@
 {
 	"segment": null,
-	"via": 90,
-	"jog": null,
+	"via": 40,
+	"jog": 80,
 	"crossover": null,
 	"block": null,
 	"conflict": null,
