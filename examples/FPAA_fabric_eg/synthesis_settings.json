@@ -1,5 +1,6 @@
 {
     "process": "tsmc_350nm",
+    "lib_path": "/srv/lib_for_ashes/lib",
     "drainSpaceIdx": 0,
     "drainSpace": 15,
     "gateSpaceIdx": 0,
