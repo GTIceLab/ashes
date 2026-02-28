@@ -393,7 +393,9 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
 
                     # Check for height and width of the cell
                     # Get location of pin
-                    if rec.tag_name == 'XY' and prBoundary_flag == True:
+                    #if rec.tag_name == 'XY' and prBoundary_flag == True:
+                    if rec.tag_name == 'XY':
+
                         for idx, item in enumerate(rec.data):
                             if idx % 2:
                                 # keep track of min and max y
@@ -950,10 +952,10 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                         #Semi-Hardcode connecting net from switch to decoder
                         temp_net_num = idx*4
                         # use VPWR for CABs, RUN_IN for ASICs
-                        #switch['nets']['decode<0>'] = f'isle{val}_swc_net{temp_net_num + 0}' if 'decode<0>' not in switch['nets'] else switch['nets']['decode<0>']
-                        #switch['nets']['VPWR<0>'] = f'isle{val}_swc_net{temp_net_num + 1}' if 'VPWR<0>' not in switch['nets'] else switch['nets']['VPWR<0>']
-                        #switch['nets']['decode<1>'] = f'isle{val}_swc_net{temp_net_num + 2}' if 'decode<1>' not in switch['nets'] else switch['nets']['decode<1>']
-                        #switch['nets']['VPWR<1>'] = f'isle{val}_swc_net{temp_net_num + 3}' if 'VPWR<1>' not in switch['nets'] else switch['nets']['VPWR<1>']
+                        # switch['nets']['decode<0>'] = f'isle{val}_swc_net{temp_net_num + 0}' if 'decode<0>' not in switch['nets'] else switch['nets']['decode<0>']
+                        # switch['nets']['VPWR<0>'] = f'isle{val}_swc_net{temp_net_num + 1}' if 'VPWR<0>' not in switch['nets'] else switch['nets']['VPWR<0>']
+                        # switch['nets']['decode<1>'] = f'isle{val}_swc_net{temp_net_num + 2}' if 'decode<1>' not in switch['nets'] else switch['nets']['decode<1>']
+                        # switch['nets']['VPWR<1>'] = f'isle{val}_swc_net{temp_net_num + 3}' if 'VPWR<1>' not in switch['nets'] else switch['nets']['VPWR<1>']
                         if cells_only_module:
                             x_loc = cell_order[idx][4][0]
                         else:
@@ -1168,11 +1170,11 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 array = island['coords']
                 left, bottom, right, top = array[idx][0], array[idx][1], array[idx][2], array[idx][3]
                 # careful with dbu conversion
-                #mat_col = int( int(right - left) / int(cell_info[c_name]['width']) )
-                #mat_row = int( int(top - bottom) / int(cell_info[c_name]['height']) )
-                mat_info = item['mat_info']
-                mat_col = int(mat_info['mat_col'])
-                mat_row = int(mat_info['mat_row'])
+                mat_col = int( int(right - left) / int(cell_info[c_name]['width']) )
+                mat_row = int( int(top - bottom) / int(cell_info[c_name]['height']) )
+                #mat_info = item['mat_info']
+                #mat_col = int(mat_info['mat_col'])
+                #mat_row = int(mat_info['mat_row'])
                 ret_string.append(f'COLROW: {mat_col}, {mat_row}\n')
                 ret_string.append(f'XY: {left}, {bottom}, {right}, {bottom}, {left}, {top}\n')
                 ret_string.append(f'ENDEL\n')
@@ -2450,4 +2452,3 @@ if __name__ == '__main__':
     gds_synthesis(tech_process, dbu, track_spacing, x_offset, y_offset, design_area, file_name, routed_def=False)
     end = time.time()
     #print('Time Taken:', (end-start) * 1000, "ms" )
-
