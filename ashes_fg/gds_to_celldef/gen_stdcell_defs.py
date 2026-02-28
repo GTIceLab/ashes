@@ -121,18 +121,48 @@ def orchestrate(
 def main():
 	parser = argparse.ArgumentParser(description="End-to-end: GDS -> Python StandardCell")
 	parser.add_argument("gds_path", help="Path to source GDS file")
-	parser.add_argument("json_lib_path", help="Path to JSON library file to upsert generated cell definitions")
-	parser.add_argument("py_defs_path", help="Path to Python file to upsert generated cell class definitions")
-	parser.add_argument("-pn", "--process-node", dest="process_node", default=None, help="Override process node (e.g. 350 or 350nm)")
-	parser.add_argument("-foundry", "--foundry", dest="foundry", default=None, help="Override foundry (e.g. TSMC)")
+	parser.add_argument(
+		"-json",
+		dest="json_lib_path",
+		default=str(SCRIPT_DIR / "ex.json"),
+		help="Path to JSON library file (default: ./ex.json)",
+	)
+	parser.add_argument(
+		"-pydef",
+		dest="py_defs_path",
+		default=str(SCRIPT_DIR / "standard_cells.py"),
+		help="Path to Python defs file (default: ./standard_cells.py)",
+	)
+	parser.add_argument(
+		"-pn",
+		"--process-node",
+		dest="process_node",
+		default=None,
+		help="Override process node (e.g. 350 or 350nm)",
+	)
+	parser.add_argument(
+		"-foundry",
+		"--foundry",
+		dest="foundry",
+		default=None,
+		help="Override foundry (e.g. TSMC)",
+	)
 	args = parser.parse_args()
 
 	gds_path = Path(args.gds_path)
 	if not gds_path.exists():
 		raise FileNotFoundError(f"File not found: {gds_path}")
+	if gds_path.suffix.lower() != ".gds":
+		raise ValueError(f"Input file must have .gds extension: {gds_path}")
 
 	json_lib_path = Path(args.json_lib_path)
+	if json_lib_path.suffix.lower() != ".json":
+		raise ValueError(f"-json path must have .json extension: {json_lib_path}")
+
 	py_defs_path = Path(args.py_defs_path)
+	if py_defs_path.suffix.lower() != ".py":
+		raise ValueError(f"-pydef path must have .py extension: {py_defs_path}")
+
 	json_lib_written, final_py = orchestrate(
 		gds_path,
 		json_lib_path,
@@ -145,4 +175,4 @@ def main():
 
 
 if __name__ == "__main__":
-	main()
+    main()
