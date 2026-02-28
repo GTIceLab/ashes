@@ -68,18 +68,54 @@ def ensure_py_defs_file(py_defs_path: Path) -> None:
 		py_defs_path.write_text("", encoding="utf-8")
 
 
-def orchestrate(gds_path: Path, json_library_path: Path, py_defs_path: Path) -> tuple[Path, Path]:
-	# Step 1: GDS -> text output
-	txt_path = gds2text.process_gds(str(gds_path))
+def orchestrate(
+	gds_path: Path,
+	json_library_path: Path,
+	py_defs_path: Path,
+	process_node_override: str | None = None,
+	foundry_override: str | None = None,
+) -> tuple[Path, Path]:
+	txt_path: Path | None = None
+	json_path: Path | None = None
+	try:
+		# Step 1: GDS -> text output
+		txt_path = Path(gds2text.process_gds(str(gds_path)))
 
-	# Step 2: text output -> directions JSON
-	json_path = text2json.process_text_output(txt_path)
-	merged_json_lib = merge_into_json_library(Path(json_path), json_library_path)
+		# Step 2: text output -> directions JSON
+		json_path = Path(
+			text2json.process_text_output(
+				str(txt_path),
+				process_node_override=process_node_override,
+				foundry_override=foundry_override,
+			)
+		)
+		merged_json_lib = merge_into_json_library(json_path, json_library_path)
 
-	# Step 3: directions JSON -> Python class
-	ensure_py_defs_file(py_defs_path)
-	final_py = json2python.generate_from_json(Path(json_path), py_defs_path, append=True)
-	return merged_json_lib, final_py
+		# Step 3: directions JSON -> Python class
+		ensure_py_defs_file(py_defs_path)
+		history_dir = py_defs_path.parent / "cell_histories"
+		final_py = json2python.generate_from_json(
+			json_path,
+			py_defs_path,
+			append=True,
+			history_dir=history_dir,
+		)
+		return merged_json_lib, final_py
+	finally:
+		protected_paths = {
+			json_library_path.resolve(),
+			py_defs_path.resolve(),
+			gds_path.resolve(),
+		}
+		for intermediate in (json_path, txt_path):
+			if intermediate is None:
+				continue
+			try:
+				resolved = intermediate.resolve()
+				if intermediate.exists() and resolved not in protected_paths:
+					intermediate.unlink()
+			except OSError as err:
+				print(f"Warning: could not remove intermediate file {intermediate}: {err}")
 
 
 def main():
@@ -87,6 +123,8 @@ def main():
 	parser.add_argument("gds_path", help="Path to source GDS file")
 	parser.add_argument("json_lib_path", help="Path to JSON library file to upsert generated cell definitions")
 	parser.add_argument("py_defs_path", help="Path to Python file to upsert generated cell class definitions")
+	parser.add_argument("-pn", "--process-node", dest="process_node", default=None, help="Override process node (e.g. 350 or 350nm)")
+	parser.add_argument("-foundry", "--foundry", dest="foundry", default=None, help="Override foundry (e.g. TSMC)")
 	args = parser.parse_args()
 
 	gds_path = Path(args.gds_path)
@@ -95,7 +133,13 @@ def main():
 
 	json_lib_path = Path(args.json_lib_path)
 	py_defs_path = Path(args.py_defs_path)
-	json_lib_written, final_py = orchestrate(gds_path, json_lib_path, py_defs_path)
+	json_lib_written, final_py = orchestrate(
+		gds_path,
+		json_lib_path,
+		py_defs_path,
+		process_node_override=args.process_node,
+		foundry_override=args.foundry,
+	)
 	print(f"JSON library updated: {json_lib_written}")
 	print(f"Python definitions updated: {final_py}")
 

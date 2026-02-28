@@ -39,7 +39,16 @@ import os
 import json
 
 
-def process_text_output(file: str) -> str:
+def _normalize_process_node(value: str) -> str:
+    normalized = value.strip()
+    if not normalized:
+        return ""
+    if normalized.lower().endswith("nm"):
+        normalized = normalized[:-2]
+    return f"{normalized}nm"
+
+
+def process_text_output(file: str, process_node_override: str | None = None, foundry_override: str | None = None) -> str:
     if not os.path.exists(file):
         raise FileNotFoundError("File not found")
 
@@ -60,11 +69,14 @@ def process_text_output(file: str) -> str:
 
     # Extract foundry (letters before first number) and process node
     foundry_match = re.match(r'^([A-Za-z]+)', name_without_ext)
-    foundry = foundry_match.group(1) if foundry_match else ""
+    inferred_foundry = foundry_match.group(1) if foundry_match else ""
 
     # Extract process node (numbers after foundry)
     process_node_match = re.search(r'(\d+)', name_without_ext)
-    process_node = f"{process_node_match.group(1)}nm" if process_node_match else ""
+    inferred_process_node = f"{process_node_match.group(1)}nm" if process_node_match else ""
+
+    foundry = foundry_override.strip() if foundry_override else inferred_foundry
+    process_node = _normalize_process_node(process_node_override) if process_node_override else inferred_process_node
 
     # Find "Labels in {filename}:" section for this specific file
     labels_section_pattern = rf"Labels in {re.escape(name_without_ext)}:(.*?)(?=Labels in |\Z)"
@@ -202,6 +214,8 @@ def process_text_output(file: str) -> str:
 def main():
     parser = argparse.ArgumentParser(description="Convert text output to directions JSON")
     parser.add_argument("file", nargs="?", help="Path to *_output.txt file")
+    parser.add_argument("-pn", "--process-node", dest="process_node", default=None, help="Override process node (e.g. 350 or 350nm)")
+    parser.add_argument("-foundry", "--foundry", dest="foundry", default=None, help="Override foundry (e.g. TSMC)")
     args = parser.parse_args()
 
     file = args.file
@@ -209,7 +223,11 @@ def main():
         file = str(input("Insert output file path: "))
 
     try:
-        output_file = process_text_output(file)
+        output_file = process_text_output(
+            file,
+            process_node_override=args.process_node,
+            foundry_override=args.foundry,
+        )
         print(f"\nSaved to {output_file}")
     except Exception as e:
         print(f"Error: {e}")

@@ -1,3 +1,10 @@
+# class TSMC350nm_C4(StandardCell):
+# 	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN=None,VREF=None,OUTPUT=None,Vsel=None,RUN=None,Vg=None,PROG=None,VTUN=None,VINJ=None,GND=None,VPWR=None,Vsel_b=None,RUN_b=None,Vg_b=None,PROG_b=None,VTUN_b=None,VINJ_b=None,GND_b=None,VPWR_b=None):
+
+# 		# Define variables
+# 		self.circuit = circuit
+# 		self.pins = []
+# 		self.ports = []
 import argparse
 import json
 from pathlib import Path
@@ -153,12 +160,21 @@ def append_history(history_path: Path, class_name: str, previous_text: str) -> N
 		history_file.write(entry)
 
 
-def generate_from_json(json_path: Path, output_path: Path | None = None, append: bool = False) -> Path:
+def generate_from_json(
+	json_path: Path,
+	output_path: Path | None = None,
+	append: bool = False,
+	history_dir: Path | None = None,
+) -> Path:
 	spec = load_spec(json_path)
 	class_name = extract_class_name(json_path)
 	pin_order, pin_meta = gather_pins(spec)
 	class_text = render_class(class_name, pin_order, pin_meta)
-	history_path = json_path.with_name(f"{class_name}_history.txt")
+	if history_dir is None:
+		history_path = json_path.with_name(f"{class_name}_history.txt")
+	else:
+		history_dir.mkdir(parents=True, exist_ok=True)
+		history_path = history_dir / f"{class_name}_history.txt"
 
 	if output_path is None:
 		output_path = json_path.with_name(f"{class_name}.py")
@@ -203,3 +219,38 @@ def main():
 
 if __name__ == "__main__":
 	main()
+#     file_content = f"""
+# class {json_file}(StandardCell):
+#         def __init__(self,circuit,island=None,): 
+#             # Define variables
+#             self.circuit = circuit
+#             self.pins = []
+#             self.ports = []
+#             self.island = island
+#             self.dim = dim
+
+#             # Define cell information
+#             #self.name = 'filename' """ 
+
+#     for key in 
+#     for values in key,
+#         if direction 'W' or 'E' then the pin dim[0]
+#             #append \n to file_content
+#             file_content.append("self.{PIN_NAME} = Port(circuit,self,'{PIN_NAME}','{PIN_DIRECTION}',{Max_Wire}*self.dim[0])")
+#         else 'N' or "S"
+#             #append \n to file_content
+#             write self.{PIN_NAME} = Port(circuit,self,'{PIN_NAME}','{PIN_DIRECTION}',{Max_Wire}*self.dim[1])
+#         #add Pin to PINLIST
+
+#             file_content_2 = f"""
+#             Initialize ports with given values
+#             portsInit = {PIN_LIST}
+#             i=0
+# 		    for p in self.ports:
+# 			    self.assignPort(p,portsInit[i])
+# 			    i+=1
+
+# 		    # Add cell to circuit
+# 		    circuit.addInstance(self,self.island)
+#             """
+            
