@@ -45,7 +45,22 @@ Depending on if you want to target an FPAA or synthesize an ASIC
 
 To add std cell def (json or py) from GDS, run,
 ```
-gen_stdcell_defs /path/to/gds.gds
+gen_stdcell_defs <gds_path_input> -json <json_lib_path_output> -pydef <py_defs_path_output> -pn XXX -foundry XXXX
+
+Flags:
+-pydef specifies output pydefinition file
+-json specifies output json file
+
+(process node and foundry defaults to TSMC 350nm if not overridden)
+-pn or --process_node 
+-foundry or--foundry 
+
+Notes:
+-gds input path input must go first
+-foundry is case sensitive
+-providing an argument for process node will default to appending ‘nm’ to the end. <130> or <130nm> are acceptable
+
+
 ```
 
 ### ASIC Flow: Detailed Router
