@@ -16,6 +16,9 @@ High level (macrocab_gen_fcn.sce):
 - delete_MC_callback: deletes macrocab + associated files
 - generate_MC_callback: 
     - saved xcos
+
+NOTES 3/3
+CONFIRMED - in the xml, model/pb_type/crossbar is edited
 '''
 
 ASHESPATH = os.getenv("ASHESPATH","/home/ubuntu/ashes")
@@ -208,21 +211,67 @@ def edit_xml(xml_file, macrocab):
     
     interconnect = cab.find("interconnect")
 
+    if macrocab.num_inputs == 1:
+        in_pins = f'{macrocab.name}.in[0]'
+    else:
+        in_pins = f'{macrocab.name}.in[{macrocab.num_inputs - 1}:0]'
+
+    etree.SubElement(interconnect, 'complete', name='crossbar',input='cab.I[12:0]',output=in_pins)
+
+    # output line: macrocab output drives cab.O[4]
+    etree.SubElement(interconnect, 'complete',name='crossbar',input=f'{macrocab.name}[0].out[0]',output='cab.O[4]')
+
+    # write
+    etree.ElementTree(root).write(xml_file, pretty_print=True,xml_declaration=True,encoding='UTF-8')
+
     # routing
 
-    etree.write(xml_file,pretty_print=True,xml_declaration=True,encoding='UTF-8')
+    #etree.write(xml_file,pretty_print=True,xml_declaration=True,encoding='UTF-8')
+
+def edit_rasp30(rasp30_file, block_name):
+    with open(rasp30_file, 'r') as file:
+        lines = file.read()
     
+    if f"'{block_name}[0]'" in lines:
+        print(f"{block_name} already registered")
 
+    old_dev_fgs = "'vmm_offc[0]',[0,0],"
+    new_dev_fgs = f"{old_dev_fgs}\n'{block_name}[0]',[0,0]"
+    lines.replace(old_dev_fgs, new_dev_fgs)
 
+    old_self_dev_pins_1 = "'vmm_offc_in':13,"
+    new_self_dev_pins_1 = f"{old_self_dev_pins_1}'{block_name}_in':1,"
+    lines.replace(old_self_dev_pins_1, new_self_dev_pins_1)
 
+    old_self_dev_pins_2 = "'vmm_offc_out':2"
+    new_self_dev_pins_2 = f"{old_self_dev_pins_2},'{block_name}_out':1}}"
+    lines.replace(old_self_dev_pins_2, new_self_dev_pins_2)
 
+    old_self_dev_types = "+['current_ref']*1"
+    new_self_dev_types = f"{old_self_dev_types}+['{block_name}']*1"
+    lines.replace(old_self_dev_types, new_self_dev_types)
 
+    old_li_sm_in = "'vmm_offc[0].in[0:12]',[[6,7,8,9,10,11,12,13,14,15,16,17,27],0],"
+    new_li_sm_in = f"{old_li_sm_in}\n'{block_name}[0].in[0]',[33,0],"
+    lines.replace(old_li_sm_in, new_li_sm_in)
 
+    old_li_sm_out = "'vmm_offc[0].out[0:1]',[0,[17,18]],"
+    new_li_sm_out = f"{old_li_sm_out}\n'{block_name}[0].out[0]',[0,0],"
+    lines.replace(old_li_sm_out, new_li_sm_out)
 
+    old_li_sm_0b = "'vmm_offc[0].out[0:1]'"
+    new_li_sm_0b = f"{old_li_sm_0b},'{block_name}[0].out[0]']"
+    lines.replace(old_li_sm_0b, new_li_sm_0b)
 
+    old_li_sm_1 = "'vmm_offc[0].in[0:12]'"
+    new_li_sm_1 = f"{old_li_sm_1},'{block_name}[0].in[0]'"
+    lines.replace(old_li_sm_1, new_li_sm_1)
 
+    old_cell_list = "'cap_4x_cs[0:3]',[[28,29,28,29], 0]"
+    new_cell_list = f"{old_cell_list},\n'{block_name}[0]',[[25,24],[25,25],[etc]],"
+    lines.replace(old_cell_list, new_cell_list)
 
-    
-
+    with open(rasp30_file, 'w') as file:
+        file.write(lines)
 
     
