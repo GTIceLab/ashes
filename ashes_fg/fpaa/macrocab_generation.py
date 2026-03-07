@@ -4,6 +4,7 @@ import sys
 import json
 from lxml import etree
 from io import StringIO, BytesIO
+import new_macrocab_generation
 
 '''
 Macrocab generation transferred from rasp30.
@@ -273,5 +274,26 @@ def edit_rasp30(rasp30_file, block_name):
 
     with open(rasp30_file, 'w') as file:
         file.write(lines)
+    
+def edit_genswcs(genswcs_file, block_name, num_inputs, num_outputs):
+    with open(genswcs_file, 'r') as file:
+        lines = file.read()
+    
+    old_if_subckt = "else\nkey = ports[2]"
+    new_if_subckt = f"elif subckt in [{block_name}]:\nkey = ports[{num_inputs}]\n{old_if_subckt}"
+    lines.replace(old_if_subckt, new_if_subckt)
+
+    if num_outputs > 1:
+        old_if_nsb = "if nsb.name in ["
+        new_if_nsb = f"{old_if_nsb}{block_name}[0], "
+        lines.replace(old_if_nsb, new_if_nsb)
+
+        old_if_from_sub_name = "elif from_sub_name in ["
+        new_if_from_sub_name = f"{old_if_from_sub_name}'{block_name}[0]', "
+        lines.replace(old_if_from_sub_name, new_if_from_sub_name)
+
+
+
+
 
     
