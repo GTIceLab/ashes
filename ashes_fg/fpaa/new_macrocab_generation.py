@@ -38,7 +38,7 @@ elif len(sys.argv) == 2:
 else:
     raise ValueError("Commands: python3 macrocab_generation.py path_name block_name block_level \nOR python3 macrocab_generation.py make_macrocab \nOR python3 macrocab_generation.py delete_macrocab")
 
-
+#testing
 #######
 # Parser for new JSON (merge with create_mc block after):
 #######
