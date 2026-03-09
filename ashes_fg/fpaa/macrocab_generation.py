@@ -22,6 +22,20 @@ NOTES 3/3
 CONFIRMED - in the xml, model/pb_type/crossbar is edited
 '''
 
+'''
+NOTES 3/9
+
+2 use cases: 
+    1) user creates the macrocab (new file directory, copied json file, check naming conventions)
+    2) macrocab generated + added to ashes (user json file is parsed, sent to "edit" functions)
+
+todo:
+    - fix create_mc_block (move class lib part to new function (Maithreyi), replace existing parser with new parser (Arya))
+    - replace everything including and before create_mc_block with new stuff (Arya)
+    - edit functions below create_mc_block to take parameters from internal representation (Maithreyi)
+    - fix delete part (Maithreyi)
+'''
+
 ASHESPATH = os.getenv("ASHESPATH","/home/ubuntu/ashes")
 RASPPATH = os.getenv("RASPPATH", "/home/ubuntu/rasp30")
 
