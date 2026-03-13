@@ -1,3 +1,5 @@
+from ashes_fg.fpaa.ir import Module, Instance, Port, Net
+
 class std_cell:
 	def __init__(self, input, num_instances, cell_type):
 		self.input = input
@@ -22,12 +24,39 @@ class frame:
 class inpad:
     def __init__(self, pad_number):
         self.pad_number = pad_number
+        self.name = f"inpad_{pad_number}"
+
+    def build(self, top: Module) -> Net:
+        # Create instance
+        inst = Instance(name=self.name, model="inpad")
+        inst.attrs = {"pad_number": self.pad_number}
+        top.instances[inst.name] = inst
+        # Create output ports
+        out_port = Port(name="out", direction="output", owner=inst)
+        inst.ports["out"] = out_port
+        # Create net
+        out_net = Net(name=f'net_{inst.name}', driver=out_port)
+        out_port.net = out_net
+        top.nets[out_net.name] = out_net
+
+        return out_net
 
 
 class outpad:
     def __init__(self, input, pad_number):
         self.input = input
         self.pad_number = pad_number
+        self.name = f"outpad_{pad_number}"
+
+    def build(self, top: Module):
+        # Create instance
+        inst = Instance(name=self.name, model="outpad")
+        inst.attrs = {"pad_number": self.pad_number}
+        top.instances[inst.name] = inst
+        # Create port
+        in_port = Port(name="in", direction="output", owner=inst, net=self.input)
+        inst.ports["in"] = in_port
+        self.input.sinks.append(in_port)
 
 class outpada:
 	def __init__(self,input,pad_number, fix_loc = [0,0,0]):
@@ -61,7 +90,6 @@ class BPF:
         self.Feedback_bias_p = Feedback_bias_p
         self.Input_cap = Input_cap
 
-
 class SHblock1:
     def __init__(self,
                  input,
@@ -76,7 +104,6 @@ class SHblock1:
         self.SHblock1_ls = SHblock1_ls
         self.SHblock1_Ibias = SHblock1_Ibias
         self.SHblock1_cap0_1x_cs = SHblock1_cap0_1x_cs
-
 
 class switchint1:
     def __init__(self,
@@ -93,7 +120,6 @@ class switchint1:
         self.switchint1_Ibias1 = switchint1_Ibias1
         self.switchint1_cap0_1x_cs = switchint1_cap0_1x_cs
 
-
 class lpfota:
     def __init__(self,
                  input,
@@ -104,7 +130,6 @@ class lpfota:
         self.input = input
         self.num_instances = num_instances
         self.cut_off_freq = cut_off_freq
-
 
 class hhn_debug:
     def __init__(self,
@@ -136,7 +161,6 @@ class hhn_debug:
         self.hhn_debug_ota0_ibias = hhn_debug_ota0_ibias
         self.hhn_debug_ota1_ibias = hhn_debug_ota1_ibias
         self.hhn_debug_cap0_1x_cs = hhn_debug_cap0_1x_cs
-
 
 class HH_RG_2s:
     def __init__(self,
@@ -177,7 +201,6 @@ class HH_RG_2s:
         self.HH_RG_2s_comp_ibias = HH_RG_2s_comp_ibias
         self.HH_RG_2s_cap0_1x_cs = HH_RG_2s_cap0_1x_cs
 
-
 class subbandArray:
     def __init__(self,
                  input,
@@ -209,7 +232,6 @@ class subbandArray:
         self.SubbandArray_FFcap_1x_cs = SubbandArray_FFcap_1x_cs
         self.SubbandArray_FBcap_1x_cs = SubbandArray_FBcap_1x_cs
 
-
 class common_drain:
     def __init__(self,
                  input,
@@ -236,7 +258,6 @@ class common_drain_nfet:
         self.common_drain_ls = common_drain_ls
         self.common_drain_nfet_ibias = common_drain_nfet_ibias
 
-
 class Senseamp1:
     def __init__(self,
                  input,
@@ -255,7 +276,6 @@ class Senseamp1:
         self.Senseamp1_fgota0_pbias = Senseamp1_fgota0_pbias
         self.Senseamp1_fgota0_nbias = Senseamp1_fgota0_nbias
         self.Senseamp1_ota0_ibias = Senseamp1_ota0_ibias
-
 
 class Hyst_diff:
     def __init__(self,
@@ -285,6 +305,32 @@ class ota_buf:
         self.fix_loc_enabled = fix_loc[0]
         self.fix_loc_x = fix_loc[1]
         self.fix_loc_y = fix_loc[2]
+        self.name = f"ota_buf_{id(self)}"
+
+    def build(self, top: Module):
+        # Create instance
+        inst = Instance(name=self.name, model="ota_buf")
+        inst.attrs = {
+            "ota_buf_bias": self.ota_buf_bias,
+            "ota_buf_ls": self.ota_buf_ls,
+            "fix_loc_enabled": self.fix_loc_enabled,
+            "fix_loc_x": self.fix_loc_x,
+            "fix_loc_y": self.fix_loc_y
+        }
+        top.instances[inst.name] = inst
+        # Create input ports
+        in_port = Port(name="in", direction="input", owner=inst, net=self.input)
+        inst.ports[in_port.name] = in_port
+        self.input.sinks.append(in_port)
+        # Create output ports
+        out_port = Port(name="out", direction="output", owner=inst)
+        inst.ports[out_port.name] = out_port
+        # Create net
+        out_net = Net(name=f'net_{inst.name}_out', driver=out_port)
+        out_port.net = out_net
+        top.nets[out_net.name] = out_net
+
+        return out_net
 
 
 
