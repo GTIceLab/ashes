@@ -8,7 +8,7 @@ def read_lib_dir(directory: str) -> list[str]:
         mag_filename = os.path.basename(cell_dir) + ".mag"
         mag_file_path = os.path.join(directory, cell_dir, mag_filename)
         if not os.path.isfile(mag_file_path):
-            print(f"Warning: Magic file '{mag_filename}' was not found in subdirectory '{cell_dir}'")
+            print(f"mag2gds WARNING: Magic file '{mag_filename}' was not found in subdirectory '{cell_dir}'")
         else:
             mag_files.append(mag_file_path)
     return mag_files
@@ -52,13 +52,17 @@ def main():
                 parser.error(f"File '{file}' does not exist")
 
     output_dir = args.output
-
+    
     commands_file = generate_magic_commands(mag_files, output_dir)
     
+    print("\nmag2gds: Running Magic...")
     run_magic(commands_file)
+    print("\nmag2gds: Exited Magic\n")
     
     if not args.keep_tcl:
         os.remove(commands_file)
+    else:
+        print("NOTE: TCL file it at", commands_file)
 
 if __name__ == "__main__":
     main()

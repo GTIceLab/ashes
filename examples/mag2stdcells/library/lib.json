@@ -1,0 +1,51 @@
+{
+  "4x2": {
+    "type": "ASIC",
+    "foundry": "sky",
+    "process_node": "130nm",
+    "W": [
+      "Vd_P_w[3]",
+      "Vd_R_w[3]",
+      "Vd_R_w[2]",
+      "Vd_P_w[2]",
+      "Vd_P_w[1]",
+      "Vd_R_w[1]",
+      "Vd_R_w[0]",
+      "Vd_P_w[0]"
+    ],
+    "E": [
+      "Vd_R_e[3]",
+      "Vd_R_e[2]",
+      "Vd_P_e[2]",
+      "Vd_P_e[1]",
+      "Vd_R_e[1]",
+      "Vd_R_e[0]",
+      "Vd_P_e[0]",
+      "Vd_P_e[3]"
+    ],
+    "N": [
+      "Vsel_n[0]",
+      "Vs_n[0]",
+      "VINJ_n[0]",
+      "GND_n",
+      "Vg_n[0]",
+      "VTUN_n",
+      "Vg_n[1]",
+      "VINJ_n[1]",
+      "Vs_n[1]",
+      "Vsel_n[1]"
+    ],
+    "S": [
+      "Vsel_s[0]",
+      "Vs_s[0]",
+      "VINJ_s[0]",
+      "GND_s",
+      "Vg_s[0]",
+      "VTUN_s",
+      "Vg_s[1]",
+      "VINJ_s[1]",
+      "Vs_s[1]",
+      "Vsel_s[1]"
+    ]
+  }
+}

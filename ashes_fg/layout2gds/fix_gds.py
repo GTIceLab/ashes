@@ -75,6 +75,8 @@ def main():
             os.path.basename(filename)
         )
         fix_pins(filename, output_filename)
+
+    print("NOTE: Final GDS files are in directory", output_dir)
     
 if __name__ == "__main__":
     main()
