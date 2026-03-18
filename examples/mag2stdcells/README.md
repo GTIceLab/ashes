@@ -1,4 +1,6 @@
-### How to run
+## Full flow
+See make_library.sh
+### How to run mag2gds
 ```bash
 python  mag2gds.py -o <output_dir> <magic files...>
 ```
