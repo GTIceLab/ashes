@@ -28,3 +28,9 @@ python ../../ashes_fg/layout2gds/mag2gds.py  --output mag2gds  --files \
 
 # gds -> gds with disambiguated pins
 python ../../ashes_fg/layout2gds/fix_gds.py --output fixed_pins mag2gds/*.gds
+
+# generate python and json
+# TODO allow batch processing in gen_stdcell_defs
+for gds in fixed_pins/*.gds; do
+  gen_stdcell_defs -json library/lib.json -pydef library/lib.py -pn 130nm -foundry sky "$gds"
+done
