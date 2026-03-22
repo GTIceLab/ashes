@@ -2,7 +2,7 @@
 from . import fpaa
 from . import asic
 from . import class_lib
-
+from . import test_class_lib
 
 import json
 import os
@@ -27,7 +27,7 @@ def update_class_lib(json_file="cells.json", library="class_lib.py"):
     # Open the Python library file for writing
     with open(library, "w") as t:
         # Add necessary imports
-        t.write("from ir import Module, Instance, Port, Net\n\n")
+        t.write("from .ir import Module, Instance, Port, Net\n\n")
 
         # Base ASIC class
         t.write(
