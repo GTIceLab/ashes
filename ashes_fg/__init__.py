@@ -1,12 +1,10 @@
 # Expose internal modules for external use
-from . import fpaa
-from . import asic
-from . import class_lib
-from . import test_class_lib
+# from . import fpaa
+# from . import asic
+# from . import class_lib
+# from . import test_class_lib
 
 import json
-import os
-import sys
 
 
 def update_class_lib(json_file="cells.json", library="class_lib.py"):
@@ -16,18 +14,12 @@ def update_class_lib(json_file="cells.json", library="class_lib.py"):
 
     # Helper function for sanitizing the field name from cells.json
     def sanitize(field_name: str):
-        return (
-            field_name.strip()
-            .lower()
-            .replace(" ", "_")
-            .replace("[", "_")
-            .replace("]", "")
-        )
+        return field_name.strip().replace(" ", "_").replace("[", "_").replace("]", "")
 
     # Open the Python library file for writing
     with open(library, "w") as t:
         # Add necessary imports
-        t.write("from .ir import Module, Instance, Port, Net\n\n")
+        t.write("from ashes_fg.fpaa.ir import Module, Instance, Port, Net\n\n")
 
         # Base ASIC class
         t.write(
@@ -42,7 +34,8 @@ def update_class_lib(json_file="cells.json", library="class_lib.py"):
         t.write(
             "class inpad:\n"
             "\tdef __init__(self, pad_number):\n"
-            "\t\tself.pad_number = pad_number\n\n"
+            "\t\tself.pad_number = pad_number\n"
+            '\t\tself.name = f"inpad_{pad_number}"\n\n'
             "\tdef build(self, top: Module) -> Net:\n"
             '\t\tinst = Instance(name=self.name, model="inpad")\n'
             '\t\tinst.attrs = {"pad_number": self.pad_number}\n'
@@ -58,7 +51,8 @@ def update_class_lib(json_file="cells.json", library="class_lib.py"):
             "class outpad:\n"
             "\tdef __init__(self,input, pad_number):\n"
             "\t\tself.input=input\n"
-            "\t\tself.pad_number = pad_number\n\n"
+            "\t\tself.pad_number = pad_number\n"
+            '\t\tself.name = f"outpad_{pad_number}"\n\n'
             "\tdef build(self, top: Module):\n"
             '\t\tinst = Instance(name=self.name, model="outpad")\n'
             '\t\tinst.attrs = {"pad_number": self.pad_number}\n'
@@ -74,7 +68,8 @@ def update_class_lib(json_file="cells.json", library="class_lib.py"):
             "\t\tself.pad_number = pad_number\n"
             "\t\tself.fix_loc_enabled = fix_loc[0]\n"
             "\t\tself.fix_loc_x = fix_loc[1]\n"
-            "\t\tself.fix_loc_y = fix_loc[2]\n\n"
+            "\t\tself.fix_loc_y = fix_loc[2]\n"
+            '\t\tself.name = f"outpada_{pad_number}"\n\n'
         )
 
         # General blocks
@@ -86,8 +81,8 @@ def update_class_lib(json_file="cells.json", library="class_lib.py"):
                     "class dc_in:\n"
                     "\tdef __init__(self, DC_value, fix_loc=[0, 0, 0]):\n"
                     "\t\tself.DC_value = DC_value\n"
-                    "\t\tself.fix_loc_enabled = fix_loc[0]"
-                    "\t\tself.fix_loc_x = fix_loc[1]"
+                    "\t\tself.fix_loc_enabled = fix_loc[0]\n"
+                    "\t\tself.fix_loc_x = fix_loc[1]\n"
                     "\t\tself.fix_loc_y = fix_loc[2]\n\n"
                 )
             elif block == "gnd":
@@ -155,6 +150,13 @@ def update_class_lib(json_file="cells.json", library="class_lib.py"):
                     t.write("\t\tinst.attrs = {\n")
                     for attr in tracked_attrs:
                         t.write(f'\t\t\t"{attr}": self.{attr},\n')
+
+                    t.write(
+                        "\t\t\"fix_loc_enabled\": self.fix_loc_enabled,\n"
+                        "\t\t\"fix_loc_x\": self.fix_loc_x,\n"
+                        "\t\t\"fix_loc_y\": self.fix_loc_y,\n"
+                    )
+
                     t.write("\t\t}\n")
                     t.write(
                         "\t\ttop.instances[inst.name] = inst\n"
