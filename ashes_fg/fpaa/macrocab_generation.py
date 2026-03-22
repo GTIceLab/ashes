@@ -4,28 +4,13 @@ import sys
 import json
 from lxml import etree
 from io import StringIO, BytesIO
-import new_macrocab_generation
 import re
 
-'''
-NOTES 3/9
-
-2 use cases: 
-    1) user creates the macrocab (new file directory, copied json file, check naming conventions) - ONLY RUN ONCE
-    2) macrocab generated + added to ashes (user json file is parsed, sent to "edit" functions)
-
-todo:
-    - fix create_mc_block (move class lib part to new function (Maithreyi), replace existing parser with new parser (Arya))
-    - replace everything including and before create_mc_block with new stuff (Arya)
-    - edit functions below create_mc_block to take parameters from internal representation (Maithreyi)
-    - fix delete part (Maithreyi)
-'''
+simulation_log = []
 
 # generalized paths
 ASHESPATH = os.getenv("ASHESPATH","/home/ubuntu/ashes")
 RASPPATH = os.getenv("RASPPATH", "/home/ubuntu/rasp30")
-
-
 
 if len(sys.argv) == 3:
     path_name = sys.argv[1]
@@ -60,9 +45,6 @@ def verify_starting_parameters(path_name, block_name, block_level):
     block_name (str): macrocab name
     block_level (int): level of macrocab (1 or 2)
     """
-
-    
-        
     # name errors
     if block_name == "":
         raise ValueError("Macrocab name cannot be empty.")
@@ -82,53 +64,6 @@ def verify_starting_parameters(path_name, block_name, block_level):
     subprocess.run(f"mkdir {ASHESPATH}/{block_name}_copy")
     subprocess.run(f"cp -r {ASHESPATH}/ashes_fg {ASHESPATH}/{block_name}_copy/ashes_fg")
 
-import os
-import subprocess
-import sys
-import json
-from lxml import etree
-from io import StringIO, BytesIO
-
-'''
-Macrocab generation transferred from rasp30.
-
-High level (macrocab_gen_fcn.sce):
-- MC_folder_name_callback: read folder name
-- MC_block_name_callback: read macrocab name
-- MC_b1_level_callback: read mixed sp, lvl1, lvl2 (what do the other levels mean?)
-- start_MC_design_callback: checks macroname + workspace folder w/ xcos template
-- delete_MC_callback: deletes macrocab + associated files
-- generate_MC_callback: 
-    - saved xcos
-'''
-
-ASHESPATH = os.getenv("ASHESPATH","/home/ubuntu/ashes")
-RASPPATH = os.getenv("RASPPATH", "/home/ubuntu/rasp30")
-
-
-path_name = None
-block_name = None
-block_level = None
-
-if len(sys.argv) == 4:
-    path_name = sys.argv[1]
-    block_name = sys.argv[2]
-    block_level = int(sys.argv[3])
-elif len(sys.argv) == 2:
-    if sys.argv[1] == "make_macrocab":
-        # link later
-        pass
-    elif sys.argv[1] == "delete_macrocab":
-        # link this later
-        pass
-    else:
-        raise ValueError("Invalid command.")
-else:
-    raise ValueError(
-        "Commands: python3 macrocab_generation.py path_name block_name block_level "
-        "\nOR python3 macrocab_generation.py make_macrocab "
-        "\nOR python3 macrocab_generation.py delete_macrocab"
-    )
 #######
 # Parser for new JSON:
 #######
@@ -605,36 +540,6 @@ def create_mc_block(json_path, path_name, block_name, block_level, class_lib_pat
 
     parameters = generated["class_parameters"]
 
-<<<<<<< HEAD
-    with open(class_lib_path, "a") as file:
-        file.write(f"\n\nclass {block_name}:\n")
-        file.write("    def __init__(self,\n")
-        file.write("        input,\n")
-        file.write("        num_instances='1',\n")
-        file.write("        type='FPAA',\n")
-        file.write("        board=['3.0','3.0a']")
-
-        for param in parameters:
-            file.write(f",\n   {param['name']}={repr(param['value'])}")
-
-        file.write("\n    ):\n")
-        file.write("    self.input = input\n")
-        file.write("    self.num_instances = num_instances\n")
-        file.write("    self.type = type\n")
-        file.write("    self.board = board\n")
-
-        for param in parameters:
-            file.write(f"        self.{param['name']} = {param['name']}\n")
-
-    return generated
-
-def delete_macrocab(path_name, block_name):
-    if os.path.exists(f"{ASHESPATH}/{path_name}/{block_name}.json"):
-        os.remove(f"{ASHESPATH}/{path_name}/{block_name}.json")
-        os.rmdir(f"{ASHESPATH}/{path_name}")
-    else:
-        raise ValueError(f"Macrocab {block_name} does not exist in the specified path.")
-=======
 
 def edit_class_libs(classlibfile, macrocab_name, parameters, delete):
     with open(classlibfile, 'r') as file:
@@ -644,7 +549,6 @@ def edit_class_libs(classlibfile, macrocab_name, parameters, delete):
     if delete:
         pattern = rf'^class {macrocab_name}:.*?(?=^class |\Z)'
         new_content = re.sub(pattern, '', content, flags=re.MULTILINE | re.DOTALL)
->>>>>>> 177c16309bc28cc7f6b8dcd1cc8aaab189e84436
     
         with open(classlibfile, 'w') as f:
             f.write(new_content)
@@ -781,19 +685,33 @@ def edit_rasp30(rasp30_file, generated, delete):
 def edit_genswcs(genswcs_file, block_name, num_inputs, num_outputs, delete):
     with open(genswcs_file, 'r') as file:
         lines = file.read()
+
+    if delete:
+        lines = re.sub(
+        rf"elif subckt in \['{re.escape(block_name)}'\]:\n\t\t\t\t\tkey = ports\[\d+\]\n",
+        "",
+        lines
+    )
+    else:
+        
+        old_if_subckt = "else\n\t\t\t\t\tkey = ports[2]"
+        new_if_subckt = f"elif subckt in [{block_name}]:\n\t\t\t\t\tkey = ports[{num_inputs}]\n{old_if_subckt}"
+        lines = lines.replace(old_if_subckt, new_if_subckt)
+
     
-    old_if_subckt = "else\n\t\t\t\t\tkey = ports[2]"
-    new_if_subckt = f"elif subckt in [{block_name}]:\n\t\t\t\t\tkey = ports[{num_inputs}]\n{old_if_subckt}"
-    lines = lines.replace(old_if_subckt, new_if_subckt)
 
     if num_outputs > 1:
-        old_if_nsb = "if nsb.name in ["
-        new_if_nsb = f"{old_if_nsb}{block_name}[0], "
-        lines = lines.replace(old_if_nsb, new_if_nsb)
+        if delete:
+            lines = re.sub(rf"'{re.escape(block_name)}\[\d+\]',\s*", "", lines)
+            lines = re.sub(rf"{re.escape(block_name)}\[\d+\],\s*", "", lines)
+        else:
+            old_if_nsb = "if nsb.name in ["
+            new_if_nsb = f"{old_if_nsb}{block_name}[0], "
+            lines = lines.replace(old_if_nsb, new_if_nsb)
 
-        old_if_from_sub_name = "elif from_sub_name in ["
-        new_if_from_sub_name = f"{old_if_from_sub_name}'{block_name}[0]', "
-        lines = lines.replace(old_if_from_sub_name, new_if_from_sub_name)
+            old_if_from_sub_name = "elif from_sub_name in ["
+            new_if_from_sub_name = f"{old_if_from_sub_name}'{block_name}[0]', "
+            lines = lines.replace(old_if_from_sub_name, new_if_from_sub_name)
 
 
 
