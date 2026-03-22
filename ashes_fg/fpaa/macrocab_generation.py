@@ -74,6 +74,44 @@ def load_design_json(json_path):
     """
     with open(json_path, "r") as f:
         return json.load(f)
+    
+def validate_io(io_block):
+    """
+    Validate macrocab I/O definition.
+    Ex:
+    {
+        "inputs": [0, 1, 2],
+        "outputs": [0, 1]
+    }
+    """
+    if not isinstance(io_block, dict):
+        raise ValueError("io must be a dictionary")
+
+    if "inputs" not in io_block or "outputs" not in io_block:
+        raise ValueError("io must contain 'inputs' and 'outputs'")
+
+    inputs = io_block["inputs"]
+    outputs = io_block["outputs"]
+
+    if not isinstance(inputs, list):
+        raise ValueError("io.inputs must be a list")
+    if not isinstance(outputs, list):
+        raise ValueError("io.outputs must be a list")
+
+    for name, arr in [("inputs", inputs), ("outputs", outputs)]:
+        for val in arr:
+            if not isinstance(val, int):
+                raise ValueError(f"io.{name} entries must be integers")
+            if val < 0:
+                raise ValueError(f"io.{name} entries must be >= 0")
+
+        if len(arr) != len(set(arr)):
+            raise ValueError(f"io.{name} cannot contain duplicates")
+
+        if arr and sorted(arr) != list(range(max(arr) + 1)):
+            raise ValueError(
+                f"io.{name} must be contiguous starting at 0, got {arr}"
+            )
 
 def validate_connection_list(points, max_rows, max_cols, field_name):
     """
@@ -181,11 +219,12 @@ def validate_design_json(data):
     """
     Validate full JSON template.
     """
-    required_top_keys = ["metadata", "defaults", "resources", "routing", "row_map"]
+    required_top_keys = ["metadata", "defaults", "io", "resources", "routing", "row_map"]
     for key in required_top_keys:
         if key not in data:
             raise ValueError(f"Missing top-level key: {key}")
 
+    validate_io(data["io"])
     validate_resources(data["resources"])
 
     routing = data["routing"]
@@ -209,8 +248,20 @@ def validate_design_json(data):
                 f"{block_name}.dimensions must be {[dims[0], dims[1]]}"
             )
 
-        validate_connection_list(block.get("C", []), dims[0], dims[1], f"{block_name}.C")
-        validate_connection_list(block.get("T", []), dims[0], dims[1], f"{block_name}.T")
+        if block_name == "power_block":
+            validate_connection_list(
+                block.get("C", []), dims[0], dims[1], f"{block_name}.C", require_label=False
+            )
+            validate_connection_list(
+                block.get("T", []), dims[0], dims[1], f"{block_name}.T", require_label=True
+            )
+        else:
+            validate_connection_list(
+                block.get("C", []), dims[0], dims[1], f"{block_name}.C", require_label=True
+            )
+            validate_connection_list(
+                block.get("T", []), dims[0], dims[1], f"{block_name}.T", require_label=True
+            )
 
     if "matrix_b" not in data["row_map"]:
         raise ValueError("row_map must contain 'matrix_b'")
@@ -286,6 +337,7 @@ def build_internal_representation(data):
         "metadata": data["metadata"],
         "defaults": data["defaults"],
         "resources": data["resources"],
+        "io": data["io"],
         "routing": routing_ir,
         "row_lookup_b": row_lookup_b,
         "connections": all_connections,
@@ -356,6 +408,20 @@ def emit_matrix_a_connections(ir):
             })
     
     return emitted
+
+def emit_io_definition(ir):
+    """
+    Emit logical macrocab input/output definition.
+    """
+    inputs = ir["io"].get("inputs", [])
+    outputs = ir["io"].get("outputs", [])
+
+    return {
+        "inputs": inputs,
+        "outputs": outputs,
+        "num_inputs": len(inputs),
+        "num_outputs": len(outputs)
+    }
 
 def emit_power_block_connections(ir):
     """
