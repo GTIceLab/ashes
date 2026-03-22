@@ -1809,6 +1809,9 @@ class cab(complexBlock):
 					print("\n Extra FGs: " + sb.ex_fgs)
 					for s in range(len(ex_fg)):
 						for j in ex_fg[s].split()[::2]:
+							if j == "name":
+								continue
+
 							if swc_name0 in["c4_sp[0]","TIA_blk[0]","lpf[0]","hhneuron[0]","ramp_fe[0]",'nmirror[0]','ichar_nfet[0]']:
 								swc_name1 = j
 							elif swc_name0 in ["vmm4x4_SR[0]","vmm4x4_SR2[0]","vmm8x4_SR[0]",'vmm4x4[0]','vmm8x4[0]','vmm8x4_in[0]','vmm12x1[0]','vmm12x1_wowta[0]','DAC_sftreg[0]','vmm8inx8in[0]']:
@@ -2075,6 +2078,9 @@ class cab2(complexBlock):
 					for s in range(len(ex_fg)):
 						print ("ok here too22")
 						for j in ex_fg[s].split()[::2]:
+							if j == "name":
+								continue
+
 							swc_name1 = j+'['+sb.name.split('[')[1]
 							swc0 = self.stats.dev_fgs[swc_name0]
 							swc2 = self.stats.dev_fgs[swc_name1]
