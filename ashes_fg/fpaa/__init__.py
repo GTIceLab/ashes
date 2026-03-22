@@ -6,8 +6,7 @@ from .py2blif import emit_py_to_blif, save_blif
 
 # expose the function compile that pushes from python down to blif
 from ashes_fg.fpaa.ir import Module
-import ashes_fg.fpaa.gen_pads_30a
-import ashes_fg.fpaa.gen_pads_30
+from ashes_fg.fpaa import gen_pads_30a, gen_pads_30
 import ashes_fg.fpaa.blif_to_switches as bs
 import ashes_fg.fpaa.program_fpaa as pf
 from ashes_fg.fpaa.Make_ProgramList_CompileAssembly import compile as ca
@@ -28,9 +27,9 @@ def compile(system: Module, project_name: str, chip_num: int, board_type: str = 
 
     sys_name = os.path.join(out_path, system.name)
     if board_type == '3.0a':
-    	gen_pads_30a.gen_pads_30a(sys_name, system, project_name)
+        gen_pads_30a.gen_pads_30a(sys_name, system, project_name)
     elif board_type == '3.0':
-    	gen_pads_30.gen_pads_30(sys_name, project_name)
+        gen_pads_30.gen_pads_30(sys_name, project_name)
     bs.blif2swcs(sys_name, project_name, board_type, out_path)
     ca(project_name, board_type, chip_num)
     os.chdir(f'{out_path}')
