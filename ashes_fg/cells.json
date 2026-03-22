@@ -26,7 +26,7 @@
   "common_drain_nfet":
     {"type": "FPAA", "board": ["3.0", "3.0a"],"common_drain_nfet_ls":0,"common_drain_nfet_ibias":"5.000D-08"},
   "ota_buf":
-    {"type": "FPAA", "board": ["3.0", "3.0a"],"ota_buf_bias":0.00001},
+    {"type": "FPAA", "board": ["3.0", "3.0a"],"ota_buf_ls":0,"ota_buf_bias":0.00001},
   "hhn":
     {"type": "FPAA", "board": ["3.0", "3.0a"],"hhn_ls":0,"hhn_fgswc_ibias":"5.000D-08","hhn_fgota1_ibias":0.000002,"hhn_fgota1_pbias":0.000002,"hhn_fgota1_nbias":0.000002,"hhn_fgota0_ibias":0.000002,"hhn_fgota0_pbias":0.000002,"hhn_fgota0_nbias":0.000002,"hhn_ota0_ibias":0.000002,"hhn_ota1_ibias":0.000002,"hhn_cap0_1x_cs":1},
   "Min_detect":
