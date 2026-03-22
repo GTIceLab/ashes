@@ -1639,6 +1639,13 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
         pin_threshold = 1.5*dbu # this is the minimum distance between pins for a blockage to be inserted
         block_ext_len = 1*dbu # this is how far the block should extend from the internal blockage
     
+    elif tech_process == "tsmcN16":
+        pin_const = 1 # this is for amount of distance between blockage edge and true cell edge
+        pin_const = 0.5 # this is for amount of distance between blockage edge and true cell edge
+        pin_spacing = 1*dbu # this is for space from pin block to pin
+        pin_threshold = 1.5*dbu # this is the minimum distance between pins for a blockage to be inserted
+        block_ext_len = 1*dbu # this is how far the block should extend from the internal blockage
+
     else:
         sys.exit("Error: Please update the pin constants and spacing for this process node")
 
