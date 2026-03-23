@@ -81,6 +81,10 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     layer_map = json.load(open(layer_map_path))
     pin_list = make_pin_list(layer_map, tech_process)
 
+    ## Patch for putting the most used pin data type number on first index
+    common_dt = max(set(x[1] for x in pin_list), key=[x[1] for x in pin_list].count)
+    pin_list.sort(key=lambda x: x[1] != common_dt)
+
     # Pick out relevant module and pre fill the module list with unique names of instances used
     # Flow currently handles one module at a time, give 'cells_only' module priority.
     cells_only_module = False
@@ -126,7 +130,6 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
             first_cell = False
         elif inst.instance_name.lower() in inst_except_list:
             generate_cells_list.append(inst)
-
     if verbose: print('Cell Info:')
     if verbose: pprint.pprint(cell_info)
     if verbose: print(f'Module List:\n{top_module.module_instances}')
@@ -250,7 +253,6 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     sub_cell_width = None
 
     prBoundary_flag = False
-
     # add process variable 
     try:
         with open(os.path.join(lib_path,'gds', name + '.gds'),'rb') as bin_file:
