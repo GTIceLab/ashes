@@ -393,8 +393,8 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
 
                     # Check for height and width of the cell
                     # Get location of pin
-                    #if rec.tag_name == 'XY' and prBoundary_flag == True:
-                    if rec.tag_name == 'XY':
+                    if rec.tag_name == 'XY' and prBoundary_flag == True:
+                    #if rec.tag_name == 'XY':
 
                         for idx, item in enumerate(rec.data):
                             if idx % 2:
@@ -901,13 +901,16 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                         coords_id += 1
                         width_accum += cell_width
                     height_accum += int(cell_info[row[0]['name']]['height'])
-                drain_select_width = cell_info[str(vert_switch_array[0][0]['name'])]['width']
-                prog_switch_width = cell_info[str(vert_switch_array[0][1]['name'])]['width']
+                #drain_select_width = cell_info[str(vert_switch_array[0][0]['name'])]['width']
+                #prog_switch_width = cell_info[str(vert_switch_array[0][1]['name'])]['width']
+                # Created a path to accept one cell for drain swcs unlike 350nm
+                vert_swc_width = sum(cell_info[str(x['name'])]['width'] for x in vert_switch_array[0] if x['name'])
             drainmux_spacing = 0*dbu #7.5 is okay
             # Optional parameter to add drainmux spacing to specified island
             if drainmux_space_isle_idx is not None and int(val) == int(drainmux_space_isle_idx):
                 drainmux_spacing = int(drainmux_space*dbu)
-            x_drainmux_offset += drain_select_width + prog_switch_width + drainmux_spacing
+            x_drainmux_offset += vert_swc_width + drainmux_spacing
+            #x_drainmux_offset += drain_select_width + prog_switch_width + drainmux_spacing
             #x_drainmux_offset = round(x_drainmux_offset/track_spacing)*track_spacing
             # Deal with the column widths calculated for matrix islands, append offset to only first column
             col_w_keys = list(col_widths.keys())

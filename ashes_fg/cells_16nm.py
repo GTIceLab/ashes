@@ -1,3 +1,5 @@
+from ashes_fg.asic.asic_compile import *
+
 class IndirectVMM_4x2(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),Vsel_w=None,Vs_w=None,Vg_w=None,VTUN_w=None,GND_w=None,Vd_R_n=None,Vd_P_n=None):
         # Define variables
@@ -54,15 +56,56 @@ class IndirectVMM_4x2_TAP(StandardCell):
         # Add cell to circuit
         circuit.addInstance(self,self.island)
 
-class SWC_Drain(StandardCell):
-    def __init__(self,circuit,island=None,dim=(1,1),Drainline_Direct_w=None,PROG_w=None,RUN_w=None,Drainline_Indirect_s=None,SelN_s=None,Vd_R_n=None,Vd_P_n=None,Sel_s=None):
+
+class SWC_Gate(MUX):
+    def __init__(self,circuit,island=None,VG_RUN_w=None,SELN_w=None,SEL_w=None,GND_e=None,VG_e=None,VINJ_w=None,RUN_n=None,VGPROG_n=None,num=0):
         # Define variables
         self.circuit = circuit
         self.pins = []
         self.ports = []
         self.island = island
-        self.dim = dim
+        self.num = num
+        self.dim = (self.num,0)
+        self.decoder = True
+        self.type = "switch"
+        self.switchType = "drain_select"
+        
+        # Define cell information
+        self.name = 'SWC_Gate'
+        self.VG_RUN_w = Port(circuit,self,'VG_RUN_w','W',2*self.dim[0])
+        self.SELN_w = Port(circuit,self,'SELN_w','W',2*self.dim[0])
+        self.SEL_w = Port(circuit,self,'SEL_w','W',2*self.dim[0])
+        self.GND_e = Port(circuit,self,'GND_e','E',1*self.dim[0])
+        self.VG_e = Port(circuit,self,'VG_e','E',2*self.dim[0])
+        self.VINJ_w = Port(circuit,self,'VINJ_w','W',1*self.dim[0])
+        self.RUN_n = Port(circuit,self,'RUN_n','N',1*self.dim[1])
+        self.VGPROG_n = Port(circuit,self,'VGPROG_n','N',1*self.dim[1])
 
+        # Initialize ports with given values
+        portsInit = [VG_RUN_w,SELN_w,SEL_w,GND_e,VG_e,VINJ_w,RUN_n,VGPROG_n]
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+        
+        
+class SWC_Drain(MUX):
+    def __init__(self,circuit,island=None,Drainline_Direct_w=None,PROG_w=None,RUN_w=None,Drainline_Indirect_s=None,SelN_s=None,Vd_R_n=None,Vd_P_n=None,Sel_s=None,num=0,col=-1):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.num = num
+        self.dim = (0,self.num)
+        self.col = col
+        self.type = "switch_ind"
+        if col < 0:
+            self.type = "switch"
+            
         # Define cell information
         self.name = 'SWC_Drain'
         self.Drainline_Direct_w = Port(circuit,self,'Drainline_Direct_w','W',1*self.dim[0])
@@ -84,32 +127,7 @@ class SWC_Drain(StandardCell):
         # Add cell to circuit
         circuit.addInstance(self,self.island)
 
-class SWC_Gate(StandardCell):
-    def __init__(self,circuit,island=None,dim=(1,1),VG_RUN_w=None,SELN_w=None,SEL_w=None,GND_e=None,VG_e=None,VINJ_w=None,RUN_n=None,VGPROG_n=None):
-        # Define variables
-        self.circuit = circuit
-        self.pins = []
-        self.ports = []
-        self.island = island
-        self.dim = dim
 
-        # Define cell information
-        self.name = 'SWC_Gate'
-        self.VG_RUN_w = Port(circuit,self,'VG_RUN_w','W',2*self.dim[0])
-        self.SELN_w = Port(circuit,self,'SELN_w','W',2*self.dim[0])
-        self.SEL_w = Port(circuit,self,'SEL_w','W',2*self.dim[0])
-        self.GND_e = Port(circuit,self,'GND_e','E',1*self.dim[0])
-        self.VG_e = Port(circuit,self,'VG_e','E',2*self.dim[0])
-        self.VINJ_w = Port(circuit,self,'VINJ_w','W',1*self.dim[0])
-        self.RUN_n = Port(circuit,self,'RUN_n','N',1*self.dim[1])
-        self.VGPROG_n = Port(circuit,self,'VGPROG_n','N',1*self.dim[1])
 
-        # Initialize ports with given values
-        portsInit = [VG_RUN_w,SELN_w,SEL_w,GND_e,VG_e,VINJ_w,RUN_n,VGPROG_n]
-        i=0
-        for p in self.ports:
-            self.assignPort(p,portsInit[i])
-            i+=1
 
-        # Add cell to circuit
-        circuit.addInstance(self,self.island)
+
