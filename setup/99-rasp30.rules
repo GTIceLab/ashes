@@ -1,0 +1,3 @@
+# UDEV rule for ASHES FPAA board
+# Automatically creates the /dev/rasp30 symlink and grants read/write permissions
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6010", SYMLINK+="rasp30", MODE="0666"
