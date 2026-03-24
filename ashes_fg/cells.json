@@ -323,19 +323,24 @@
     "c4_sp_feedback_pbias": 1.000e-09,
     "c4_sp_num_caps": 6
   },
-  "c4_bpf": {
+  "C4_BPF": {
     "type": "FPAA",
     "board": [
       "3.0",
       "3.0a"
     ],
-    "c4_bpf_feedback_ibias": 5.000000e-09,
-        "c4_bpf_feedback_pbias": 1.000000e-06,
-        "c4_bpf_feedback_nbias": 1.000000e-06,
-        "c4_bpf_forward_ibias": 1.000000e-06,
-        "c4_bpf_forward_pbias": 1.000000e-06,
-        "c4_bpf_forward_nbias": 1.000000e-06,
-        "c4_bpf_buffer_ibias": 1.000000e-05
+    "num_inputs": 2,
+    "num_outputs": 1,
+    "C4_BPF_ls": 0,
+    "C4_BPF_Feedback_ibias": 5.000000e-09,
+    "C4_BPF_Feedback_pbias": 1.000000e-06,
+    "C4_BPF_Feedback_nbias": 1.000000e-06,
+    "C4_BPF_Forward_ibias": 1.000000e-06,
+    "C4_BPF_Forward_pbias": 1.000000e-06,
+    "C4_BPF_Forward_nbias": 1.000000e-06,
+    "C4_BPF_Buffer_ibias": 1.000000e-05,
+    "C4_BPF_Cin_1x_cs": 1,
+    "C4_BPF_Cfb_1x_cs": 1
   },
   "HH_RG": {
     "type": "FPAA",
