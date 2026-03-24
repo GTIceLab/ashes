@@ -315,18 +315,13 @@
       "3.0",
       "3.0a"
     ],
-    "c4_sp_ota_bias[0]": 3.000e-06,
-    "c4_sp_ota_bias[1]": 3.000e-09,
-    "c4_sp_fg[0]": 0,
-    "c4_sp_ota_small_cap[0]": 0,
-    "c4_sp_ota_small_cap[1]": 0,
-    "c4_sp_ota_p_bias[0]": 1.000e-06,
-    "c4_sp_ota_n_bias[0]": 1.000e-06,
-    "c4_sp_ota_p_bias[1]": 1.000e-09,
-    "c4_sp_ota_n_bias[1]": 1.000e-09,
-    "c4_sp_cap_3x[0]": 0,
-    "c4_sp_cap_2x[0]": 0,
-    "c4_sp_cap_1x[0]": 0
+    "c4_sp_gain_bias": 3.000e-06,
+    "c4_sp_feedback_bias": 3.000e-09,
+    "c4_sp_gain_nbias": 1.000e-06,
+    "c4_sp_gain_pbias": 1.000e-06,
+    "c4_sp_feedback_nbias": 1.000e-09,
+    "c4_sp_feedback_pbias": 1.000e-09,
+    "c4_sp_num_caps": 6
   },
   "c4_bpf": {
     "type": "FPAA",
