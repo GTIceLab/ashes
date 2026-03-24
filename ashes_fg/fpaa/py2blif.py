@@ -3,7 +3,7 @@ from .ir import Module
 from pathlib import Path
 
 
-def save_blif(blif_str: str, module_name: str, out_dir: str|Path):
+def save_blif(blif_str: str, module_name: str, out_dir: str | Path):
     """Saves a provided BLIF string to the specified directory."""
     if isinstance(out_dir, str):
         out_dir = Path(out_dir)
@@ -15,11 +15,17 @@ def save_blif(blif_str: str, module_name: str, out_dir: str|Path):
         file.write(blif_str)
 
 
-def emit_py_to_blif(top_module: Module, module_name: str = "ors_buffer") -> str:
+def emit_py_to_blif(top_module: Module, module_name: str = "DEFAULT") -> str:
     inputs = []
     outputs = []
     pad_comments = []
     subckts = []
+
+    # Collect global supply nets (vcc, gnd) as inputs
+    if "vcc" in top_module.nets:
+        inputs.append("vcc")
+    if "gnd" in top_module.nets:
+        inputs.append("gnd")
 
     # Iterate through all instances in the IR
     for inst_name, inst in top_module.instances.items():
@@ -52,23 +58,42 @@ def emit_py_to_blif(top_module: Module, module_name: str = "ors_buffer") -> str:
 
         # Handle Standard Primitives
         else:
-            # 1. Map ports
+            # Separate input and output ports, sort by name
+            in_ports = sorted(
+                [
+                    (p_name, port)
+                    for p_name, port in inst.ports.items()
+                    if port.direction == "input" and port.net
+                ],
+                key=lambda x: x[0],
+            )
+            out_ports = sorted(
+                [
+                    (p_name, port)
+                    for p_name, port in inst.ports.items()
+                    if port.direction == "output" and port.net
+                ],
+                key=lambda x: x[0],
+            )
+
+            # Map ports
             port_mappings = []
-            for p_name, port in inst.ports.items():
-                if port.net:
-                    # Append [0] to match the FPAA backend's vector expectation
-                    port_mappings.append(f"{p_name}[0]={port.net.name}")
+            for idx, (p_name, port) in enumerate(in_ports):
+                port_mappings.append(f"in[{idx}]={port.net.name}")
+            for idx, (p_name, port) in enumerate(out_ports):
+                port_mappings.append(f"out[{idx}]={port.net.name}")
 
             port_str = " ".join(port_mappings)
 
-            # 2. Map attributes / location constraints
+            # Build attrs string — skip fix_loc fields with value 0
             attr_str = ""
             if inst.attrs:
-                # Format: #param1 =value1&param2 =value2
-                attr_list = [f"{k} ={v}" for k, v in inst.attrs.items()]
+                attr_list = []
+                for k, v in inst.attrs.items():
+                    attr_list.append(f"{k} ={v}")
                 attr_str = " #" + "&".join(attr_list)
 
-            # 3. Assemble subcircuit string
+            # Assemble subcircuit string
             subckts.append(f"#{inst.model}")
             subckts.append(f".subckt {inst.model} {port_str}{attr_str}")
 
@@ -83,6 +108,5 @@ def emit_py_to_blif(top_module: Module, module_name: str = "ors_buffer") -> str:
     lines.append("")
     lines.append(".end")
 
-    # Currently only return string and not save to .blif file
     # Adding trailing '\n' char so that VPR know when the BLIF file ends
     return "\n".join(lines) + "\n"
