@@ -42,12 +42,14 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     file_name_no_ext = proj_name
     #file_path = os.path.join('.', file_name_no_ext)
     file_path = os.path.join(proj_path,'pd')
+    file_path_cadence = os.path.join(proj_path,'cadence')
+
     if not os.path.exists(file_path):
             os.makedirs(file_path)
     ver_file = open(os.path.join(proj_path,'syn',verilog_file_name), 'r')
     ver_file_content = ver_file.read()
     ver_file.close()
-    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer = process_params
+    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer,run_fr_cadence = process_params
   
     ast = parse_verilog(ver_file_content)
     module_list = set()
@@ -58,11 +60,20 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
 
     text_layout_path = os.path.join(file_path, f'{file_name_no_ext}_gds.txt')
     gds_path = os.path.join(file_path, f'{file_name_no_ext}_placed.gds')
-    lef_file_path = os.path.join(file_path, f'{file_name_no_ext}.lef')
-    def_file_path = os.path.join(file_path, f'{file_name_no_ext}.def')
+
+    if run_fr_cadence == 1:
+        lef_file_path = os.path.join(file_path_cadence, f'cells.lef')
+        def_file_path = os.path.join(file_path_cadence, f'{file_name_no_ext}_place.def')
+
+    else:
+        lef_file_path = os.path.join(file_path, f'{file_name_no_ext}.lef')
+        def_file_path = os.path.join(file_path, f'{file_name_no_ext}.def')
+
+
     guide_file_path = os.path.join(file_path, f'{file_name_no_ext}.guide')
     merged_gds_file_path = os.path.join(file_path, f'{file_name_no_ext}_merged.gds')
     text_merged_layout_path = os.path.join(file_path, f'{file_name_no_ext}_merged.txt')
+
     if lib_path == None:
         lib_path = os.path.join(Path(__file__).parent,'lib', tech_process)
     
@@ -210,12 +221,16 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
         update_output_layout('ENDLIB\n', text_layout_path)
         os.system(f'{pypath} {txt2gds_path} -o {gds_path} {text_layout_path}')
 
-        generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu, cell_order_in_island,lib_path)
+        generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu, cell_order_in_island,lib_path,run_fr_cadence)
 
         #metal_layers = count_metal_layers(layer_map, tech_process)
         metal_layers = count_metal_layers_drawing(layer_map, tech_process)
         def_params = (track_spacing, def_file_path, dbu, design_area, file_name_no_ext, frame_module, router_tool, tech_process)
-        def_blocks, def_nets = generate_def(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table,lef_file_path)
+
+        if run_fr_cadence == 0:
+            def_blocks, def_nets = generate_def(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table,lef_file_path)
+        else:
+            generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table,lef_file_path)
 
         #island_info = sanitize_island_info(island_info)
         if verbose:
@@ -1480,19 +1495,32 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
     return ''.join(ret_string), frame_module
 
 
-def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_order_in_island,lib_path):
+def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_order_in_island,lib_path,run_fr_cadence):
     '''
     Create a lef file for the design
     - Start with a copy of the technology lef
     - Use the module list to define any pins found
     '''
+
     # Copy the technology lef for the design
     tech_lef_path = os.path.join(lib_path, 'tech_lef', tech_process + '.lef')
     #tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '_toplevelroute.lef')
-    if os.path.exists(tech_lef_path): shutil.copy(tech_lef_path, file_path)
-    else: raise CellNotFound(f'Could not find the technology lef file {tech_process}.lef. Is it in the ./lib/tech_lef/ directory?')
+    
+    if run_fr_cadence == 1:
+        header_str = 'VERSION 5.8 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
+        ## Harcoded fix for innovus import, because cells.lef is not recognized properly according to dbu the def is 1000
+        dbu=1000
+
+    else:
+        if os.path.exists(tech_lef_path): shutil.copy(tech_lef_path, file_path)
+        else: raise CellNotFound(f'Could not find the technology lef file {tech_process}.lef. Is it in the ./lib/tech_lef/ directory?')
 
     lef_file = open(file_path, 'a')
+
+    if run_fr_cadence == 1:
+        lef_file.write(header_str) 
+        lef_file.write(f"UNITS\n    DATABASE MICRONS {dbu} ;\nEND UNITS\n\n") 
+
     lef_file.write('\n\n') 
     seen = set()
     # Run through cell order dict
@@ -1502,6 +1530,15 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
             if item['type'] == 'cell' and not processed:
                 module = item['name']
                 lef_file.write(f'MACRO {module}\n')
+
+                if (run_fr_cadence == 1):
+                    lef_file.write(f'  CLASS BLOCK ;\n')
+                    print(cell_info[module]['width'])
+                    lef_file.write(f"  ORIGIN {cell_info[module]['origin'][0]/dbu} {cell_info[module]['origin'][1]/dbu} ;\n")
+                    lef_file.write(f"  SIZE {cell_info[module]['width']/dbu} BY {cell_info[module]['height']/dbu} ;\n")
+                    # Currently hardcoded as no rotation
+                    lef_file.write(f'  SYMMETRY X Y R90 ;\n')
+
                 try:
                     pins = cell_info[module]['cell_pins']
                 except:
@@ -1527,6 +1564,14 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
         processed = module in seen
         if not processed:
             lef_file.write(f'MACRO {module}\n')
+            
+            if (run_fr_cadence == 1):
+                lef_file.write(f'  CLASS BLOCK ;\n')
+                lef_file.write(f"  ORIGIN {cell_info[module]['origin'][0]/dbu} {cell_info[module]['origin'][1]/dbu} ;\n")
+                lef_file.write(f"  SIZE {cell_info[module]['width']/dbu} BY {cell_info[module]['height']/dbu} ;\n")
+                # Currently hardcoded as no rotation
+                lef_file.write(f'  SYMMETRY X Y R90 ;\n')
+
             try:
                 pins = cell_info[module]['cell_pins']
             except:
@@ -1620,6 +1665,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     x_loc = mat_loc[1]*mat_cell_width + mat_x_loc
                     comp_string.append(f'- {mat_cell_id} {c_name} + PLACED ( {x_loc} {y_loc} ) N ;\n')
                     comp_cnt += 1
+
     def_file.write(f'\nCOMPONENTS {comp_cnt} ;\n')
     def_file.write(''.join(comp_string))
     def_file.write('END COMPONENTS\n\n')
@@ -2247,6 +2293,86 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     def_file.close()
     return def_blocks, def_nets
  
+
+def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table, lef_file_path):
+    '''
+    Create a def file for the design
+    - Place def instances around the edge for matrices
+    - Route correct nets to correct instances
+    - Create correct obstructions for routing
+    '''
+    track_spacing, file_path, dbu, design_area, file_name, frame_module, router_tool,tech_process = def_params
+   
+    header_str = 'VERSION 5.5 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
+    def_file = open(file_path, 'w')
+    def_file.write(header_str) 
+
+    def_file.write(f'DESIGN {file_name} ;\n\n')
+    def_file.write(f'UNITS DISTANCE MICRONS {dbu} ;\n\n')
+
+    def_file.write(f'PROPERTYDEFINITIONS\n')
+    def_file.write(f'    DESIGN FE_CORE_BOX_LL_X REAL {round(design_area[0]*0.001,8)} ;\n')
+    def_file.write(f'    DESIGN FE_CORE_BOX_UR_X REAL {round((design_area[2]-design_area[0])*0.001,8)} ;\n')
+    def_file.write(f'    DESIGN FE_CORE_BOX_LL_Y REAL {round(design_area[1]*0.001,8)} ;\n')
+    def_file.write(f'    DESIGN FE_CORE_BOX_UR_Y REAL {round((design_area[3]-design_area[1])*0.001,8)} ;\n')
+    def_file.write(f'END PROPERTYDEFINITIONS\n\n')
+
+    def_file.write(f'DIEAREA ( 0 0 ) ( {(design_area[2]/1000)*dbu} {(design_area[3]/1000)*dbu} ) ;\n\n')
+    
+
+    comp_string = []
+    comp_cnt = 0
+    # Place components in def file
+    if frame_module:
+            comp_string.append(f'- {frame_module.instance_name} {frame_module.module_name} + PLACED ( 0 0 ) N ;\n')
+            comp_cnt += 1
+    for val, island in cell_order_in_island.items():
+        for idx, item in island['items'].items():
+            if item['type'] == 'cell':
+                c_name = item['name']
+                array = island['coords']
+                x_loc = array[idx][0]
+                y_loc = array[idx][1]
+                x_loc = (x_loc * dbu) /1000
+                y_loc = (y_loc * dbu) /1000
+                comp_string.append(f'- I_{val}_{idx} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
+                comp_cnt += 1
+            elif item['type'] == 'matrix':
+                c_name = item['name']
+                array = island['coords']
+                mat_x_loc = array[idx][0]
+                mat_y_loc = array[idx][1]
+                
+                # Get dimensions from mat_info
+                mat_row = item['mat_info']['mat_row']
+                mat_col = item['mat_info']['mat_col']
+                
+                mat_cell_height = cell_info[c_name]['height']
+                mat_cell_width = cell_info[c_name]['width']
+
+                # Iterate through EVERY cell in the matrix, not just the ones with nets
+                for r in range(mat_row):
+                    for c in range(mat_col):
+                        mat_cell_id = f'I_{val}_{idx}_{r}_{c}'
+                        
+                        # Calculate coordinates
+                        # Note: matches the GDS alignment logic
+                        y_loc = (mat_row - 1 - r) * mat_cell_height + mat_y_loc 
+                        x_loc = c * mat_cell_width + mat_x_loc
+                        
+                        y_loc = (y_loc * dbu) /1000
+                        x_loc = (x_loc * dbu) /1000
+
+                        comp_string.append(f'- {mat_cell_id} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
+                        comp_cnt += 1
+
+    def_file.write(f'\nCOMPONENTS {comp_cnt} ;\n')
+    def_file.write(''.join(comp_string))
+    def_file.write('END COMPONENTS\n\n')
+    def_file.write('END DESIGN')
+    def_file.close()
+
+
 
 def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, router_tool):
     '''

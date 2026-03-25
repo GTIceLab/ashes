@@ -7,7 +7,7 @@ import time
 import json
 from pathlib import Path
 
-def compile(circuit,process="Process",project_path = ".",project_name = "project",lib_path = None, place=True, route=True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,qparams=None,prBoundary_layer = None):
+def compile(circuit,process="Process",project_path = ".",project_name = "project",lib_path = None, place=True, route=True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,qparams=None,prBoundary_layer = None,run_fr_cadence=0):
         """
         Main ASIC compilation function
         - Makes Verilog netlist for a given Circuit
@@ -20,6 +20,14 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
         gatemux_space_isle_idx=gateSpaceIdx
         gatemux_space = gateSpace
 
+        # Variable check for run_fr_cadence variable
+        if run_fr_cadence != 0 and run_fr_cadence != 1:
+                raise ValueError(f"Invalid value: {run_fr_cadence}. Variable must be 0 or 1.")
+        else:
+                cadencePath = os.path.join(project_path,'cadence')
+        if not os.path.exists(cadencePath):
+                os.makedirs(cadencePath)
+
         synPath = os.path.join(project_path,'syn')
         if not os.path.exists(synPath):
                 os.makedirs(synPath)
@@ -27,6 +35,11 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
         f = open(verilogPath, "w")
         f.write(circuit.print(process))
         f.close() # Close file so that P&R can access netlist
+
+
+        # Variables to set space between IO edge and Core edge
+        x_IO, y_IO = 0, 0 
+
 
         # Find the process node and define tech parameters
         if (process.split('_')[0].lower() == "tsmc" and process.split('_')[1].lower() == "350nm"):
@@ -46,22 +59,25 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 track_spacing = 1600 # M5 metal spacing
                 # placement offset to make space for pin routing
                 x_offset, y_offset = 400*track_spacing, 2000*track_spacing
+                
         elif (process.split('_')[0].lower() == "tsmc" and process.split('_')[1].lower() == "16nm"):
                 # All units in nanometers
                 tech_process = 'tsmcN16'
                 cell_pitch = 6500
-                dbu = 1000
+                dbu = 2000
                 track_spacing = 1600 # M5 metal spacing
                 # placement offset to make space for pin routing
                 x_offset, y_offset = 400*track_spacing, 2000*track_spacing
+                
+                if(run_fr_cadence):
+                        x_IO, y_IO = 1890, 1920 
 
-
-        design_area = (0, 0, design_limits[0], design_limits[1], x_offset, y_offset)
+        design_area = (x_IO, y_IO, design_limits[0], design_limits[1], x_offset, y_offset)
 
         if place == True:
                 pdPath = os.path.join(project_path,'pd')
                 #drainmux_space_isle_idx = 0
-                process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer)
+                process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer,run_fr_cadence)
                 pl_start = time.time()
                 gds_synthesis(process_params, design_area, project_name,project_path,isle_loc=location_islands)
                 pl_end = time.time()
