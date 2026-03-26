@@ -610,7 +610,8 @@ class TGate_2nMirror(StandardCell):
         circuit.addInstance(self,self.island)
 
 class Volatile_Swcs(StandardCell):
-    def __init__(self,circuit,island=None,dim=(1,1),RST_b_w=None,D_w=None,GND_w=None,VDD_w=None,Vd_P_w=None,CLK_w=None,Scan_Vout_w=None,Q_e=None,sky130_fd_sc_hd__dfrbp_1_1_Q_n=None,sky130_fd_sc_hd__dfrbp_1_1_Q_N_n=None,sky130_fd_sc_hd__dfrbp_1_1_RESET_B_n=None,sky130_fd_sc_hd__dfrbp_1_1_D_n=None,sky130_fd_sc_hd__dfrbp_1_1_CLK_n=None,sky130_fd_sc_hd__dfrbp_1_1_VGND_n=None,sky130_fd_sc_hd__dfrbp_1_1_VNB_n=None,FG_Indirect_0_VTUN_n=None,FG_Indirect_0_GND_n=None,FG_Indirect_0_Vg_n=None,FG_Indirect_0_FG_n=None,FG_Indirect_0_Vmid_n=None,FG_Indirect_0_Vs_n=None,FG_Indirect_0_VINJ_n=None,FG_Indirect_0_Vsel_n=None,FG_Indirect_0_Vd_R_n=None,FG_Indirect_0_Vd_P_n=None,Vin_n=None,Vsel_n=None,Vg_n=None,VTUN_n=None,VINJ_n=None,Scan_VOut_s=None,sky130_fd_sc_hd__dfrbp_1_1_VPWR_s=None,sky130_fd_sc_hd__dfrbp_1_1_VPB_s=None,sky130_fd_sc_hd__dfrbp_1_0_Q_s=None,sky130_fd_sc_hd__dfrbp_1_0_Q_N_s=None,sky130_fd_sc_hd__dfrbp_1_0_RESET_B_s=None,sky130_fd_sc_hd__dfrbp_1_0_D_s=None,sky130_fd_sc_hd__dfrbp_1_0_CLK_s=None,sky130_fd_sc_hd__dfrbp_1_0_VGND_s=None,sky130_fd_sc_hd__dfrbp_1_0_VPWR_s=None,sky130_fd_sc_hd__dfrbp_1_0_VPB_s=None,sky130_fd_sc_hd__dfrbp_1_0_VNB_s=None,FG_Indirect_1_VTUN_s=None,FG_Indirect_1_GND_s=None,FG_Indirect_1_Vg_s=None,FG_Indirect_1_FG_s=None,FG_Indirect_1_Vmid_s=None,FG_Indirect_1_Vs_s=None,FG_Indirect_1_VINJ_s=None,FG_Indirect_1_Vsel_s=None,FG_Indirect_1_Vd_R_s=None,FG_Indirect_1_Vd_P_s=None,GND_s=None):
+    # NOTE: I have manually removed pins from internal nets (those with dots. in their names). This needs to be fixed later
+    def __init__(self,circuit,island=None,dim=(1,1),RST_b_w=None,D_w=None,GND_w=None,VDD_w=None,Vd_P_w=None,CLK_w=None,Scan_Vout_w=None,Q_e=None,Vin_n=None,Vsel_n=None,Vg_n=None,VTUN_n=None,VINJ_n=None,Scan_VOut_s=None,GND_s=None):
         # Define variables
         self.circuit = circuit
         self.pins = []
@@ -628,54 +629,16 @@ class Volatile_Swcs(StandardCell):
         self.CLK_w = Port(circuit,self,'CLK_w','W',1*self.dim[0])
         self.Scan_Vout_w = Port(circuit,self,'Scan_Vout_w','W',1*self.dim[0])
         self.Q_e = Port(circuit,self,'Q_e','E',1*self.dim[0])
-        self.sky130_fd_sc_hd__dfrbp_1_1_Q_n = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_1_Q_n','N',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_1_Q_N_n = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_1_Q_N_n','N',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_1_RESET_B_n = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_1_RESET_B_n','N',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_1_D_n = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_1_D_n','N',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_1_CLK_n = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_1_CLK_n','N',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_1_VGND_n = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_1_VGND_n','N',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_1_VNB_n = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_1_VNB_n','N',1*self.dim[1])
-        self.FG_Indirect_0_VTUN_n = Port(circuit,self,'FG_Indirect_0_VTUN_n','N',1*self.dim[1])
-        self.FG_Indirect_0_GND_n = Port(circuit,self,'FG_Indirect_0_GND_n','N',1*self.dim[1])
-        self.FG_Indirect_0_Vg_n = Port(circuit,self,'FG_Indirect_0_Vg_n','N',1*self.dim[1])
-        self.FG_Indirect_0_FG_n = Port(circuit,self,'FG_Indirect_0_FG_n','N',1*self.dim[1])
-        self.FG_Indirect_0_Vmid_n = Port(circuit,self,'FG_Indirect_0_Vmid_n','N',1*self.dim[1])
-        self.FG_Indirect_0_Vs_n = Port(circuit,self,'FG_Indirect_0_Vs_n','N',1*self.dim[1])
-        self.FG_Indirect_0_VINJ_n = Port(circuit,self,'FG_Indirect_0_VINJ_n','N',1*self.dim[1])
-        self.FG_Indirect_0_Vsel_n = Port(circuit,self,'FG_Indirect_0_Vsel_n','N',1*self.dim[1])
-        self.FG_Indirect_0_Vd_R_n = Port(circuit,self,'FG_Indirect_0_Vd_R_n','N',1*self.dim[1])
-        self.FG_Indirect_0_Vd_P_n = Port(circuit,self,'FG_Indirect_0_Vd_P_n','N',1*self.dim[1])
         self.Vin_n = Port(circuit,self,'Vin_n','N',2*self.dim[1])
         self.Vsel_n = Port(circuit,self,'Vsel_n','N',2*self.dim[1])
         self.Vg_n = Port(circuit,self,'Vg_n','N',2*self.dim[1])
         self.VTUN_n = Port(circuit,self,'VTUN_n','N',1*self.dim[1])
         self.VINJ_n = Port(circuit,self,'VINJ_n','N',1*self.dim[1])
         self.Scan_VOut_s = Port(circuit,self,'Scan_VOut_s','S',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_1_VPWR_s = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_1_VPWR_s','S',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_1_VPB_s = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_1_VPB_s','S',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_0_Q_s = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_0_Q_s','S',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_0_Q_N_s = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_0_Q_N_s','S',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_0_RESET_B_s = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_0_RESET_B_s','S',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_0_D_s = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_0_D_s','S',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_0_CLK_s = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_0_CLK_s','S',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_0_VGND_s = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_0_VGND_s','S',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_0_VPWR_s = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_0_VPWR_s','S',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_0_VPB_s = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_0_VPB_s','S',1*self.dim[1])
-        self.sky130_fd_sc_hd__dfrbp_1_0_VNB_s = Port(circuit,self,'sky130_fd_sc_hd__dfrbp_1_0_VNB_s','S',1*self.dim[1])
-        self.FG_Indirect_1_VTUN_s = Port(circuit,self,'FG_Indirect_1_VTUN_s','S',1*self.dim[1])
-        self.FG_Indirect_1_GND_s = Port(circuit,self,'FG_Indirect_1_GND_s','S',1*self.dim[1])
-        self.FG_Indirect_1_Vg_s = Port(circuit,self,'FG_Indirect_1_Vg_s','S',1*self.dim[1])
-        self.FG_Indirect_1_FG_s = Port(circuit,self,'FG_Indirect_1_FG_s','S',1*self.dim[1])
-        self.FG_Indirect_1_Vmid_s = Port(circuit,self,'FG_Indirect_1_Vmid_s','S',1*self.dim[1])
-        self.FG_Indirect_1_Vs_s = Port(circuit,self,'FG_Indirect_1_Vs_s','S',1*self.dim[1])
-        self.FG_Indirect_1_VINJ_s = Port(circuit,self,'FG_Indirect_1_VINJ_s','S',1*self.dim[1])
-        self.FG_Indirect_1_Vsel_s = Port(circuit,self,'FG_Indirect_1_Vsel_s','S',1*self.dim[1])
-        self.FG_Indirect_1_Vd_R_s = Port(circuit,self,'FG_Indirect_1_Vd_R_s','S',1*self.dim[1])
-        self.FG_Indirect_1_Vd_P_s = Port(circuit,self,'FG_Indirect_1_Vd_P_s','S',1*self.dim[1])
         self.GND_s = Port(circuit,self,'GND_s','S',1*self.dim[1])
 
         # Initialize ports with given values
-        portsInit = [RST_b_w,D_w,GND_w,VDD_w,Vd_P_w,CLK_w,Scan_Vout_w,Q_e,sky130_fd_sc_hd__dfrbp_1_1_Q_n,sky130_fd_sc_hd__dfrbp_1_1_Q_N_n,sky130_fd_sc_hd__dfrbp_1_1_RESET_B_n,sky130_fd_sc_hd__dfrbp_1_1_D_n,sky130_fd_sc_hd__dfrbp_1_1_CLK_n,sky130_fd_sc_hd__dfrbp_1_1_VGND_n,sky130_fd_sc_hd__dfrbp_1_1_VNB_n,FG_Indirect_0_VTUN_n,FG_Indirect_0_GND_n,FG_Indirect_0_Vg_n,FG_Indirect_0_FG_n,FG_Indirect_0_Vmid_n,FG_Indirect_0_Vs_n,FG_Indirect_0_VINJ_n,FG_Indirect_0_Vsel_n,FG_Indirect_0_Vd_R_n,FG_Indirect_0_Vd_P_n,Vin_n,Vsel_n,Vg_n,VTUN_n,VINJ_n,Scan_VOut_s,sky130_fd_sc_hd__dfrbp_1_1_VPWR_s,sky130_fd_sc_hd__dfrbp_1_1_VPB_s,sky130_fd_sc_hd__dfrbp_1_0_Q_s,sky130_fd_sc_hd__dfrbp_1_0_Q_N_s,sky130_fd_sc_hd__dfrbp_1_0_RESET_B_s,sky130_fd_sc_hd__dfrbp_1_0_D_s,sky130_fd_sc_hd__dfrbp_1_0_CLK_s,sky130_fd_sc_hd__dfrbp_1_0_VGND_s,sky130_fd_sc_hd__dfrbp_1_0_VPWR_s,sky130_fd_sc_hd__dfrbp_1_0_VPB_s,sky130_fd_sc_hd__dfrbp_1_0_VNB_s,FG_Indirect_1_VTUN_s,FG_Indirect_1_GND_s,FG_Indirect_1_Vg_s,FG_Indirect_1_FG_s,FG_Indirect_1_Vmid_s,FG_Indirect_1_Vs_s,FG_Indirect_1_VINJ_s,FG_Indirect_1_Vsel_s,FG_Indirect_1_Vd_R_s,FG_Indirect_1_Vd_P_s,GND_s]
+        portsInit = [RST_b_w,D_w,GND_w,VDD_w,Vd_P_w,CLK_w,Scan_Vout_w,Q_e,Vin_n,Vsel_n,Vg_n,VTUN_n,VINJ_n,Scan_VOut_s,GND_s]
         i=0
         for p in self.ports:
             self.assignPort(p,portsInit[i])

@@ -1,11 +1,12 @@
 # originally copied from ashes/ashes_fg/examples/FPAA_Synthesis/cab1.py
 
-import ashes_fg as af
 from ashes_fg.asic.asic_compile import *
-from ashes_fg.class_lib_new import *
-from ashes_fg.class_lib_mux import *
-from ashes_fg.class_lib_cab import *
-from ashes_fg.asic.asic_systems import *
+# from ashes_fg.asic.asic_systems import *#IndirectVMM
+from asic_systems_130 import IndirectVMM
+
+import sblock_algorithm
+# standard cell library:
+import ashes.examples.mag2stdcells.library.lib as lib
 
 Top = Circuit()
 
@@ -20,60 +21,62 @@ Block_Switch = ST_BMatrix(Top,BlockIsland,[5,1])
 Block_Switch.place([0,26])
 
 #SBLOCK
-SEC1 = S_SEC1(Top,BlockIsland,[5,1])
-SEC1.place([0,7])
+sblock_algorithm.generate_sblocks(Top, BlockIsland, 0) # TODO
 
-SBuff = S_Buffer(Top,BlockIsland,[5,1])
-SBuff.place([0,8])
+# SEC1 = S_SEC1(Top,BlockIsland,[5,1])
+# SEC1.place([0,7])
 
-SpaceUp_0 = S_spaceUP(Top,BlockIsland,[4,1])
-SpaceUp_0.place([0,9])
-Conn_0 = S_Conn12(Top,BlockIsland)
-Conn_0.place([4,9])
-Conn_0.markAbut()
+# SBuff = S_Buffer(Top,BlockIsland,[5,1])
+# SBuff.place([0,8])
 
-SpaceUp_1 = S_spaceUP(Top,BlockIsland,[3,1])
-SpaceUp_1.place([0,10])
-Conn_1 = S_Conn12(Top,BlockIsland)
-Conn_1.place([3,10])
-Conn_1.markAbut()
+# SpaceUp_0 = S_spaceUP(Top,BlockIsland,[4,1])
+# SpaceUp_0.place([0,9])
+# Conn_0 = S_Conn12(Top,BlockIsland)
+# Conn_0.place([4,9])
+# Conn_0.markAbut()
 
-SpaceDown_1 = S_spaceDOWN(Top,BlockIsland,[1,1])
-SpaceDown_1.place([4,10])
-SpaceDown_1.markAbut()
+# SpaceUp_1 = S_spaceUP(Top,BlockIsland,[3,1])
+# SpaceUp_1.place([0,10])
+# Conn_1 = S_Conn12(Top,BlockIsland)
+# Conn_1.place([3,10])
+# Conn_1.markAbut()
 
-SpaceUp_2 = S_spaceUP(Top,BlockIsland,[2,1])
-SpaceUp_2.place([0,11])
-Conn_2 = S_Conn12(Top,BlockIsland)
-Conn_2.place([2,11])
-Conn_2.markAbut()
+# SpaceDown_1 = S_spaceDOWN(Top,BlockIsland,[1,1])
+# SpaceDown_1.place([4,10])
+# SpaceDown_1.markAbut()
 
-SpaceDown_2 = S_spaceDOWN(Top,BlockIsland,[2,1])
-SpaceDown_2.place([3,11])
-SpaceUp_3 = S_spaceUP(Top,BlockIsland,[1,1])
-SpaceUp_3.place([0,12])
-SpaceUp_3.markAbut()
+# SpaceUp_2 = S_spaceUP(Top,BlockIsland,[2,1])
+# SpaceUp_2.place([0,11])
+# Conn_2 = S_Conn12(Top,BlockIsland)
+# Conn_2.place([2,11])
+# Conn_2.markAbut()
 
-Conn_3 = S_Conn12(Top,BlockIsland)
-Conn_3.place([1,12])
-Conn_3.markAbut()
+# SpaceDown_2 = S_spaceDOWN(Top,BlockIsland,[2,1])
+# SpaceDown_2.place([3,11])
+# SpaceUp_3 = S_spaceUP(Top,BlockIsland,[1,1])
+# SpaceUp_3.place([0,12])
+# SpaceUp_3.markAbut()
 
-SpaceDown_3 = S_spaceDOWN(Top,BlockIsland,[3,1])
-SpaceDown_3.place([2,12])
-Conn_4 = S_Conn12(Top,BlockIsland)
-Conn_4.place([0,13])
-Conn_4.markAbut()
+# Conn_3 = S_Conn12(Top,BlockIsland)
+# Conn_3.place([1,12])
+# Conn_3.markAbut()
 
-SpaceDown_4 = S_spaceDOWN(Top,BlockIsland,[4,1])
-SpaceDown_4.place([1,13])
-SEC2 = S_SEC2(Top,BlockIsland,[5,1])
-SEC2.place([0,14])
+# SpaceDown_3 = S_spaceDOWN(Top,BlockIsland,[3,1])
+# SpaceDown_3.place([2,12])
+# Conn_4 = S_Conn12(Top,BlockIsland)
+# Conn_4.place([0,13])
+# Conn_4.markAbut()
 
-Conn_5 = S_Conn23(Top,BlockIsland,[5,1])
-Conn_5.place([0,15])
+# SpaceDown_4 = S_spaceDOWN(Top,BlockIsland,[4,1])
+# SpaceDown_4.place([1,13])
+# SEC2 = S_SEC2(Top,BlockIsland,[5,1])
+# SEC2.place([0,14])
 
-SEC3 = S_SEC3(Top,BlockIsland,[5,1])
-SEC3.place([0,16])
+# Conn_5 = S_Conn23(Top,BlockIsland,[5,1])
+# Conn_5.place([0,15])
+
+# SEC3 = S_SEC3(Top,BlockIsland,[5,1])
+# SEC3.place([0,16])
 
 # Decoders
 Block_GateDecode = STD_IndirectGateDecoder(Top,island=BlockIsland,bits=6)
@@ -81,7 +84,7 @@ Block_GateSwitch = STD_IndirectGateSwitch(Top,island=BlockIsland,num=26)
 
 Block_DrainDecode = STD_DrainDecoder(Top,island=BlockIsland,bits=5)
 Block_DrainSelect = RunDrainSwitch(Top,island=BlockIsland,num=5)
-Block_DrainCutoff = DrainCutoff(Top,BlockIsland,num=5)
+Block_DrainCutoff = lib.IndirectVMM_DrainSwcs(Top,BlockIsland,num=5)
 for i in range(8,14):
 	ERASE_IndirectGateSwitch(Top,island=BlockIsland,col=i)
 ERASE_IndirectGateSwitch(Top,island=BlockIsland,col=15)
@@ -90,15 +93,15 @@ ERASE_IndirectGateSwitch(Top,island=BlockIsland,col=15)
 CABIsland = Island(Top)
 
 # A matrix
-Atop = BlockTop(Top,CABIsland,[1,8])
+Atop = lib.IndirectVMM_Top_AorBmat_4x2(Top,CABIsland,[1,8])
 Atop.place([0,0])
 Amatrix = IndirectVMM(Top,[28,16],island=CABIsland,decoderPlace=False,loc=[1,0])
 
 # B matrix
-Btop = BlockTop(Top,CABIsland,[1,10])
+Btop = lib.IndirectVMM_Top_AorBmat_4x2(Top,CABIsland,[1,10])
 Btop.place([0,8])
 Bmatrix = IndirectVMM(Top,[24,20],island=CABIsland,decoderPlace=False,loc=[1,8])
-Bbot = B_bot(Top,CABIsland,[1,10])
+Bbot = lib.IndirectVMM_Bot_Bmat_4x2(Top,CABIsland,[1,10])
 Bbot.place([7,8])
 
 Bswitch0 = ST_BMatrix(Top,CABIsland)
@@ -142,43 +145,28 @@ Oswitch = ST_BMatrix(Top,CABIsland,[2,1])
 Oswitch.place([10,18])
 
 # CAB Elements
-TA2Cell_Weak__0 = TSMC350nm_TA2Cell_Weak(Top,CABIsland)
-TA2Cell_Weak__0.place([2,19])
-TA2Cell_Weak__0.markCABDevice()
 
-TA2Cell_Weak__1 = TSMC350nm_TA2Cell_Weak(Top,CABIsland)
-TA2Cell_Weak__1.place([3,19])
-TA2Cell_Weak__1.markCABDevice()
+TA_FGbias_1x2 = lib.TA_FGbias_1x2(Top,CABIsland)
+TA_FGbias_1x2.place([4,19])
+TA_FGbias_1x2.markCABDevice()
 
-TA2Cell_Strong = TSMC350nm_TA2Cell_Strong(Top,CABIsland)
-TA2Cell_Strong.place([4,19])
-TA2Cell_Strong.markCABDevice()
-
-Cap_Bank = TSMC350nm_Cap_Bank(Top,CABIsland)
+Cap_Bank = lib.Cap_Bank(Top,CABIsland)
 Cap_Bank.place([5,19])
 Cap_Bank.markCABDevice()
 
-WTA_IndirectProg = TSMC350nm_4WTA_IndirectProg(Top,CABIsland)
-WTA_IndirectProg.place([6,19])
-WTA_IndirectProg.markCABDevice()
-
-NandPfets = TSMC350nm_NandPfets(Top,CABIsland)
-NandPfets.place([7,19])
-NandPfets.markCABDevice()
-
-TGate_2nMirror = TSMC350nm_TGate_2nMirror(Top,CABIsland)
+TGate_2nMirror = lib.TGate_2nMirror(Top,CABIsland)
 TGate_2nMirror.place([8,19])
 TGate_2nMirror.markCABDevice()
 
 VolSwitchIsland = Island(Top)
 
-VolSwitch = TSMC350nm_volatile_swcs(Top,VolSwitchIsland,[1,6])
+VolSwitch = lib.Volatile_Swcs(Top,VolSwitchIsland,[1,6])
 VolSwitch.place([0,0])
 
 # Decoders
 CAB_DrainDecoder = STD_DrainDecoder(Top,CABIsland,bits=6)
 CAB_DrainSelect = RunDrainSwitch(Top,CABIsland,num=12)
-CAB_DrainSwitch = DrainCutoff(Top,CABIsland,num=12)
+CAB_DrainSwitch = lib.IndirectVMM_DrainSwcs(Top,CABIsland,num=12)
 
 CAB_GateSwitch = STD_GorS_IndirectSwitches(Top,CABIsland,num=20)
 ERASE_IndirectGateSwitch(Top,CABIsland,col=18)
@@ -238,8 +226,8 @@ Cap_Bank.VD_P += Bswitch3.P[0:4]
 Cap_Bank.VIN += Bswitch3.A[1:3]
 Cap_Bank.OUT += CAB_GateSwitch.Input[23:25]
 Cap_Bank.VINJ += TA2Cell_Strong.VINJ_b
-Cap_Bank.Vsel += TA2Cell_Strong.Vsel_b
-Cap_Bank.Vg += TA2Cell_Strong.Vg_b
+Cap_Bank.Vsel_n += TA2Cell_Strong.Vsel_b
+Cap_Bank.Vg_n += TA2Cell_Strong.Vg_b
 Cap_Bank.GND += TA2Cell_Strong.GND_b
 Cap_Bank.VTUN += TA2Cell_Strong.VTUN_b
 
