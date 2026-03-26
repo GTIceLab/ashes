@@ -4,7 +4,7 @@
 # and that the following directories exist: mag2gds, fixed_pins, library
 
 # clean temp dirs and output dir
-rm ./mag2gds/* ./fixed_pins/* ./library/*
+rm -r ./mag2gds/* ./fixed_pins/* ./library/*
 
 # mag -> gds (be careful with backslashes!)
 python ../../ashes_fg/layout2gds/mag2gds.py  --output mag2gds  --files \

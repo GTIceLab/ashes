@@ -160,6 +160,14 @@ def append_history(history_path: Path, class_name: str, previous_text: str) -> N
 		history_file.write(entry)
 
 
+ASHES_IMPORT = "from ashes_fg.asic.asic_compile import *"
+def ensure_import(content: str) -> str:
+    """Ensure the required import is at the top of the file."""
+    if ASHES_IMPORT not in content:
+        return ASHES_IMPORT + "\n\n" + content
+    return content
+
+
 def generate_from_json(
 	json_path: Path,
 	output_path: Path | None = None,
@@ -186,14 +194,17 @@ def generate_from_json(
 			if previous_class_text is not None and previous_class_text.strip() != class_text.strip():
 				append_history(history_path, class_name, previous_class_text)
 			updated_text = upsert_class_text(existing_text, class_name, class_text)
+			updated_text = ensure_import(updated_text)
 			output_path.write_text(updated_text, encoding="utf-8")
 		else:
+			class_text = ensure_import(class_text)
 			output_path.write_text(class_text, encoding="utf-8")
 	else:
 		if output_path.exists():
 			existing_text = output_path.read_text(encoding="utf-8")
 			if existing_text.strip() != class_text.strip():
 				append_history(history_path, class_name, existing_text)
+		class_text = ensure_import(class_text)
 		output_path.write_text(class_text, encoding="utf-8")
 	return output_path
 
