@@ -195,7 +195,10 @@ def process_text_output(file: str, process_node_override: str | None = None, fou
     output_file = os.path.splitext(file)[0] + "_directions.json"
 
     # Remove everything before first underscore for the key
-    key_name = name_without_ext.split('_', 1)[1] if '_' in name_without_ext else name_without_ext
+    # key_name = name_without_ext.split('_', 1)[1] if '_' in name_without_ext else name_without_ext
+    # NOTE: the above line was for removing the TSMC350_ prefix from cell names
+    # but since that is no longer a problem, we are bypassing it below
+    key_name = name_without_ext
 
     # Create nested dict and format it on one line
     nested_dict = {

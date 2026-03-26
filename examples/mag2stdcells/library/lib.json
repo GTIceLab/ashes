@@ -1,5 +1,24 @@
 {
-  "Bank": {
+  "alexpmos": {
+    "type": "ASIC",
+    "foundry": "sky",
+    "process_node": "130nm",
+    "W": [
+      "VS_w"
+    ],
+    "E": [
+      "D1_e"
+    ],
+    "N": [
+      "VG_n"
+    ],
+    "S": [
+      "VDD_e",
+      "D2_s",
+      "D3_s"
+    ]
+  },
+  "Cap_Bank": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -22,132 +41,48 @@
     ],
     "S": []
   },
-  "or_S_IndrctSwcs": {
+  "IndirectGswc_OutMat": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
     "W": [
       "Vgrun_w",
-      "run_w",
       "prog_w",
+      "run_w",
       "AVDD_w"
     ],
     "E": [
       "Vgrun_e",
-      "run_e",
       "prog_e",
+      "run_e",
       "AVDD_e"
     ],
     "N": [
-      "VINJ_n[0]",
-      "Vg_n[0]",
-      "GND_n",
-      "VTUN_n",
-      "Vg_n[1]",
-      "VINJ_n[1]",
-      "Input_n[0]",
       "Vsel_n[0]",
+      "VINJ_n",
+      "GND_n",
+      "fg_pu_n[0]",
+      "VTUN_n",
       "Vsel_n[1]",
-      "Input_n[1]"
+      "Vs_global_n[0]",
+      "Vg_global_n[0]",
+      "Vg_global_n[1]",
+      "Vs_global_n[1]"
     ],
     "S": [
+      "Vs_out_mtrx_s[0]",
       "Vsel_s[0]",
-      "Vs_s[0]",
-      "VINJ_s[0]",
-      "GND_s",
-      "Vg_s[0]",
-      "fgmem_s[0]",
-      "VTUN_s",
-      "fgmem_s[1]",
-      "Vg_s[1]",
-      "VINJ_s[1]",
-      "Vs_s[1]",
-      "Vsel_s[1]"
-    ]
-  },
-  "OutMat": {
-    "type": "ASIC",
-    "foundry": "sky",
-    "process_node": "130nm",
-    "W": [
-      "Vgrun_w",
-      "prog_w",
-      "run_w",
-      "AVDD_w"
-    ],
-    "E": [
-      "Vgrun_e",
-      "prog_e",
-      "run_e",
-      "AVDD_e"
-    ],
-    "N": [
-      "Vsel(0)_n",
-      "VINJ_n",
-      "GND_n",
-      "fg_pu(0)_n",
-      "VTUN_n",
-      "Vsel(1)_n",
-      "Vs_global(0)_n",
-      "Vg_global(0)_n",
-      "Vg_global(1)_n",
-      "Vs_global(1)_n"
-    ],
-    "S": [
-      "Vs_out_mtrx(0)_s",
-      "Vsel(0)_s",
       "VINJ_s",
       "GND_s",
-      "Vg_out_mtrx(0)_s",
+      "Vg_out_mtrx_s[0]",
       "VTUN_s",
-      "fg_pu(1)_s",
-      "Vg_out_mtrx(1)_s",
-      "Vsel(1)_s",
-      "Vs_out_mtrx(1)_s"
+      "fg_pu_s[1]",
+      "Vg_out_mtrx_s[1]",
+      "Vsel_s[1]",
+      "Vs_out_mtrx_s[1]"
     ]
   },
-  "4x1": {
-    "type": "ASIC",
-    "foundry": "sky",
-    "process_node": "130nm",
-    "W": [
-      "Vmid_w[1]",
-      "Vmid_w[2]",
-      "Vd_P_w[3]",
-      "Vd_R_w[3]",
-      "Vd_R_w[2]",
-      "Vd_P_w[2]",
-      "Vd_P_w[1]",
-      "Vd_R_w[1]",
-      "Vd_R_w[0]",
-      "Vd_P_w[0]"
-    ],
-    "E": [
-      "FG_n[1]",
-      "FG_s[2]"
-    ],
-    "N": [
-      "FG_n[0]",
-      "Vmid_n[0]",
-      "Vs_n",
-      "GND_n",
-      "Vg_n",
-      "VTUN_n",
-      "VINJ_n",
-      "Vsel_n"
-    ],
-    "S": [
-      "FG_s[3]",
-      "Vmid_s[3]",
-      "Vs_s",
-      "GND_s",
-      "Vg_s",
-      "VTUN_s",
-      "VINJ_s",
-      "Vsel_s"
-    ]
-  },
-  "4x2": {
+  "IndirectVMM_4x2": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -196,7 +131,7 @@
       "Vsel_s[1]"
     ]
   },
-  "Bot_Bmat_4x2": {
+  "IndirectVMM_Bot_Bmat_4x2": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -263,7 +198,56 @@
       "fg_mem_s[0]"
     ]
   },
-  "GSwcs_1x2": {
+  "IndirectVMM_DrainSwcs": {
+    "type": "ASIC",
+    "foundry": "sky",
+    "process_node": "130nm",
+    "W": [
+      "Sel_w[3]",
+      "Sel_w[0]",
+      "N_Sel_w[0]",
+      "GND_w",
+      "Sel_w[2]",
+      "Sel_w[1]",
+      "VINJ_w"
+    ],
+    "E": [
+      "VD_P_e[0]",
+      "VD_P_e[1]",
+      "VD_P_e[2]",
+      "VD_R_e[2]",
+      "VD_R_e[3]",
+      "VD_P_e[3]",
+      "VD_R_e[0]",
+      "VD_R_e[1]"
+    ],
+    "N": [
+      "GND_n",
+      "Prog_DrLn_n",
+      "Sel_n[0]",
+      "VD_P_n[0]",
+      "VINJ_n",
+      "Run_DrLn_n",
+      "Sel_n[1]",
+      "N_Sel_n[1]",
+      "VD_P_n[1]"
+    ],
+    "S": [
+      "GND_s",
+      "N_Sel_w[3]",
+      "Prog_DrLn_s",
+      "VD_P_s[3]",
+      "Sel_s[3]",
+      "VINJ_s",
+      "Run_DrLn_s",
+      "VD_R_s[3]",
+      "VD_R_s[2]",
+      "VD_P_s[2]",
+      "Sel_s[2]",
+      "N_Sel_s[2]"
+    ]
+  },
+  "IndirectVMM_GSwcs_1x2": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -291,7 +275,7 @@
       "Vsel_B_s[1]"
     ]
   },
-  "Top_AorBmat_4x2": {
+  "IndirectVMM_Top_AorBmat_4x2": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -358,7 +342,7 @@
       "Vsel_s"
     ]
   },
-  "shifter_horizontal": {
+  "level_shifter_horizontal": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -385,7 +369,7 @@
       "Vout_s[2]"
     ]
   },
-  "shifter_vertical": {
+  "level_shifter_vertical": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -409,7 +393,7 @@
       "VTUN_s"
     ]
   },
-  "Block_east": {
+  "S_Block_east": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -461,7 +445,7 @@
       "Vsel_s"
     ]
   },
-  "Block_filler_off_diagonal": {
+  "S_Block_filler_off_diagonal": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -480,7 +464,7 @@
       "S_s[3]"
     ]
   },
-  "Block": {
+  "S_Block": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -549,7 +533,7 @@
       "S_s[3]"
     ]
   },
-  "Block_NS_routing_diagonal": {
+  "S_Block_NS_routing_diagonal": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -568,7 +552,7 @@
       "S_s[3]"
     ]
   },
-  "Block_west": {
+  "S_Block_west": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -618,7 +602,7 @@
       "Vsel_s"
     ]
   },
-  "FGbias_1x2": {
+  "TA_FGbias_1x2": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -652,7 +636,7 @@
       "VINJ_s"
     ]
   },
-  "2nMirror": {
+  "TGate_2nMirror": {
     "type": "ASIC",
     "foundry": "sky",
     "process_node": "130nm",
@@ -672,5 +656,74 @@
       "AVDD_n"
     ],
     "S": []
+  },
+  "Volatile_Swcs": {
+    "type": "ASIC",
+    "foundry": "sky",
+    "process_node": "130nm",
+    "W": [
+      "RST_b_w",
+      "D_w",
+      "GND_w",
+      "VDD_w",
+      "Vd_P_w",
+      "CLK_w",
+      "Scan_Vout_w"
+    ],
+    "E": [
+      "Q_e"
+    ],
+    "N": [
+      "sky130_fd_sc_hd__dfrbp_1_1.Q_n",
+      "sky130_fd_sc_hd__dfrbp_1_1.Q_N_n",
+      "sky130_fd_sc_hd__dfrbp_1_1.RESET_B_n",
+      "sky130_fd_sc_hd__dfrbp_1_1.D_n",
+      "sky130_fd_sc_hd__dfrbp_1_1.CLK_n",
+      "sky130_fd_sc_hd__dfrbp_1_1.VGND_n",
+      "sky130_fd_sc_hd__dfrbp_1_1.VNB_n",
+      "FG_Indirect_0.VTUN_n",
+      "FG_Indirect_0.GND_n",
+      "FG_Indirect_0.Vg_n",
+      "FG_Indirect_0.FG_n",
+      "FG_Indirect_0.Vmid_n",
+      "FG_Indirect_0.Vs_n",
+      "FG_Indirect_0.VINJ_n",
+      "FG_Indirect_0.Vsel_n",
+      "FG_Indirect_0.Vd_R_n",
+      "FG_Indirect_0.Vd_P_n",
+      "Vin_n[1]",
+      "Vsel_n[1]",
+      "Vsel_n[0]",
+      "Vin_n[0]",
+      "Vg_n[0]",
+      "Vg_n[1]",
+      "VTUN_n",
+      "VINJ_n"
+    ],
+    "S": [
+      "Scan_VOut_s",
+      "sky130_fd_sc_hd__dfrbp_1_1.VPWR_s",
+      "sky130_fd_sc_hd__dfrbp_1_1.VPB_s",
+      "sky130_fd_sc_hd__dfrbp_1_0.Q_s",
+      "sky130_fd_sc_hd__dfrbp_1_0.Q_N_s",
+      "sky130_fd_sc_hd__dfrbp_1_0.RESET_B_s",
+      "sky130_fd_sc_hd__dfrbp_1_0.D_s",
+      "sky130_fd_sc_hd__dfrbp_1_0.CLK_s",
+      "sky130_fd_sc_hd__dfrbp_1_0.VGND_s",
+      "sky130_fd_sc_hd__dfrbp_1_0.VPWR_s",
+      "sky130_fd_sc_hd__dfrbp_1_0.VPB_s",
+      "sky130_fd_sc_hd__dfrbp_1_0.VNB_s",
+      "FG_Indirect_1.VTUN_s",
+      "FG_Indirect_1.GND_s",
+      "FG_Indirect_1.Vg_s",
+      "FG_Indirect_1.FG_s",
+      "FG_Indirect_1.Vmid_s",
+      "FG_Indirect_1.Vs_s",
+      "FG_Indirect_1.VINJ_s",
+      "FG_Indirect_1.Vsel_s",
+      "FG_Indirect_1.Vd_R_s",
+      "FG_Indirect_1.Vd_P_s",
+      "GND_s"
+    ]
   }
 }
