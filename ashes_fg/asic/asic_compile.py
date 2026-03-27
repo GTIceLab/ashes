@@ -208,26 +208,73 @@ class Circuit:
     
     def print_cadence(self, processPrefix):
         """
-        Creates Verilog netlist for Cadence
+        Creates Verilog netlist for Cadence.
+        Returns: (text, pin_info)
         """
         self.cleanIslands()
-        # Use the standard nameNets to ensure vector/matrix connectivity is fully resolved
+        # 1. Assign unique generic names to everything (net0, net1...)
         self.nameNetsFlat()
 
-        text = "module TOP(port1);\n"
+        # 2. Rename nets connected to Frame and fetch physical pin info
+        # This updates the shared Net objects used by all internal cells.
+        pin_info = self.handle_frame_ports_fr_cadence()
 
+        # 3. Build the Module Header
+        # Using the port names defined in your Python script (s6, s7, etc.)
+        if self.frame:
+            frame_port_list = [port.name for port in self.frame.ports]
+            port_header = ", ".join(frame_port_list)
+        else:
+            port_header = "port1"
+            
+        text = f"module TOP({port_header});\n"
+
+        # 4. Process Islands (the logic body)
         for isle in self.Islands:
             islandNum = self.Islands.index(isle)
             text += f"\n\n\t/* Island {islandNum} */\n"
             text += isle.print_cadence(islandNum, processPrefix)
 
-        if self.frame != None:
-            text += "\n\n\t/* Frame */ \n"
-            text += self.frame.print_cadence()
-
         text += "\n endmodule"
-        return text
+        
+        return text, pin_info
+    
 
+    def handle_frame_ports_fr_cadence(self):
+        """
+        Processes frame ports to:
+        1. Globally rename nets to match frame names (e.g., 's6', 'drainbit10').
+        2. Gather pin location info for Cadence scripts.
+        """
+        pin_info = {"N": [], "S": [], "E": [], "W": []}
+        
+        if self.frame is None:
+            return pin_info
+
+        for port in self.frame.ports:
+            # Map location (E, W, N, S) to the dictionary
+            loc = port.location.upper() if port.location else "N"
+            if loc not in pin_info:
+                pin_info[loc] = []
+
+            for i, pin in enumerate(port.pins):
+                target_net = pin.getNet()
+                
+                # Determine name: e.g. "s6" or "drainbit[0]"
+                if len(port.pins) > 1:
+                    final_name = f"{port.name}[{i}]"
+                else:
+                    final_name = port.name
+                
+                # GLOBAL RENAME: Update the shared Net object so all internal
+                # cells connected to this net use the frame port name.
+                target_net.number = final_name
+                target_net.index = -1 
+                
+                # Save to pin_info list for this direction
+                pin_info[loc].append(final_name)
+        
+        return pin_info
 
 class Island:
     """
@@ -892,73 +939,8 @@ class Port:
             net_list.reverse()
             return f".{self.name}({{{', '.join(net_list)}}})"
         
-    
-
-    # def print_cadence(self, r, c):
-    #     """
-    #     Returns Verilog port mapping. 
-    #     Format: .PortName({net3, net2, net1, net0}) or .PortName(net)
-    #     """
-    #     # 1. Determine grid dimensions
-    #     num_rows = max(1, self.cell.dim[0])
-    #     num_cols = max(1, self.cell.dim[1])
-    #     total_instances = num_rows * num_cols
-    #     total_pins = len(self.pins)
-        
-    #     net_list = []
-    #     start_idx = None
-    #     num_to_extract = 0
-
-    #     # 2. Determine index offset and count based on location/type
-    #     if self.isStatic:
-    #         # Static pins are extracted in full for every instance
-    #         start_idx = 0
-    #         num_to_extract = total_pins
-
-    #     elif self.location == "W" and (c == 0 or total_instances == 1):
-    #         # West edge: extract pins based on current row index
-    #         num_to_extract = total_pins // num_cols
-    #         start_idx = r * (total_pins // num_rows)
-
-    #     elif self.location == "E" and (c == num_cols - 1 or total_instances == 1):
-    #         # East edge: extract pins based on current row index
-    #         num_to_extract = total_pins // num_cols
-    #         start_idx = r * (total_pins // num_rows)
-
-    #     elif self.location == "N" and (r == 0 or total_instances == 1):
-    #         # North edge: extract pins based on current column index
-    #         num_to_extract = total_pins // num_cols
-    #         start_idx = c * (total_pins // num_cols)
-
-    #     elif self.location == "S" and (r == num_rows - 1 or total_instances == 1):
-    #         # South edge: extract pins based on current column index
-    #         num_to_extract = total_pins // num_cols
-    #         start_idx = c * (total_pins // num_cols)
-
-    #     # 3. Collect the nets if the instance meets the criteria above
-    #     if start_idx is not None:
-    #         for i in range(num_to_extract):
-    #             if (start_idx + i) < total_pins:
-    #                 pin = self.pins[start_idx + i]
-    #                 net_list.append(pin.net.print())
-
-    #     if not net_list:
-    #         return ""
-
-    #     # 4. Formatting logic
-    #     if len(net_list) == 1:
-    #         # Single bit port
-    #         return f".{self.name}({net_list[0]})"
-    #     else:
-    #         # Multi-bit bus: Verilog convention is {MSB, ..., LSB}
-    #         # Reversing assumes pin[0] is LSB and the last pin is MSB
-    #         net_list.reverse()
-    #         combined_nets = ", ".join(net_list)
-    #         return f".{self.name}({{{combined_nets}}})"
         
         
-        
-
 class StandardCell:
     """
     Defines single/array instance of a standard cell
@@ -1112,9 +1094,7 @@ class StandardCell:
 
         for r in range(rows):
             for c in range(cols):
-                if self.isChipFrame():
-                    inst_name = "frame"
-                elif self.dim[0] > 1 or self.dim[1] > 1:
+                if self.dim[0] > 1 or self.dim[1] > 1:
                     inst_name = f"{instancePrefix}_{islandNum}_{row+r}_{col+c}_{r}_{c}"
                 else:
                     inst_name = f"{instancePrefix}_{islandNum}_{row}_{col}"

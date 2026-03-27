@@ -1,5 +1,7 @@
 from ashes_fg.asic.py_to_verilog import asic_compiler
 from ashes_fg.asic.verilog_to_gds import gds_synthesis
+from ashes_fg.asic import pd_tcl_gen as pd_cadence_tcl_gen
+
 import os
 import subprocess
 import re
@@ -7,7 +9,8 @@ import time
 import json
 from pathlib import Path
 
-def compile(circuit,process="Process",project_path = ".",project_name = "project",lib_path = None, place=True, route=True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,qparams=None,prBoundary_layer = None,run_fr_cadence=0):
+def compile(circuit,process="Process",project_path = ".",project_name = "project",lib_path = None, place=True, route=True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,qparams=None,pd_args=None,prBoundary_layer = None,run_fr_cadence=0):
+
         """
         Main ASIC compilation function
         - Makes Verilog netlist for a given Circuit
@@ -15,37 +18,60 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
         - Calls P&R tools
         """
 
-        drainmux_space_isle_idx=drainSpaceIdx
-        drainmux_space = drainSpace
-        gatemux_space_isle_idx=gateSpaceIdx
-        gatemux_space = gateSpace
+        # 1. Path Definitions
+        syn_path = os.path.join(project_path, 'syn')
+        cadence_base = os.path.join(project_path, 'cadence')
+        cadence_proj_dir = os.path.join(cadence_base, project_name)
+        cadence_tcl = os.path.join(cadence_proj_dir, 'tcl')
+        cadence_inputs = os.path.join(cadence_proj_dir, 'inputs')
+        cadence_outputs = os.path.join(cadence_proj_dir, 'outputs')
+        cadence_run= os.path.join(cadence_proj_dir, 'run')
 
-        # Variable check for run_fr_cadence variable
-        if run_fr_cadence != 0 and run_fr_cadence != 1:
-                raise ValueError(f"Invalid value: {run_fr_cadence}. Variable must be 0 or 1.")
-        else:
-                cadencePath = os.path.join(project_path,'cadence')
+        # 2. Directory Creation
+        dirs_to_create = [syn_path]
+        if run_fr_cadence == 1:
+                dirs_to_create += [cadence_proj_dir, cadence_tcl, cadence_inputs, cadence_outputs, cadence_run]
+        
+        for folder in dirs_to_create:
+                if not os.path.exists(folder):
+                        os.makedirs(folder)
 
-        if not os.path.exists(cadencePath):
-                os.makedirs(cadencePath)
+        # 3. Generate Standard Verilog (Synthesis)
+        verilog_path = os.path.join(syn_path, project_name + '.v')
+        with open(verilog_path, "w") as f:
+                f.write(circuit.print(process))
 
-        synPath = os.path.join(project_path,'syn')
-        if not os.path.exists(synPath):
-                os.makedirs(synPath)
-        verilogPath = os.path.join(synPath,project_name+'.v')
-        verilogPath_cadence = os.path.join(synPath,project_name+'_cadence.v')
+        # 4. Cadence Physical Design Setup
+        if run_fr_cadence == 1:
+                if pd_args is None:
+                        raise ValueError("pd_args (JSON settings) must be provided for Cadence flow.")
 
-        f = open(verilogPath, "w")
-        f.write(circuit.print(process))
-        f.close() # Close file so that P&R can access netlist
+                # Generate flattened verilog for Cadence
+                flat_verilog, pin_info = circuit.print_cadence(process)
+                verilog_cadence_path = os.path.join(cadence_inputs, project_name + '.v')
 
-        f = open(verilogPath_cadence, "w")
-        f.write(circuit.print_cadence(process))
-        f.close() # Close file so that P&R can access netlist
+                with open(verilog_cadence_path, "w") as f:
+                        f.write(flat_verilog)
+
+                # Generate individual TCL scripts inside cadence/inputs/
+                pd_cadence_tcl_gen.generate_init_tcl( pd_args, os.path.join(cadence_tcl, "init.tcl"), top_level=project_name)
+                pd_cadence_tcl_gen.generate_pins_tcl(pd_args, pin_info, os.path.join(cadence_tcl, "pins.tcl"))
+                pd_cadence_tcl_gen.generate_power_tcl(pd_args, os.path.join(cadence_tcl, "power.tcl"))
+                pd_cadence_tcl_gen.generate_route_tcl(pd_args, os.path.join(cadence_tcl, "route.tcl"))
+
+                pd_cadence_tcl_gen.generate_main_tcl(os.path.join(cadence_proj_dir, "main.tcl"), subdir="../tcl")
+                
+                print(f"--- Cadence PD Scripts generated in {cadence_proj_dir} ---")
+
 
         # Variables to set space between IO edge and Core edge
         x_IO, y_IO = 0, 0 
 
+        # Variables to pass mux info
+        drainmux_space_isle_idx=drainSpaceIdx
+        drainmux_space = drainSpace
+        gatemux_space_isle_idx=gateSpaceIdx
+        gatemux_space = gateSpace
 
         # Find the process node and define tech parameters
         if (process.split('_')[0].lower() == "tsmc" and process.split('_')[1].lower() == "350nm"):

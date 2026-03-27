@@ -42,7 +42,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     file_name_no_ext = proj_name
     #file_path = os.path.join('.', file_name_no_ext)
     file_path = os.path.join(proj_path,'pd')
-    file_path_cadence = os.path.join(proj_path,'cadence')
+    file_path_cadence = os.path.join(proj_path,'cadence',proj_name,'inputs')
 
     if not os.path.exists(file_path):
             os.makedirs(file_path)
@@ -63,7 +63,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
 
     if run_fr_cadence == 1:
         lef_file_path = os.path.join(file_path_cadence, f'cells.lef')
-        def_file_path = os.path.join(file_path_cadence, f'{file_name_no_ext}_place.def')
+        def_file_path = os.path.join(file_path_cadence, f'{file_name_no_ext}.def')
 
     else:
         lef_file_path = os.path.join(file_path, f'{file_name_no_ext}.lef')
