@@ -2,6 +2,7 @@ import ashes_fg.fpaa as fpaa
 import ashes_fg.test_class_lib as lib
 from ashes_fg.fpaa import Module
 
+
 def single_buffer(name):
     # Create top level module
     top = Module(name=name)
@@ -19,6 +20,7 @@ def single_buffer(name):
     outpad1.build(top)
 
     return top
+
 
 if __name__ == "__main__":
     top = single_buffer("single_buf")
