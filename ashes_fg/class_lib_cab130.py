@@ -1,155 +1,3 @@
-# This part of the file is added instead of ashes/ashes_fg/asic/asic_systems.py
-# so the correct 130nm cells can be used.
-# This code has been added to the top of the generated cell library
-
-import math
-
-import ashes_fg.asic.asic_compile as ac
-from ashes_fg.asic.asic_compile import *
-
-def generate_sblocks(top: ac.Circuit, vmm_island: ac.Island,
-										 num_sblocks: int = 18, return_horizontal_lines: bool = True):
-	# One 4x2 VMM has 8 floating gates
-	# One S-block needs 6 floating gates
-	# Therefore, we use 3 4x2 VMMs in one row to get 4 S-blocks (8 * 3 / 6 = 4)
-	
-	# top = ac.Circuit()
-	# vmm_island = ac.Island(top)
-	# num_sblocks = 18
-	# return_horizontal_lines = True
-
-	if (num_sblocks % 4 != 0): 
-		print("Warning: Some floating gates may be left unused")
-		
-	number_of_rows = math.ceil(num_sblocks / 4)
-
-
-	########### Place Cells ###########
-	WestVMMs = S_Block_west(top,vmm_island,dim=[number_of_rows,1])
-	EastVMMs = S_Block_east(top,vmm_island,dim=[number_of_rows,1])
-
-	# (0,0) is upper left corner
-	WestVMMs.place([0,0])
-	EastVMMs.place([number_of_rows + 1, 0])
-
-	# Place the middle routing blocks
-	routing_block_row_index = 0
-	S_Block_middle_blocks = [[None for _ in range(number_of_rows)] for _ in range(number_of_rows)]
-
-	for x in range(number_of_rows):
-		for y in range(number_of_rows):
-			if (y == routing_block_row_index):
-				S_Block_middle_blocks[x][y] = S_Block_NS_routing_diagonal(top, vmm_island, dim=[1,1])
-			else:
-				S_Block_middle_blocks[x][y] = S_Block_filler_off_diagonal(top, vmm_island, dim=[1,1])
-			
-			S_Block_middle_blocks[x][y].place([x + 1, y])
-			S_Block_middle_blocks[x][y].markAbut()
-		routing_block_row_index += 1
-		
-	########### Wire/Net Definition ###########
-	# One VMM block has the following nets: 4 W, 4 Vd_P, 2 Vsel, 2 VINJ, 2 Vg, 1 VTUN, 1 GND
-	# One S_Block_NS_routing and one S_Block_filler both have the following nets: 4 N, 4 W
-
-	VINJ = ac.Wire(top)
-	GND = ac.Wire(top)
-	VTUN = ac.Wire(top)
-
-	Vg_lines = [ac.Wire(top) for _ in range(6)]
-	Vsel_lines = [ac.Wire(top) for _ in range(6)]
-	Vd_P_lines = [ac.Wire(top) for _ in range(6)]
-
-	N_lines = [ac.Wire(top) for _ in range(4 * number_of_rows)]
-	S_lines = [ac.Wire(top) for _ in range(4 * number_of_rows)]
-	E_lines = [ac.Wire(top) for _ in range(4 * number_of_rows)]
-	W_lines = [ac.Wire(top) for _ in range(4 * number_of_rows)]
-
-
-	########### Define Connections ###########
-	# West VMM vertical lines
-	for i in range(2):
-		Vsel_lines[i] += WestVMMs.Vsel_n[i]
-		Vg_lines[i] += WestVMMs.Vg_n[i]
-		VINJ += WestVMMs.VINJ_n[i]
-
-	# East VMM vertical lines
-	for i in range(4):
-		Vsel_lines[2 + i] += EastVMMs.Vsel_n[i]
-		Vg_lines[2 + i] += EastVMMs.Vg_n[i]
-		VINJ += EastVMMs.VINJ_n[i]
-		
-	# Both VMM horizontal lines
-	for i in range(4 * number_of_rows):
-		Vd_P_lines[i] += WestVMMs.Vd_P_e[i]
-		W_lines[i] += WestVMMs.W[i]
-		
-	# Middle routing/filler blocks
-	for x in range(number_of_rows):
-		for y in range(number_of_rows):
-			N_lines[i] += S_Block_middle_blocks[x][y].N[i]
-			S_lines[i] += S_Block_middle_blocks[x][y].S[i]
-
-def IndirectVMM(circuit,dim=[4,2], island=None,decoderPlace=True,loc=[0,0]):
-    if (dim[0] % 4) != 0:
-            raise Exception("Error: VMM rows must be divisible by 4")
-    if (dim[1] % 2) != 0:
-            raise Exception("Error: VMM columns must be divisible by 2")
-
-    numRows = int(dim[0]/4)
-    numCols = int(dim[1]/2)
-
-    VMMIsland = island
-    if island == None:
-          VMMIsland = Island(circuit)
-
-    # Create VMM and place in an island
-    VMM = IndirectVMM_4x2(circuit,dim=(numRows,numCols),island=VMMIsland)
-    circuit.placeInstance(VMM,loc)
-
-    if decoderPlace == True: # TODO
-        raise NotImplementedError
-        # # Add decoders
-        # gateBits = int(np.ceil(np.log2(dim[1])))
-        # GateDecoder = STD_IndirectGateDecoder(circuit,VMMIsland,gateBits)
-        # GateSwitches = STD_IndirectGateSwitch(circuit,VMMIsland,numCols)
-
-        # drainBits = int(np.ceil(np.log2(dim[0])))
-        # DrainDecoder = STD_DrainDecoder(circuit,VMMIsland,drainBits)
-        # DrainSel = STD_DrainSelect(circuit,VMMIsland,numRows)
-        # DrainSwitches = STD_DrainSwitch(circuit,VMMIsland,numRows)
-
-    return VMM
-
-class IndirectVMM_DrainSwcs(MUX):
-    def __init__(self,circuit,island=None,num=1):
-        self.circuit = circuit
-        self.pins = []
-        self.ports = []
-        self.island = island
-        self.num = num
-        self.dim = (self.num,0)
-        self.decoder = True
-        self.type = "switch"
-        self.switchType = "prog_switch"
- 
-        self.name = "IndirectVMM_DrainSwcs"
-        
-        self.PR = Port(circuit,self,"PR","E",4*self.dim[0])
-        self.In = Port(circuit,self,"In","E",4*self.dim[0])
-        self.VDD = Port(circuit,self,"VDD","N",1*self.dim[1])
-        self.GND = Port(circuit,self,"GND","N",1*self.dim[1])
-        self.RUN = Port(circuit,self,"RUN","N",1*self.dim[1])
-        self.VDD_b = Port(circuit,self,"VDD_b","S",1*self.dim[1])
-        self.GND_b = Port(circuit,self,"GND_b","S",1*self.dim[1])
-        
-
-        # Add cell to circuit
-        circuit.addInstance(self,self.island)
-
-
-######### Everything below was generated by gen_stdcell_defs #########
-
-
 from ashes_fg.asic.asic_compile import *
 
 class alexpmos(StandardCell):
@@ -798,3 +646,214 @@ class Volatile_Swcs(StandardCell):
 
         # Add cell to circuit
         circuit.addInstance(self,self.island)
+
+
+# This part of the file is added instead of ashes/ashes_fg/asic/asic_systems.py
+# so that the correct 130nm cells can be used.
+# Some of these should override standard cells definitions generated above
+
+import math
+
+import ashes_fg.asic.asic_compile as ac
+from ashes_fg.asic.asic_compile import *
+
+
+def generate_sblocks(top: ac.Circuit, vmm_island: ac.Island,
+                     num_sblocks: int = 18, return_horizontal_lines: bool = True):
+    # One 4x2 VMM has 8 floating gates
+    # One S-block needs 6 floating gates
+    # Therefore, we use 3 4x2 VMMs in one row to get 4 S-blocks (8 * 3 / 6 = 4)
+    
+    # top = ac.Circuit()
+    # vmm_island = ac.Island(top)
+    # num_sblocks = 18
+    # return_horizontal_lines = True
+
+    if (num_sblocks % 4 != 0): 
+        print("Warning: Some floating gates may be left unused")
+        
+    number_of_rows = math.ceil(num_sblocks / 4)
+
+
+    ########### Place Cells ###########
+    WestVMMs = S_Block_west(top,vmm_island,dim=[number_of_rows,1])
+    EastVMMs = S_Block_east(top,vmm_island,dim=[number_of_rows,1])
+
+    # (0,0) is upper left corner
+    WestVMMs.place([0,0])
+    EastVMMs.place([number_of_rows + 1, 0])
+
+    # Place the middle routing blocks
+    routing_block_row_index = 0
+    S_Block_middle_blocks = [[None for _ in range(number_of_rows)] for _ in range(number_of_rows)]
+
+    for x in range(number_of_rows):
+        for y in range(number_of_rows):
+            if (y == routing_block_row_index):
+                S_Block_middle_blocks[x][y] = S_Block_NS_routing_diagonal(top, vmm_island, dim=[1,1])
+            else:
+                S_Block_middle_blocks[x][y] = S_Block_filler_off_diagonal(top, vmm_island, dim=[1,1])
+            
+            S_Block_middle_blocks[x][y].place([x + 1, y])
+            S_Block_middle_blocks[x][y].markAbut()
+        routing_block_row_index += 1
+        
+    ########### Wire/Net Definition ###########
+    # One VMM block has the following nets: 4 W, 4 Vd_P, 2 Vsel, 2 VINJ, 2 Vg, 1 VTUN, 1 GND
+    # One S_Block_NS_routing and one S_Block_filler both have the following nets: 4 N, 4 W
+
+    VINJ = ac.Wire(top)
+    GND = ac.Wire(top)
+    VTUN = ac.Wire(top)
+
+    Vg_lines = [ac.Wire(top) for _ in range(6)]
+    Vsel_lines = [ac.Wire(top) for _ in range(6)]
+    Vd_P_lines = [ac.Wire(top) for _ in range(6)]
+
+    N_lines = [ac.Wire(top) for _ in range(4 * number_of_rows)]
+    S_lines = [ac.Wire(top) for _ in range(4 * number_of_rows)]
+    E_lines = [ac.Wire(top) for _ in range(4 * number_of_rows)]
+    W_lines = [ac.Wire(top) for _ in range(4 * number_of_rows)]
+
+
+    ########### Define Connections ###########
+    # West VMM vertical lines
+    for i in range(2):
+        Vsel_lines[i] += WestVMMs.Vsel_n[i]
+        Vg_lines[i] += WestVMMs.Vg_n[i]
+        VINJ += WestVMMs.VINJ_n[i]
+
+    # East VMM vertical lines
+    for i in range(4):
+        Vsel_lines[2 + i] += EastVMMs.Vsel_n[i]
+        Vg_lines[2 + i] += EastVMMs.Vg_n[i]
+        VINJ += EastVMMs.VINJ_n[i]
+        
+    # Both VMM horizontal lines
+    for i in range(4 * number_of_rows):
+        Vd_P_lines[i] += WestVMMs.Vd_P_e[i]
+        W_lines[i] += WestVMMs.W[i]
+        
+    # Middle routing/filler blocks
+    for x in range(number_of_rows):
+        for y in range(number_of_rows):
+            N_lines[i] += S_Block_middle_blocks[x][y].N[i]
+            S_lines[i] += S_Block_middle_blocks[x][y].S[i]
+    
+    return WestVMMs, EastVMMs # TODO what else?
+
+def IndirectVMM(circuit,dim=[4,2], island=None,decoderPlace=True,loc=[0,0]):
+    if (dim[0] % 4) != 0:
+            raise Exception("Error: VMM rows must be divisible by 4")
+    if (dim[1] % 2) != 0:
+            raise Exception("Error: VMM columns must be divisible by 2")
+
+    numRows = int(dim[0]/4)
+    numCols = int(dim[1]/2)
+
+    VMMIsland = island
+    if island == None:
+          VMMIsland = Island(circuit)
+
+    # Create VMM and place in an island
+    VMM = IndirectVMM_4x2(circuit,dim=(numRows,numCols),island=VMMIsland)
+    circuit.placeInstance(VMM,loc)
+
+    if decoderPlace == True: # TODO
+        raise NotImplementedError
+        # # Add decoders
+        # gateBits = int(np.ceil(np.log2(dim[1])))
+        # GateDecoder = STD_IndirectGateDecoder(circuit,VMMIsland,gateBits)
+        # GateSwitches = STD_IndirectGateSwitch(circuit,VMMIsland,numCols)
+
+        # drainBits = int(np.ceil(np.log2(dim[0])))
+        # DrainDecoder = STD_DrainDecoder(circuit,VMMIsland,drainBits)
+        # DrainSel = STD_DrainSelect(circuit,VMMIsland,numRows)
+        # DrainSwitches = STD_DrainSwitch(circuit,VMMIsland,numRows)
+
+    return VMM
+
+# TODO pins for the overridden cells
+
+class IndirectVMM_GSwcs_1x2(MUX):
+    def __init__(self,circuit,island=None,num=1,col=-1):
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.num = num
+        self.dim = (0,self.num)
+        self.col = col
+        self.type = "switch_ind"
+        if col < 0:
+            self.type = "switch"
+
+        self.name = "IndirectVMM_GSwcs_1x2"
+
+        self.VPWR = Port(circuit,self,"VPWR","N",2*self.dim[1])
+        self.RUN_IN = Port(circuit,self,"RUN_IN","N",2*self.dim[1])
+        self.GND_T = Port(circuit,self,"GND_T","N",1*self.dim[1])
+        self.VTUN_T = Port(circuit,self,"VTUN_T","N",1*self.dim[1])
+        self.decode = Port(circuit,self,"decode","N",2*self.dim[1])
+        self.VINJ_T = Port(circuit,self,"VINJ_T","N",1*self.dim[1])
+        self.GND = Port(circuit,self,"GND_B","S",2*self.dim[1])
+        self.CTRL_B = Port(circuit,self,"CTRL_B","S",2*self.dim[1])
+        self.run_r = Port(circuit,self,"run_r","E",1*self.dim[0])
+        self.prog_r = Port(circuit,self,"prog_r","E",1*self.dim[0])
+        self.Vg = Port(circuit,self,"Vg","S",2*self.dim[1])
+        self.VTUN = Port(circuit,self,"VTUN","S",1*self.dim[1])
+        self.VINJ = Port(circuit,self,"VINJ","S",1*self.dim[1])
+        self.VDD = Port(circuit,self,"VDD","S",2*self.dim[1])
+        self.PROG = Port(circuit,self,"PROG","W",1*self.dim[0])
+        self.RUN = Port(circuit,self,"RUN","W",1*self.dim[0])
+        self.Vgsel = Port(circuit,self,"Vgsel","W",1*self.dim[0])
+        self.vgsel_r = Port(circuit,self,"vgsel_r","E",1*self.dim[0])
+        self.vtun_l = Port(circuit,self,"vtun_l","W",1*self.dim[0])
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+class IndirectVMM_DrainSwcs(MUX):
+    def __init__(self,circuit,island=None,num=1):
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.num = num
+        self.dim = (self.num,0)
+        self.decoder = True
+        self.type = "switch"
+        self.switchType = "prog_switch"
+ 
+        self.name = "IndirectVMM_DrainSwcs"
+        
+        self.PR = Port(circuit,self,"PR","E",4*self.dim[0])
+        self.In = Port(circuit,self,"In","E",4*self.dim[0])
+        self.VDD = Port(circuit,self,"VDD","N",1*self.dim[1])
+        self.GND = Port(circuit,self,"GND","N",1*self.dim[1])
+        self.RUN = Port(circuit,self,"RUN","N",1*self.dim[1])
+        self.VDD_b = Port(circuit,self,"VDD_b","S",1*self.dim[1])
+        self.GND_b = Port(circuit,self,"GND_b","S",1*self.dim[1])
+        
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
+class ERASE_IndirectVMM_GSwcs_1x2(MUX):
+    def __init__(self,circuit,island=None,num=0,col=-1):
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.num = num
+        self.dim = (0,self.num)
+        self.col = col
+        self.type = "switch_ind"
+        if col < 0:
+            raise Exception("Specify column to erase gate switch")
+
+        self.name = "none"
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
