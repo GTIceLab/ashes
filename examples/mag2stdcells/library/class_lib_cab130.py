@@ -58,6 +58,49 @@ class Cap_Bank(StandardCell):
         # Add cell to circuit
         circuit.addInstance(self,self.island)
 
+class G_or_S_IndrctSwcs(StandardCell):
+    def __init__(self,circuit,island=None,dim=(1,1),Vgrun_w=None,run_w=None,prog_w=None,AVDD_w=None,Vgrun_e=None,run_e=None,prog_e=None,AVDD_e=None,VINJ_n=None,Vg_n=None,GND_n=None,VTUN_n=None,Input_n=None,Vsel_n=None,Vsel_s=None,Vs_s=None,VINJ_s=None,GND_s=None,Vg_s=None,fgmem_s=None,VTUN_s=None):
+        # Define variables
+        self.circuit = circuit
+        self.pins = []
+        self.ports = []
+        self.island = island
+        self.dim = dim
+
+        # Define cell information
+        self.name = 'G_or_S_IndrctSwcs'
+        self.Vgrun_w = Port(circuit,self,'Vgrun_w','W',1*self.dim[0])
+        self.run_w = Port(circuit,self,'run_w','W',1*self.dim[0])
+        self.prog_w = Port(circuit,self,'prog_w','W',1*self.dim[0])
+        self.AVDD_w = Port(circuit,self,'AVDD_w','W',1*self.dim[0])
+        self.Vgrun_e = Port(circuit,self,'Vgrun_e','E',1*self.dim[0])
+        self.run_e = Port(circuit,self,'run_e','E',1*self.dim[0])
+        self.prog_e = Port(circuit,self,'prog_e','E',1*self.dim[0])
+        self.AVDD_e = Port(circuit,self,'AVDD_e','E',1*self.dim[0])
+        self.VINJ_n = Port(circuit,self,'VINJ_n','N',2*self.dim[1])
+        self.Vg_n = Port(circuit,self,'Vg_n','N',2*self.dim[1])
+        self.GND_n = Port(circuit,self,'GND_n','N',1*self.dim[1])
+        self.VTUN_n = Port(circuit,self,'VTUN_n','N',1*self.dim[1])
+        self.Input_n = Port(circuit,self,'Input_n','N',2*self.dim[1])
+        self.Vsel_n = Port(circuit,self,'Vsel_n','N',2*self.dim[1])
+        self.Vsel_s = Port(circuit,self,'Vsel_s','S',2*self.dim[1])
+        self.Vs_s = Port(circuit,self,'Vs_s','S',2*self.dim[1])
+        self.VINJ_s = Port(circuit,self,'VINJ_s','S',2*self.dim[1])
+        self.GND_s = Port(circuit,self,'GND_s','S',1*self.dim[1])
+        self.Vg_s = Port(circuit,self,'Vg_s','S',2*self.dim[1])
+        self.fgmem_s = Port(circuit,self,'fgmem_s','S',2*self.dim[1])
+        self.VTUN_s = Port(circuit,self,'VTUN_s','S',1*self.dim[1])
+
+        # Initialize ports with given values
+        portsInit = [Vgrun_w,run_w,prog_w,AVDD_w,Vgrun_e,run_e,prog_e,AVDD_e,VINJ_n,Vg_n,GND_n,VTUN_n,Input_n,Vsel_n,Vsel_s,Vs_s,VINJ_s,GND_s,Vg_s,fgmem_s,VTUN_s]
+        i=0
+        for p in self.ports:
+            self.assignPort(p,portsInit[i])
+            i+=1
+
+        # Add cell to circuit
+        circuit.addInstance(self,self.island)
+
 class IndirectGswc_OutMat(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),Vgrun_w=None,prog_w=None,run_w=None,AVDD_w=None,Vgrun_e=None,prog_e=None,run_e=None,AVDD_e=None,Vsel_n=None,VINJ_n=None,GND_n=None,fg_pu_n=None,VTUN_n=None,Vs_global_n=None,Vg_global_n=None,Vs_out_mtrx_s=None,Vsel_s=None,VINJ_s=None,GND_s=None,Vg_out_mtrx_s=None,VTUN_s=None,fg_pu_s=None):
         # Define variables

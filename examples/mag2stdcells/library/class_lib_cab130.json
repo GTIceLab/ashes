@@ -41,6 +41,49 @@
     ],
     "S": []
   },
+  "G_or_S_IndrctSwcs": {
+    "type": "ASIC",
+    "foundry": "sky",
+    "process_node": "130nm",
+    "W": [
+      "Vgrun_w",
+      "run_w",
+      "prog_w",
+      "AVDD_w"
+    ],
+    "E": [
+      "Vgrun_e",
+      "run_e",
+      "prog_e",
+      "AVDD_e"
+    ],
+    "N": [
+      "VINJ_n[0]",
+      "Vg_n[0]",
+      "GND_n",
+      "VTUN_n",
+      "Vg_n[1]",
+      "VINJ_n[1]",
+      "Input_n[0]",
+      "Vsel_n[0]",
+      "Vsel_n[1]",
+      "Input_n[1]"
+    ],
+    "S": [
+      "Vsel_s[0]",
+      "Vs_s[0]",
+      "VINJ_s[0]",
+      "GND_s",
+      "Vg_s[0]",
+      "fgmem_s[0]",
+      "VTUN_s",
+      "fgmem_s[1]",
+      "Vg_s[1]",
+      "VINJ_s[1]",
+      "Vs_s[1]",
+      "Vsel_s[1]"
+    ]
+  },
   "IndirectGswc_OutMat": {
     "type": "ASIC",
     "foundry": "sky",

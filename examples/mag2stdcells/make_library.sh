@@ -25,11 +25,11 @@ python ../../ashes_fg/layout2gds/mag2gds.py  --output mag2gds  --files \
     ../../../ASHES-Skywater130nm/sky130_cells/Sblock/S_Block_filler_off_diagonal.mag \
     ../../../ASHES-Skywater130nm/sky130_cells/Sblock/S_Block_NS_routing_diagonal.mag \
     ../../../ASHES-Skywater130nm/sky130_cells/Sblock/S_Block_west.mag \
-    ../../../ASHES-Skywater130nm/sky130_cells/Sblock/S_Block.mag \
+    ../../../ASHES-Skywater130nm/sky130_cells/G_or_S_IndrctSwcs/G_or_S_IndrctSwcs.mag \
     # TODO Tgates_Cutoff_Drlines, Decoders
 
 # gds -> gds with disambiguated pins
-python ../../ashes_fg/layout2gds/fix_gds.py --output fixed_pins mag2gds/*.gds
+python ../../ashes_fg/layout2gds/fix_gds.py  --output fixed_pins  mag2gds/*.gds
 
 # generate python and json
 # TODO allow batch processing within the gen_stdcell_defs command
