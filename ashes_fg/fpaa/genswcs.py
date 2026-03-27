@@ -82,7 +82,7 @@ def main(
     if bs_run_dir != None:
         run_dir = bs_run_dir
     if bs_vpr_disp != None:
-        vpr_disp = 0
+        vpr_disp = 1        # THIS CONTROLS VPR DISPLAY (probably would want to polish this logic later)
     if bs_pins_file != None:
         pins_file = bs_pins_file
 
@@ -169,9 +169,14 @@ def extract_fixed_locations(blif_file):
                 print("Fixed Loc Enable Result")
                 print(fix_loc_enable)
                 # print(fix_loc_enable.group(1))
+                out_net = None
+                out_match = re.search(r"out\[0\]=(\S+)", line)
+                if out_match:
+                    out_net = out_match.group(1).split("#")[0].strip()
+
                 if fix_loc_enable:
                     fixed_modules.append(
-                        [subckt, fix_loc_x.group(1), fix_loc_y.group(1)]
+                        [subckt, fix_loc_x.group(1), fix_loc_y.group(1), out_net]
                     )
     return fixed_modules
 
@@ -179,22 +184,22 @@ def extract_fixed_locations(blif_file):
 def extract_net_values(net_file, name_loc_array):
     new_array = []
     for block in name_loc_array:
-        name = block[0]
+        out_net = block[3]  # unique output net name
+        name = block[0]     # model name (fallback)
         f = open(net_file, "r")
         found = False
-        for line in f:
-            if name in line and not (
-                "open" in line
-            ):  # check the block is present and not open
-                net = re.search(r'name\s*=\s*"([^"]+)"', line)
 
-                # Only append if a match is found to prevent errors
+        # First try matching on the unique output net name
+        search_key = out_net if out_net else name
+        for line in f:
+            if search_key in line and not ("open" in line):
+                net = re.search(r'name\s*=\s*"([^"]+)"', line)
                 if net:
                     new_array.append([block[0], block[1], block[2], net.group(1)])
                     found = True
-                    break   # Stop searching after the first valid match
+                    break
         if not found:
-            print("NO NET FOUND FOR " + name)
+            print("NO NET FOUND FOR " + search_key)
     return new_array
 
 
@@ -224,7 +229,7 @@ def removeFixedLocationFromBlif(blif_file):
         lines = f.readlines()
 
     for i in range(len(lines)):
-        lines[i] = re.sub(r"&\s*fix_loc_[a-zA-Z0-9_]*\s*=\s*[^&]*", "", lines[i])
+        lines[i] = re.sub(r"&\s*fix_loc_[a-zA-Z0-9_]*\s*=\s*[^&\n]*", "", lines[i])
         print(lines[i])
 
     with open(blif_file, "w") as file:
