@@ -208,7 +208,7 @@ class Circuit:
     
     def print_cadence(self, processPrefix):
         """
-        Creates Verilog netlist for Cadence.
+        Creates Verilog netlist for Cadence with inout declarations.
         Returns: (text, pin_info)
         """
         self.cleanIslands()
@@ -216,18 +216,31 @@ class Circuit:
         self.nameNetsFlat()
 
         # 2. Rename nets connected to Frame and fetch physical pin info
-        # This updates the shared Net objects used by all internal cells.
         pin_info = self.handle_frame_ports_fr_cadence()
 
-        # 3. Build the Module Header
-        # Using the port names defined in your Python script (s6, s7, etc.)
+        # 3. Build the Module Header and Port Declarations
         if self.frame:
-            frame_port_list = [port.name for port in self.frame.ports]
-            port_header = ", ".join(frame_port_list)
+            port_names = []
+            declarations = []
+            for port in self.frame.ports:
+                # Clean name: Replace < > with [ ]
+                clean_name = port.name.replace('<', '[').replace('>', ']')
+                port_names.append(clean_name)
+                
+                # Add inout declaration with bit-width if it's a bus
+                width = len(port.pins)
+                if width > 1:
+                    declarations.append(f"\tinout [{width-1}:0] {clean_name};")
+                else:
+                    declarations.append(f"\tinout {clean_name};")
+            
+            port_header = ", ".join(port_names)
+            port_decls = "\n".join(declarations)
         else:
             port_header = "port1"
+            port_decls = "\tinout port1;"
             
-        text = f"module TOP({port_header});\n"
+        text = f"module TOP({port_header});\n\n{port_decls}\n"
 
         # 4. Process Islands (the logic body)
         for isle in self.Islands:
@@ -238,7 +251,6 @@ class Circuit:
         text += "\n endmodule"
         
         return text, pin_info
-    
 
     def handle_frame_ports_fr_cadence(self):
         """
@@ -507,17 +519,30 @@ class Net:
     def removePin(self,pin):
         self.pins.remove(pin)
 
+    # def print(self):
+    #     """
+    #     Returns Verilog text string for net
+    #     """
+    #     text = "net" + str(self.number)
+        
+    #     if self.index != -1:
+    #         text += "[" + str(self.index) + "]"
+
+    #     return text
+    
     def print(self):
         """
         Returns Verilog text string for net
         """
+        # If number is a string (assigned by frame), return it directly
+        if isinstance(self.number, str):
+            return self.number
+            
+        # Otherwise, use default "net" prefix logic
         text = "net" + str(self.number)
-        
         if self.index != -1:
             text += "[" + str(self.index) + "]"
-
         return text
-       
 
 class Pin:
     """

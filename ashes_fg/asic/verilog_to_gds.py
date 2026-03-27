@@ -1545,7 +1545,12 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
                         print(f'Warning: module {module} has no pins defined on the cell.')
                     pins = {}
                 for pin, value in pins.items():
-                    lef_file.write(f'  PIN {pin}\n')
+                    ## Maybe Qrouter also needs [] instead of <>, relook and remove this flag later
+                    if (run_fr_cadence == 1):
+                        formatted_pin = pin.replace('<', '[').replace('>', ']')
+                        lef_file.write(f'  PIN {formatted_pin}\n')
+                    else:
+                        lef_file.write(f'  PIN {pin}\n')
                     lef_file.write(f'    DIRECTION INOUT ;\n')
                     lef_file.write(f'    USE SIGNAL ;\n')
                     lef_file.write(f'    PORT\n')
@@ -1554,7 +1559,10 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
                     rect = value['RECT']
                     lef_file.write(f'        RECT {rect[0]/dbu} {rect[1]/dbu} {rect[2]/dbu} {rect[3]/dbu} ;\n')
                     lef_file.write(f'    END\n')
-                    lef_file.write(f'  END {pin}\n')
+                    if (run_fr_cadence == 1):
+                        lef_file.write(f'  END {formatted_pin}\n')
+                    else:
+                        lef_file.write(f'  END {pin}\n')                
                 lef_file.write(f'END {module}\n\n')
                 seen.add(item['name'])
     
@@ -1578,7 +1586,11 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
                     print(f'Warning: module {module} has no pins defined on the cell.')
                 pins = {}
             for pin, value in pins.items():
-                lef_file.write(f'  PIN {pin}\n')
+                if (run_fr_cadence == 1):
+                    formatted_pin = pin.replace('<', '[').replace('>', ']')
+                    lef_file.write(f'  PIN {formatted_pin}\n')
+                else:
+                    lef_file.write(f'  PIN {pin}\n')
                 lef_file.write(f'    DIRECTION INOUT ;\n')
                 lef_file.write(f'    USE SIGNAL ;\n')
                 lef_file.write(f'    PORT\n')
@@ -1587,7 +1599,10 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
                 rect = value['RECT']
                 lef_file.write(f'        RECT {rect[0]/dbu} {rect[1]/dbu} {rect[2]/dbu} {rect[3]/dbu} ;\n')
                 lef_file.write(f'    END\n')
-                lef_file.write(f'  END {pin}\n')
+                if (run_fr_cadence == 1):
+                    lef_file.write(f'  END {formatted_pin}\n')
+                else:
+                    lef_file.write(f'  END {pin}\n')
             lef_file.write(f'END {module}\n\n')
             seen.add(module)
 
@@ -1690,9 +1705,9 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
         block_ext_len = 1*dbu # this is how far the block should extend from the internal blockage
     
     elif tech_process == "tsmcN16":
-        pin_const = 1 # this is for amount of distance between blockage edge and true cell edge
         pin_const = 0.5 # this is for amount of distance between blockage edge and true cell edge
-        pin_spacing = 1*dbu # this is for space from pin block to pin
+        pin_const = 0.1 # this is for amount of distance between blockage edge and true cell edge
+        pin_spacing = 0.2*dbu # this is for space from pin block to pin
         pin_threshold = 1.5*dbu # this is the minimum distance between pins for a blockage to be inserted
         block_ext_len = 1*dbu # this is how far the block should extend from the internal blockage
 
@@ -2318,10 +2333,10 @@ def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_pa
     comp_string = []
     comp_cnt = 0
 
-    # 1. Place the Frame (usually just "frame")
-    if frame_module:
-        comp_string.append(f'- frame {frame_module.module_name} + SOURCE DIST + PLACED ( 0 0 ) N ;\n')
-        comp_cnt += 1
+    # # 1. Place the Frame (usually just "frame")
+    # if frame_module:
+    #     comp_string.append(f'- frame {frame_module.module_name} + SOURCE DIST + PLACED ( 0 0 ) N ;\n')
+    #     comp_cnt += 1
 
     # 2. Iterate through islands and items
     for val, island in cell_order_in_island.items():

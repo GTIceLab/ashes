@@ -12,19 +12,19 @@ def generate_main_tcl(filepath, subdir="inputs"):
         "##  Main EDA Flow Execution Script",
         "###########################################################\n"
     ]
-    flow_steps = ["init.tcl", "pins.tcl", "power.tcl", "route.tcl"]
+    flow_steps = ["init.tcl", "pins.tcl", "power.tcl", "route.tcl","signoff.tcl"]
     for step in flow_steps:
         # Construct path using forward slashes for TCL compatibility
         tcl.append(f"puts \"--- Executing: {step} ---\"")
         tcl.append(f"source {subdir}/{step}")
     
     tcl.append("\nputs \"--- Flow Completed Successfully ---\"")
-    tcl.append("exit")
+    #tcl.append("exit")
 
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))
 
-def generate_init_tcl(config_data, filepath, top_level="openMSP430"):
+def generate_init_tcl(config_data, filepath, top_level="proj_name"):
     init_section = config_data.get("init", [])
     tlef_path, pwr_nets, gnd_nets, ndr_rules = "", "", "", []
 
@@ -36,18 +36,17 @@ def generate_init_tcl(config_data, filepath, top_level="openMSP430"):
 
     tcl = [
         "################### Read In Tech and Design Files ###################\n",
-        f'set top_level "{top_level}"',
-        f'set_db init_read_netlist_files [list "../inputs/${{top_level}}.v"]',
+        f'set_db init_read_netlist_files [list "../inputs/{top_level}.v"]',
         f'set_db init_lef_files [list "{tlef_path}" "../inputs/cells.lef"]',
         f'read_physical -lefs "{tlef_path}" "../inputs/cells.lef"',
-        f'read_netlist ../inputs/${{top_level}}.v',
+        f'read_netlist ../inputs/{top_level}.v',
         "",
         "set_multi_cpu_usage -local_cpu 16 -cpu_per_remote_host 16 -remote_host 8 -keep_license true",
         "set_distributed_hosts -local",
         f"set_db init_ground_nets {gnd_nets}",
-        f"set_db init_power_nets {pwr_nets}",
+        f"set_db init_power_nets {{{pwr_nets}}}",
         "init_design",
-        f'read_def ../inputs/${{top_level}}.def\n',
+        f'read_def ../inputs/{top_level}.def\n',
         "################### Define NDRs ###################"
     ]
 
@@ -60,7 +59,7 @@ def generate_init_tcl(config_data, filepath, top_level="openMSP430"):
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))
 
-def generate_pins_tcl(config_data, pin_signal_groups, filepath):
+def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath,):
     pin_config_list = config_data.get("pins", [])
     full_pin_props = {}
     place_type = "side" 
@@ -71,7 +70,9 @@ def generate_pins_tcl(config_data, pin_signal_groups, filepath):
             place_type = item["place_type"]
 
     edge_map = {"W": 0, "N": 1, "E": 2, "S": 3}
-    tcl = ["################### Pin Assignment ###################\n"]
+    tcl = ["######## Floorplan ########",
+           f'create_floorplan -site core -core_size {design_area[2]/1000} {design_area[3]/1000} {design_area[0]/1000} {design_area[1]/1000} {design_area[0]/1000} {design_area[1]/1000} \n',
+           "################### Pin Assignment ###################\n"]
 
     for side, edge_id in edge_map.items():
         if side in full_pin_props and side in pin_signal_groups:
@@ -121,9 +122,9 @@ def generate_power_tcl(config_data, filepath):
         f"set_db add_rings_skip_via_on_wire_shape {{ noshape }} ",
         f"add_rings -nets {{ {nets} }} -type core_rings -follow core "
         f"-layer {{top {p_cfg.get('horiz_ly')} bottom {p_cfg.get('horiz_ly')} left {p_cfg.get('vert_ly')} right {p_cfg.get('vert_ly')}}} "
-        f"-width {{top {p_cfg.get('met_width')} bottom {p_cfg.get('met_width')} left {p_cfg.get('met_width')} right {p_cfg.get('met_width')}}}"  
-        f"-spacing {{top {p_cfg.get('net_spacing')} bottom {p_cfg.get('net_spacing')} left {p_cfg.get('net_spacing')} right {p_cfg.get('net_spacing')}}}" 
-        f"-offset {{top {p_cfg.get('offset')} bottom {p_cfg.get('offset')} left {p_cfg.get('offset')} right {p_cfg.get('offset')}}}" 
+        f"-width {{top {p_cfg.get('met_width')} bottom {p_cfg.get('met_width')} left {p_cfg.get('met_width')} right {p_cfg.get('met_width')}}} "  
+        f"-spacing {{top {p_cfg.get('net_spacing')} bottom {p_cfg.get('net_spacing')} left {p_cfg.get('net_spacing')} right {p_cfg.get('net_spacing')}}} " 
+        f"-offset {{top {p_cfg.get('offset')} bottom {p_cfg.get('offset')} left {p_cfg.get('offset')} right {p_cfg.get('offset')}}} " 
         f"-center 0 -threshold 0 -jog_distance 0 -snap_wire_center_to_grid none"
     ]
     with open(filepath, "w") as f:
@@ -134,7 +135,7 @@ def generate_route_tcl(config_data, filepath):
     for item in config_data.get("route", []): r_cfg.update(item)
     tcl = [
         "################### Routing ###################",
-        f"set_db route_antenna_cell_name {r_cfg.get('ant_dio_cell', 'ANT1')}",
+        f"set_db route_antenna_cell_name {r_cfg.get('ant_dio_cell')}",
         f"set_db design_top_routing_layer {r_cfg.get('top_layer')}",
         f"set_db design_bottom_routing_layer {r_cfg.get('bot_layer')}",
         f"set_db route_antenna_diode_insertion 1",
@@ -149,6 +150,18 @@ def generate_route_tcl(config_data, filepath):
         f"set_db route_with_timing_driven true",
         f"set_db route_with_si_driven true",
         "route_design -global_detail"
+    ]
+    with open(filepath, "w") as f:
+        f.write("\n".join(tcl))
+
+
+def generate_signoff_tcl(config_data,filepath,top_level="proj_name"):
+    sg_cfg = {}
+    for item in config_data.get("signoff", []): sg_cfg.update(item)
+    tcl = [
+        f"write_netlist ../outputs/{top_level}.v",
+        f"write_stream ../outputs/{top_level}.gds -map_file {sg_cfg.get('gds_map_file')} -lib_name DesignLib -unit {sg_cfg.get('unit')} -mode all",
+        f"write_lef_abstract ../outputs/{top_level}.lef "
     ]
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))

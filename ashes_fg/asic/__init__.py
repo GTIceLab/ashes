@@ -41,27 +41,6 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
         with open(verilog_path, "w") as f:
                 f.write(circuit.print(process))
 
-        # 4. Cadence Physical Design Setup
-        if run_fr_cadence == 1:
-                if pd_args is None:
-                        raise ValueError("pd_args (JSON settings) must be provided for Cadence flow.")
-
-                # Generate flattened verilog for Cadence
-                flat_verilog, pin_info = circuit.print_cadence(process)
-                verilog_cadence_path = os.path.join(cadence_inputs, project_name + '.v')
-
-                with open(verilog_cadence_path, "w") as f:
-                        f.write(flat_verilog)
-
-                # Generate individual TCL scripts inside cadence/inputs/
-                pd_cadence_tcl_gen.generate_init_tcl( pd_args, os.path.join(cadence_tcl, "init.tcl"), top_level=project_name)
-                pd_cadence_tcl_gen.generate_pins_tcl(pd_args, pin_info, os.path.join(cadence_tcl, "pins.tcl"))
-                pd_cadence_tcl_gen.generate_power_tcl(pd_args, os.path.join(cadence_tcl, "power.tcl"))
-                pd_cadence_tcl_gen.generate_route_tcl(pd_args, os.path.join(cadence_tcl, "route.tcl"))
-
-                pd_cadence_tcl_gen.generate_main_tcl(os.path.join(cadence_proj_dir, "main.tcl"), subdir="../tcl")
-                
-                print(f"--- Cadence PD Scripts generated in {cadence_proj_dir} ---")
 
 
         # Variables to set space between IO edge and Core edge
@@ -102,9 +81,36 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 x_offset, y_offset = 400*track_spacing, 2000*track_spacing
                 
                 if(run_fr_cadence):
-                        x_IO, y_IO = 1890, 1920 
+                        x_IO, y_IO = 10000, 10000 
 
         design_area = (x_IO, y_IO, design_limits[0], design_limits[1], x_offset, y_offset)
+
+
+
+       # 4. Cadence Physical Design Setup
+        if run_fr_cadence == 1:
+                if pd_args is None:
+                        raise ValueError("pd_args (JSON settings) must be provided for Cadence flow.")
+
+                # Generate flattened verilog for Cadence
+                flat_verilog, pin_info = circuit.print_cadence(process)
+                verilog_cadence_path = os.path.join(cadence_inputs, project_name + '.v')
+
+                with open(verilog_cadence_path, "w") as f:
+                        f.write(flat_verilog)
+
+                # Generate individual TCL scripts inside cadence/inputs/
+                pd_cadence_tcl_gen.generate_init_tcl( pd_args, os.path.join(cadence_tcl, "init.tcl"), top_level=project_name)
+                pd_cadence_tcl_gen.generate_pins_tcl(pd_args, design_area, pin_info, os.path.join(cadence_tcl, "pins.tcl"))
+                pd_cadence_tcl_gen.generate_power_tcl(pd_args, os.path.join(cadence_tcl, "power.tcl"))
+                pd_cadence_tcl_gen.generate_route_tcl(pd_args, os.path.join(cadence_tcl, "route.tcl"))
+                pd_cadence_tcl_gen.generate_signoff_tcl(pd_args, os.path.join(cadence_tcl, "signoff.tcl"),top_level=project_name)
+
+                pd_cadence_tcl_gen.generate_main_tcl(os.path.join(cadence_proj_dir, "main.tcl"), subdir="../tcl")
+                
+                print(f"--- Cadence PD Scripts generated in {cadence_proj_dir} ---")
+
+
 
         if place == True:
                 pdPath = os.path.join(project_path,'pd')
