@@ -1533,7 +1533,6 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
 
                 if (run_fr_cadence == 1):
                     lef_file.write(f'  CLASS BLOCK ;\n')
-                    print(cell_info[module]['width'])
                     lef_file.write(f"  ORIGIN {cell_info[module]['origin'][0]/dbu} {cell_info[module]['origin'][1]/dbu} ;\n")
                     lef_file.write(f"  SIZE {cell_info[module]['width']/dbu} BY {cell_info[module]['height']/dbu} ;\n")
                     # Currently hardcoded as no rotation
@@ -2293,15 +2292,11 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     def_file.close()
     return def_blocks, def_nets
  
-
 def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table, lef_file_path):
     '''
-    Create a def file for the design
-    - Place def instances around the edge for matrices
-    - Route correct nets to correct instances
-    - Create correct obstructions for routing
+    Create a def file for the design matching the flattened Cadence Verilog naming.
     '''
-    track_spacing, file_path, dbu, design_area, file_name, frame_module, router_tool,tech_process = def_params
+    track_spacing, file_path, dbu, design_area, file_name, frame_module, router_tool, tech_process = def_params
    
     header_str = 'VERSION 5.5 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
     def_file = open(file_path, 'w')
@@ -2310,6 +2305,7 @@ def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_pa
     def_file.write(f'DESIGN {file_name} ;\n\n')
     def_file.write(f'UNITS DISTANCE MICRONS {dbu} ;\n\n')
 
+    # Property definitions
     def_file.write(f'PROPERTYDEFINITIONS\n')
     def_file.write(f'    DESIGN FE_CORE_BOX_LL_X REAL {round(design_area[0]*0.001,8)} ;\n')
     def_file.write(f'    DESIGN FE_CORE_BOX_UR_X REAL {round((design_area[2]-design_area[0])*0.001,8)} ;\n')
@@ -2319,59 +2315,106 @@ def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_pa
 
     def_file.write(f'DIEAREA ( 0 0 ) ( {(design_area[2]/1000)*dbu} {(design_area[3]/1000)*dbu} ) ;\n\n')
     
-
     comp_string = []
     comp_cnt = 0
-    # Place components in def file
+
+    # 1. Place the Frame (usually just "frame")
     if frame_module:
-            comp_string.append(f'- {frame_module.instance_name} {frame_module.module_name} + PLACED ( 0 0 ) N ;\n')
-            comp_cnt += 1
+        comp_string.append(f'- frame {frame_module.module_name} + SOURCE DIST + PLACED ( 0 0 ) N ;\n')
+        comp_cnt += 1
+
+    # 2. Iterate through islands and items
     for val, island in cell_order_in_island.items():
+        # Counters for synthesized MUX/Switch blocks
+        mux_idx = -1 
+        inst_idx = 0
+        last_c_name = None
+
+        
         for idx, item in island['items'].items():
-            if item['type'] == 'cell':
-                c_name = item['name']
-                array = island['coords']
-                x_loc = array[idx][0]
-                y_loc = array[idx][1]
-                x_loc = (x_loc * dbu) /1000
-                y_loc = (y_loc * dbu) /1000
-                comp_string.append(f'- I_{val}_{idx} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
-                comp_cnt += 1
-            elif item['type'] == 'matrix':
-                c_name = item['name']
-                array = island['coords']
-                mat_x_loc = array[idx][0]
-                mat_y_loc = array[idx][1]
-                
-                # Get dimensions from mat_info
-                mat_row = item['mat_info']['mat_row']
-                mat_col = item['mat_info']['mat_col']
-                
-                mat_cell_height = cell_info[c_name]['height']
-                mat_cell_width = cell_info[c_name]['width']
+            if item['type'] == 'polygon':
+                continue
 
-                # Iterate through EVERY cell in the matrix, not just the ones with nets
-                for r in range(mat_row):
-                    for c in range(mat_col):
-                        mat_cell_id = f'I_{val}_{idx}_{r}_{c}'
-                        
-                        # Calculate coordinates
-                        # Note: matches the GDS alignment logic
-                        y_loc = (mat_row - 1 - r) * mat_cell_height + mat_y_loc 
-                        x_loc = c * mat_cell_width + mat_x_loc
-                        
-                        y_loc = (y_loc * dbu) /1000
-                        x_loc = (x_loc * dbu) /1000
+            array = island['coords']
+            x_loc_raw = array[idx][0]
+            y_loc_raw = array[idx][1]
+            
+            # Convert nm to DEF units (microns * dbu)
+            x_loc = (x_loc_raw * dbu) / 1000
+            y_loc = (y_loc_raw * dbu) / 1000
 
-                        comp_string.append(f'- {mat_cell_id} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
+            # --- CASE A: Standard Matrix Cells ---
+            if item['type'] == 'matrix':
+                c_name = item['name']
+                mat_info = item['mat_info']
+                mat_row_total = mat_info['mat_row']
+                mat_col_total = mat_info['mat_col']
+                
+                # Fetch row/col from the instance metadata (passed from verilog/py)
+                # These were stored in generate_islands from inst.ports
+                base_r = item.get('grid_row', 0)
+                base_c = item.get('grid_col', 0)
+
+                for r in range(mat_row_total):
+                    for c in range(mat_col_total):
+                        # Name format: I_{isleNum}_{gridRow+r}_{gridCol+c}_{r}_{c}
+                        inst_name = f"I_{val}_{base_r + r}_{base_c + c}_{r}_{c}"
+                        
+                        # Calculate specific coordinate for this sub-cell in matrix
+                        cell_w = cell_info[c_name]['width']
+                        cell_h = cell_info[c_name]['height']
+                        
+                        # Y logic matches GDS (row 0 is top of matrix block)
+                        sub_y_raw = (mat_row_total - 1 - r) * cell_h + y_loc_raw
+                        sub_x_raw = c * cell_w + x_loc_raw
+                        
+                        sub_x = (sub_x_raw * dbu) / 1000
+                        sub_y = (sub_y_raw * dbu) / 1000
+
+                        comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {sub_x} {sub_y} ) N ;\n')
                         comp_cnt += 1
+
+            # --- CASE B: Single Standard Cells ---
+            elif item['type'] == 'cell' and 'grid_row' in item:
+                c_name = item['name']
+                r = item['grid_row']
+                c = item['grid_col']
+                
+                # Name format: I_{isleNum}_{gridRow}_{gridCol}
+                inst_name = f"I_{val}_{r}_{c}"
+                comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
+                comp_cnt += 1
+
+            # --- CASE C: MUX / Decoder / Switches ---
+            elif item['type'] == 'cell':
+                c_name = item['name']
+                
+                # Update logical naming indices
+                # If the cell type changes, we assume we've moved to a new Switch/Decoder block
+                if c_name != last_c_name:
+                    mux_idx += 1
+                    inst_idx = 0
+                else:
+                    inst_idx += 1
+                
+                last_c_name = c_name
+
+                # Determine type for naming (decoder vs switch) Currently hardcoded 
+                m_type =  "switch"
+                
+                # Format: MUX_{type}_isle{isle}_idx{mux_idx}_inst{inst_idx}
+                # matches flattened Verilog where each bit is a unique sub-instance
+                inst_name = f"MUX_{m_type}_isle{val}_idx{mux_idx}_inst{inst_idx}"
+                
+                comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
+                comp_cnt += 1
+
 
     def_file.write(f'\nCOMPONENTS {comp_cnt} ;\n')
     def_file.write(''.join(comp_string))
     def_file.write('END COMPONENTS\n\n')
     def_file.write('END DESIGN')
     def_file.close()
-
 
 
 def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, router_tool):

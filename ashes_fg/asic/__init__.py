@@ -25,6 +25,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 raise ValueError(f"Invalid value: {run_fr_cadence}. Variable must be 0 or 1.")
         else:
                 cadencePath = os.path.join(project_path,'cadence')
+
         if not os.path.exists(cadencePath):
                 os.makedirs(cadencePath)
 
@@ -32,10 +33,15 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
         if not os.path.exists(synPath):
                 os.makedirs(synPath)
         verilogPath = os.path.join(synPath,project_name+'.v')
+        verilogPath_cadence = os.path.join(synPath,project_name+'_cadence.v')
+
         f = open(verilogPath, "w")
         f.write(circuit.print(process))
         f.close() # Close file so that P&R can access netlist
 
+        f = open(verilogPath_cadence, "w")
+        f.write(circuit.print_cadence(process))
+        f.close() # Close file so that P&R can access netlist
 
         # Variables to set space between IO edge and Core edge
         x_IO, y_IO = 0, 0 

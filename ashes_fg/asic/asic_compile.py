@@ -165,6 +165,17 @@ class Circuit:
                 wrongPort = net.pins[0].port.name
                 raise Exception("Error: Not all nets named (" + wrongPort + ")")
 
+    def nameNetsFlat(self):
+        """
+        Names all nets uniquely without vectorization.
+        Every wire gets a unique name (net0, net1, net2...).
+        """
+        for net in self.Nets:
+            if net.index == -1:
+            # Ensure a Flat ID for all net
+                net.number = self.Nets.index(net)
+            
+
  
     def print(self,processPrefix):
         """
@@ -191,6 +202,28 @@ class Circuit:
             text += "\n\n"
             text += "\t/* Frame */ \n"
             text += self.frame.print()
+
+        text += "\n endmodule"
+        return text
+    
+    def print_cadence(self, processPrefix):
+        """
+        Creates Verilog netlist for Cadence
+        """
+        self.cleanIslands()
+        # Use the standard nameNets to ensure vector/matrix connectivity is fully resolved
+        self.nameNetsFlat()
+
+        text = "module TOP(port1);\n"
+
+        for isle in self.Islands:
+            islandNum = self.Islands.index(isle)
+            text += f"\n\n\t/* Island {islandNum} */\n"
+            text += isle.print_cadence(islandNum, processPrefix)
+
+        if self.frame != None:
+            text += "\n\n\t/* Frame */ \n"
+            text += self.frame.print_cadence()
 
         text += "\n endmodule"
         return text
@@ -294,6 +327,23 @@ class Island:
         # If we had a decoder, put here
         if decoderText != "\n\n \t/*Programming Mux */ \n":
             text += decoderText
+        return text
+    
+    
+    def print_cadence(self, islandNum, processPrefix):
+        text = ""
+        #printPlacement(self)
+        for i, instance in enumerate(self.instances):
+            loc = self.getLocation(instance)
+            # For standard cells, find grid location. 
+            # For MUX/Decoders, getLocation returns zeros, which we handle in the MUX class.            
+            if isinstance(loc, tuple) and len(loc[0]) > 0:
+                r, c = loc[0][0], loc[1][0]
+            else:
+                r, c = 0, 0
+            
+             # Pass i as instanceNum to ensure uniqueness for non-grid cells
+            text += instance.print_cadence(i, islandNum, r, c)
         return text
 
     def placeInstance(self,instance,location):
@@ -782,6 +832,131 @@ class Port:
             
 
         return line
+
+
+
+    def print_cadence(self, r, c):
+        """
+        Returns Verilog port mapping, handling slicing for vectorized 
+        MUX/Decoder cells and edge-connectivity for Matrix cells.
+        """
+        # 1. Determine grid dimensions
+        dim_r = self.cell.dim[0] if self.cell.dim[0] > 0 else 1
+        dim_c = self.cell.dim[1] if self.cell.dim[1] > 0 else 1
+        
+        # 2. Determine how many pins belong to this specific sub-instance (r, c)
+        if self.cell.isDecoder():
+            # MUX/Decoders are 1D arrays. The vector is spread across the active dimension.
+            num_units = max(dim_r, dim_c)
+            pins_per_inst = len(self.pins) // num_units
+            # For a MUX, the index is simply whichever dimension is iterating
+            inst_idx = r if self.cell.dim[0] > 0 else c
+        else:
+            # Standard Cell Matrix logic: Use the original numPins() helper
+            pins_per_inst = int(self.numPins())
+            inst_idx = r if (self.location in ["E", "W"]) else c
+            
+            # Connectivity check: Only print if pin is on the physical perimeter
+            is_on_edge = False
+            if self.isStatic: 
+                is_on_edge = True
+            elif self.location == "W" and c == 0: is_on_edge = True
+            elif self.location == "E" and c == dim_c - 1: is_on_edge = True
+            elif self.location == "N" and r == 0: is_on_edge = True
+            elif self.location == "S" and r == dim_r - 1: is_on_edge = True
+            
+            if not is_on_edge:
+                return ""
+
+        # 3. Extract the nets
+        net_list = []
+        if self.isStatic:
+            # Static pins (like shared Enable/VDD) are applied to every instance in full
+            for pin in self.pins:
+                net_list.append(pin.net.print())
+        else:
+            # Vectorized pins: extract the specific slice for this instance index
+            start_idx = inst_idx * pins_per_inst
+            for i in range(pins_per_inst):
+                if (start_idx + i) < len(self.pins):
+                    net_list.append(self.pins[start_idx + i].net.print())
+
+        if not net_list:
+            return ""
+
+        # 4. Format for Verilog
+        if len(net_list) == 1:
+            return f".{self.name}({net_list[0]})"
+        else:
+            # Reverse for Verilog {MSB, ..., LSB} convention
+            net_list.reverse()
+            return f".{self.name}({{{', '.join(net_list)}}})"
+        
+    
+
+    # def print_cadence(self, r, c):
+    #     """
+    #     Returns Verilog port mapping. 
+    #     Format: .PortName({net3, net2, net1, net0}) or .PortName(net)
+    #     """
+    #     # 1. Determine grid dimensions
+    #     num_rows = max(1, self.cell.dim[0])
+    #     num_cols = max(1, self.cell.dim[1])
+    #     total_instances = num_rows * num_cols
+    #     total_pins = len(self.pins)
+        
+    #     net_list = []
+    #     start_idx = None
+    #     num_to_extract = 0
+
+    #     # 2. Determine index offset and count based on location/type
+    #     if self.isStatic:
+    #         # Static pins are extracted in full for every instance
+    #         start_idx = 0
+    #         num_to_extract = total_pins
+
+    #     elif self.location == "W" and (c == 0 or total_instances == 1):
+    #         # West edge: extract pins based on current row index
+    #         num_to_extract = total_pins // num_cols
+    #         start_idx = r * (total_pins // num_rows)
+
+    #     elif self.location == "E" and (c == num_cols - 1 or total_instances == 1):
+    #         # East edge: extract pins based on current row index
+    #         num_to_extract = total_pins // num_cols
+    #         start_idx = r * (total_pins // num_rows)
+
+    #     elif self.location == "N" and (r == 0 or total_instances == 1):
+    #         # North edge: extract pins based on current column index
+    #         num_to_extract = total_pins // num_cols
+    #         start_idx = c * (total_pins // num_cols)
+
+    #     elif self.location == "S" and (r == num_rows - 1 or total_instances == 1):
+    #         # South edge: extract pins based on current column index
+    #         num_to_extract = total_pins // num_cols
+    #         start_idx = c * (total_pins // num_cols)
+
+    #     # 3. Collect the nets if the instance meets the criteria above
+    #     if start_idx is not None:
+    #         for i in range(num_to_extract):
+    #             if (start_idx + i) < total_pins:
+    #                 pin = self.pins[start_idx + i]
+    #                 net_list.append(pin.net.print())
+
+    #     if not net_list:
+    #         return ""
+
+    #     # 4. Formatting logic
+    #     if len(net_list) == 1:
+    #         # Single bit port
+    #         return f".{self.name}({net_list[0]})"
+    #     else:
+    #         # Multi-bit bus: Verilog convention is {MSB, ..., LSB}
+    #         # Reversing assumes pin[0] is LSB and the last pin is MSB
+    #         net_list.reverse()
+    #         combined_nets = ", ".join(net_list)
+    #         return f".{self.name}({{{combined_nets}}})"
+        
+        
         
 
 class StandardCell:
@@ -930,6 +1105,32 @@ class StandardCell:
         text += ");"
         return text
     
+    def print_cadence(self, instanceNum, islandNum, row, col, instancePrefix="I"):
+        text = ""
+        rows = self.dim[0] if self.dim[0] > 0 else 1
+        cols = self.dim[1] if self.dim[1] > 0 else 1
+
+        for r in range(rows):
+            for c in range(cols):
+                if self.isChipFrame():
+                    inst_name = "frame"
+                elif self.dim[0] > 1 or self.dim[1] > 1:
+                    inst_name = f"{instancePrefix}_{islandNum}_{row+r}_{col+c}_{r}_{c}"
+                else:
+                    inst_name = f"{instancePrefix}_{islandNum}_{row}_{col}"
+
+                text += f"\t{self.name} {inst_name} ("
+                port_connections = []
+                for port in self.ports:
+                    p_text = port.print_cadence(r, c)
+                    if p_text:
+                        port_connections.append(p_text)
+                
+                text += ", ".join(port_connections)
+                text += ");\n"
+        return text
+
+    
 class MUX(StandardCell):
     def __init__(self,circuit,island,num):
         self.circuit = circuit
@@ -996,6 +1197,44 @@ class MUX(StandardCell):
                 i+=1
         text += ");"
         return text
+
+
+    def print_cadence(self, instanceNum, islandNum, row, col, instancePrefix="MUX"):
+        # 1. Calculate idx by counting how many MUXes exist in this island before 'self'
+        # This replaces the need for an external counter or class-level attribute.
+        idx = 0
+        for inst in self.island.instances:
+            if inst == self:
+                break  # Found the current instance, idx is now correct
+            if isinstance(inst, MUX):
+                idx += 1
+
+        text = ""
+        # 2. Handle dimensions (if 0, treat as 1 for the loop)
+        rows = self.dim[0] if self.dim[0] > 0 else 1
+        cols = self.dim[1] if self.dim[1] > 0 else 1
+
+        for r in range(rows):
+            for c in range(cols):
+                # 3. Determine bit index (inst0, inst1...)
+                inst_id = r if self.dim[0] > 0 else c
+                
+                # 4. Construct name: e.g., MUX_switch_isle0_idx0_inst0
+                inst_name = f"{instancePrefix}_{self.type}_isle{islandNum}_idx{idx}_inst{inst_id}"
+
+                text += f"\t{self.name} {inst_name} ("
+                
+                port_connections = []
+                for port in self.ports:
+                    # Pass local r, c to the port's cadence print logic
+                    p_text = port.print_cadence(r, c)
+                    if p_text:
+                        port_connections.append(p_text)
+                
+                text += ", ".join(port_connections)
+                text += ");\n"
+        return text
+
         
 class PortDecoderBit(Port):
     """
