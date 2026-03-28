@@ -83,13 +83,9 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 if(run_fr_cadence):
                         x_IO, y_IO = 9990, 9984
                         
-                        ## Account for IO area so, location islands in python code can start from 0,0
-                        first_island_x, first_island_y = location_islands[0]
-                        
-                        #Convert the outer tuple to a list and back to tuple
-                        location_islands = list(location_islands)
-                        location_islands[0] = (first_island_x + x_IO, first_island_y + y_IO)
-                        location_islands = tuple(location_islands)
+                ## Account for IO area so, location islands in python code can start from 0,0
+                location_islands = tuple((x + x_IO, y + y_IO) for x, y in location_islands)
+
 
         design_area = (x_IO, y_IO, design_limits[0], design_limits[1], x_offset, y_offset)
 

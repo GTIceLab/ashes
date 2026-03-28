@@ -130,10 +130,11 @@ def generate_power_tcl(config_data, filepath):
     ]
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))
-
+        
 def generate_route_tcl(config_data, ndr_info, filepath):
     """
-    Generates a Cadence Tcl script for routing, including dynamic NDR assignments.
+    Generates a Cadence Tcl script for routing.
+    Maps 'default' NDR rules to 'ANALOG' and generates one command per net.
     """
     # Flatten routing config
     r_cfg = {}
@@ -146,25 +147,40 @@ def generate_route_tcl(config_data, ndr_info, filepath):
     tcl.append("################################################")
 
     if ndr_info:
-        # Group nets by their rule to keep the TCL clean
-        # Result: { 'CLOCK_RULE': ['net1', 'net2'], 'POWER_RULE': ['net3'] }
+        # Group nets by their rule
         rules_map = {}
         for net_name, rule in ndr_info.items():
-            rules_map.setdefault(rule, []).append(net_name)
+            # CHANGE: If rule is 'default', reassign to 'ANALOG'
+            effective_rule = "ANALOG" if rule.lower() == "default" else rule
+            rules_map.setdefault(effective_rule, []).append(net_name)
 
         for rule, nets in rules_map.items():
-            net_list = " ".join(nets)
-                        
-            # If you need specific attributes like shielding (from your example):
-            if "CLOCK" in rule.upper():
-                tcl.append(f"set_route_attributes -nets {{ {net_list} }} \\")
-                tcl.append(f"   -route_rule {rule} -shield_nets GND -shield_side two_sides \\")
-#                tcl.append(f"   -top_preferred_routing_layer {r_cfg.get('top_layer', 'M7')} \\")
-#                tcl.append(f"   -bottom_preferred_routing_layer {r_cfg.get('bot_layer', 'M4')} \\")
-                tcl.append(f"   -si_post_route_fix true")
+            for net in nets:
+                # Rule Logic for CLOCK
+                if "CLOCK" in rule.upper():
+                    tcl.append(f"set_route_attributes -nets {{{net}}} \\")
+                    tcl.append(f"   -route_rule {rule} -shield_nets GND -shield_side two_sides \\")
+                    tcl.append(f"   -top_preferred_routing_layer {r_cfg.get('top_layer', 'M7')} \\")
+                    tcl.append(f"   -bottom_preferred_routing_layer {r_cfg.get('bot_layer', 'M4')} \\")
+                    tcl.append(f"   -si_post_route_fix true")
+                
+                # Rule Logic for ANALOG (including the former 'default' nets)
+                elif "ANALOG" in rule.upper():
+                    tcl.append(f"set_route_attributes -nets {{{net}}} \\")
+                    tcl.append(f"   -route_rule {rule} \\")
+                    # You can add specific analog constraints here if needed, e.g.:
+                    # tcl.append(f"   -top_preferred_routing_layer {r_cfg.get('top_layer', 'M7')} \\")
+                    tcl.append(f"   -si_post_route_fix true")
+                
+                # All other rules
+                else:
+                    tcl.append(f"set_route_attributes -nets {{{net}}} \\")
+                    tcl.append(f"   -route_rule {rule}  \\")
+                    tcl.append(f"   -si_post_route_fix true")
     else:
         tcl.append("# No non-default rules defined.")
-
+    
+    
     tcl.append("\n################################################")
     tcl.append("## 2. Routing Configuration                   ##")
     tcl.append("################################################")
@@ -194,9 +210,8 @@ def generate_route_tcl(config_data, ndr_info, filepath):
     tcl.append("################################################")
     tcl.append("route_design -global_detail")
 
-    # Write to file
     with open(filepath, "w") as f:
-        f.write("\n".join(tcl) + "\n")
+        f.write("\n".join(tcl))
 
 
 def generate_signoff_tcl(config_data,filepath,top_level="proj_name"):
