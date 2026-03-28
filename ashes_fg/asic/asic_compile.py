@@ -92,14 +92,31 @@ class Circuit:
         #TODO Check if nets pins are already in another net, merge if so or throw error
         self.Nets.append(net)
 
-    def mergeNets(self,nets):
+
+    
+    def mergeNets(self, nets):
         """
-        Merges a list of nets together
+        Merges a list of nets together and handles NDR rule propagation.
         """
         newNet = Net(self)
+
+        # Identify all unique NDR rules among the nets being merged
+        unique_ndrs = list(set(n.ndr for n in nets))
+        non_default_ndrs = [rule for rule in unique_ndrs if rule != "default"]
+
+        if len(non_default_ndrs) > 1:
+            # ISSUE: Conflicting rules (e.g. one net is 'Clock' NDR, another is 'Power' NDR)
+            print(f"NDR CONFLICT: Merging nets with multiple non-default rules: {non_default_ndrs}. Using '{non_default_ndrs[0]}'.")
+            newNet.ndr = non_default_ndrs[0]
+        elif len(non_default_ndrs) == 1:
+            # Only one specific NDR exists, carry it over
+            newNet.ndr = non_default_ndrs[0]
+        else:
+            # Everything was default
+            newNet.ndr = "default"
+
         for n in nets:
             # Update pins from old net to point to new
-            # p.move handles net <-> pin 
             for p in n.pins:
                 p.move(newNet)
             # Remove old net from Circuit
@@ -209,7 +226,7 @@ class Circuit:
     def print_cadence(self, processPrefix):
         """
         Creates Verilog netlist for Cadence with inout declarations.
-        Returns: (text, pin_info)
+        Returns: (text, pin_info, ndr_info)
         """
         self.cleanIslands()
         # 1. Assign unique generic names to everything (net0, net1...)
@@ -250,7 +267,14 @@ class Circuit:
 
         text += "\n endmodule"
         
-        return text, pin_info
+        # 5. Find all NDRs defined and map them to their Verilog net names
+        ndr_info = {}
+        for net in self.Nets:
+            if net.ndr != "default":
+                # net.print() returns the name used in the Verilog file (e.g., 'net5' or 's6')
+                ndr_info[net.print()] = net.ndr
+
+        return text, pin_info, ndr_info
 
     def handle_frame_ports_fr_cadence(self):
         """
@@ -471,11 +495,21 @@ class Net:
         self.pins = []
         self.number = -1
         self.index = -1
+        self.ndr = "default"  # Initialized to default NDR
+
         if pins != None:
             self.addPins(pins)
    
         self.circuit = circuit
         self.circuit.addNet(self)
+    
+    
+    def setNDR(self, rule_name):
+        """
+        Sets the Non-Default Rule for this net.
+        Example: net.setNDR("double_spacing")
+        """
+        self.ndr = rule_name
 
     def __call__(self):
         return self

@@ -2307,12 +2307,149 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     def_file.close()
     return def_blocks, def_nets
  
-def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table, lef_file_path):
+# def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table, lef_file_path):
+#     '''
+#     Create a def file for the design matching the flattened Cadence Verilog naming.
+#     '''
+#     track_spacing, file_path, dbu, design_area, file_name, frame_module, router_tool, tech_process = def_params
+   
+#     header_str = 'VERSION 5.5 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
+#     def_file = open(file_path, 'w')
+#     def_file.write(header_str) 
+
+#     def_file.write(f'DESIGN {file_name} ;\n\n')
+#     def_file.write(f'UNITS DISTANCE MICRONS {dbu} ;\n\n')
+
+#     # Property definitions
+#     def_file.write(f'PROPERTYDEFINITIONS\n')
+#     def_file.write(f'    DESIGN FE_CORE_BOX_LL_X REAL {round(design_area[0]*0.001,8)} ;\n')
+#     def_file.write(f'    DESIGN FE_CORE_BOX_UR_X REAL {round((design_area[2]-design_area[0])*0.001,8)} ;\n')
+#     def_file.write(f'    DESIGN FE_CORE_BOX_LL_Y REAL {round(design_area[1]*0.001,8)} ;\n')
+#     def_file.write(f'    DESIGN FE_CORE_BOX_UR_Y REAL {round((design_area[3]-design_area[1])*0.001,8)} ;\n')
+#     def_file.write(f'END PROPERTYDEFINITIONS\n\n')
+
+#     def_file.write(f'DIEAREA ( 0 0 ) ( {(design_area[2]/1000)*dbu} {(design_area[3]/1000)*dbu} ) ;\n\n')
+    
+#     comp_string = []
+#     comp_cnt = 0
+
+#     # # 1. Place the Frame (usually just "frame")
+#     # if frame_module:
+#     #     comp_string.append(f'- frame {frame_module.module_name} + SOURCE DIST + PLACED ( 0 0 ) N ;\n')
+#     #     comp_cnt += 1
+
+#     # 2. Iterate through islands and items
+#     for val, island in cell_order_in_island.items():
+#         # Counters for synthesized MUX/Switch blocks
+#         mux_idx = -1 
+#         inst_idx = 0
+#         last_c_name = None
+
+        
+#         for idx, item in island['items'].items():
+#             if item['type'] == 'polygon':
+#                 continue
+
+#             array = island['coords']
+#             x_loc_raw = array[idx][0]
+#             y_loc_raw = array[idx][1]
+            
+#             # Convert nm to DEF units (microns * dbu)
+#             x_loc = (x_loc_raw * dbu) / 1000
+#             y_loc = (y_loc_raw * dbu) / 1000
+
+#             # --- CASE A: Standard Matrix Cells ---
+#             if item['type'] == 'matrix':
+#                 c_name = item['name']
+#                 mat_info = item['mat_info']
+#                 mat_row_total = mat_info['mat_row']
+#                 mat_col_total = mat_info['mat_col']
+                
+#                 # Fetch row/col from the instance metadata (passed from verilog/py)
+#                 # These were stored in generate_islands from inst.ports
+#                 base_r = item.get('grid_row', 0)
+#                 base_c = item.get('grid_col', 0)
+
+#                 for r in range(mat_row_total):
+#                     for c in range(mat_col_total):
+#                         # Name format: I_{isleNum}_{gridRow+r}_{gridCol+c}_{r}_{c}
+#                         inst_name = f"I_{val}_{base_r + r}_{base_c + c}_{r}_{c}"
+                        
+#                         # Calculate specific coordinate for this sub-cell in matrix
+#                         cell_w = cell_info[c_name]['width']
+#                         cell_h = cell_info[c_name]['height']
+                        
+#                         # Y logic matches GDS (row 0 is top of matrix block)
+#                         sub_y_raw = (mat_row_total - 1 - r) * cell_h + y_loc_raw
+#                         sub_x_raw = c * cell_w + x_loc_raw
+                        
+#                         sub_x = (sub_x_raw * dbu) / 1000
+#                         sub_y = (sub_y_raw * dbu) / 1000
+
+#                         comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {sub_x} {sub_y} ) N ;\n')
+#                         comp_cnt += 1
+
+#             # --- CASE B: Single Standard Cells ---
+#             elif item['type'] == 'cell' and 'grid_row' in item:
+#                 c_name = item['name']
+#                 r = item['grid_row']
+#                 c = item['grid_col']
+                
+#                 # Name format: I_{isleNum}_{gridRow}_{gridCol}
+#                 inst_name = f"I_{val}_{r}_{c}"
+#                 comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
+#                 comp_cnt += 1
+
+#             # --- CASE C: MUX / Decoder / Switches ---
+#             elif item['type'] == 'cell':
+#                 c_name = item['name']
+                
+#                 # Update logical naming indices
+#                 # If the cell type changes, we assume we've moved to a new Switch/Decoder block
+#                 if c_name != last_c_name:
+#                     mux_idx += 1
+#                     inst_idx = 0
+#                 else:
+#                     inst_idx += 1
+                
+#                 last_c_name = c_name
+
+#                 # Determine type for naming (decoder vs switch) Currently hardcoded 
+#                 m_type =  "switch"
+                
+#                 # Format: MUX_{type}_isle{isle}_idx{mux_idx}_inst{inst_idx}
+#                 # matches flattened Verilog where each bit is a unique sub-instance
+#                 inst_name = f"MUX_{m_type}_isle{val}_idx{mux_idx}_inst{inst_idx}"
+                
+#                 comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
+#                 comp_cnt += 1
+
+
+#     def_file.write(f'\nCOMPONENTS {comp_cnt} ;\n')
+#     def_file.write(''.join(comp_string))
+#     def_file.write('END COMPONENTS\n\n')
+#     def_file.write('END DESIGN')
+#     def_file.close()
+
+
+def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table, lef_file_path, blockage_exemptions=None):
     '''
-    Create a def file for the design matching the flattened Cadence Verilog naming.
+    Create a def file with automated metal blockages and layer-specific exemptions.
     '''
     track_spacing, file_path, dbu, design_area, file_name, frame_module, router_tool, tech_process = def_params
-   
+    
+    # 1. Setup Layers based on Tech Process
+    if tech_process == 'tsmcN16':
+        blockage_layers = ['M1', 'M2', 'M3', 'M4']
+    elif tech_process == 'sky130nm':
+        blockage_layers = ['li', 'M1', 'M2'] # Example
+    else:
+        blockage_layers = []
+
+    # Initialize empty dict if no exemptions provided
+    if blockage_exemptions is None:
+        blockage_exemptions = {}
+
     header_str = 'VERSION 5.5 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
     def_file = open(file_path, 'w')
     def_file.write(header_str) 
@@ -2320,116 +2457,104 @@ def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_pa
     def_file.write(f'DESIGN {file_name} ;\n\n')
     def_file.write(f'UNITS DISTANCE MICRONS {dbu} ;\n\n')
 
-    # Property definitions
-    def_file.write(f'PROPERTYDEFINITIONS\n')
-    def_file.write(f'    DESIGN FE_CORE_BOX_LL_X REAL {round(design_area[0]*0.001,8)} ;\n')
-    def_file.write(f'    DESIGN FE_CORE_BOX_UR_X REAL {round((design_area[2]-design_area[0])*0.001,8)} ;\n')
-    def_file.write(f'    DESIGN FE_CORE_BOX_LL_Y REAL {round(design_area[1]*0.001,8)} ;\n')
-    def_file.write(f'    DESIGN FE_CORE_BOX_UR_Y REAL {round((design_area[3]-design_area[1])*0.001,8)} ;\n')
-    def_file.write(f'END PROPERTYDEFINITIONS\n\n')
-
-    def_file.write(f'DIEAREA ( 0 0 ) ( {(design_area[2]/1000)*dbu} {(design_area[3]/1000)*dbu} ) ;\n\n')
+    # ... [Property Definitions and DIEAREA code] ...
+    def_file.write(f'DIEAREA ( 0 0 ) ( {int((design_area[2]/1000)*dbu)} {int((design_area[3]/1000)*dbu)} ) ;\n\n')
     
     comp_string = []
+    blockage_string = []
     comp_cnt = 0
+    blockage_cnt = 0
 
-    # # 1. Place the Frame (usually just "frame")
-    # if frame_module:
-    #     comp_string.append(f'- frame {frame_module.module_name} + SOURCE DIST + PLACED ( 0 0 ) N ;\n')
-    #     comp_cnt += 1
+    # HELPER: Generate Blockages
+    def generate_cell_blockage(inst_name, cell_name, lx_raw, ly_raw):
+        nonlocal blockage_cnt
+        
+        # 1. Calculate coordinates
+        lx = (lx_raw * dbu) / 1000
+        ly = (ly_raw * dbu) / 1000
+        w = (cell_info[cell_name]['width'] * dbu) / 1000
+        h = (cell_info[cell_name]['height'] * dbu) / 1000
+        ux, uy = lx + w, ly + h
 
-    # 2. Iterate through islands and items
+        # 2. EXEMPTION LOGIC: Look up by Standard Cell Name (c_name)
+        # Example: blockage_exemptions = {"BUFF_X1": ["M1", "M2"]}
+        layers_to_skip = blockage_exemptions.get(cell_name, [])
+
+        for layer in blockage_layers:
+            if layer in layers_to_skip:
+                continue # Skip this layer for this cell type
+            
+            # 3. DEF OUTPUT: Remains exactly as your example (using inst_name)
+            blockage_string.append(f'   - LAYER {layer} + COMPONENT {inst_name} RECT ( {int(lx)} {int(ly)} ) ( {int(ux)} {int(uy)} ) ;\n')
+            blockage_cnt += 1
+
+    # 2. Iterate through islands and items to place components and calculate blockages
     for val, island in cell_order_in_island.items():
-        # Counters for synthesized MUX/Switch blocks
-        mux_idx = -1 
-        inst_idx = 0
-        last_c_name = None
-
+        mux_idx, inst_idx, last_c_name = -1, 0, None
         
         for idx, item in island['items'].items():
-            if item['type'] == 'polygon':
-                continue
+            if item['type'] == 'polygon': continue
 
             array = island['coords']
-            x_loc_raw = array[idx][0]
-            y_loc_raw = array[idx][1]
-            
-            # Convert nm to DEF units (microns * dbu)
-            x_loc = (x_loc_raw * dbu) / 1000
-            y_loc = (y_loc_raw * dbu) / 1000
+            x_loc_raw, y_loc_raw = array[idx][0], array[idx][1]
 
             # --- CASE A: Standard Matrix Cells ---
             if item['type'] == 'matrix':
                 c_name = item['name']
                 mat_info = item['mat_info']
-                mat_row_total = mat_info['mat_row']
-                mat_col_total = mat_info['mat_col']
-                
-                # Fetch row/col from the instance metadata (passed from verilog/py)
-                # These were stored in generate_islands from inst.ports
-                base_r = item.get('grid_row', 0)
-                base_c = item.get('grid_col', 0)
+                mat_row_total, mat_col_total = mat_info['mat_row'], mat_info['mat_col']
+                base_r, base_c = item.get('grid_row', 0), item.get('grid_col', 0)
 
                 for r in range(mat_row_total):
                     for c in range(mat_col_total):
-                        # Name format: I_{isleNum}_{gridRow+r}_{gridCol+c}_{r}_{c}
                         inst_name = f"I_{val}_{base_r + r}_{base_c + c}_{r}_{c}"
-                        
-                        # Calculate specific coordinate for this sub-cell in matrix
-                        cell_w = cell_info[c_name]['width']
-                        cell_h = cell_info[c_name]['height']
-                        
-                        # Y logic matches GDS (row 0 is top of matrix block)
-                        sub_y_raw = (mat_row_total - 1 - r) * cell_h + y_loc_raw
-                        sub_x_raw = c * cell_w + x_loc_raw
-                        
-                        sub_x = (sub_x_raw * dbu) / 1000
-                        sub_y = (sub_y_raw * dbu) / 1000
+                        sub_x_raw = (c * cell_info[c_name]['width'] + x_loc_raw)
+                        sub_y_raw = ((mat_row_total - 1 - r) * cell_info[c_name]['height'] + y_loc_raw)
 
-                        comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {sub_x} {sub_y} ) N ;\n')
+                        comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {int(sub_x_raw*dbu/1000)} {int(sub_y_raw*dbu/1000)} ) N ;\n')
                         comp_cnt += 1
+                        generate_cell_blockage(inst_name, c_name, sub_x_raw, sub_y_raw)
 
-            # --- CASE B: Single Standard Cells ---
-            elif item['type'] == 'cell' and 'grid_row' in item:
-                c_name = item['name']
-                r = item['grid_row']
-                c = item['grid_col']
-                
-                # Name format: I_{isleNum}_{gridRow}_{gridCol}
-                inst_name = f"I_{val}_{r}_{c}"
-                comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
-                comp_cnt += 1
-
-            # --- CASE C: MUX / Decoder / Switches ---
+            # --- CASE B/C: Single Cells / MUX ---
             elif item['type'] == 'cell':
                 c_name = item['name']
-                
-                # Update logical naming indices
-                # If the cell type changes, we assume we've moved to a new Switch/Decoder block
-                if c_name != last_c_name:
-                    mux_idx += 1
-                    inst_idx = 0
+                if 'grid_row' in item:
+                    inst_name = f"I_{val}_{item['grid_row']}_{item['grid_col']}"
                 else:
-                    inst_idx += 1
+                    if c_name != last_c_name: mux_idx += 1; inst_idx = 0
+                    else: inst_idx += 1
+                    last_c_name = c_name
+                    inst_name = f"MUX_switch_isle{val}_idx{mux_idx}_inst{inst_idx}"
                 
-                last_c_name = c_name
-
-                # Determine type for naming (decoder vs switch) Currently hardcoded 
-                m_type =  "switch"
-                
-                # Format: MUX_{type}_isle{isle}_idx{mux_idx}_inst{inst_idx}
-                # matches flattened Verilog where each bit is a unique sub-instance
-                inst_name = f"MUX_{m_type}_isle{val}_idx{mux_idx}_inst{inst_idx}"
-                
-                comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
+                comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {int(x_loc_raw*dbu/1000)} {int(y_loc_raw*dbu/1000)} ) N ;\n')
                 comp_cnt += 1
+                generate_cell_blockage(inst_name, c_name, x_loc_raw, y_loc_raw)
 
-
-    def_file.write(f'\nCOMPONENTS {comp_cnt} ;\n')
+    # 3. Write Components
+    def_file.write(f'COMPONENTS {comp_cnt} ;\n')
     def_file.write(''.join(comp_string))
     def_file.write('END COMPONENTS\n\n')
+
+    # 4. Write Blockages
+    if blockage_cnt > 0:
+        def_file.write(f'BLOCKAGES {blockage_cnt} ;\n')
+        def_file.write(''.join(blockage_string))
+        def_file.write('END BLOCKAGES\n\n')
+
     def_file.write('END DESIGN')
     def_file.close()
+
+    # 5. Print out results
+    if verbose == True:
+        print(f"--- DEF Generation Summary ---")
+        print(f"File: {file_path}")
+        print(f"Total Components: {comp_cnt}")
+        print(f"Total Blockage Entries: {blockage_cnt}")
+        print(f"Tech Process: {tech_process} (Layers: {', '.join(blockage_layers)})")
+        if blockage_exemptions:
+            print(f"Exemptions applied to {len(blockage_exemptions)} instances/cells.")
+        print(f"-------------------------------")
+
 
 
 def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, router_tool):

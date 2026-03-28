@@ -81,7 +81,15 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 x_offset, y_offset = 400*track_spacing, 2000*track_spacing
                 
                 if(run_fr_cadence):
-                        x_IO, y_IO = 10000, 10000 
+                        x_IO, y_IO = 9990, 9984
+                        
+                        ## Account for IO area so, location islands in python code can start from 0,0
+                        first_island_x, first_island_y = location_islands[0]
+                        
+                        #Convert the outer tuple to a list and back to tuple
+                        location_islands = list(location_islands)
+                        location_islands[0] = (first_island_x + x_IO, first_island_y + y_IO)
+                        location_islands = tuple(location_islands)
 
         design_area = (x_IO, y_IO, design_limits[0], design_limits[1], x_offset, y_offset)
 
@@ -93,7 +101,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                         raise ValueError("pd_args (JSON settings) must be provided for Cadence flow.")
 
                 # Generate flattened verilog for Cadence
-                flat_verilog, pin_info = circuit.print_cadence(process)
+                flat_verilog, pin_info, ndr_info = circuit.print_cadence(process)
                 verilog_cadence_path = os.path.join(cadence_inputs, project_name + '.v')
 
                 with open(verilog_cadence_path, "w") as f:
@@ -103,7 +111,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 pd_cadence_tcl_gen.generate_init_tcl( pd_args, os.path.join(cadence_tcl, "init.tcl"), top_level=project_name)
                 pd_cadence_tcl_gen.generate_pins_tcl(pd_args, design_area, pin_info, os.path.join(cadence_tcl, "pins.tcl"))
                 pd_cadence_tcl_gen.generate_power_tcl(pd_args, os.path.join(cadence_tcl, "power.tcl"))
-                pd_cadence_tcl_gen.generate_route_tcl(pd_args, os.path.join(cadence_tcl, "route.tcl"))
+                pd_cadence_tcl_gen.generate_route_tcl(pd_args, ndr_info, os.path.join(cadence_tcl, "route.tcl"))
                 pd_cadence_tcl_gen.generate_signoff_tcl(pd_args, os.path.join(cadence_tcl, "signoff.tcl"),top_level=project_name)
 
                 pd_cadence_tcl_gen.generate_main_tcl(os.path.join(cadence_proj_dir, "main.tcl"), subdir="../tcl")

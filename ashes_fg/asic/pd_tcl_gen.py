@@ -70,6 +70,7 @@ def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath,):
             place_type = item["place_type"]
 
     edge_map = {"W": 0, "N": 1, "E": 2, "S": 3}
+    # Width Height Left Bottom Right Top
     tcl = ["######## Floorplan ########",
            f'create_floorplan -site core -core_size {design_area[2]/1000} {design_area[3]/1000} {design_area[0]/1000} {design_area[1]/1000} {design_area[0]/1000} {design_area[1]/1000} \n',
            "################### Pin Assignment ###################\n"]
@@ -130,29 +131,72 @@ def generate_power_tcl(config_data, filepath):
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))
 
-def generate_route_tcl(config_data, filepath):
+def generate_route_tcl(config_data, ndr_info, filepath):
+    """
+    Generates a Cadence Tcl script for routing, including dynamic NDR assignments.
+    """
+    # Flatten routing config
     r_cfg = {}
-    for item in config_data.get("route", []): r_cfg.update(item)
-    tcl = [
-        "################### Routing ###################",
-        f"set_db route_antenna_cell_name {r_cfg.get('ant_dio_cell')}",
-        f"set_db design_top_routing_layer {r_cfg.get('top_layer')}",
-        f"set_db design_bottom_routing_layer {r_cfg.get('bot_layer')}",
-        f"set_db route_antenna_diode_insertion 1",
-        f"set_db route_with_timing_driven 1",
-        f"set_db route_with_eco 0",
-        f"set_db route_with_litho_driven 1",
-        f"set_db route_detail_post_route_litho_repair 1",
-        f"set_db route_with_si_driven 1",
-        f"set_db route_detail_auto_stop 0",
-        f"set_db route_selected_net_only 0",
-        f"set_db route_detail_end_iteration 10",
-        f"set_db route_with_timing_driven true",
-        f"set_db route_with_si_driven true",
-        "route_design -global_detail"
+    for item in config_data.get("route", []):
+        r_cfg.update(item)
+
+    tcl = []
+    tcl.append("################################################")
+    tcl.append("## 1. Define Non-Default Rules (NDR) for Nets ##")
+    tcl.append("################################################")
+
+    if ndr_info:
+        # Group nets by their rule to keep the TCL clean
+        # Result: { 'CLOCK_RULE': ['net1', 'net2'], 'POWER_RULE': ['net3'] }
+        rules_map = {}
+        for net_name, rule in ndr_info.items():
+            rules_map.setdefault(rule, []).append(net_name)
+
+        for rule, nets in rules_map.items():
+            net_list = " ".join(nets)
+                        
+            # If you need specific attributes like shielding (from your example):
+            if "CLOCK" in rule.upper():
+                tcl.append(f"set_route_attributes -nets {{ {net_list} }} \\")
+                tcl.append(f"   -route_rule {rule} -shield_nets GND -shield_side two_sides \\")
+#                tcl.append(f"   -top_preferred_routing_layer {r_cfg.get('top_layer', 'M7')} \\")
+#                tcl.append(f"   -bottom_preferred_routing_layer {r_cfg.get('bot_layer', 'M4')} \\")
+                tcl.append(f"   -si_post_route_fix true")
+    else:
+        tcl.append("# No non-default rules defined.")
+
+    tcl.append("\n################################################")
+    tcl.append("## 2. Routing Configuration                   ##")
+    tcl.append("################################################")
+    
+    # List of database settings
+    settings = [
+        ("route_antenna_cell_name", r_cfg.get('ant_dio_cell')),
+        ("design_top_routing_layer", r_cfg.get('top_layer')),
+        ("design_bottom_routing_layer", r_cfg.get('bot_layer')),
+        ("route_antenna_diode_insertion", "1"),
+        ("route_with_timing_driven", "true"),
+        ("route_with_si_driven", "true"),
+        ("route_with_litho_driven", "1"),
+        ("route_detail_post_route_litho_repair", "1"),
+        ("route_detail_auto_stop", "0"),
+        ("route_selected_net_only", "0"),
+        ("route_detail_end_iteration", "10"),
+        ("route_with_eco", "0")
     ]
+
+    for db_name, value in settings:
+        if value is not None:
+            tcl.append(f"set_db {db_name} {value}")
+
+    tcl.append("\n################################################")
+    tcl.append("## 3. Execute Routing                         ##")
+    tcl.append("################################################")
+    tcl.append("route_design -global_detail")
+
+    # Write to file
     with open(filepath, "w") as f:
-        f.write("\n".join(tcl))
+        f.write("\n".join(tcl) + "\n")
 
 
 def generate_signoff_tcl(config_data,filepath,top_level="proj_name"):
