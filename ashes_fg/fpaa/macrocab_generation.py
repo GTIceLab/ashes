@@ -12,26 +12,6 @@ simulation_log = []
 ASHESPATH = os.getenv("ASHESPATH","/home/ubuntu/ashes")
 RASPPATH = os.getenv("RASPPATH", "/home/ubuntu/rasp30")
 
-if len(sys.argv) == 3:
-    path_name = sys.argv[1]
-    block_name = sys.argv[2]
-    block_level = sys.argv[3]
-elif len(sys.argv) == 2:
-    if sys.argv[1] == "make_macrocab":
-        # call make macrocab function
-        pass
-    elif sys.argv[1] == "delete_macrocab":
-        # call delete macrocab function
-
-        # function calls with false
-
-        pass
-    else:
-        raise ValueError("Invalid command.")
-else:
-    raise ValueError("Commands: python3 macrocab_generation.py block_name block_level \nOR python3 macrocab_generation.py make_macrocab \nOR python3 macrocab_generation.py delete_macrocab")
-
-
 # data to specify: folder name, block name, block level
 # assume this is in json/csv/txt/yaml/etc
 
@@ -60,9 +40,7 @@ def verify_starting_parameters(path_name, block_name, block_level):
         raise ValueError(f"Path {path_name} already exists.")
     
     subprocess.run(f"mkdir {ASHESPATH}/{path_name}")
-    subprocess.run(f"mv {ASHESPATH}/ex_format.json {ASHESPATH}/{path_name}/{block_name}.json")
-    subprocess.run(f"mkdir {ASHESPATH}/{block_name}_copy")
-    subprocess.run(f"cp -r {ASHESPATH}/ashes_fg {ASHESPATH}/{block_name}_copy/ashes_fg")
+    subprocess.run(f"cp {ASHESPATH}/template.json {ASHESPATH}/{path_name}/{block_name}.json")
 
 #######
 # Parser for new JSON:
@@ -639,11 +617,17 @@ def edit_class_libs(classlibfile, macrocab_name, parameters, delete):
 
 
 
+def is_routing_exception(json):
+    for matrix in json['routing'].values():
+        if matrix == json['routing']['power_block']:
+            continue
+        for entry in matrix.get('C', []) + matrix.get('T', []):
+            col = entry.get('col', '')
+            if col != '' and int(col) < 15:
+                return True
+    return False
 
-
-def edit_xml(xml_file, generated, delete):
-    macrocab_name = generated["macrocab"]["block_name"]
-
+def edit_xml(xml_file, macrocab_name, macrocab_num_inputs, macrocab_num_outputs, delete, routing_exception):
     root = etree.parse(xml_file).getroot()
 
     if delete:
@@ -658,9 +642,10 @@ def edit_xml(xml_file, generated, delete):
             cab.remove(pb)
 
         interconnect = cab.find('interconnect')
-        for elem in interconnect.findall('complete'):
-            if macrocab_name in elem.get('output', '') or macrocab_name in elem.get('input', ''):
-                interconnect.remove(elem)
+        for tag in ('complete', 'direct'):
+            for elem in interconnect.findall(tag):
+                if macrocab_name in elem.get('output', '') or macrocab_name in elem.get('input', ''):
+                    interconnect.remove(elem)
     else:
 
 
@@ -686,20 +671,25 @@ def edit_xml(xml_file, generated, delete):
         else:
             in_pins = f'{macrocab_name}.in[{macrocab_num_inputs - 1}:0]'
 
-        etree.SubElement(interconnect, 'complete', name='crossbar',input='cab.I[12:0]',output=in_pins)
+        if routing_exception:
+            cab_in = 'cab.I[0]' if macrocab_num_inputs == 1 else f'cab.I[{macrocab_num_inputs - 1}:0]'
+            etree.SubElement(interconnect, 'direct', name='crossbar', input=cab_in, output=in_pins)
+        else:
+            etree.SubElement(interconnect, 'complete', name='crossbar', input='cab.I[12:0]', output=in_pins)
 
         # output line: macrocab output drives cab.O[4]
-        etree.SubElement(interconnect, 'complete',name='crossbar',input=f'{macrocab_name}[0].out[0]',output='cab.O[4]')
+        if macrocab_num_outputs == 1:
+            etree.SubElement(interconnect, 'complete', name='crossbar', input=f'{macrocab_name}[0].out[0]', output='cab.O[4]')
+        else:
+            cab_out_end = 4 - (macrocab_num_outputs - 1)
+            etree.SubElement(interconnect, 'direct', name='crossbar', input=f'{macrocab_name}[0].out[{macrocab_num_outputs - 1}:0]', output=f'cab.O[4:{cab_out_end}]')
 
         # write
-        etree.ElementTree(root).write(xml_file, pretty_print=True,xml_declaration=True,encoding='UTF-8')
+    etree.ElementTree(root).write(xml_file, pretty_print=True,xml_declaration=True,encoding='UTF-8')
 
-        # routing
 
-        #etree.write(xml_file,pretty_print=True,xml_declaration=True,encoding='UTF-8')
 
-# needs to be updated
-def edit_rasp30(rasp30_file, generated, delete):
+def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cols, input_rows, delete):
 
     macrocab_name = generated["macrocab"]["block_name"]
 
@@ -778,6 +768,36 @@ def edit_genswcs(genswcs_file, block_name, num_inputs, num_outputs, delete):
             old_if_from_sub_name = "elif from_sub_name in ["
             new_if_from_sub_name = f"{old_if_from_sub_name}'{block_name}[0]', "
             lines = lines.replace(old_if_from_sub_name, new_if_from_sub_name)
+
+
+if len(sys.argv) == 3:
+    block_name = sys.argv[1]
+    block_level = sys.argv[2]
+    json_path = sys.argv[3]
+
+    verify_starting_parameters(json_path, block_name, block_level)
+    ir = parse_design(json_path)
+    emits = emit_io_definition(ir)
+    params = emit_resource_parameters(ir)
+
+    edit_class_libs(f"{ASHESPATH}/ashes_fg/class_lib.py", block_name, params["class_parameters"])
+
+
+elif len(sys.argv) == 2:
+    if sys.argv[1] == "make_macrocab":
+        # call make macrocab function
+        pass
+    elif sys.argv[1] == "delete_macrocab":
+        # call delete macrocab function
+
+        # function calls with false
+
+        pass
+    else:
+        raise ValueError("Invalid command.")
+else:
+    raise ValueError("Commands: python3 macrocab_generation.py block_name block_level json_path \nOR python3 macrocab_generation.py make_macrocab \nOR python3 macrocab_generation.py delete_macrocab")
+
 
 
 
