@@ -701,8 +701,9 @@ import ashes_fg.asic.asic_compile as ac
 from ashes_fg.asic.asic_compile import *
 
 
-def generate_sblocks(top: ac.Circuit, vmm_island: ac.Island,
-                     num_sblocks: int = 18, return_horizontal_lines: bool = True):
+def generate_sblocks(top: ac.Circuit, island: ac.Island,
+                     num_sblocks: int = 18, base_loc: list = [0, 0],
+                     return_horizontal_lines: bool = True):
     # One 4x2 VMM has 8 floating gates
     # One S-block needs 6 floating gates
     # Therefore, we use 3 4x2 VMMs in one row to get 4 S-blocks (8 * 3 / 6 = 4)
@@ -719,12 +720,12 @@ def generate_sblocks(top: ac.Circuit, vmm_island: ac.Island,
 
 
     ########### Place Cells ###########
-    WestVMMs = S_Block_west(top,vmm_island,dim=[number_of_rows,1])
-    EastVMMs = S_Block_east(top,vmm_island,dim=[number_of_rows,1])
+    WestVMMs = S_Block_west(top,island,dim=[number_of_rows,1])
+    EastVMMs = S_Block_east(top,island,dim=[number_of_rows,1])
 
     # (0,0) is upper left corner
-    WestVMMs.place([0,0])
-    EastVMMs.place([number_of_rows + 1, 0])
+    WestVMMs.place(base_loc)
+    EastVMMs.place([base_loc[0] + number_of_rows + 1, base_loc[1]])
 
     # Place the middle routing blocks
     routing_block_row_index = 0
@@ -733,11 +734,12 @@ def generate_sblocks(top: ac.Circuit, vmm_island: ac.Island,
     for x in range(number_of_rows):
         for y in range(number_of_rows):
             if (y == routing_block_row_index):
-                S_Block_middle_blocks[x][y] = S_Block_NS_routing_diagonal(top, vmm_island, dim=[1,1])
+                S_Block_middle_blocks[x][y] = S_Block_NS_routing_diagonal(top, island, dim=[1,1])
             else:
-                S_Block_middle_blocks[x][y] = S_Block_filler_off_diagonal(top, vmm_island, dim=[1,1])
+                S_Block_middle_blocks[x][y] = S_Block_filler_off_diagonal(top, island, dim=[1,1])
             
-            S_Block_middle_blocks[x][y].place([x + 1, y])
+            print("Placing at", [base_loc[0] + x + 1, base_loc[1] + y])##
+            S_Block_middle_blocks[x][y].place([base_loc[0] + x + 1, base_loc[1] + y + 1])
             S_Block_middle_blocks[x][y].markAbut()
         routing_block_row_index += 1
         
@@ -816,7 +818,7 @@ def IndirectVMM(circuit,dim=[4,2], island=None,decoderPlace=True,loc=[0,0]):
 
     return VMM
 
-# TODO pins for the overridden cells
+######### Overridden cells below #########
 
 class G_or_S_IndrctSwcs(MUX):
     def __init__(self,circuit,island=None,dim=(1,1),Vgrun_w=None,run_w=None,prog_w=None,AVDD_w=None,Vgrun_e=None,run_e=None,prog_e=None,AVDD_e=None,VINJ_n=None,Vg_n=None,GND_n=None,VTUN_n=None,Input_n=None,Vsel_n=None,Vsel_s=None,Vs_s=None,VINJ_s=None,GND_s=None,Vg_s=None,fgmem_s=None,VTUN_s=None):
