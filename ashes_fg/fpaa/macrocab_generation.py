@@ -40,7 +40,7 @@ def verify_starting_parameters(path_name, block_name, block_level):
         #raise ValueError(f"Path {path_name} already exists.")
     
     subprocess.run([f"mkdir", f"{ASHESPATH}/{path_name}"])
-    subprocess.run([f"cp", f"{ASHESPATH}/template.json", f"{ASHESPATH}/{path_name}/{block_name}.json"])
+    subprocess.run([f"cp", f"{ASHESPATH}/{path_name}/template.json", f"{ASHESPATH}/{path_name}/{block_name}.json"])
 
 #######
 # Parser for new JSON:
@@ -790,7 +790,7 @@ if len(sys.argv) == 4:
 
     verify_starting_parameters(json_path, block_name, block_level)
     
-
+    sys.exit(0)
 
 
 if len(sys.argv) == 2:
@@ -798,7 +798,7 @@ if len(sys.argv) == 2:
         ir = parse_design(json_path)
         emits = emit_io_definition(ir)
         params = emit_resource_parameters(ir)
-        
+
     elif sys.argv[1] == "delete_macrocab":
         # call delete macrocab function
 
