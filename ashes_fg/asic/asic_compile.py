@@ -971,9 +971,9 @@ class MUX(StandardCell):
         if self.type == "decode":
             text += ".bits(" + str(self.bits) + ")"
         elif self.type == "switch":
-            text += ".num(" + str(self.num) + ")"
+            text += ".num(" + str(self.dim[0]) + ")"
         elif self.type == "switch_ind":
-            text += ".col(" + str(self.col) + ")"
+            text += ".col(" + str(self.dim[1]) + ")"
 
         if self.hasSwitchType() == True:
             text += ", .type(" + self.switchType + ")"
