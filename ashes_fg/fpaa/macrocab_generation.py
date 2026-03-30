@@ -33,11 +33,11 @@ def verify_starting_parameters(path_name, block_name, block_level):
     elif os.path.exists(f"{ASHESPATH}/{path_name}/{block_name}.json"):
         raise ValueError("Macrocab name already exists in the specified path.")
     # level errors
-    if block_level != 1 and block_level != 2:
-        raise ValueError("Block level must be either 1 or 2.")
+    if block_level != "1" and block_level != "2":
+        raise ValueError(f"Block level must be either 1 or 2. Yours was {block_level}.")
     # check folder vs path
-    if os.path.exists(f"{ASHESPATH}/{path_name}"):
-        raise ValueError(f"Path {path_name} already exists.")
+    #if os.path.exists(f"{ASHESPATH}/{path_name}"):
+        #raise ValueError(f"Path {path_name} already exists.")
     
     subprocess.run(f"mkdir {ASHESPATH}/{path_name}")
     subprocess.run(f"cp {ASHESPATH}/template.json {ASHESPATH}/{path_name}/{block_name}.json")
@@ -684,56 +684,69 @@ def edit_xml(xml_file, macrocab_name, macrocab_num_inputs, macrocab_num_outputs,
             cab_out_end = 4 - (macrocab_num_outputs - 1)
             etree.SubElement(interconnect, 'direct', name='crossbar', input=f'{macrocab_name}[0].out[{macrocab_num_outputs - 1}:0]', output=f'cab.O[4:{cab_out_end}]')
 
-        # write
     etree.ElementTree(root).write(xml_file, pretty_print=True,xml_declaration=True,encoding='UTF-8')
 
 
 
-def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cols, input_rows, delete):
-
-    macrocab_name = generated["macrocab"]["block_name"]
+def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cols, input_rows, all_cells, delete):
 
     with open(rasp30_file, 'r') as file:
         lines = file.read()
     
     if f"{macrocab_name}" in lines and not delete:
         raise ValueError(f"{macrocab_name} already registered")
+    
+    out_pin = f"'{macrocab_name}[0].out[0]'" if num_outputs == 1 else \
+              f"'{macrocab_name}[0].out[0:{num_outputs-1}]'"
+    in_pin  = f"'{macrocab_name}[0].in[0]'"  if num_inputs  == 1 else \
+              f"'{macrocab_name}[0].in[0:{num_inputs-1}]'"
+    in_loc  = str(input_rows[0])  if num_inputs  == 1 else str(input_rows)
+    out_loc = str(output_cols[0]) if num_outputs == 1 else str(output_cols) 
 
-    old_dev_fgs = "'vmm_offc[0]',[0,0],"
-    new_dev_fgs = f"{old_dev_fgs}\n'{macrocab_name}[0]',[0,0]"
-    lines = lines.replace(old_dev_fgs, new_dev_fgs)
+    if delete:
 
-    old_self_dev_pins_1 = "'vmm_offc_in':13,"
-    new_self_dev_pins_1 = f"{old_self_dev_pins_1}'{macrocab_name}_in':1,"
-    lines = lines.replace(old_self_dev_pins_1, new_self_dev_pins_1)
+        lines = lines.replace(f",{out_pin}']", f"']")  # li_sm_0b
+        lines = lines.replace(f",{in_pin}",    "")     # li_sm_1
+        lines = lines.replace(f"+['{macrocab_name}']*1", "")  # dev_types
+        lines = lines.replace(f",'{macrocab_name}_in':{num_inputs}", "")   # dev_pins
+        lines = lines.replace(f",'{macrocab_name}_out':{num_outputs}}}", "}}")  # dev_pins
 
-    old_self_dev_pins_2 = "'vmm_offc_out':2"
-    new_self_dev_pins_2 = f"{old_self_dev_pins_2},'{macrocab_name}_out':1}}"
-    lines = lines.replace(old_self_dev_pins_2, new_self_dev_pins_2)
+        lines = "\n".join(
+            l for l in lines.splitlines()
+            if macrocab_name not in l
+        )
+    else:
 
-    old_self_dev_types = "+['current_ref']*1"
-    new_self_dev_types = f"{old_self_dev_types}+['{macrocab_name}']*1"
-    lines = lines.replace(old_self_dev_types, new_self_dev_types)
+        old_dev_fgs = "'vmm_offc[0]',[0,0],"
+        new_dev_fgs = f"{old_dev_fgs}\n'{macrocab_name}[0]',[0,0]"
+        lines = lines.replace(old_dev_fgs, new_dev_fgs) # checked
 
-    old_li_sm_in = "'vmm_offc[0].in[0:12]',[[6,7,8,9,10,11,12,13,14,15,16,17,27],0],"
-    new_li_sm_in = f"{old_li_sm_in}\n'{macrocab_name}[0].in[0]',[33,0],"
-    lines = lines.replace(old_li_sm_in, new_li_sm_in)
+        old_dev_fgs_2 = "self.dev_fgs ="
+        new_dev_fgs_2 = f"'{macrocab_name}_ls[0]',[{all_cells[0]}"
+        for cell in all_cells[1:]:
+            new_dev_fgs_2 += f",{str(cell)}"
+        lines = lines.replace(old_dev_fgs_2, new_dev_fgs_2+"\n"+old_dev_fgs_2)
 
-    old_li_sm_out = "'vmm_offc[0].out[0:1]',[0,[17,18]],"
-    new_li_sm_out = f"{old_li_sm_out}\n'{macrocab_name}[0].out[0]',[0,0],"
-    lines = lines.replace(old_li_sm_out, new_li_sm_out)
+        old_dev_pins_1 = "'vmm_offc_in':13,"
+        lines = lines.replace(old_dev_pins_1, f"{old_dev_pins_1},'{macrocab_name}_in':{num_inputs},") # checked
 
-    old_li_sm_0b = "'vmm_offc[0].out[0:1]'"
-    new_li_sm_0b = f"{old_li_sm_0b},'{macrocab_name}[0].out[0]']"
-    lines = lines.replace(old_li_sm_0b, new_li_sm_0b)
+        old_dev_pins_2 = "'vmm_offc_out':2"
+        lines = lines.replace(old_dev_pins_2, f"{old_dev_pins_2},'{macrocab_name}_out':{num_outputs}}}") # checked
 
-    old_li_sm_1 = "'vmm_offc[0].in[0:12]'"
-    new_li_sm_1 = f"{old_li_sm_1},'{macrocab_name}[0].in[0]'"
-    lines = lines.replace(old_li_sm_1, new_li_sm_1)
+        old_dev_types = "+['vmm_offc']*1"
+        lines = lines.replace(old_dev_types, f"{old_dev_types}+['{macrocab_name}']*1") # checked
 
-    old_cell_list = "'cap_4x_cs[0:3]',[[28,29,28,29], 0]"
-    new_cell_list = f"{old_cell_list},\n'{macrocab_name}[0]',[[25,24],[25,25],[etc]],"
-    lines = lines.replace(old_cell_list, new_cell_list)
+        old_li_sm_in = "'vmm_offc[0].in[0:12]',[[6,7,8,9,10,11,12,13,14,15,16,17,27],0],"
+        lines = lines.replace(old_li_sm_in, f"{old_li_sm_in}\n{in_pin},[{in_loc},0],")
+
+        old_li_sm_out = "'vmm_offc[0].out[0:1]',[0,[17,18]],"
+        lines = lines.replace(old_li_sm_out, f"{old_li_sm_out}\n{out_pin},[0,{out_loc}],")
+
+        old_li_sm_0b = ",'vmm_offc[0].out[0:1]'"
+        lines = lines.replace(old_li_sm_0b, f"{old_li_sm_0b},{out_pin}']") # checked
+
+        old_li_sm_1 = "'vmm_offc[0].in[0:12]'"
+        lines = lines.replace(old_li_sm_1, f"{old_li_sm_1},{in_pin}") #fgbias, pbias, etc? # checked
 
     with open(rasp30_file, 'w') as file:
         file.write(lines)
@@ -770,7 +783,7 @@ def edit_genswcs(genswcs_file, block_name, num_inputs, num_outputs, delete):
             lines = lines.replace(old_if_from_sub_name, new_if_from_sub_name)
 
 
-if len(sys.argv) == 3:
+if len(sys.argv) == 4:
     block_name = sys.argv[1]
     block_level = sys.argv[2]
     json_path = sys.argv[3]
@@ -780,7 +793,6 @@ if len(sys.argv) == 3:
     emits = emit_io_definition(ir)
     params = emit_resource_parameters(ir)
 
-    edit_class_libs(f"{ASHESPATH}/ashes_fg/class_lib.py", block_name, params["class_parameters"])
 
 
 elif len(sys.argv) == 2:
