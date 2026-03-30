@@ -57,6 +57,7 @@ def main():
     if config_path.exists():
         with open(config_path) as f:
             compile_args = json.load(f)
+    
 
     # ---- load routing settings ----
     config_path = project_dir / "router_settings.json"
@@ -67,6 +68,15 @@ def main():
     else:
         qparams = None
 
+
+    # ---- load synthesis settings ----
+    config_path = project_dir / "pd_cadence_settings.json"
+    pd_args = {}
+    if config_path.exists():
+        with open(config_path) as f:
+            pd_args = json.load(f)
+            
+            
     # Assume project name is folder name
     project_name = Path(args.design).stem
 
@@ -74,7 +84,7 @@ def main():
     if args.flow == "fpaa":
         af.fpaa.compile(design, **compile_args)
     elif args.flow == "asic":
-        af.asic.compile(design,project_path = project_dir,project_name=project_name,design_limits=design_limits,location_islands=location_islands,qparams=qparams,**compile_args)
+        af.asic.compile(design,project_path = project_dir,project_name=project_name,design_limits=design_limits,location_islands=location_islands,qparams=qparams,pd_args=pd_args,**compile_args)
 
 if __name__ == "__main__":
     main()

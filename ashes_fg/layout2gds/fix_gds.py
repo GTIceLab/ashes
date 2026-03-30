@@ -33,11 +33,15 @@ def get_pin_direction(label: gdstk.Label, box: tuple) -> str:
     # TODO what if a pin is directly in the middle?
 
 def add_direction(pin_name: str, direction: str) -> str:
-    if "[" in pin_name:
+    if "<" in pin_name:
+        base_name, index = pin_name.split("<", 1)
+        return base_name + "_" + direction + "<" + index
+    elif "[" in pin_name:
         base_name, index = pin_name.split("[", 1)
         return base_name + "_" + direction + "[" + index
     else:
         return pin_name + "_" + direction
+
 
 def fix_pins(input_filename: str, output_filename):
     try:

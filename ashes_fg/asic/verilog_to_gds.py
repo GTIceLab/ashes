@@ -42,12 +42,14 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     file_name_no_ext = proj_name
     #file_path = os.path.join('.', file_name_no_ext)
     file_path = os.path.join(proj_path,'pd')
+    file_path_cadence = os.path.join(proj_path,'cadence',proj_name,'inputs')
+
     if not os.path.exists(file_path):
             os.makedirs(file_path)
     ver_file = open(os.path.join(proj_path,'syn',verilog_file_name), 'r')
     ver_file_content = ver_file.read()
     ver_file.close()
-    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer = process_params
+    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer,run_fr_cadence = process_params
   
     ast = parse_verilog(ver_file_content)
     module_list = set()
@@ -58,11 +60,20 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
 
     text_layout_path = os.path.join(file_path, f'{file_name_no_ext}_gds.txt')
     gds_path = os.path.join(file_path, f'{file_name_no_ext}_placed.gds')
-    lef_file_path = os.path.join(file_path, f'{file_name_no_ext}.lef')
-    def_file_path = os.path.join(file_path, f'{file_name_no_ext}.def')
+
+    if run_fr_cadence == 1:
+        lef_file_path = os.path.join(file_path_cadence, f'cells.lef')
+        def_file_path = os.path.join(file_path_cadence, f'{file_name_no_ext}.def')
+
+    else:
+        lef_file_path = os.path.join(file_path, f'{file_name_no_ext}.lef')
+        def_file_path = os.path.join(file_path, f'{file_name_no_ext}.def')
+
+
     guide_file_path = os.path.join(file_path, f'{file_name_no_ext}.guide')
     merged_gds_file_path = os.path.join(file_path, f'{file_name_no_ext}_merged.gds')
     text_merged_layout_path = os.path.join(file_path, f'{file_name_no_ext}_merged.txt')
+
     if lib_path == None:
         lib_path = os.path.join(Path(__file__).parent,'lib', tech_process)
     
@@ -80,6 +91,10 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
         raise CellNotFound(f'Could not open layer map {layer_map_path}. ')
     layer_map = json.load(open(layer_map_path))
     pin_list = make_pin_list(layer_map, tech_process)
+
+    ## Patch for putting the most used pin data type number on first index
+    common_dt = max(set(x[1] for x in pin_list), key=[x[1] for x in pin_list].count)
+    pin_list.sort(key=lambda x: x[1] != common_dt)
 
     # Pick out relevant module and pre fill the module list with unique names of instances used
     # Flow currently handles one module at a time, give 'cells_only' module priority.
@@ -126,7 +141,6 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
             first_cell = False
         elif inst.instance_name.lower() in inst_except_list:
             generate_cells_list.append(inst)
-
     if verbose: print('Cell Info:')
     if verbose: pprint.pprint(cell_info)
     if verbose: print(f'Module List:\n{top_module.module_instances}')
@@ -207,12 +221,16 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
         update_output_layout('ENDLIB\n', text_layout_path)
         os.system(f'{pypath} {txt2gds_path} -o {gds_path} {text_layout_path}')
 
-        generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu, cell_order_in_island,lib_path)
+        generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu, cell_order_in_island,lib_path,run_fr_cadence)
 
         #metal_layers = count_metal_layers(layer_map, tech_process)
         metal_layers = count_metal_layers_drawing(layer_map, tech_process)
         def_params = (track_spacing, def_file_path, dbu, design_area, file_name_no_ext, frame_module, router_tool, tech_process)
-        def_blocks, def_nets = generate_def(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table,lef_file_path)
+
+        if run_fr_cadence == 0:
+            def_blocks, def_nets = generate_def(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table,lef_file_path)
+        else:
+            generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table,lef_file_path)
 
         #island_info = sanitize_island_info(island_info)
         if verbose:
@@ -250,7 +268,6 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     sub_cell_width = None
 
     prBoundary_flag = False
-
     # add process variable 
     try:
         with open(os.path.join(lib_path,'gds', name + '.gds'),'rb') as bin_file:
@@ -393,8 +410,8 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
 
                     # Check for height and width of the cell
                     # Get location of pin
-                    #if rec.tag_name == 'XY' and prBoundary_flag == True:
-                    if rec.tag_name == 'XY':
+                    if rec.tag_name == 'XY' and prBoundary_flag == True:
+                    #if rec.tag_name == 'XY':
 
                         for idx, item in enumerate(rec.data):
                             if idx % 2:
@@ -901,13 +918,16 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                         coords_id += 1
                         width_accum += cell_width
                     height_accum += int(cell_info[row[0]['name']]['height'])
-                drain_select_width = cell_info[str(vert_switch_array[0][0]['name'])]['width']
-                prog_switch_width = cell_info[str(vert_switch_array[0][1]['name'])]['width']
+                #drain_select_width = cell_info[str(vert_switch_array[0][0]['name'])]['width']
+                #prog_switch_width = cell_info[str(vert_switch_array[0][1]['name'])]['width']
+                # Created a path to accept one cell for drain swcs unlike 350nm
+                vert_swc_width = sum(cell_info[str(x['name'])]['width'] for x in vert_switch_array[0] if x['name'])
             drainmux_spacing = 0*dbu #7.5 is okay
             # Optional parameter to add drainmux spacing to specified island
             if drainmux_space_isle_idx is not None and int(val) == int(drainmux_space_isle_idx):
                 drainmux_spacing = int(drainmux_space*dbu)
-            x_drainmux_offset += drain_select_width + prog_switch_width + drainmux_spacing
+            x_drainmux_offset += vert_swc_width + drainmux_spacing
+            #x_drainmux_offset += drain_select_width + prog_switch_width + drainmux_spacing
             #x_drainmux_offset = round(x_drainmux_offset/track_spacing)*track_spacing
             # Deal with the column widths calculated for matrix islands, append offset to only first column
             col_w_keys = list(col_widths.keys())
@@ -1475,19 +1495,32 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
     return ''.join(ret_string), frame_module
 
 
-def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_order_in_island,lib_path):
+def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_order_in_island,lib_path,run_fr_cadence):
     '''
     Create a lef file for the design
     - Start with a copy of the technology lef
     - Use the module list to define any pins found
     '''
+
     # Copy the technology lef for the design
     tech_lef_path = os.path.join(lib_path, 'tech_lef', tech_process + '.lef')
     #tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '_toplevelroute.lef')
-    if os.path.exists(tech_lef_path): shutil.copy(tech_lef_path, file_path)
-    else: raise CellNotFound(f'Could not find the technology lef file {tech_process}.lef. Is it in the ./lib/tech_lef/ directory?')
+    
+    if run_fr_cadence == 1:
+        header_str = 'VERSION 5.8 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
+        ## Harcoded fix for innovus import, because cells.lef is not recognized properly according to dbu the def is 1000
+        dbu=1000
+
+    else:
+        if os.path.exists(tech_lef_path): shutil.copy(tech_lef_path, file_path)
+        else: raise CellNotFound(f'Could not find the technology lef file {tech_process}.lef. Is it in the ./lib/tech_lef/ directory?')
 
     lef_file = open(file_path, 'a')
+
+    if run_fr_cadence == 1:
+        lef_file.write(header_str) 
+        lef_file.write(f"UNITS\n    DATABASE MICRONS {dbu} ;\nEND UNITS\n\n") 
+
     lef_file.write('\n\n') 
     seen = set()
     # Run through cell order dict
@@ -1497,6 +1530,14 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
             if item['type'] == 'cell' and not processed:
                 module = item['name']
                 lef_file.write(f'MACRO {module}\n')
+
+                if (run_fr_cadence == 1):
+                    lef_file.write(f'  CLASS BLOCK ;\n')
+                    lef_file.write(f"  ORIGIN {cell_info[module]['origin'][0]/dbu} {cell_info[module]['origin'][1]/dbu} ;\n")
+                    lef_file.write(f"  SIZE {cell_info[module]['width']/dbu} BY {cell_info[module]['height']/dbu} ;\n")
+                    # Currently hardcoded as no rotation
+                    lef_file.write(f'  SYMMETRY X Y R90 ;\n')
+
                 try:
                     pins = cell_info[module]['cell_pins']
                 except:
@@ -1504,7 +1545,12 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
                         print(f'Warning: module {module} has no pins defined on the cell.')
                     pins = {}
                 for pin, value in pins.items():
-                    lef_file.write(f'  PIN {pin}\n')
+                    ## Maybe Qrouter also needs [] instead of <>, relook and remove this flag later
+                    if (run_fr_cadence == 1):
+                        formatted_pin = pin.replace('<', '[').replace('>', ']')
+                        lef_file.write(f'  PIN {formatted_pin}\n')
+                    else:
+                        lef_file.write(f'  PIN {pin}\n')
                     lef_file.write(f'    DIRECTION INOUT ;\n')
                     lef_file.write(f'    USE SIGNAL ;\n')
                     lef_file.write(f'    PORT\n')
@@ -1513,7 +1559,10 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
                     rect = value['RECT']
                     lef_file.write(f'        RECT {rect[0]/dbu} {rect[1]/dbu} {rect[2]/dbu} {rect[3]/dbu} ;\n')
                     lef_file.write(f'    END\n')
-                    lef_file.write(f'  END {pin}\n')
+                    if (run_fr_cadence == 1):
+                        lef_file.write(f'  END {formatted_pin}\n')
+                    else:
+                        lef_file.write(f'  END {pin}\n')                
                 lef_file.write(f'END {module}\n\n')
                 seen.add(item['name'])
     
@@ -1522,6 +1571,14 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
         processed = module in seen
         if not processed:
             lef_file.write(f'MACRO {module}\n')
+            
+            if (run_fr_cadence == 1):
+                lef_file.write(f'  CLASS BLOCK ;\n')
+                lef_file.write(f"  ORIGIN {cell_info[module]['origin'][0]/dbu} {cell_info[module]['origin'][1]/dbu} ;\n")
+                lef_file.write(f"  SIZE {cell_info[module]['width']/dbu} BY {cell_info[module]['height']/dbu} ;\n")
+                # Currently hardcoded as no rotation
+                lef_file.write(f'  SYMMETRY X Y R90 ;\n')
+
             try:
                 pins = cell_info[module]['cell_pins']
             except:
@@ -1529,7 +1586,11 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
                     print(f'Warning: module {module} has no pins defined on the cell.')
                 pins = {}
             for pin, value in pins.items():
-                lef_file.write(f'  PIN {pin}\n')
+                if (run_fr_cadence == 1):
+                    formatted_pin = pin.replace('<', '[').replace('>', ']')
+                    lef_file.write(f'  PIN {formatted_pin}\n')
+                else:
+                    lef_file.write(f'  PIN {pin}\n')
                 lef_file.write(f'    DIRECTION INOUT ;\n')
                 lef_file.write(f'    USE SIGNAL ;\n')
                 lef_file.write(f'    PORT\n')
@@ -1538,7 +1599,10 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
                 rect = value['RECT']
                 lef_file.write(f'        RECT {rect[0]/dbu} {rect[1]/dbu} {rect[2]/dbu} {rect[3]/dbu} ;\n')
                 lef_file.write(f'    END\n')
-                lef_file.write(f'  END {pin}\n')
+                if (run_fr_cadence == 1):
+                    lef_file.write(f'  END {formatted_pin}\n')
+                else:
+                    lef_file.write(f'  END {pin}\n')
             lef_file.write(f'END {module}\n\n')
             seen.add(module)
 
@@ -1615,6 +1679,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     x_loc = mat_loc[1]*mat_cell_width + mat_x_loc
                     comp_string.append(f'- {mat_cell_id} {c_name} + PLACED ( {x_loc} {y_loc} ) N ;\n')
                     comp_cnt += 1
+
     def_file.write(f'\nCOMPONENTS {comp_cnt} ;\n')
     def_file.write(''.join(comp_string))
     def_file.write('END COMPONENTS\n\n')
@@ -1639,6 +1704,13 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
         pin_threshold = 1.5*dbu # this is the minimum distance between pins for a blockage to be inserted
         block_ext_len = 1*dbu # this is how far the block should extend from the internal blockage
     
+    elif tech_process == "tsmcN16":
+        pin_const = 0.5 # this is for amount of distance between blockage edge and true cell edge
+        pin_const = 0.1 # this is for amount of distance between blockage edge and true cell edge
+        pin_spacing = 0.2*dbu # this is for space from pin block to pin
+        pin_threshold = 1.5*dbu # this is the minimum distance between pins for a blockage to be inserted
+        block_ext_len = 1*dbu # this is how far the block should extend from the internal blockage
+
     else:
         sys.exit("Error: Please update the pin constants and spacing for this process node")
 
@@ -2235,6 +2307,255 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     def_file.close()
     return def_blocks, def_nets
  
+# def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table, lef_file_path):
+#     '''
+#     Create a def file for the design matching the flattened Cadence Verilog naming.
+#     '''
+#     track_spacing, file_path, dbu, design_area, file_name, frame_module, router_tool, tech_process = def_params
+   
+#     header_str = 'VERSION 5.5 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
+#     def_file = open(file_path, 'w')
+#     def_file.write(header_str) 
+
+#     def_file.write(f'DESIGN {file_name} ;\n\n')
+#     def_file.write(f'UNITS DISTANCE MICRONS {dbu} ;\n\n')
+
+#     # Property definitions
+#     def_file.write(f'PROPERTYDEFINITIONS\n')
+#     def_file.write(f'    DESIGN FE_CORE_BOX_LL_X REAL {round(design_area[0]*0.001,8)} ;\n')
+#     def_file.write(f'    DESIGN FE_CORE_BOX_UR_X REAL {round((design_area[2]-design_area[0])*0.001,8)} ;\n')
+#     def_file.write(f'    DESIGN FE_CORE_BOX_LL_Y REAL {round(design_area[1]*0.001,8)} ;\n')
+#     def_file.write(f'    DESIGN FE_CORE_BOX_UR_Y REAL {round((design_area[3]-design_area[1])*0.001,8)} ;\n')
+#     def_file.write(f'END PROPERTYDEFINITIONS\n\n')
+
+#     def_file.write(f'DIEAREA ( 0 0 ) ( {(design_area[2]/1000)*dbu} {(design_area[3]/1000)*dbu} ) ;\n\n')
+    
+#     comp_string = []
+#     comp_cnt = 0
+
+#     # # 1. Place the Frame (usually just "frame")
+#     # if frame_module:
+#     #     comp_string.append(f'- frame {frame_module.module_name} + SOURCE DIST + PLACED ( 0 0 ) N ;\n')
+#     #     comp_cnt += 1
+
+#     # 2. Iterate through islands and items
+#     for val, island in cell_order_in_island.items():
+#         # Counters for synthesized MUX/Switch blocks
+#         mux_idx = -1 
+#         inst_idx = 0
+#         last_c_name = None
+
+        
+#         for idx, item in island['items'].items():
+#             if item['type'] == 'polygon':
+#                 continue
+
+#             array = island['coords']
+#             x_loc_raw = array[idx][0]
+#             y_loc_raw = array[idx][1]
+            
+#             # Convert nm to DEF units (microns * dbu)
+#             x_loc = (x_loc_raw * dbu) / 1000
+#             y_loc = (y_loc_raw * dbu) / 1000
+
+#             # --- CASE A: Standard Matrix Cells ---
+#             if item['type'] == 'matrix':
+#                 c_name = item['name']
+#                 mat_info = item['mat_info']
+#                 mat_row_total = mat_info['mat_row']
+#                 mat_col_total = mat_info['mat_col']
+                
+#                 # Fetch row/col from the instance metadata (passed from verilog/py)
+#                 # These were stored in generate_islands from inst.ports
+#                 base_r = item.get('grid_row', 0)
+#                 base_c = item.get('grid_col', 0)
+
+#                 for r in range(mat_row_total):
+#                     for c in range(mat_col_total):
+#                         # Name format: I_{isleNum}_{gridRow+r}_{gridCol+c}_{r}_{c}
+#                         inst_name = f"I_{val}_{base_r + r}_{base_c + c}_{r}_{c}"
+                        
+#                         # Calculate specific coordinate for this sub-cell in matrix
+#                         cell_w = cell_info[c_name]['width']
+#                         cell_h = cell_info[c_name]['height']
+                        
+#                         # Y logic matches GDS (row 0 is top of matrix block)
+#                         sub_y_raw = (mat_row_total - 1 - r) * cell_h + y_loc_raw
+#                         sub_x_raw = c * cell_w + x_loc_raw
+                        
+#                         sub_x = (sub_x_raw * dbu) / 1000
+#                         sub_y = (sub_y_raw * dbu) / 1000
+
+#                         comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {sub_x} {sub_y} ) N ;\n')
+#                         comp_cnt += 1
+
+#             # --- CASE B: Single Standard Cells ---
+#             elif item['type'] == 'cell' and 'grid_row' in item:
+#                 c_name = item['name']
+#                 r = item['grid_row']
+#                 c = item['grid_col']
+                
+#                 # Name format: I_{isleNum}_{gridRow}_{gridCol}
+#                 inst_name = f"I_{val}_{r}_{c}"
+#                 comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
+#                 comp_cnt += 1
+
+#             # --- CASE C: MUX / Decoder / Switches ---
+#             elif item['type'] == 'cell':
+#                 c_name = item['name']
+                
+#                 # Update logical naming indices
+#                 # If the cell type changes, we assume we've moved to a new Switch/Decoder block
+#                 if c_name != last_c_name:
+#                     mux_idx += 1
+#                     inst_idx = 0
+#                 else:
+#                     inst_idx += 1
+                
+#                 last_c_name = c_name
+
+#                 # Determine type for naming (decoder vs switch) Currently hardcoded 
+#                 m_type =  "switch"
+                
+#                 # Format: MUX_{type}_isle{isle}_idx{mux_idx}_inst{inst_idx}
+#                 # matches flattened Verilog where each bit is a unique sub-instance
+#                 inst_name = f"MUX_{m_type}_isle{val}_idx{mux_idx}_inst{inst_idx}"
+                
+#                 comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
+#                 comp_cnt += 1
+
+
+#     def_file.write(f'\nCOMPONENTS {comp_cnt} ;\n')
+#     def_file.write(''.join(comp_string))
+#     def_file.write('END COMPONENTS\n\n')
+#     def_file.write('END DESIGN')
+#     def_file.close()
+
+
+def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table, lef_file_path, blockage_exemptions=None):
+    '''
+    Create a def file with automated metal blockages and layer-specific exemptions.
+    '''
+    track_spacing, file_path, dbu, design_area, file_name, frame_module, router_tool, tech_process = def_params
+    
+    # 1. Setup Layers based on Tech Process
+    if tech_process == 'tsmcN16':
+        blockage_layers = ['M1', 'M2', 'M3', 'M4']
+    elif tech_process == 'sky130nm':
+        blockage_layers = ['li', 'M1', 'M2'] # Example
+    else:
+        blockage_layers = []
+
+    # Initialize empty dict if no exemptions provided
+    if blockage_exemptions is None:
+        blockage_exemptions = {}
+
+    header_str = 'VERSION 5.5 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
+    def_file = open(file_path, 'w')
+    def_file.write(header_str) 
+
+    def_file.write(f'DESIGN {file_name} ;\n\n')
+    def_file.write(f'UNITS DISTANCE MICRONS {dbu} ;\n\n')
+
+    # ... [Property Definitions and DIEAREA code] ...
+    def_file.write(f'DIEAREA ( 0 0 ) ( {int((design_area[2]/1000)*dbu)} {int((design_area[3]/1000)*dbu)} ) ;\n\n')
+    
+    comp_string = []
+    blockage_string = []
+    comp_cnt = 0
+    blockage_cnt = 0
+
+    # HELPER: Generate Blockages
+    def generate_cell_blockage(inst_name, cell_name, lx_raw, ly_raw):
+        nonlocal blockage_cnt
+        
+        # 1. Calculate coordinates
+        lx = (lx_raw * dbu) / 1000
+        ly = (ly_raw * dbu) / 1000
+        w = (cell_info[cell_name]['width'] * dbu) / 1000
+        h = (cell_info[cell_name]['height'] * dbu) / 1000
+        ux, uy = lx + w, ly + h
+
+        # 2. EXEMPTION LOGIC: Look up by Standard Cell Name (c_name)
+        # Example: blockage_exemptions = {"BUFF_X1": ["M1", "M2"]}
+        layers_to_skip = blockage_exemptions.get(cell_name, [])
+
+        for layer in blockage_layers:
+            if layer in layers_to_skip:
+                continue # Skip this layer for this cell type
+            
+            # 3. DEF OUTPUT: Remains exactly as your example (using inst_name)
+            blockage_string.append(f'   - LAYER {layer} + COMPONENT {inst_name} RECT ( {int(lx)} {int(ly)} ) ( {int(ux)} {int(uy)} ) ;\n')
+            blockage_cnt += 1
+
+    # 2. Iterate through islands and items to place components and calculate blockages
+    for val, island in cell_order_in_island.items():
+        mux_idx, inst_idx, last_c_name = -1, 0, None
+        
+        for idx, item in island['items'].items():
+            if item['type'] == 'polygon': continue
+
+            array = island['coords']
+            x_loc_raw, y_loc_raw = array[idx][0], array[idx][1]
+
+            # --- CASE A: Standard Matrix Cells ---
+            if item['type'] == 'matrix':
+                c_name = item['name']
+                mat_info = item['mat_info']
+                mat_row_total, mat_col_total = mat_info['mat_row'], mat_info['mat_col']
+                base_r, base_c = item.get('grid_row', 0), item.get('grid_col', 0)
+
+                for r in range(mat_row_total):
+                    for c in range(mat_col_total):
+                        inst_name = f"I_{val}_{base_r + r}_{base_c + c}_{r}_{c}"
+                        sub_x_raw = (c * cell_info[c_name]['width'] + x_loc_raw)
+                        sub_y_raw = ((mat_row_total - 1 - r) * cell_info[c_name]['height'] + y_loc_raw)
+
+                        comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {int(sub_x_raw*dbu/1000)} {int(sub_y_raw*dbu/1000)} ) N ;\n')
+                        comp_cnt += 1
+                        generate_cell_blockage(inst_name, c_name, sub_x_raw, sub_y_raw)
+
+            # --- CASE B/C: Single Cells / MUX ---
+            elif item['type'] == 'cell':
+                c_name = item['name']
+                if 'grid_row' in item:
+                    inst_name = f"I_{val}_{item['grid_row']}_{item['grid_col']}"
+                else:
+                    if c_name != last_c_name: mux_idx += 1; inst_idx = 0
+                    else: inst_idx += 1
+                    last_c_name = c_name
+                    inst_name = f"MUX_switch_isle{val}_idx{mux_idx}_inst{inst_idx}"
+                
+                comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {int(x_loc_raw*dbu/1000)} {int(y_loc_raw*dbu/1000)} ) N ;\n')
+                comp_cnt += 1
+                generate_cell_blockage(inst_name, c_name, x_loc_raw, y_loc_raw)
+
+    # 3. Write Components
+    def_file.write(f'COMPONENTS {comp_cnt} ;\n')
+    def_file.write(''.join(comp_string))
+    def_file.write('END COMPONENTS\n\n')
+
+    # 4. Write Blockages
+    if blockage_cnt > 0:
+        def_file.write(f'BLOCKAGES {blockage_cnt} ;\n')
+        def_file.write(''.join(blockage_string))
+        def_file.write('END BLOCKAGES\n\n')
+
+    def_file.write('END DESIGN')
+    def_file.close()
+
+    # 5. Print out results
+    if verbose == True:
+        print(f"--- DEF Generation Summary ---")
+        print(f"File: {file_path}")
+        print(f"Total Components: {comp_cnt}")
+        print(f"Total Blockage Entries: {blockage_cnt}")
+        print(f"Tech Process: {tech_process} (Layers: {', '.join(blockage_layers)})")
+        if blockage_exemptions:
+            print(f"Exemptions applied to {len(blockage_exemptions)} instances/cells.")
+        print(f"-------------------------------")
+
+
 
 def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, router_tool):
     '''

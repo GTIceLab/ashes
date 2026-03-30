@@ -82,19 +82,39 @@ def count_metal_layers(layer_map, tech_process):
     
     return metal_layers
 
+# def count_metal_layers_drawing(layer_map, tech_process):
+#     '''
+#     Return a list of metal routing layers with purpose 'DRAWING' available in PDK
+#     '''
+#     metal_layers = []
+#     for item, value in layer_map.items():
+#         if value['layer'][:5] == 'metal' and value['purpose'] == 'drawing':
+#             metal_layers.append(value['pdk_name'])
+    
+#     if not metal_layers: 
+#         raise PinNotDefined(f'Cannot find any metal layers in {tech_process}.json')
+    
+#     return metal_layers
+
 def count_metal_layers_drawing(layer_map, tech_process):
     '''
-    Return a list of metal routing layers with purpose 'DRAWING' available in PDK
+    Return a list of metal routing layers with purpose 'drawing' available in PDK
     '''
     metal_layers = []
     for item, value in layer_map.items():
-        if value['layer'][:5] == 'metal' and value['purpose'] == 'drawing':
+        lname = value['layer'].lower()
+        
+        # Check: starts with 'm' (m1, metal1) AND contains a number (1, 2, 3)
+        # and ensure purpose is 'drawing'
+        if (lname.startswith('m') and any(c.isdigit() for c in lname)) and value['purpose'] == 'drawing':
             metal_layers.append(value['pdk_name'])
     
     if not metal_layers: 
-        raise PinNotDefined(f'Cannot find any metal layers in {tech_process}.json')
+        # Using Exception here in case PinNotDefined is not defined in your script
+        raise Exception(f'Cannot find any metal layers in {tech_process}.json')
     
     return metal_layers
+
 
 def find_pitch_in_lef(layer_name, lef_path, dbu=1000):
     '''

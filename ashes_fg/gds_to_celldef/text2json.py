@@ -133,22 +133,16 @@ def process_text_output(file: str, process_node_override: str | None = None, fou
         # Find closest edge
         min_dist = min(dist_north, dist_south, dist_east, dist_west)
 
-        # If any two distances are equally close, throw an error
-        distances = [dist_north, dist_south, dist_east, dist_west]
-        if distances.count(min_dist) > 1:
-            # if contains _b, put in south
-            if label['text'].endswith('_n') or '_n' in label['text']:
-                direction = 'N'
-            elif label['text'].endswith('_s') or '_s' in label['text']:
-                direction = 'S'
-            elif label['text'].endswith('_e') or '_e' in label['text']:
-                direction = 'E'
-            elif label['text'].endswith('_w') or '_w' in label['text']:
-                direction = 'W'
-            else:
-                raise ValueError(
-                    f"Ambiguous direction for label '{label['text']}' at ({x}, {y}): multiple edges are equally close."
-                )
+        # # If any two distances are equally close, throw an error
+        # distances = [dist_north, dist_south, dist_east, dist_west]
+        # if distances.count(min_dist) > 1:
+        #     # if contains _b, put in south
+        #     if label['text'].endswith('_b') or '_b' in label['text']:
+        #         direction = 'S'
+        #     else:
+        #         raise ValueError(
+        #             f"Ambiguous direction for label '{label['text']}' at ({x}, {y}): multiple edges are equally close."
+        #         )
 
         # Parse label to get base name and pin
         base_name, pin_num = parse_label(label['text'])
