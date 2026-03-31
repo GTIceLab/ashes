@@ -200,7 +200,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         lines = lines.replace(f",{in_pin}",    "")     # li_sm_1
         lines = lines.replace(f"+['{macrocab_name}']*1", "")  # dev_types
         lines = lines.replace(f",'{macrocab_name}_in':{num_inputs}", "")   # dev_pins
-        lines = lines.replace(f",'{macrocab_name}_out':{num_outputs}", "}}")  # dev_pins
+        lines = lines.replace(f",'{macrocab_name}_out':{num_outputs}", "")  # dev_pins
 
         lines = "\n".join(
             l for l in lines.splitlines()
@@ -212,16 +212,41 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         new_dev_fgs = f"{old_dev_fgs}\n\t\t\t'{macrocab_name}[0]',[0,0]"
         lines = lines.replace(old_dev_fgs, new_dev_fgs) # checked
 
-        old_dev_fgs_2 = "\t\t\t'cap_4x_cs[0:3]',[[28,29,28,29], 0]]\n\t\tself.dev_fgs = smDictFromList(dev_fgs_sm)"
-        new_dev_fgs_2 = f"'{macrocab_name}_ls[0]',{fg_cells}"
-        for resource in resource_cells:
-            if resource == "CAP0":
-                count = 1
-                caps_nums = {1:4, 2:2, 3:1}
-                for cell in resource_cells[resource]:
-                    new_dev_fgs_2 += f",\n\t\t\t'{macrocab_name}_cap0_{caps_nums[count]}x_cs[0]',{cell}"
-                    count += 1
-        lines = lines.replace(old_dev_fgs_2, new_dev_fgs_2+"\n"+old_dev_fgs_2)
+    # 1. Define a very specific anchor that includes the end of the previous block
+        # We use a raw string (r'') or escape the brackets to ensure it matches perfectly
+        anchor = """\t\t\t'cap_4x_cs[0:3]',[[28,29,28,29], 0]]
+    \t\tself.dev_fgs = smDictFromList(dev_fgs_sm)"""
+
+        # 2. Build your new content
+        # Start with the level-shifter (ls) entry
+        new_entry = f"'{macrocab_name}_ls[0]', {fg_cells}"
+
+        # 3. Handle the Resource Cells (Dictionary of Resource Names -> Addresses)
+        if isinstance(resource_cells, dict):
+            for res_name, addrs in resource_cells.items():
+                # Handle CAP0 specifically with your custom scaling logic
+                if res_name == "CAP0":
+                    caps_nums = {1: 4, 2: 2, 3: 1}
+                    for i, cell in enumerate(addrs):
+                        # i+1 matches your 1, 2, 3 keys
+                        cap_val = caps_nums.get(i + 1, 1) 
+                        new_entry += f",\n\t\t\t'{macrocab_name}_cap0_{cap_val}x_cs[0]', {cell}"
+                
+                # Optional: Handle other resources like OTAs if they aren't the 'ls'
+                elif res_name != macrocab_name: 
+                    for cell in addrs:
+                        new_entry += f",\n\t\t\t'{res_name}_fg[0]', {cell}"
+
+        # 4. Create the replacement block
+        # We put the new data followed by a comma and newline, then the original anchor
+        replacement = f"{new_entry},\n{anchor}"
+
+        # 5. Perform the replacement
+        if anchor in lines:
+            lines = lines.replace(anchor, replacement)
+        else:
+            # Debugging tip: If it fails, print the first 50 chars of what you were looking for
+            print("Error: Long anchor not found. Check tabs vs spaces.")
 
         old_dev_pins_1 = "'vmm_offc_in':13,"
         lines = lines.replace(old_dev_pins_1, f"{old_dev_pins_1}'{macrocab_name}_in':{num_inputs}") # checked
