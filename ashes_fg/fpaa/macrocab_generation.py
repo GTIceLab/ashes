@@ -306,28 +306,30 @@ if len(sys.argv) == 5:
     num_inputs = data['io']['inputs']['num_inputs']
     num_outputs = data['io']['outputs']['num_outputs']
 
-    selected_addresses = []
+    categorized_addresses = {
+        "resources": [],
+        "io": [],
+        "routing": []
+    }
 
     for name, info in data['resources'].items():
-        is_selected = info.get("sel", False)
-        is_enabled = info.get("enabled", False)
-
-        if is_selected or is_enabled:
+        # Note: Using .get(key, False) handles missing keys safely
+        if info.get("sel", False) or info.get("enabled", False):
             addr = info.get('fg_address')
-            
             if addr:
-                # Handle list of lists [[x,y], [x,y]]
                 if isinstance(addr[0], list):
-                    selected_addresses.extend(addr)
-                # Handle single pair [x,y]
+                    categorized_addresses["resources"].extend(addr)
                 else:
-                    selected_addresses.append(addr)
+                    categorized_addresses["resources"].append(addr)
 
-    selected_addresses.append(data['io']['inputs']['fg_address'])
-    selected_addresses.append(data['io']['outputs']['fg_address'])
-    selected_addresses.extend(data['routing']['C']['fg_address'])
+    # Add IO addresses (stored as single values in your JSON)
+    categorized_addresses["io"].append(data['io']['inputs']['fg_address'])
+    categorized_addresses["io"].append(data['io']['outputs']['fg_address'])
 
-    print(selected_addresses)
+    # Add Routing addresses
+    categorized_addresses["routing"].extend(data['routing']['C']['fg_address'])
+
+    print(categorized_addresses)
 
     #if make_or_delete == "make":
         #edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=False)
