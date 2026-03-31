@@ -661,11 +661,13 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 cab_dev_bottom = cab_dev_bottom + cab_dev_data[cab_dev_table[cab_dev_idx][0]]['height'] + cab_dev_spacing
             
             mat_to_cell_padding = int(80.5*dbu)
-            rel_y=0
-            prev_row = 0
+            prev_row = cell_order[0][1][0]
+            num_matrix_prev = 0
             print(cell_order)
             print(row_heights)
+            rel_y=0
             for idx in range(len(cell_order)):
+                print("---------------")
                 # implicit assumption that col_widths has outlined every column up to requested value. 
                 # Fine to assume so because a violation would be the fault of py-to-verilog
                 curr_col = cell_order[idx][1][1]
@@ -678,12 +680,27 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 curr_row = cell_order[idx][1][0]
                 if cell_order[idx][3] == 'matrix':
                     num_mat_rows = cell_order[idx][6][0]
-                    rel_y = row_heights[curr_row][0]*num_mat_rows
+                    #rel_y = row_heights[curr_row][0]*num_mat_rows
                     #curr_row = curr_row + num_mat_rows -1
                 #rel_y = cell_pitch*(max_row - curr_row)
-                rel_y = calculate_offset_row(row_heights,curr_row)
-                print("---------------")
-                print(rel_y)
+                if curr_row != prev_row:
+                    print("Row Start")
+                    print(prev_row)
+                    print(curr_row)
+                    print("Row End")
+                    num_mat_rows = cell_order[idx-1][6][0]
+                    rel_y += row_heights[prev_row][0]*num_matrix_prev
+                    #rel_y += row_heights[prev_row][0]*(prev_row-curr_row+2)
+                    prev_row = curr_row
+                    #rel_y += cell_order[idx-1][2][1]
+                    num_matrix_prev = 0
+                else:
+                    num_mat_rows = cell_order[idx][6][0]
+                    if num_mat_rows > num_matrix_prev:
+                        num_matrix_prev = num_mat_rows
+
+                print(cell_order[idx][0] + ": " + str(rel_y))
+
                 if "cab_device" in cell_order[idx]:
                     dev_id = cell_order[idx].index("cab_device") + 1
                     dev_id = cell_order[idx][dev_id]
