@@ -286,6 +286,17 @@ class ota_buf:
         self.fix_loc_x = fix_loc[1]
         self.fix_loc_y = fix_loc[2]
 
+class test:
+    def __init__(self,
+                 input,
+                 num_instances='1',
+                 type='FPAA',
+                 board=['3.0', '3.0a'],
+				 test_cap0_1x_cs='1',
+        		):
+        self.input = input
+        self.num_instances = num_instances
+        self.test_cap0_1x_cs = test_cap0_1x_cs
 
 
 class hhn:

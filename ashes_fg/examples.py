@@ -17,6 +17,13 @@ def drain_follower_nfet():
     buf = fg.ota_buf(src_fol_out)
     outpad = fg.outpad(buf, [6])
 
+def run_test_block():
+    in1 = fg.inpad([2])
+    # The compiler will see 'test', look it up in rasp30.py, 
+    # and find all the FG addresses you said were already there.
+    my_block = fg.test(in1) 
+    outpad = fg.outpad(my_block, [5])
+
 def drain_follower_pfet():
     inpad1 = fg.inpad([5])
     src_fol_out = fg.common_drain(inpad1, common_drain_fgswc_ibias='5e-9')
