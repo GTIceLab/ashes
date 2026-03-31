@@ -66,7 +66,7 @@ class G_or_S_IndrctSwcs(StandardCell):
         self.ports = []
         self.island = island
         self.dim = dim
-
+        
         # Define cell information
         self.name = 'G_or_S_IndrctSwcs'
         self.Vgrun_w = Port(circuit,self,'Vgrun_w','W',1*self.dim[0])
@@ -833,6 +833,7 @@ class G_or_S_IndrctSwcs(MUX):
         self.ports = []
         self.island = island
         self.dim = dim
+        self.col, self.num = self.dim
 
         self.type = "switch"
         
@@ -871,18 +872,21 @@ class G_or_S_IndrctSwcs(MUX):
         circuit.addInstance(self,self.island)
 
 class IndirectVMM_DrainSwcs(MUX):
-    def __init__(self,circuit,island=None,dim=(1,1),Sel_w=None,N_Sel_w=None,GND_w=None,VINJ_w=None,VD_P_e=None,VD_R_e=None,GND_n=None,Prog_DrLn_n=None,Sel_n=None,VD_P_n=None,VINJ_n=None,Run_DrLn_n=None,N_Sel_n=None,GND_s=None,Prog_DrLn_s=None,VD_P_s=None,Sel_s=None,VINJ_s=None,Run_DrLn_s=None,VD_R_s=None,N_Sel_s=None):
+    def __init__(self,circuit,island=None,num=1,col=-1,Sel_w=None,N_Sel_w=None,GND_w=None,VINJ_w=None,VD_P_e=None,VD_R_e=None,GND_n=None,Prog_DrLn_n=None,Sel_n=None,VD_P_n=None,VINJ_n=None,Run_DrLn_n=None,N_Sel_n=None,GND_s=None,Prog_DrLn_s=None,VD_P_s=None,Sel_s=None,VINJ_s=None,Run_DrLn_s=None,VD_R_s=None,N_Sel_s=None):
         # Define variables
         self.circuit = circuit
         self.pins = []
         self.ports = []
         self.island = island
-        self.dim = dim
+        self.num = num
+        self.col = col
+        # self.dim = dim
         
+        self.dim = (self.num, 0)
         self.decoder = True
         self.type = "switch"
-        self.switchType = "prog_switch"
- 
+        self.switchType = "drain_select"
+
         # Define cell information
         self.name = 'IndirectVMM_DrainSwcs'
         self.Sel_w = Port(circuit,self,'Sel_w','W',4*self.dim[0])
@@ -918,16 +922,19 @@ class IndirectVMM_DrainSwcs(MUX):
         circuit.addInstance(self,self.island)
 
 class IndirectVMM_GSwcs_1x2(MUX):
-    def __init__(self,circuit,island=None,dim=(1,1),PROG_w=None,RUN_w=None,Vgsel_w=None,GND_n=None,Vgrun_n=None,VINJ_n=None,Vsel_n=None,VTUN_n=None,Vg_s=None,Vs_s=None,Vsel_B_s=None):
+    def __init__(self,circuit,island=None,num=1,col=-1,PROG_w=None,RUN_w=None,Vgsel_w=None,GND_n=None,Vgrun_n=None,VINJ_n=None,Vsel_n=None,VTUN_n=None,Vg_s=None,Vs_s=None,Vsel_B_s=None):
         # Define variables
         self.circuit = circuit
         self.pins = []
         self.ports = []
         self.island = island
-        self.dim = dim
+        self.num = num
+        self.col = col
+        # self.dim = dim
+        self.dim = (0, self.num)
         
         self.type = "switch_ind"
-        if dim[0] < 0: # col < 0
+        if self.col < 0: # col < 0
             self.type = "switch"
 
         # Define cell information
@@ -955,17 +962,20 @@ class IndirectVMM_GSwcs_1x2(MUX):
         circuit.addInstance(self,self.island)
 
 class ERASE_IndirectVMM_GSwcs_1x2(MUX):
-    def __init__(self,circuit,island=None,dim=(-1,0),PROG_w=None,RUN_w=None,Vgsel_w=None,GND_n=None,Vgrun_n=None,VINJ_n=None,Vsel_n=None,VTUN_n=None,Vg_s=None,Vs_s=None,Vsel_B_s=None):
+    def __init__(self,circuit,island=None,num=0,col=-1,PROG_w=None,RUN_w=None,Vgsel_w=None,GND_n=None,Vgrun_n=None,VINJ_n=None,Vsel_n=None,VTUN_n=None,Vg_s=None,Vs_s=None,Vsel_B_s=None):
         # TODO num=0,col=-1; dim=(num,col)?
         # Define variables
         self.circuit = circuit
         self.pins = []
         self.ports = []
         self.island = island
-        self.dim = dim
+        # self.dim = dim
+        self.num = num
+        self.col = col
+        self.dim = (0, self.num)
         
         self.type = "switch_ind"
-        if dim[0] < 0: # col < 0
+        if self.col < 0: # col < 0
             raise Exception("Specify column to erase gate switch")
 
         # Define cell information
