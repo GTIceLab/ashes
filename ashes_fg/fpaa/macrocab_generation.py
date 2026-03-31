@@ -196,7 +196,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
 
     if delete:
 
-        lines = lines.replace(f",'{out_pin}']", f"]")  # li_sm_0b
+        lines = lines.replace(f",{out_pin}", "")  # li_sm_0b
         lines = lines.replace(f",{in_pin}",    "")     # li_sm_1
         lines = lines.replace(f"+['{macrocab_name}']*1", "")  # dev_types
         lines = lines.replace(f",'{macrocab_name}_in':{num_inputs}", "")   # dev_pins
