@@ -1127,6 +1127,11 @@ CAB
 				<output name="out" num_pins="2"/>
 				<delay_constant max="1.667e-9" in_port="volt_wta_v1.in" out_port="volt_wta_v1.out"/>
 			</pb_type>
+			<pb_type name="test" blif_model=".test" num_pb="1">
+				<input name="in" num_pins="1"/>
+				<output name="out" num_pins="1"/>
+				<delay_constant max="1.667e-9" in_port="test.in" out_port="test.out"/>
+			</pb_type>
 			<interconnect>		
 				<direct name="volswc1" input="cab.I[5:0]" output="volswc[0].in[5:0]"/>
 				<complete name="crossbar" input="fgota.out ota_buf.out ota.out cap.out nfet.out pfet.out tgate.out nmirror.out volswc[1:0].out" output="volswc[0].in[7:6]"/>
@@ -1291,7 +1296,7 @@ CAB
 				<loc type="col" start="3" priority="6"/>
 				<loc type="col" start="5" priority="6"/>
 			</gridlocations>
-		<pb_type name="test" blif_model=".test" num_pb="1"><input name="in" num_pins="1"/><output name="out" num_pins="1"/><delay_constant max="1.667e-9" in_port="test.in" out_port="test.out"/></pb_type></pb_type>
+		</pb_type>
 <!-->
 CAB2
 -->
