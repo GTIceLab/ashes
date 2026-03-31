@@ -209,7 +209,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
     else:
 
         old_dev_fgs = "'vmm_offc[0]',[0,0],"
-        new_dev_fgs = f"{old_dev_fgs}\n\t\t\t'{macrocab_name}[0]',[0,0]"
+        new_dev_fgs = f"{old_dev_fgs}\n\t\t\t'{macrocab_name}[0]',[0,0],"
         lines = lines.replace(old_dev_fgs, new_dev_fgs) # checked
 
     # This anchor matches the exact spacing and line content in your rasp30.py
