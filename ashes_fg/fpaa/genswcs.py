@@ -830,6 +830,8 @@ def parseBlif(file_name):
                     key=ports[13]
                 elif subckt in ['C4_BPF']:
                     key=ports[2]
+                elif subckt in ['test']:
+                    key = ports[1]
                 else:
                     key = ports[2] #this key is just output port name
                 if ex_fgs:

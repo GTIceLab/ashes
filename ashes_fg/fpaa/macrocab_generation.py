@@ -212,10 +212,10 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         new_dev_fgs = f"{old_dev_fgs}\n\t\t\t'{macrocab_name}[0]',[0,0],"
         lines = lines.replace(old_dev_fgs, new_dev_fgs) # checked
 
-    # This anchor matches the exact spacing and line content in your rasp30.py
-        # Note: the file uses spaces (8 or 12) here, not tabs.
-        anchor = "			'cap_4x_cs[0:3]',[[28,29,28,29], 0]]\n		self.dev_fgs = smDictFromList(dev_fgs_sm)"
-
+        if "rasp30a" in rasp30_file:
+            anchor = "            \"cap_4x_cs[0:3]\",\n            [[28, 29, 28, 29], 0],\n        ]\n        self.dev_fgs = smDictFromList(dev_fgs_sm)"
+        else:
+            anchor = "\t\t\t'cap_4x_cs[0:3]',[[28,29,28,29], 0]]\n\t\tself.dev_fgs = smDictFromList(dev_fgs_sm)"
         # Build the new content
         new_entry = f"            '{macrocab_name}_ls[0]', {fg_cells}"
 
@@ -234,7 +234,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         if anchor in lines:
             lines = lines.replace(anchor, replacement)
         else:
-            print("Error: Could not find any valid anchor in rasp30.py")
+            print(f"Error: Could not find any valid anchor in {rasp30_file}")
 
         old_dev_pins_1 = "'vmm_offc_in':13,"
         lines = lines.replace(old_dev_pins_1, f"{old_dev_pins_1}'{macrocab_name}_in':{num_inputs},") # checked

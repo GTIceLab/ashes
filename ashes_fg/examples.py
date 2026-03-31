@@ -8,8 +8,15 @@ def c4_offchip():
     
 def ors_buffer():
     inpad1 = fg.inpad([5])
-    buff_out = fg.ota_buf(inpad1, fix_loc = [1,11,6])
+    buff_out = fg.ota_buf(inpad1, fix_loc = [1,5,6])
     outpad = fg.outpad(buff_out, [6])
+
+def my_design():
+    in1 = fg.inpad([5])
+    # The compiler will see 'test', look it up in rasp30.py, 
+    # and find all the FG addresses you said were already there.
+    my_block = fg.test(in1) 
+    outpad = fg.outpad(my_block, [6])
     
 def drain_follower_nfet():
     inpad1 = fg.inpad([5])
@@ -17,12 +24,6 @@ def drain_follower_nfet():
     buf = fg.ota_buf(src_fol_out)
     outpad = fg.outpad(buf, [6])
 
-def run_test_block():
-    in1 = fg.inpad([2])
-    # The compiler will see 'test', look it up in rasp30.py, 
-    # and find all the FG addresses you said were already there.
-    my_block = fg.test(in1) 
-    outpad = fg.outpad(my_block, [5])
 
 def drain_follower_pfet():
     inpad1 = fg.inpad([5])
