@@ -199,7 +199,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         lines = lines.replace(f",'{out_pin}']", f"]")  # li_sm_0b
         lines = lines.replace(f",{in_pin}",    "")     # li_sm_1
         lines = lines.replace(f"+['{macrocab_name}']*1", "")  # dev_types
-        lines = lines.replace(f",'{macrocab_name}_in':{num_inputs}", ",")   # dev_pins
+        lines = lines.replace(f",'{macrocab_name}_in':{num_inputs}", "")   # dev_pins
         lines = lines.replace(f",'{macrocab_name}_out':{num_outputs}", "")  # dev_pins
 
         lines = "\n".join(
@@ -212,30 +212,36 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         new_dev_fgs = f"{old_dev_fgs}\n\t\t\t'{macrocab_name}[0]',[0,0]"
         lines = lines.replace(old_dev_fgs, new_dev_fgs) # checked
 
-        # This anchor matches the exact spacing and tabs in your rasp30.py file
-        anchor = "'cap_4x_cs[0:3]', [[28,29,28,29], 0]]\n\t\tself.dev_fgs = smDictFromList(dev_fgs_sm)"
+    # This anchor matches the exact spacing and line content in your rasp30.py
+        # Note: the file uses spaces (8 or 12) here, not tabs.
+        anchor = "            'cap_4x_cs[0:3]', [[28,29,28,29], 0]]\n        self.dev_fgs = smDictFromList(dev_fgs_sm)"
 
         # Build the new content
-        new_entry = f"'{macrocab_name}_ls[0]', {fg_cells}"
+        new_entry = f"            '{macrocab_name}_ls[0]', {fg_cells}"
 
         if isinstance(resource_cells, dict):
-            # We need to make sure we use the right key (uppercase vs lowercase)
-            # Checking for 'CAP0' as you requested
             caps = resource_cells.get("CAP0", [])
             caps_nums = {1: 4, 2: 2, 3: 1}
             
             for i, cell in enumerate(caps):
                 cap_val = caps_nums.get(i + 1, 1)
-                # Match the indentation of the file (\t\t\t)
-                new_entry += f",\n\t\t\t'{macrocab_name}_cap0_{cap_val}x_cs[0]', {cell}"
+                # Match the 12-space indentation of the file
+                new_entry += f",\n            '{macrocab_name}_cap0_{cap_val}x_cs[0]', {cell}"
 
-        # The replacement must include a comma and newline to keep the list valid
-        replacement = f"\t{new_entry},\n\t\t\t{anchor}"
+        # Use a comma and newline to maintain the list structure
+        replacement = f"{new_entry},\n{anchor}"
 
         if anchor in lines:
             lines = lines.replace(anchor, replacement)
         else:
-            print("Error: Could not find any valid anchor in rasp30.py")
+            # Secondary fallback using only the line we know exists
+            secondary_anchor = "self.dev_fgs = smDictFromList(dev_fgs_sm)"
+            if secondary_anchor in lines:
+                print("Using secondary anchor...")
+                # We add 8 spaces to match the indentation of 'self.dev_fgs'
+                lines = lines.replace(secondary_anchor, f"{new_entry},\n        {secondary_anchor}")
+            else:
+                print("Error: Could not find any valid anchor in rasp30.py")
 
         old_dev_pins_1 = "'vmm_offc_in':13,"
         lines = lines.replace(old_dev_pins_1, f"{old_dev_pins_1}'{macrocab_name}_in':{num_inputs},") # checked
