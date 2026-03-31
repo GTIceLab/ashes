@@ -655,6 +655,9 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 cab_dev_bottom = cab_dev_bottom + cab_dev_data[cab_dev_table[cab_dev_idx][0]]['height'] + cab_dev_spacing
             
             mat_to_cell_padding = int(80.5*dbu)
+            rel_y=0
+            prev_row = 0
+
             for idx in range(len(cell_order)):
                 # implicit assumption that col_widths has outlined every column up to requested value. 
                 # Fine to assume so because a violation would be the fault of py-to-verilog
@@ -669,7 +672,11 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 if cell_order[idx][3] == 'matrix':
                     num_mat_rows = cell_order[idx][6][0]
                     curr_row = curr_row + num_mat_rows -1
-                rel_y = cell_pitch*(max_row - curr_row)
+                #rel_y = cell_pitch*(max_row - curr_row)
+                if curr_row != prev_row:
+                    prev_row = curr_row
+                    rel_y += cell_order[idx-1][2][1]
+                #DEBUG
                 if "cab_device" in cell_order[idx]:
                     dev_id = cell_order[idx].index("cab_device") + 1
                     dev_id = cell_order[idx][dev_id]
