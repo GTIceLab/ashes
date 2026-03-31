@@ -214,7 +214,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
 
     # This anchor matches the exact spacing and line content in your rasp30.py
         # Note: the file uses spaces (8 or 12) here, not tabs.
-        anchor = "            'cap_4x_cs[0:3]',[[28,29,28,29], 0]]\n        self.dev_fgs = smDictFromList(dev_fgs_sm)"
+        anchor = "			'cap_4x_cs[0:3]',[[28,29,28,29], 0]]\n		self.dev_fgs = smDictFromList(dev_fgs_sm)"
 
         # Build the new content
         new_entry = f"            '{macrocab_name}_ls[0]', {fg_cells}"
