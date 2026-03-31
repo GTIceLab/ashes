@@ -230,21 +230,15 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
                 new_entry += f",\n\t\t\t'{macrocab_name}_cap0_{cap_val}x_cs[0]', {cell}"
 
         # The replacement must include a comma and newline to keep the list valid
-        replacement = f"{new_entry},\n\t\t\t{anchor}"
+        replacement = f"\t{new_entry},\n\t\t\t{anchor}"
 
         if anchor in lines:
             lines = lines.replace(anchor, replacement)
         else:
-            # Fallback: if the long anchor still fails, try just the line itself
-            secondary_anchor = "self.dev_fgs = smDictFromList(dev_fgs_sm)"
-            if secondary_anchor in lines:
-                print("Using secondary anchor...")
-                lines = lines.replace(secondary_anchor, f"{new_entry},\n\t\t{secondary_anchor}")
-            else:
-                print("Error: Could not find any valid anchor in rasp30.py")
+            print("Error: Could not find any valid anchor in rasp30.py")
 
         old_dev_pins_1 = "'vmm_offc_in':13,"
-        lines = lines.replace(old_dev_pins_1, f"{old_dev_pins_1}'{macrocab_name}_in':{num_inputs}") # checked
+        lines = lines.replace(old_dev_pins_1, f"{old_dev_pins_1}'{macrocab_name}_in':{num_inputs},") # checked
 
         old_dev_pins_2 = "'vmm_offc_out':2"
         lines = lines.replace(old_dev_pins_2, f"{old_dev_pins_2},'{macrocab_name}_out':{num_outputs}") # checked
@@ -259,7 +253,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         lines = lines.replace(old_li_sm_out, f"{old_li_sm_out}\n\t\t\t{out_pin},{output_cells},")
 
         old_li_sm_0b = ",'vmm_offc[0].out[0:1]'"
-        lines = lines.replace(old_li_sm_0b, f"{old_li_sm_0b},{out_pin}]") # checked
+        lines = lines.replace(old_li_sm_0b, f"{old_li_sm_0b},{out_pin}") # checked
 
         old_li_sm_1 = ",'vmm_offc[0].in[0:12]'"
         lines = lines.replace(old_li_sm_1, f"{old_li_sm_1},{in_pin}") #fgbias, pbias, etc? # checked
