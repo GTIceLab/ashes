@@ -200,7 +200,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         lines = lines.replace(f",{in_pin}",    "")     # li_sm_1
         lines = lines.replace(f"+['{macrocab_name}']*1", "")  # dev_types
         lines = lines.replace(f",'{macrocab_name}_in':{num_inputs}", "")   # dev_pins
-        lines = lines.replace(f",'{macrocab_name}_out':{num_outputs}}}", "}}")  # dev_pins
+        lines = lines.replace(f",'{macrocab_name}_out':{num_outputs}", "}}")  # dev_pins
 
         lines = "\n".join(
             l for l in lines.splitlines()
