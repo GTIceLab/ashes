@@ -327,9 +327,12 @@ if len(sys.argv) == 5:
     selected_addresses.append(data['io']['outputs']['fg_address'])
     selected_addresses.extend(data['routing']['C']['fg_address'])
 
-    if make_or_delete == "make":
-        edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=False)
-        edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch/rasp3_arch.xml", block_name, num_inputs, num_outputs, delete=False, routing_exception=is_routing_exception(data))
-    elif make_or_delete == "delete":
-        edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=True)
-        edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch/rasp3_arch.xml", block_name, num_inputs, num_outputs, delete=True, routing_exception=is_routing_exception(data))
+    print(selected_addresses)
+
+    #if make_or_delete == "make":
+        #edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=False)
+        #edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch/rasp3_arch.xml", block_name, num_inputs, num_outputs, delete=False, routing_exception=is_routing_exception(data))
+        
+    #elif make_or_delete == "delete":
+        #edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=True)
+        #edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch/rasp3_arch.xml", block_name, num_inputs, num_outputs, delete=True, routing_exception=is_routing_exception(data))
