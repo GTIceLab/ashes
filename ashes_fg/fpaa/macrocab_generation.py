@@ -246,23 +246,43 @@ if len(sys.argv) == 4:
     json_path = sys.argv[3]
 
     verify_starting_parameters(json_path, block_name, block_level)
+
+if len(sys.argv) == 5:
+    block_name = sys.argv[1]
+    block_level = sys.argv[2]
+    json_file = sys.argv[3] # from ashes/ashes_fg/fpaa
+    make_or_delete = sys.argv[4]
+
+    # assume already verified
+    with open(json_file, 'r') as f:
+        data = json.load(f)
     
-    command = input("Enter make_macrocab to process your JSON or delete_macrocab to delete: ")
-    if command == "make_macrocab":
-        ir = parse_design(f"{ASHESPATH}/{json_path}/{block_name}.json")
-        emits = emit_io_definition(ir)
-        params = emit_resource_parameters(ir)
+    num_inputs = data['io']['inputs']['num_inputs']
+    num_outputs = data['io']['outputs']['num_outputs']
 
-    elif command == "delete_macrocab":
-        # call delete macrocab function
+    selected_addresses = []
 
-        # function calls with false
+    for name, info in data['resources'].items():
+        is_selected = info.get("sel", False)
+        is_enabled = info.get("enabled", False)
 
-        pass
-    else:
-        raise ValueError("Invalid command.")
+        if is_selected or is_enabled:
+            addr = info.get('fg_address')
+            
+            if addr:
+                # Handle list of lists [[x,y], [x,y]]
+                if isinstance(addr[0], list):
+                    selected_addresses.extend(addr)
+                # Handle single pair [x,y]
+                else:
+                    selected_addresses.append(addr)
 
+    selected_addresses.append(data['io']['inputs']['fg_address'])
+    selected_addresses.append(data['io']['outputs']['fg_address'])
+    selected_addresses.extend(data['routing']['C']['fg_address'])
 
+    if make_or_delete == "make":
+        edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=False)
 
 
     
