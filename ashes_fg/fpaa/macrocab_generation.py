@@ -74,14 +74,38 @@ def edit_class_libs(classlibfile, macrocab_name, parameters, delete):
 
 
 
-def is_routing_exception(json):
-    for matrix in json['routing'].values():
-        if matrix == json['routing']['power_block']:
+def is_routing_exception(data):
+    """
+    Checks if any active routing column is less than 15.
+    Works for the new flattened JSON structure.
+    """
+    routing = data.get('routing', {})
+    
+    for key, content in routing.items():
+        # 1. Skip the power_block as per original logic
+        if key == 'power_block':
             continue
-        for entry in matrix.get('C', []) + matrix.get('T', []):
-            col = entry.get('col', '')
-            if col != '' and int(col) < 15:
-                return True
+            
+        # 2. Extract fg_address (New Format)
+        # In your new JSON, content is a dict like {"fg_address": [[r,c]..], "bias":..}
+        addresses = content.get('fg_address', [])
+        
+        # Ensure 'addresses' is a list we can iterate over
+        if isinstance(addresses, list) and len(addresses) > 0:
+            
+            # Case A: List of lists [[row, col], [row, col]]
+            if isinstance(addresses[0], list):
+                for addr in addresses:
+                    if len(addr) > 1: # Ensure [row, col] pair exists
+                        if int(addr[1]) < 15:
+                            return True
+            
+            # Case B: Single list [row, col]
+            else:
+                if len(addresses) > 1:
+                    if int(addresses[1]) < 15:
+                        return True
+                        
     return False
 
 def edit_xml(xml_file, macrocab_name, macrocab_num_inputs, macrocab_num_outputs, delete, routing_exception):
@@ -293,7 +317,7 @@ if len(sys.argv) == 5:
 
     if make_or_delete == "make":
         edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=False)
-        edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch.xml", block_name, num_inputs, num_outputs, delete=False, routing_exception=is_routing_exception(data))
+        edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch/rasp3_arch.xml", block_name, num_inputs, num_outputs, delete=False, routing_exception=is_routing_exception(data))
     elif make_or_delete == "delete":
         edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=True)
-        edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch.xml", block_name, num_inputs, num_outputs, delete=True, routing_exception=is_routing_exception(data))
+        edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch/rasp3_arch.xml", block_name, num_inputs, num_outputs, delete=True, routing_exception=is_routing_exception(data))
