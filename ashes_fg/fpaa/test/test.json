@@ -99,13 +99,13 @@
     "inputs": {
       "input": 0,
       "local_input": 0,
-      "fg_address": 33,
+      "fg_address": [33,0],
       "num_inputs": 1
     },
     "outputs": {
       "output": 0,
       "local_output": 9,
-      "fg_address": 24,
+      "fg_address": [0,24],
       "num_outputs": 1
   }
 },

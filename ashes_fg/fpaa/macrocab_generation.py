@@ -181,7 +181,7 @@ def edit_xml(xml_file, macrocab_name, macrocab_num_inputs, macrocab_num_outputs,
 
 
 
-def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cols, input_rows, all_cells, delete):
+def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cells, input_cells, resource_cells, fg_cells, delete):
 
     with open(rasp30_file, 'r') as file:
         lines = file.read()
@@ -307,27 +307,33 @@ if len(sys.argv) == 5:
     num_outputs = data['io']['outputs']['num_outputs']
 
     categorized_addresses = {
-        "resources": [],
+        "resources": {},  # Changed to a dictionary
         "io": [],
         "routing": []
     }
 
+    # 1. Process Resources with specific names
     for name, info in data['resources'].items():
-        # Note: Using .get(key, False) handles missing keys safely
         if info.get("sel", False) or info.get("enabled", False):
             addr = info.get('fg_address')
             if addr:
+                # We create a entry for each specific resource name (e.g., 'CAP0')
+                if name not in categorized_addresses["resources"]:
+                    categorized_addresses["resources"][name] = []
+                
                 if isinstance(addr[0], list):
-                    categorized_addresses["resources"].extend(addr)
+                    categorized_addresses["resources"][name].extend(addr)
                 else:
-                    categorized_addresses["resources"].append(addr)
+                    categorized_addresses["resources"][name].append(addr)
 
-    # Add IO addresses (stored as single values in your JSON)
-    categorized_addresses["io"].append(data['io']['inputs']['fg_address'])
-    categorized_addresses["io"].append(data['io']['outputs']['fg_address'])
+    # 2. Process IO (using keys for clarity)
+    categorized_addresses["io"] = {
+        "input": data['io']['inputs']['fg_address'],
+        "output": data['io']['outputs']['fg_address']
+    }
 
-    # Add Routing addresses
-    categorized_addresses["routing"].extend(data['routing']['C']['fg_address'])
+    # 3. Process Routing
+    categorized_addresses["routing"] = data['routing']['C']['fg_address']
 
     print(categorized_addresses)
 
