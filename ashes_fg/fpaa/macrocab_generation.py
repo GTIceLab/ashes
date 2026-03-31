@@ -212,14 +212,15 @@ def edit_genswcs(genswcs_file, block_name, num_inputs, num_outputs, delete):
     with open(genswcs_file, 'r') as file:
         lines = file.read()
     if num_outputs == 1:
+        four_spaces = "    " 
+        indent_4 = four_spaces * 4
+        indent_5 = four_spaces * 5
         if delete:
             pattern = rf"{indent_4}elif subckt in \['{re.escape(block_name)}'\]:\n{indent_5}key = ports\[\d+\]\n"
             lines = re.sub(pattern, "", lines)
         
         else:
-            four_spaces = "    " 
-            indent_4 = four_spaces * 4
-            indent_5 = four_spaces * 5
+            
 
             old_if_subckt = f"{indent_4}else:\n{indent_5}key = ports[2]"
 
