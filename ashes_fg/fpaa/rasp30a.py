@@ -698,6 +698,8 @@ class cabStats(stats):
             [0, [17, 18]],
             "C4_BPF[0].out[0]",
             [0, 17],
+            "test[0].out[0]",
+            [0, 24],
             "fgota[0].in[0:1]",
             [[33, 32], 0],
             "fgota[1].in[0:1]",
@@ -830,6 +832,8 @@ class cabStats(stats):
             [[6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 27], 0],
             "C4_BPF[0].in[0:1]",
             [[33, 32], 0],
+            "test[0].in[0]",
+            [33, 0],
             "cab.O[0:5]",
             [range(29, 23, -1), 21],
         ]  ## o/ps connectn to i/ps?? ummmmm !!! ---we need this
@@ -3147,8 +3151,6 @@ class cab2Stats(stats):
             [0, 15],  # y
             "current_ref.out[0]",
             [0, 25],  # y need to figure out the switch numbers
-            "test_ls[0]",
-            [0, 24],  # y
             "tgate[0:2].out[0]",
             [0, range(16, 19)],
             "cap2[0:2].out[0]",
@@ -3171,8 +3173,6 @@ class cab2Stats(stats):
             [range(31, 27, -1), 0],  # in<2:7> y
             "current_ref.in[0:1]",
             [[13, 12], 0],  # y
-            "test[0].in[0]",
-            [33, 0],  # y
             "cap2[0:2].in[0]",
             [range(27, 22, -1), 0],  # in<8:10> y
             "tgate2[0:1].in[0:1]",
