@@ -112,21 +112,33 @@ def edit_xml(xml_file, macrocab_name, macrocab_num_inputs, macrocab_num_outputs,
     root = etree.parse(xml_file).getroot()
 
     if delete:
+        # 1. Remove from <models>
         models = root.find('models')
-        model = models.find(f"model[@name='{macrocab_name}']")
-        if model is not None:
-            models.remove(model)
+        if models is not None:
+            model = models.find(f"model[@name='{macrocab_name}']")
+            if model is not None:
+                models.remove(model)
 
+        # 2. Find the CAB and remove the pb_type
         cab = root.find(".//pb_type[@name='cab']")
-        pb = cab.find(f"pb_type[@name='{macrocab_name}']")
-        if pb is not None:
-            cab.remove(pb)
+        if cab is not None:
+            pb = cab.find(f"pb_type[@name='{macrocab_name}']")
+            if pb is not None:
+                cab.remove(pb)
 
-        interconnect = cab.find('interconnect')
-        for tag in ('complete', 'direct'):
-            for elem in interconnect.findall(tag):
-                if macrocab_name in elem.get('output', '') or macrocab_name in elem.get('input', ''):
-                    interconnect.remove(elem)
+            # 3. SAFE DELETE for Interconnect (The part we just fixed)
+            interconnect = cab.find(".//interconnect")
+            if interconnect is not None:
+                for tag in ('complete', 'direct'):
+                    for elem in interconnect.findall(tag):
+                        inp = elem.get('input', '')
+                        out = elem.get('output', '')
+                        
+                        # Regex ensures we match "OTA0" but NOT "FGOTA0"
+                        pattern = rf"(^|[\s\[.]){re.escape(macrocab_name)}([\s\[.]|$)"
+                        
+                        if re.search(pattern, inp) or re.search(pattern, out):
+                            interconnect.remove(elem)
     else:
 
 
@@ -145,7 +157,7 @@ def edit_xml(xml_file, macrocab_name, macrocab_num_inputs, macrocab_num_outputs,
 
         etree.SubElement(pb, "delay_constant",max="1.667e-9",in_port=f"{macrocab_name}.in",out_port=f"{macrocab_name}.out")
         
-        interconnect = cab.find("interconnect")
+        interconnect = cab.find(".//interconnect")
 
         if macrocab_num_inputs == 1:
             in_pins = f'{macrocab_name}.in[0]'
@@ -156,7 +168,7 @@ def edit_xml(xml_file, macrocab_name, macrocab_num_inputs, macrocab_num_outputs,
             cab_in = 'cab.I[0]' if macrocab_num_inputs == 1 else f'cab.I[{macrocab_num_inputs - 1}:0]'
             etree.SubElement(interconnect, 'direct', name='crossbar', input=cab_in, output=in_pins)
         else:
-            etree.SubElement(interconnect, 'complete', name='crossbar', input='cab.I[12:0]', output=in_pins)
+            etree.SubElement(interconnect, 'complete', name='crossbar', input=f'cab.I[12:0]', output=in_pins)
 
         # output line: macrocab output drives cab.O[4]
         if macrocab_num_outputs == 1:
