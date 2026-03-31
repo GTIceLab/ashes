@@ -362,9 +362,14 @@ if len(sys.argv) == 5:
     if make_or_delete == "make":
         edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=False)
         edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch/rasp3_arch.xml", block_name, num_inputs, num_outputs, delete=False, routing_exception=is_routing_exception(data))
+        edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch/rasp3a_arch.xml", block_name, num_inputs, num_outputs, delete=False, routing_exception=is_routing_exception(data))
+
         edit_rasp30(f"{ASHESPATH}/ashes_fg/fpaa/rasp30.py", block_name, num_inputs, num_outputs, io["output"], io["input"], resources, routing, delete=False)
+        edit_rasp30(f"{ASHESPATH}/ashes_fg/fpaa/rasp30a.py", block_name, num_inputs, num_outputs, io["output"], io["input"], resources, routing, delete=False)
         #edit_class_libs
     elif make_or_delete == "delete":
         edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=True)
         edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch/rasp3_arch.xml", block_name, num_inputs, num_outputs, delete=True, routing_exception=is_routing_exception(data))
+        edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch/rasp3a_arch.xml", block_name, num_inputs, num_outputs, delete=True, routing_exception=is_routing_exception(data))
         edit_rasp30(f"{ASHESPATH}/ashes_fg/fpaa/rasp30.py", block_name, num_inputs, num_outputs, io["output"], io["input"], resources, routing, delete=True)
+        edit_rasp30(f"{ASHESPATH}/ashes_fg/fpaa/rasp30a.py", block_name, num_inputs, num_outputs, io["output"], io["input"], resources, routing, delete=True)
