@@ -826,17 +826,17 @@ def generate_sblocks(top: ac.Circuit, island: ac.Island,
 ######### Overridden cells below #########
 
 class G_or_S_IndrctSwcs(MUX):
-    def __init__(self,circuit,island=None,dim=(1,1),Vgrun_w=None,run_w=None,prog_w=None,AVDD_w=None,Vgrun_e=None,run_e=None,prog_e=None,AVDD_e=None,VINJ_n=None,Vg_n=None,GND_n=None,VTUN_n=None,Input_n=None,Vsel_n=None,Vsel_s=None,Vs_s=None,VINJ_s=None,GND_s=None,Vg_s=None,fgmem_s=None,VTUN_s=None):
+    def __init__(self,circuit,island=None,num=0,Vgrun_w=None,run_w=None,prog_w=None,AVDD_w=None,Vgrun_e=None,run_e=None,prog_e=None,AVDD_e=None,VINJ_n=None,Vg_n=None,GND_n=None,VTUN_n=None,Input_n=None,Vsel_n=None,Vsel_s=None,Vs_s=None,VINJ_s=None,GND_s=None,Vg_s=None,fgmem_s=None,VTUN_s=None):
         # Define variables
         self.circuit = circuit
         self.pins = []
         self.ports = []
         self.island = island
-        self.dim = dim
-        self.col, self.num = self.dim
+        self.num = num
+        self.dim = (0, self.num)
 
         self.type = "switch"
-        
+
         # Define cell information
         self.name = 'G_or_S_IndrctSwcs'
         self.Vgrun_w = Port(circuit,self,'Vgrun_w','W',1*self.dim[0])
