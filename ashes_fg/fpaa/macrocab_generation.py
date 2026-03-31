@@ -193,8 +193,6 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
               f"'{macrocab_name}[0].out[0:{num_outputs-1}]'"
     in_pin  = f"'{macrocab_name}[0].in[0]'"  if num_inputs  == 1 else \
               f"'{macrocab_name}[0].in[0:{num_inputs-1}]'"
-    in_loc  = str(input_rows[0])  if num_inputs  == 1 else str(input_rows)
-    out_loc = str(output_cols[0]) if num_outputs == 1 else str(output_cols) 
 
     if delete:
 
@@ -215,25 +213,30 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         lines = lines.replace(old_dev_fgs, new_dev_fgs) # checked
 
         old_dev_fgs_2 = "self.dev_fgs ="
-        new_dev_fgs_2 = f"'{macrocab_name}_ls[0]',[{all_cells[0]}"
-        for cell in all_cells[1:]:
-            new_dev_fgs_2 += f",{str(cell)}"
+        new_dev_fgs_2 = f"'{macrocab_name}_ls[0]',{fg_cells}"
+        for resource in resource_cells:
+            if resource == "CAP0":
+                count = 1
+                caps_nums = {1:4, 2:2, 3:1}
+                for cell in resource_cells[resource]:
+                    new_dev_fgs_2 += f",\n'{macrocab_name}_cap0_{caps_nums[count]}x_cs[0]',{cell}"
+                    count += 1
         lines = lines.replace(old_dev_fgs_2, new_dev_fgs_2+"\n"+old_dev_fgs_2)
 
         old_dev_pins_1 = "'vmm_offc_in':13,"
         lines = lines.replace(old_dev_pins_1, f"{old_dev_pins_1},'{macrocab_name}_in':{num_inputs},") # checked
 
         old_dev_pins_2 = "'vmm_offc_out':2"
-        lines = lines.replace(old_dev_pins_2, f"{old_dev_pins_2},'{macrocab_name}_out':{num_outputs}}}") # checked
+        lines = lines.replace(old_dev_pins_2, f"{old_dev_pins_2},'{macrocab_name}_out':{num_outputs}") # checked
 
         old_dev_types = "+['vmm_offc']*1"
         lines = lines.replace(old_dev_types, f"{old_dev_types}+['{macrocab_name}']*1") # checked
 
         old_li_sm_in = "'vmm_offc[0].in[0:12]',[[6,7,8,9,10,11,12,13,14,15,16,17,27],0],"
-        lines = lines.replace(old_li_sm_in, f"{old_li_sm_in}\n{in_pin},[{in_loc},0],")
+        lines = lines.replace(old_li_sm_in, f"{old_li_sm_in}\n{in_pin},{input_cells},")
 
         old_li_sm_out = "'vmm_offc[0].out[0:1]',[0,[17,18]],"
-        lines = lines.replace(old_li_sm_out, f"{old_li_sm_out}\n{out_pin},[0,{out_loc}],")
+        lines = lines.replace(old_li_sm_out, f"{old_li_sm_out}\n{out_pin},{output_cells},")
 
         old_li_sm_0b = ",'vmm_offc[0].out[0:1]'"
         lines = lines.replace(old_li_sm_0b, f"{old_li_sm_0b},{out_pin}']") # checked
@@ -335,12 +338,19 @@ if len(sys.argv) == 5:
     # 3. Process Routing
     categorized_addresses["routing"] = data['routing']['C']['fg_address']
 
+    resources = categorized_addresses["resources"]
+
+    io = categorized_addresses["io"]
+
+    routing = categorized_addresses["routing"]
+
     print(categorized_addresses)
 
-    #if make_or_delete == "make":
+    if make_or_delete == "make":
         #edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=False)
         #edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch/rasp3_arch.xml", block_name, num_inputs, num_outputs, delete=False, routing_exception=is_routing_exception(data))
-        
-    #elif make_or_delete == "delete":
+        edit_rasp30(f"{ASHESPATH}/ashes_fg/fpaa/rasp30.py", block_name, num_inputs, num_outputs, io["output"], io["input"], resources, routing, delete=False)
+    elif make_or_delete == "delete":
         #edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=True)
         #edit_xml(f"{ASHESPATH}/ashes_fg/fpaa/arch/rasp3_arch.xml", block_name, num_inputs, num_outputs, delete=True, routing_exception=is_routing_exception(data))
+        edit_rasp30(f"{ASHESPATH}/ashes_fg/fpaa/rasp30.py", block_name, num_inputs, num_outputs, io["output"], io["input"], resources, routing, delete=True)
