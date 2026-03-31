@@ -1,0 +1,222 @@
+{
+  "metadata": {
+    "project_name": "YOUR_PROJECT_NAME",
+    "author": "YOUR_NAME",
+    "version": "1.0",
+    "notes": "Template for Macrocab based routing without GUI."
+  },
+
+  "defaults": {
+    "value": "1e-9",
+    "fgswc_bias": "10e-6"
+  },
+
+  "resources": {
+    "FGOTA0": {
+      "enabled": false,
+      "params": {
+        "fgswc_bias": "10e-6"
+      }
+    },
+    "FGOTA1": {
+      "enabled": false,
+      "params": {
+        "fgswc_bias": "10e-6"
+      }
+    },
+    "OTA0": {
+      "enabled": false,
+      "params": {
+        "fgswc_bias": "10e-6"
+      }
+    },
+    "OTA1": {
+      "enabled": false,
+      "params": {
+        "fgswc_bias": "10e-6"
+      }
+    },
+
+    "CAP0": {
+      "enabled": false,
+      "params": {
+        "value": "1e-9"
+      }
+    },
+
+    "CAP1": {
+      "enabled": false,
+      "params": {
+        "value": "1e-9"
+      }
+    },
+
+    "CAP2": {
+      "enabled": false,
+      "params": {
+        "value": "1e-9"
+      }
+    },
+
+    "CAP3": {
+      "enabled": false,
+      "params": {
+        "value": "1e-9"
+      }
+    },
+
+    "NFET0": {
+      "enabled": false,
+      "params": {
+        "value": "1e-9"
+      }
+    },
+
+    "NFET1": {
+      "enabled": false,
+      "params": {
+        "value": "1e-9"
+      }
+    },
+
+    "PFET0": {
+      "enabled": false,
+      "params": {
+        "value": "1e-9"
+      }
+    },
+
+    "PFET1": {
+      "enabled": false,
+      "params": {
+        "value": "1e-9"
+      }
+    },
+
+    "TGATE0": {
+      "enabled": false,
+      "params": {
+        "fgswc_bias": "10e-6"
+      }
+    },
+
+    "TGATE1": {
+      "enabled": false,
+      "params": {
+        "fgswc_bias": "10e-6"
+      }
+    },
+
+    "TGATE2": {
+      "enabled": false,
+      "params": {
+        "fgswc_bias": "10e-6"
+      }
+    },
+
+    "TGATE3": {
+      "enabled": false,
+      "params": {
+        "fgswc_bias": "10e-6"
+      }
+    },
+
+    "NMIRROR0": {
+      "enabled": false,
+      "params": {
+        "fgswc_bias": "10e-6"
+      }
+    },
+
+    "NMIRROR1": {
+      "enabled": false,
+      "params": {
+        "fgswc_bias": "10e-6"
+      }
+    }
+  },
+
+   "io": {
+    "inputs": [0, 1, 2],
+    "outputs": [0, 1]
+  },
+
+  "routing": {
+    "power_block": {
+      "dimensions": [30, 2],
+      "column_labels": ["VDD", "GND"],
+      "C": [
+        {"row": "", "col": ""}
+      ],
+      "T": [
+        {"row": "", "col": "", "label": "N#n"},
+        {"row": "", "col": "", "label": "N#Gp"}
+      ]
+    },
+
+    "matrix_a": {
+      "dimensions": [30, 13],
+      "C": [
+      ],
+      "T": [
+      ]
+    },
+
+    "matrix_b": {
+      "dimensions": [30, 18],
+      "C": [
+      ],
+      "T": [
+      ]
+    }
+  },
+
+  "row_map": {
+    "matrix_b": [
+      { "row": 0,  "resource": "FGOTA0",   "pin": "pin0" },
+      { "row": 1,  "resource": "FGOTA0",   "pin": "pin1" },
+
+      { "row": 2,  "resource": "FGOTA1",   "pin": "pin0" },
+      { "row": 3,  "resource": "FGOTA1",   "pin": "pin1" },
+
+      { "row": 4,  "resource": "OTA0",     "pin": "pin0" },
+      { "row": 5,  "resource": "OTA0",     "pin": "pin1" },
+
+      { "row": 6,  "resource": "OTA1",     "pin": "pin0" },
+      { "row": 7,  "resource": "OTA1",     "pin": "pin1" },
+
+      { "row": 8,  "resource": "CAP0",     "pin": "pin0" },
+      { "row": 9,  "resource": "CAP1",     "pin": "pin0" },
+      { "row": 10, "resource": "CAP2",     "pin": "pin0" },
+      { "row": 11, "resource": "CAP3",     "pin": "pin0" },
+
+      { "row": 12, "resource": "NFET0",    "pin": "pin0" },
+      { "row": 13, "resource": "NFET0",    "pin": "pin1" },
+
+      { "row": 14, "resource": "NFET1",    "pin": "pin0" },
+      { "row": 15, "resource": "NFET1",    "pin": "pin1" },
+
+      { "row": 16, "resource": "PFET0",    "pin": "pin0" },
+      { "row": 17, "resource": "PFET0",    "pin": "pin1" },
+
+      { "row": 18, "resource": "PFET1",    "pin": "pin0" },
+      { "row": 19, "resource": "PFET1",    "pin": "pin1" },
+
+      { "row": 20, "resource": "TGATE0",   "pin": "pin0" },
+      { "row": 21, "resource": "TGATE0",   "pin": "pin1" },
+
+      { "row": 22, "resource": "TGATE1",   "pin": "pin0" },
+      { "row": 23, "resource": "TGATE1",   "pin": "pin1" },
+
+      { "row": 24, "resource": "TGATE2",   "pin": "pin0" },
+      { "row": 25, "resource": "TGATE2",   "pin": "pin1" },
+
+      { "row": 26, "resource": "TGATE3",   "pin": "pin0" },
+      { "row": 27, "resource": "TGATE3",   "pin": "pin1" },
+
+      { "row": 28, "resource": "NMIRROR0", "pin": "pin0" },
+      { "row": 29, "resource": "NMIRROR1", "pin": "pin0" }
+    ]
+  }
+
+}
