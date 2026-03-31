@@ -213,11 +213,9 @@ def edit_genswcs(genswcs_file, block_name, num_inputs, num_outputs, delete):
         lines = file.read()
     if num_outputs == 1:
         if delete:
-            lines = re.sub(
-            rf"elif subckt in \['{re.escape(block_name)}'\]:\n\t\t\t\t\tkey = ports\[\d+\]\n",
-            "",
-            lines
-        )
+            pattern = rf"{indent_4}elif subckt in \['{re.escape(block_name)}'\]:\n{indent_5}key = ports\[\d+\]\n"
+            lines = re.sub(pattern, "", lines)
+        
         else:
             four_spaces = "    " 
             indent_4 = four_spaces * 4
@@ -246,6 +244,9 @@ def edit_genswcs(genswcs_file, block_name, num_inputs, num_outputs, delete):
             old_if_from_sub_name = "elif from_sub_name in ["
             new_if_from_sub_name = f"{old_if_from_sub_name}'{block_name}[0]', "
             lines = lines.replace(old_if_from_sub_name, new_if_from_sub_name)
+    
+    with open(genswcs_file, 'w') as file:
+        file.write(lines)
 
 
 if len(sys.argv) == 4:
@@ -291,6 +292,8 @@ if len(sys.argv) == 5:
 
     if make_or_delete == "make":
         edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=False)
+    elif make_or_delete == "delete":
+        edit_genswcs(f"{ASHESPATH}/ashes_fg/fpaa/genswcs.py", block_name, num_inputs, num_outputs, delete=True)
 
 
     
