@@ -490,6 +490,7 @@ class cabStats(stats):
             "SOSLPF[0].out[0]",
             "MSOS02[0].out[0]",
             "vmm_offc[0].out[0:1]",
+            "test[0].out[0]",
             "C4_BPF[0].out[0]",
         ]
         li_sm_1 = [
@@ -553,6 +554,7 @@ class cabStats(stats):
             "SOSLPF[0].in[0]",
             "MSOS02[0].in[0]",
             "vmm_offc[0].in[0:12]",
+            "test[0].in[0]",
             "C4_BPF[0].in[0:1]",
             "cab.O[0:7]",
         ]
@@ -898,6 +900,7 @@ class cabStats(stats):
             + ["SOSLPF"] * 1
             + ["MSOS02"] * 1
             + ["vmm_offc"] * 1
+            + ["test"] * 1
             + ["C4_BPF"] * 1
         )
         self.dev_pins = {
@@ -961,6 +964,7 @@ class cabStats(stats):
             "SOSLPF_in": 1,
             "MSOS02_in": 1,
             "vmm_offc_in": 13,
+            "test_in": 1,
             "C4_BPF_in": 2,
             "fgota_out": 1,
             "ota_buf_out": 1,
@@ -1022,6 +1026,7 @@ class cabStats(stats):
             "SOSLPF_out": 1,
             "MSOS02_out": 1,
             "vmm_offc_out": 2,
+            "test_out": 1,
             "C4_BPF_out": 1,
         }
         dev_fgs_sm = [
@@ -1138,6 +1143,8 @@ class cabStats(stats):
             "MSOS02[0]",
             [0, 0],
             "vmm_offc[0]",
+            [0, 0],
+            "test[0]",
             [0, 0],
             "C4_BPF[0]",
             [0, 0],
@@ -3140,6 +3147,8 @@ class cab2Stats(stats):
             [0, 15],  # y
             "current_ref.out[0]",
             [0, 25],  # y need to figure out the switch numbers
+            "test_ls[0]",
+            [0, 24],  # y
             "tgate[0:2].out[0]",
             [0, range(16, 19)],
             "cap2[0:2].out[0]",
@@ -3162,6 +3171,8 @@ class cab2Stats(stats):
             [range(31, 27, -1), 0],  # in<2:7> y
             "current_ref.in[0:1]",
             [[13, 12], 0],  # y
+            "test[0].in[0]",
+            [33, 0],  # y
             "cap2[0:2].in[0]",
             [range(27, 22, -1), 0],  # in<8:10> y
             "tgate2[0:1].in[0:1]",
