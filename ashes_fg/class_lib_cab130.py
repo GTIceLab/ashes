@@ -756,10 +756,10 @@ def generate_sblocks(top: ac.Circuit, island: ac.Island,
     EastVMMs = S_Block_east(top,island,dim=[number_of_rows,1])
 
     # (0,0) is upper left corner
-    print("Placing at", base_loc)##
+    print("Placing west at", base_loc)##
     WestVMMs.place(base_loc)
-    print("Placing at", [base_loc[0] + number_of_rows + 1, base_loc[1]])##
-    EastVMMs.place([base_loc[0] + number_of_rows + 1, base_loc[1]])
+    print("Placing east at", [base_loc[0], base_loc[1] + number_of_rows + 1])##
+    EastVMMs.place([base_loc[0], base_loc[1] + number_of_rows + 1])
 
     # Place the middle routing blocks
     routing_block_row_index = 0
@@ -774,8 +774,8 @@ def generate_sblocks(top: ac.Circuit, island: ac.Island,
             
             ## added a + 1 at the end, just to get rid of error
             ## need to look at gds to see if this turned out right
-            print("Placing at", [base_loc[0] + x + 1, base_loc[1] + y + 1])##
-            S_Block_middle_blocks[x][y].place([base_loc[0] + x + 1, base_loc[1] + y + 1])
+            print("Placing at", [base_loc[0] + y, base_loc[1] + x + 1])##
+            S_Block_middle_blocks[x][y].place([base_loc[0] + y, base_loc[1] + x + 1])
             S_Block_middle_blocks[x][y].markAbut()
         routing_block_row_index += 1
         
