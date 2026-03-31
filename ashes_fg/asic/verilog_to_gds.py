@@ -495,6 +495,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
         max_row = None
         if not cells_only_module:
             # read through the instances in the island once and pull out relevant info to be used for cell ordering during core coagulation
+            row_heights = {}
             col_widths = {}
             cab_dev_data = {}
             cab_dev_table = []
@@ -507,6 +508,11 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 cell_height = int(cell_info[str(inst.module_name)]['height'])
                 curr_row = int(details['row'])
                 curr_col = int(details['col'])
+                if curr_row not in row_heights:
+                    row_heights[curr_row] = (cell_height, 'cell')
+                else:
+                    row_heights[curr_row] = (max(row_heights[curr_row][0],cell_height), 'cell')
+
                 if curr_col not in col_widths:
                     col_widths[curr_col] = (cell_width, 'cell')
                 else:
@@ -657,7 +663,8 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
             mat_to_cell_padding = int(80.5*dbu)
             rel_y=0
             prev_row = 0
-
+            print(cell_order)
+            print(row_heights)
             for idx in range(len(cell_order)):
                 # implicit assumption that col_widths has outlined every column up to requested value. 
                 # Fine to assume so because a violation would be the fault of py-to-verilog
@@ -671,12 +678,12 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 curr_row = cell_order[idx][1][0]
                 if cell_order[idx][3] == 'matrix':
                     num_mat_rows = cell_order[idx][6][0]
-                    curr_row = curr_row + num_mat_rows -1
+                    rel_y = row_heights[curr_row][0]*num_mat_rows
+                    #curr_row = curr_row + num_mat_rows -1
                 #rel_y = cell_pitch*(max_row - curr_row)
-                if curr_row != prev_row:
-                    prev_row = curr_row
-                    rel_y += cell_order[idx-1][2][1]
-                #DEBUG
+                rel_y = calculate_offset_row(row_heights,curr_row)
+                print("---------------")
+                print(rel_y)
                 if "cab_device" in cell_order[idx]:
                     dev_id = cell_order[idx].index("cab_device") + 1
                     dev_id = cell_order[idx][dev_id]

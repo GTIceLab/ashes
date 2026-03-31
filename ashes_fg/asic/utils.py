@@ -11,6 +11,21 @@ def update_output_layout(text, file_path):
     with open(file_path, 'a') as outfile:
         outfile.writelines(text)
 
+def calculate_offset_row(row_heights, curr_row):
+    #print(row_heights)
+    offset = 0
+    row_keys = list(row_heights.keys())
+    row_keys.sort()
+   # print(row_keys)
+    for key in row_keys:
+        if key == curr_row: break
+        val = row_heights[key]
+        if val[1] == 'matrix':
+            offset += val[0]
+        elif val[1] == 'cell':
+            offset += val[0]
+    return offset
+
 
 def calculate_offset(col_widths, curr_col, cell_padding):
     '''
