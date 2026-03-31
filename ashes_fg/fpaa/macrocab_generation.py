@@ -199,7 +199,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         lines = lines.replace(f",'{out_pin}']", f"]")  # li_sm_0b
         lines = lines.replace(f",{in_pin}",    "")     # li_sm_1
         lines = lines.replace(f"+['{macrocab_name}']*1", "")  # dev_types
-        lines = lines.replace(f",'{macrocab_name}_in':{num_inputs}", "")   # dev_pins
+        lines = lines.replace(f",'{macrocab_name}_in':{num_inputs}", ",")   # dev_pins
         lines = lines.replace(f",'{macrocab_name}_out':{num_outputs}", "")  # dev_pins
 
         lines = "\n".join(
@@ -212,41 +212,36 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         new_dev_fgs = f"{old_dev_fgs}\n\t\t\t'{macrocab_name}[0]',[0,0]"
         lines = lines.replace(old_dev_fgs, new_dev_fgs) # checked
 
-    # 1. Define a very specific anchor that includes the end of the previous block
-        # We use a raw string (r'') or escape the brackets to ensure it matches perfectly
-        anchor = """\t\t\t'cap_4x_cs[0:3]',[[28,29,28,29], 0]]
-    \t\tself.dev_fgs = smDictFromList(dev_fgs_sm)"""
+        # This anchor matches the exact spacing and tabs in your rasp30.py file
+        anchor = "'cap_4x_cs[0:3]', [[28,29,28,29], 0]]\n\t\tself.dev_fgs = smDictFromList(dev_fgs_sm)"
 
-        # 2. Build your new content
-        # Start with the level-shifter (ls) entry
+        # Build the new content
         new_entry = f"'{macrocab_name}_ls[0]', {fg_cells}"
 
-        # 3. Handle the Resource Cells (Dictionary of Resource Names -> Addresses)
         if isinstance(resource_cells, dict):
-            for res_name, addrs in resource_cells.items():
-                # Handle CAP0 specifically with your custom scaling logic
-                if res_name == "CAP0":
-                    caps_nums = {1: 4, 2: 2, 3: 1}
-                    for i, cell in enumerate(addrs):
-                        # i+1 matches your 1, 2, 3 keys
-                        cap_val = caps_nums.get(i + 1, 1) 
-                        new_entry += f",\n\t\t\t'{macrocab_name}_cap0_{cap_val}x_cs[0]', {cell}"
-                
-                # Optional: Handle other resources like OTAs if they aren't the 'ls'
-                elif res_name != macrocab_name: 
-                    for cell in addrs:
-                        new_entry += f",\n\t\t\t'{res_name}_fg[0]', {cell}"
+            # We need to make sure we use the right key (uppercase vs lowercase)
+            # Checking for 'CAP0' as you requested
+            caps = resource_cells.get("CAP0", [])
+            caps_nums = {1: 4, 2: 2, 3: 1}
+            
+            for i, cell in enumerate(caps):
+                cap_val = caps_nums.get(i + 1, 1)
+                # Match the indentation of the file (\t\t\t)
+                new_entry += f",\n\t\t\t'{macrocab_name}_cap0_{cap_val}x_cs[0]', {cell}"
 
-        # 4. Create the replacement block
-        # We put the new data followed by a comma and newline, then the original anchor
-        replacement = f"{new_entry},\n{anchor}"
+        # The replacement must include a comma and newline to keep the list valid
+        replacement = f"{new_entry},\n\t\t\t{anchor}"
 
-        # 5. Perform the replacement
         if anchor in lines:
             lines = lines.replace(anchor, replacement)
         else:
-            # Debugging tip: If it fails, print the first 50 chars of what you were looking for
-            print("Error: Long anchor not found. Check tabs vs spaces.")
+            # Fallback: if the long anchor still fails, try just the line itself
+            secondary_anchor = "self.dev_fgs = smDictFromList(dev_fgs_sm)"
+            if secondary_anchor in lines:
+                print("Using secondary anchor...")
+                lines = lines.replace(secondary_anchor, f"{new_entry},\n\t\t{secondary_anchor}")
+            else:
+                print("Error: Could not find any valid anchor in rasp30.py")
 
         old_dev_pins_1 = "'vmm_offc_in':13,"
         lines = lines.replace(old_dev_pins_1, f"{old_dev_pins_1}'{macrocab_name}_in':{num_inputs}") # checked
