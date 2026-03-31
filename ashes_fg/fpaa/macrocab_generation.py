@@ -211,19 +211,27 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cols
 def edit_genswcs(genswcs_file, block_name, num_inputs, num_outputs, delete):
     with open(genswcs_file, 'r') as file:
         lines = file.read()
+    if num_outputs == 1:
+        if delete:
+            lines = re.sub(
+            rf"elif subckt in \['{re.escape(block_name)}'\]:\n\t\t\t\t\tkey = ports\[\d+\]\n",
+            "",
+            lines
+        )
+        else:
+            four_spaces = "    " 
+            indent_4 = four_spaces * 4
+            indent_5 = four_spaces * 5
 
-    if delete:
-        lines = re.sub(
-        rf"elif subckt in \['{re.escape(block_name)}'\]:\n\t\t\t\t\tkey = ports\[\d+\]\n",
-        "",
-        lines
-    )
-    else:
-        
-        old_if_subckt = "else\n\t\t\t\t\tkey = ports[2]"
-        new_if_subckt = f"elif subckt in [{block_name}]:\n\t\t\t\t\tkey = ports[{num_inputs}]\n{old_if_subckt}"
-        lines = lines.replace(old_if_subckt, new_if_subckt)
+            old_if_subckt = f"{indent_4}else:\n{indent_5}key = ports[2]"
 
+            new_if_subckt = (
+                f"{indent_4}elif subckt in ['{block_name}']:\n"
+                f"{indent_5}key = ports[{num_inputs}]\n"
+                f"{old_if_subckt}"
+            )
+
+            lines = lines.replace(old_if_subckt, new_if_subckt)
     
 
     if num_outputs > 1:
