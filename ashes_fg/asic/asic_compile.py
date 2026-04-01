@@ -367,7 +367,10 @@ class Island:
         """
         newCol = np.zeros((numNewCols,1))
         return np.insert(array,colNum,newCol,axis=1)
-    
+
+    def insertRows(self,rowNum,numNewRows=1):
+        self.placementGrid = self.addRows(self.placementGrid,rowNum,numNewRows)
+
     def getLocation(self,instance):
         """
         Find the location of an instance in the placement grid    
@@ -428,6 +431,7 @@ class Island:
              # Pass i as instanceNum to ensure uniqueness for non-grid cells
             text += instance.print_cadence(i, islandNum, r, c)
         return text
+
 
     def placeInstance(self,instance,location):
         """
