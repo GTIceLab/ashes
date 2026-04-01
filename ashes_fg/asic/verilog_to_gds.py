@@ -1372,7 +1372,7 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         pin_right = pin_center_x + int(track_spacing/2)
         pin_bot = pin_center_y - int(track_spacing/2)
         pin_top = pin_center_y + int(track_spacing/2)
-        if (pin_bot < frame_bot) ) and run_fr_cadence ==0:
+        if (pin_bot < frame_bot)  and run_fr_cadence ==0:
             pin_item_name = pin_item['name']
             raise ParsingError(f'Ran out of space when placing {pin_item_name} on the west edge')
         pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
