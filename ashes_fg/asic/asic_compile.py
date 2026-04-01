@@ -270,8 +270,9 @@ class Circuit:
         # 5. Find all NDRs defined and map them to their Verilog net names
         ndr_info = {}
         for net in self.Nets:
-            # net.print() returns the name used in the Verilog file (e.g., 'net5' or 's6')
-            ndr_info[net.print()] = net.ndr
+            if not net.isEmpty():
+                # net.print() returns the name used in the Verilog file (e.g., 'net5' or 's6')
+                ndr_info[net.print()] = net.ndr
 
 
         return text, pin_info, ndr_info

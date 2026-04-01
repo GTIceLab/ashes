@@ -204,7 +204,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     frame_text = None
     if generate_cells_list:
         process_misc = (dbu, os.path.join(lib_path, 'tech_lef', f'{tech_process}'))
-        frame_text, frame_module = generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc)
+        frame_text, frame_module = generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc,run_fr_cadence)
         if verbose:
             print("Post frame generation, relative ordering within islands")
             pprint.pprint(cell_order_in_island)
@@ -965,6 +965,11 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 cell_order_in_island[val]['items'][coords_id]['type'] = cell[3]
                 cell_order_in_island[val]['items'][coords_id]['pin_blockage'] = True
                 cell_order_in_island[val]['items'][coords_id]['name'] = cell[0]
+
+                # We need this island row and column info to generate def file for cadence
+                cell_order_in_island[val]['items'][coords_id]['logical_row'] = cell[1][0] 
+                cell_order_in_island[val]['items'][coords_id]['logical_col'] = cell[1][1]
+
                 left, bottom, right, top = x_drainmux_offset + cell[4][0], cell[4][1], x_drainmux_offset + cell[4][0] + cell_width, cell[4][1] + cell_height
                 temp_coord = [left, bottom, right, top]
                 cell_order_in_island[val]['coords'].append(temp_coord)
@@ -1127,6 +1132,11 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 cell_order_in_island[val]['items'][coords_id]['type'] = cell[3]
                 cell_order_in_island[val]['items'][coords_id]['name'] = cell[0]
                 cell_order_in_island[val]['items'][coords_id]['pin_blockage'] = True
+                
+                # cell[1] contains (curr_row, curr_col) Need to store this info for generating def when using cadence flow
+                cell_order_in_island[val]['items'][coords_id]['logical_row'] = cell[1][0]
+                cell_order_in_island[val]['items'][coords_id]['logical_col'] = cell[1][1]
+
                 temp_coord = [cell[4][0], cell[4][1], cell[4][0] + cell_width, cell[4][1] + cell_height]
                 cell_order_in_island[val]['coords'].append(temp_coord)
                 # Forward along the nets
@@ -1224,7 +1234,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
     return ''.join(ret_string), island_dims
 
 
-def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc):
+def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc, run_fr_cadence):
     module_inst = generate_cells_list[0]
     ret_string = []
     frame_module = None
@@ -1302,7 +1312,7 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
             pin_right = pin_center_x + int(track_spacing/2)
             pin_bot = pin_center_y - int(track_spacing + track_spacing/2)
             pin_top = pin_center_y + int(track_spacing/2)
-            if pin_right > frame_right:
+            if (pin_right > frame_right) and run_fr_cadence ==0:
                 raise ParsingError(f'Ran out of space when placing {pin_name} on the north edge')
             pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
             pin_item['center'] = (pin_center_x, pin_center_y)
@@ -1320,7 +1330,7 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         pin_right = pin_center_x + int(track_spacing + track_spacing/2)
         pin_bot = pin_center_y - int(track_spacing/2)
         pin_top = pin_center_y + int(track_spacing/2)
-        if pin_bot < frame_bot:
+        if (pin_bot < frame_bot ) and run_fr_cadence ==0:
             pin_item_name = pin_item['name']
             raise ParsingError(f'Ran out of space when placing {pin_item_name} on the east edge')
         pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
@@ -1343,7 +1353,7 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
             pin_right = pin_center_x + int(track_spacing/2)
             pin_bot = pin_center_y - int(track_spacing/2)
             pin_top = pin_center_y + int(track_spacing + track_spacing/2)
-            if pin_right > frame_right:
+            if (pin_right > frame_right ) and run_fr_cadence ==0:
                 pin_item_name = pin_item['name']
                 raise ParsingError(f'Ran out of space when placing {pin_item_name} on the south edge')
             pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
@@ -1362,7 +1372,7 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         pin_right = pin_center_x + int(track_spacing/2)
         pin_bot = pin_center_y - int(track_spacing/2)
         pin_top = pin_center_y + int(track_spacing/2)
-        if pin_bot < frame_bot:
+        if (pin_bot < frame_bot) ) and run_fr_cadence ==0:
             pin_item_name = pin_item['name']
             raise ParsingError(f'Ran out of space when placing {pin_item_name} on the west edge')
         pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
@@ -1379,7 +1389,7 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         pin_right = pin_center_x + int(track_spacing/2)
         pin_bot = pin_center_y_top - int(track_spacing + track_spacing/2)
         pin_top = pin_center_y_top + int(track_spacing/2)
-        if pin_left < north_pins_far_right:
+        if (pin_left < north_pins_far_right ) and run_fr_cadence ==0:
             pin_item_name = pin_item['name']
             raise ParsingError(f'Ran out of space when placing power pin {pin_item_name} on the north edge')
         power_pin = pin_item['name_nodirection']
@@ -2328,130 +2338,6 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     def_file.write('END DESIGN')
     def_file.close()
     return def_blocks, def_nets
- 
-# def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table, lef_file_path):
-#     '''
-#     Create a def file for the design matching the flattened Cadence Verilog naming.
-#     '''
-#     track_spacing, file_path, dbu, design_area, file_name, frame_module, router_tool, tech_process = def_params
-   
-#     header_str = 'VERSION 5.5 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
-#     def_file = open(file_path, 'w')
-#     def_file.write(header_str) 
-
-#     def_file.write(f'DESIGN {file_name} ;\n\n')
-#     def_file.write(f'UNITS DISTANCE MICRONS {dbu} ;\n\n')
-
-#     # Property definitions
-#     def_file.write(f'PROPERTYDEFINITIONS\n')
-#     def_file.write(f'    DESIGN FE_CORE_BOX_LL_X REAL {round(design_area[0]*0.001,8)} ;\n')
-#     def_file.write(f'    DESIGN FE_CORE_BOX_UR_X REAL {round((design_area[2]-design_area[0])*0.001,8)} ;\n')
-#     def_file.write(f'    DESIGN FE_CORE_BOX_LL_Y REAL {round(design_area[1]*0.001,8)} ;\n')
-#     def_file.write(f'    DESIGN FE_CORE_BOX_UR_Y REAL {round((design_area[3]-design_area[1])*0.001,8)} ;\n')
-#     def_file.write(f'END PROPERTYDEFINITIONS\n\n')
-
-#     def_file.write(f'DIEAREA ( 0 0 ) ( {(design_area[2]/1000)*dbu} {(design_area[3]/1000)*dbu} ) ;\n\n')
-    
-#     comp_string = []
-#     comp_cnt = 0
-
-#     # # 1. Place the Frame (usually just "frame")
-#     # if frame_module:
-#     #     comp_string.append(f'- frame {frame_module.module_name} + SOURCE DIST + PLACED ( 0 0 ) N ;\n')
-#     #     comp_cnt += 1
-
-#     # 2. Iterate through islands and items
-#     for val, island in cell_order_in_island.items():
-#         # Counters for synthesized MUX/Switch blocks
-#         mux_idx = -1 
-#         inst_idx = 0
-#         last_c_name = None
-
-        
-#         for idx, item in island['items'].items():
-#             if item['type'] == 'polygon':
-#                 continue
-
-#             array = island['coords']
-#             x_loc_raw = array[idx][0]
-#             y_loc_raw = array[idx][1]
-            
-#             # Convert nm to DEF units (microns * dbu)
-#             x_loc = (x_loc_raw * dbu) / 1000
-#             y_loc = (y_loc_raw * dbu) / 1000
-
-#             # --- CASE A: Standard Matrix Cells ---
-#             if item['type'] == 'matrix':
-#                 c_name = item['name']
-#                 mat_info = item['mat_info']
-#                 mat_row_total = mat_info['mat_row']
-#                 mat_col_total = mat_info['mat_col']
-                
-#                 # Fetch row/col from the instance metadata (passed from verilog/py)
-#                 # These were stored in generate_islands from inst.ports
-#                 base_r = item.get('grid_row', 0)
-#                 base_c = item.get('grid_col', 0)
-
-#                 for r in range(mat_row_total):
-#                     for c in range(mat_col_total):
-#                         # Name format: I_{isleNum}_{gridRow+r}_{gridCol+c}_{r}_{c}
-#                         inst_name = f"I_{val}_{base_r + r}_{base_c + c}_{r}_{c}"
-                        
-#                         # Calculate specific coordinate for this sub-cell in matrix
-#                         cell_w = cell_info[c_name]['width']
-#                         cell_h = cell_info[c_name]['height']
-                        
-#                         # Y logic matches GDS (row 0 is top of matrix block)
-#                         sub_y_raw = (mat_row_total - 1 - r) * cell_h + y_loc_raw
-#                         sub_x_raw = c * cell_w + x_loc_raw
-                        
-#                         sub_x = (sub_x_raw * dbu) / 1000
-#                         sub_y = (sub_y_raw * dbu) / 1000
-
-#                         comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {sub_x} {sub_y} ) N ;\n')
-#                         comp_cnt += 1
-
-#             # --- CASE B: Single Standard Cells ---
-#             elif item['type'] == 'cell' and 'grid_row' in item:
-#                 c_name = item['name']
-#                 r = item['grid_row']
-#                 c = item['grid_col']
-                
-#                 # Name format: I_{isleNum}_{gridRow}_{gridCol}
-#                 inst_name = f"I_{val}_{r}_{c}"
-#                 comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
-#                 comp_cnt += 1
-
-#             # --- CASE C: MUX / Decoder / Switches ---
-#             elif item['type'] == 'cell':
-#                 c_name = item['name']
-                
-#                 # Update logical naming indices
-#                 # If the cell type changes, we assume we've moved to a new Switch/Decoder block
-#                 if c_name != last_c_name:
-#                     mux_idx += 1
-#                     inst_idx = 0
-#                 else:
-#                     inst_idx += 1
-                
-#                 last_c_name = c_name
-
-#                 # Determine type for naming (decoder vs switch) Currently hardcoded 
-#                 m_type =  "switch"
-                
-#                 # Format: MUX_{type}_isle{isle}_idx{mux_idx}_inst{inst_idx}
-#                 # matches flattened Verilog where each bit is a unique sub-instance
-#                 inst_name = f"MUX_{m_type}_isle{val}_idx{mux_idx}_inst{inst_idx}"
-                
-#                 comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_loc} {y_loc} ) N ;\n')
-#                 comp_cnt += 1
-
-
-#     def_file.write(f'\nCOMPONENTS {comp_cnt} ;\n')
-#     def_file.write(''.join(comp_string))
-#     def_file.write('END COMPONENTS\n\n')
-#     def_file.write('END DESIGN')
-#     def_file.close()
 
 
 def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table, lef_file_path, blockage_exemptions=None):
@@ -2519,38 +2405,81 @@ def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_pa
 
             array = island['coords']
             x_loc_raw, y_loc_raw = array[idx][0], array[idx][1]
+    
 
-            # --- CASE A: Standard Matrix Cells ---
+    # --- Inside generate_def_fr_cadence ---
             if item['type'] == 'matrix':
                 c_name = item['name']
                 mat_info = item['mat_info']
-                mat_row_total, mat_col_total = mat_info['mat_row'], mat_info['mat_col']
-                base_r, base_c = item.get('grid_row', 0), item.get('grid_col', 0)
+                mat_row_total = mat_info['mat_row']
+                mat_col_total = mat_info['mat_col']
 
-                for r in range(mat_row_total):
-                    for c in range(mat_col_total):
-                        inst_name = f"I_{val}_{base_r + r}_{base_c + c}_{r}_{c}"
-                        sub_x_raw = (c * cell_info[c_name]['width'] + x_loc_raw)
-                        sub_y_raw = ((mat_row_total - 1 - r) * cell_info[c_name]['height'] + y_loc_raw)
+                # Retrieve the starting grid position (Ensure you saved these in generate_islands!)
+                base_r = item.get('logical_row', 0)
+                base_c = item.get('logical_col', 0)
 
-                        comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {int(sub_x_raw*dbu/1000)} {int(sub_y_raw*dbu/1000)} ) N ;\n')
-                        comp_cnt += 1
-                        generate_cell_blockage(inst_name, c_name, sub_x_raw, sub_y_raw)
+                # CHECK IF IT IS A SINGLE CELL (1x1 Matrix)
+                if mat_row_total == 1 and mat_col_total == 1:
+                    # Standard Single Cell naming: I_{isle}_{row}_{col}
+                    inst_name = f"I_{val}_{base_r}_{base_c}"
+                    
+                    # Physical placement (Directly use the island's coordinates)
+                    x_def = int(x_loc_raw * dbu / 1000)
+                    y_def = int(y_loc_raw * dbu / 1000)
 
-            # --- CASE B/C: Single Cells / MUX ---
-            elif item['type'] == 'cell':
-                c_name = item['name']
-                if 'grid_row' in item:
-                    inst_name = f"I_{val}_{item['grid_row']}_{item['grid_col']}"
+                    comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_def} {y_def} ) N ;\n')
+                    comp_cnt += 1
+                    generate_cell_blockage(inst_name, c_name, x_loc_raw, y_loc_raw)
+
                 else:
-                    if c_name != last_c_name: mux_idx += 1; inst_idx = 0
-                    else: inst_idx += 1
-                    last_c_name = c_name
-                    inst_name = f"MUX_switch_isle{val}_idx{mux_idx}_inst{inst_idx}"
+                    # IT IS A REAL MATRIX (Greater than 1x1)
+                    for r in range(mat_row_total):
+                        for c in range(mat_col_total):
+                            # Matrix naming: I_{isle}_{abs_row}_{abs_col}_{internal_r}_{internal_c}
+                            inst_name = f"I_{val}_{base_r + r}_{base_c + c}_{r}_{c}"
+                            
+                            # Coordinate math for sub-cells
+                            cell_w = cell_info[c_name]['width']
+                            cell_h = cell_info[c_name]['height']
+                            sub_x_raw = (c * cell_w + x_loc_raw)
+                            sub_y_raw = ((mat_row_total - 1 - r) * cell_h + y_loc_raw)
+
+                            x_def = int(sub_x_raw * dbu / 1000)
+                            y_def = int(sub_y_raw * dbu / 1000)
+
+                            comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_def} {y_def} ) N ;\n')
+                            comp_cnt += 1
+                            generate_cell_blockage(inst_name, c_name, sub_x_raw, sub_y_raw)
+
+
+            # if item['type'] == 'matrix':
+            #     c_name = item['name']
+            #     mat_info = item['mat_info']
+            #     mat_row_total, mat_col_total = mat_info['mat_row'], mat_info['mat_col']
+
+            #     for r in range(mat_row_total):
+            #         for c in range(mat_col_total):
+            #             inst_name = f"I_{val}_{island[row]}_{island[col]}_{r}_{c}"
+            #             sub_x_raw = (c * cell_info[c_name]['width'] + x_loc_raw)
+            #             sub_y_raw = ((mat_row_total - 1 - r) * cell_info[c_name]['height'] + y_loc_raw)
+
+            #             comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {int(sub_x_raw*dbu/1000)} {int(sub_y_raw*dbu/1000)} ) N ;\n')
+            #             comp_cnt += 1
+            #             generate_cell_blockage(inst_name, c_name, sub_x_raw, sub_y_raw)
+
+            # elif item['type'] == 'cell':
+            #     c_name = item['name']
+            #     if 'grid_row' in item:
+            #         inst_name = f"I_{val}_{item['grid_row']}_{item['grid_col']}"
+            #     else:
+            #         if c_name != last_c_name: mux_idx += 1; inst_idx = 0
+            #         else: inst_idx += 1
+            #         last_c_name = c_name
+            #         inst_name = f"MUX_switch_isle{val}_idx{mux_idx}_inst{inst_idx}"
                 
-                comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {int(x_loc_raw*dbu/1000)} {int(y_loc_raw*dbu/1000)} ) N ;\n')
-                comp_cnt += 1
-                generate_cell_blockage(inst_name, c_name, x_loc_raw, y_loc_raw)
+            #     comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {int(x_loc_raw*dbu/1000)} {int(y_loc_raw*dbu/1000)} ) N ;\n')
+            #     comp_cnt += 1
+            #     generate_cell_blockage(inst_name, c_name, x_loc_raw, y_loc_raw)
 
     # 3. Write Components
     def_file.write(f'COMPONENTS {comp_cnt} ;\n')
