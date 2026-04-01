@@ -11,6 +11,8 @@
     {"type": "FPAA", "board": ["3.0", "3.0a"], "ota_bias": 0.000000000101},
   "?Matmul":
     {"type": "FPAA", "board": ["3.0", "3.0a"]},
+  "test":
+    {"type": "FPAA", "board": ["3.0", "3.0a"], "test_ls": 0, "test_cap0_1x_cs": 1},
   "hhn_debug":
     {"type": "FPAA", "board": ["3.0", "3.0a"], "hhn_debug_ls":0,"hhn_debug_fgswc_ibias":"5.000D-08", "hhn_debug_fgota1_ibias":0.000002, "hhn_debug_fgota1_pbias":0.000002,"hhn_debug_fgota1_nbias":0.000002,"hhn_debug_fgota0_ibias":0.000002,"hhn_debug_fgota0_pbias":0.000002,"hhn_debug_fgota0_nbias":0.000002,"hhn_debug_ota0_ibias":0.000002,"hhn_debug_ota1_ibias":0.000002,"hhn_debug_cap0_1x_cs":1},
   "HH_RG_2s":
