@@ -59,7 +59,9 @@ def generate_init_tcl(config_data, filepath, top_level="proj_name"):
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))
 
-def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath,):
+import re
+
+def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath):
     pin_config_list = config_data.get("pins", [])
     full_pin_props = {}
     place_type = "side" 
@@ -70,35 +72,49 @@ def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath,):
             place_type = item["place_type"]
 
     edge_map = {"W": 0, "N": 1, "E": 2, "S": 3}
-    # Width Height Left Bottom Right Top
-    tcl = ["######## Floorplan ########",
-           f'create_floorplan -site core -core_size {design_area[2]/1000} {design_area[3]/1000} {design_area[0]/1000} {design_area[1]/1000} {design_area[0]/1000} {design_area[1]/1000} \n',
-           "################### Pin Assignment ###################\n"]
+    
+    # 1. Start with the Floorplan section
+    tcl = [
+        "######## Floorplan ########",
+        f'create_floorplan -site core -core_size {design_area[2]/1000} {design_area[3]/1000} {design_area[0]/1000} {design_area[1]/1000} {design_area[0]/1000} {design_area[1]/1000} \n'
+    ]
+
+    # 2. Buffer the Pin Assignment logic so we only add headers if pins exist
+    pin_tcl_buffer = []
 
     for side, edge_id in edge_map.items():
+        # Check if the side exists and if there are actually signals in that group
         if side in full_pin_props and side in pin_signal_groups:
-            props = full_pin_props[side]
             signals = pin_signal_groups[side]
+            
+            # Skip this side if the signals list is empty
+            if not signals:
+                continue
+                
+            props = full_pin_props[side]
             layer = re.search(r'\d+', props.get("met_layer", "3")).group()
             
             formatted_pins = [f"{{{s}}}" if "[" in s else s for s in signals]
             pin_str = "{ " + " ".join(formatted_pins) + " }"
 
-            tcl.append(f"# {side} Side")
-            tcl.append("set_db assign_pins_edit_in_batch true")
-            
-            # Added -offset_start and -offset_end here
-            tcl.append(f"edit_pin -pin_width {props.get('pin_width', 0.3)} "
-                       f"-pin_depth {props.get('pin_height', 0.3)} "
-                       f"-edge {edge_id} -layer {layer} "
-                       f"-spread_type {place_type} "
-                       f"-offset_start {props.get('offset_start', 0.6)} "
-                       f"-offset_end {props.get('offset_end', 0.6)} "
-                       f"-spread_direction clockwise "
-                       f"-pin {pin_str} ")
-            
-            tcl.append("set_db assign_pins_edit_in_batch false\n")
+            pin_tcl_buffer.append(f"# {side} Side")
+            pin_tcl_buffer.append("set_db assign_pins_edit_in_batch true")
+            pin_tcl_buffer.append(f"edit_pin -pin_width {props.get('pin_width', 0.3)} "
+                                  f"-pin_depth {props.get('pin_height', 0.3)} "
+                                  f"-edge {edge_id} -layer {layer} "
+                                  f"-spread_type {place_type} "
+                                  f"-offset_start {props.get('offset_start', 0.6)} "
+                                  f"-offset_end {props.get('offset_end', 0.6)} "
+                                  f"-spread_direction clockwise "
+                                  f"-pin {pin_str} ")
+            pin_tcl_buffer.append("set_db assign_pins_edit_in_batch false\n")
 
+    # 3. Only append the Pin Assignment header and content if pins were actually found
+    if pin_tcl_buffer:
+        tcl.append("################### Pin Assignment ###################\n")
+        tcl.extend(pin_tcl_buffer)
+
+    # 4. Write to file
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))
 

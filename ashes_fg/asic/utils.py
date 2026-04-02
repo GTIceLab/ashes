@@ -113,23 +113,38 @@ def count_metal_layers(layer_map, tech_process):
 
 def count_metal_layers_drawing(layer_map, tech_process):
     '''
-    Return a list of metal routing layers with purpose 'drawing' available in PDK
+    Return a unique list of metal routing layers with purpose 'drawing' 
+    available in PDK. Ignores M0/metal0 but includes M1/metal1 and higher.
     '''
     metal_layers = []
+    seen_layers = set()  # Track names to avoid repetitions
+    
     for item, value in layer_map.items():
         lname = value['layer'].lower()
+        pdk_name = value['pdk_name']
         
-        # Check: starts with 'm' (m1, metal1) AND contains a number (1, 2, 3)
-        # and ensure purpose is 'drawing'
-        if (lname.startswith('m') and any(c.isdigit() for c in lname)) and value['purpose'] == 'drawing':
-            metal_layers.append(value['pdk_name'])
+        # 1. Basic metal check (starts with 'm' and has a digit)
+        is_metal = lname.startswith('m') and any(c.isdigit() for c in lname)
+        
+        # 2. Purpose check
+        is_drawing = value.get('purpose') == 'drawing'
+        
+        # 3. Exclusion check (ignore M0/metal0)
+        is_ignored = lname.startswith('m0') or lname.startswith('metal0')
+
+        if is_metal and is_drawing and not is_ignored:
+            # 4. Repetition check
+            if pdk_name not in seen_layers:
+                metal_layers.append(pdk_name)
+                seen_layers.add(pdk_name)
     
     if not metal_layers: 
-        # Using Exception here in case PinNotDefined is not defined in your script
-        raise Exception(f'Cannot find any metal layers in {tech_process}.json')
+        raise Exception(f'Cannot find any metal layers (M1+) in {tech_process}.json')
+    
+    # Optional: Sort the layers if they appear out of order in the JSON
+    # metal_layers.sort() 
     
     return metal_layers
-
 
 def find_pitch_in_lef(layer_name, lef_path, dbu=1000):
     '''

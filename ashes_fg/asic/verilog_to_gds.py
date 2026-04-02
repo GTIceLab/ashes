@@ -12,6 +12,7 @@ from pathlib import Path
 
 from shapely.geometry import Polygon, Point, LineString
 from shapely.affinity import translate
+from shapely.ops import unary_union
 
 # make sure our local fork of gdsii is added to system path
 path_root = Path(__file__).parents[0]
@@ -144,6 +145,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     if verbose: print('Cell Info:')
     if verbose: pprint.pprint(cell_info)
     if verbose: print(f'Module List:\n{top_module.module_instances}')
+    #pprint.pprint(cell_info)
 
     # Separate cells into islands and arrange cell list to start at bottom left
     # I doubt this is needed anymore.
@@ -257,6 +259,15 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     - Track cell pin location and update cell info
     - Handle cell rotation, mirroring and translation
     """
+    # Initialize hierarchy tracking: Get official metal names and create a rank mapping (m1=0, m2=1, etc.)
+    metal_names = count_metal_layers_drawing(layer_map, tech_process)
+    m_to_rank = {name.lower(): i for i, name in enumerate(metal_names)}
+    # Tracking used metals for the current cell and highest rank inherited from sub-cells
+    local_metals_found = {n.lower(): False for n in metal_names}
+    max_rank_from_subcells = -1
+    # Temporary variables to store layer/datatype records before reaching the coordinate (XY) record
+    curr_layer, curr_datatype = None, None
+
     ret_string, cell_pin_names, cell_pin_boxes = [], [], []
     lib_tags = {'HEADER', 'BGNLIB', 'UNITS', 'LIBNAME', 'ENDLIB'}
     max_x, min_x, max_y, min_y, cell_width, cell_height = None, None, None, None, None, None
@@ -281,11 +292,32 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                         ret_string.append(rec.tag_name + '\n')
                     # Add cell to unique list and reset max cell dimensions from subcells
                     if rec.tag_name == 'ENDSTR': 
+                        # Determine the highest metal layer used locally in this cell
+                        local_max_rank = -1
+                        for m_name in reversed(metal_names):
+                            if local_metals_found[m_name.lower()]:
+                                local_max_rank = m_to_rank[m_name.lower()]
+                                break
+                        
+                        # Compare local top metal against inherited top metal from sub-cells
+                        final_rank = max(local_max_rank, max_rank_from_subcells)
+                        final_top_metal = metal_names[final_rank] if final_rank != -1 else "none"
+
                         # Update cell info once individual cell parsing is done
                         cell_width = max_x - min_x if max_x is not None and min_x is not None else 0
                         cell_height = max_y - min_y if max_y is not None and min_y is not None else 0
                         #if verbose: print((f'Sub cell: {sub_cell_name} Min x: {min_x} Max x: {max_x}'))
-                        cell_info.update({sub_cell_name: {'width': cell_width, 'height': cell_height, 'origin': (min_x, min_y)}})
+                        cell_info.update({sub_cell_name: {
+                            'width': cell_width, 
+                            'height': cell_height, 
+                            'origin': (min_x, min_y),
+                            'top_metal': final_top_metal # Store the highest metal layer ID
+                        }})
+
+                        # Reset metal trackers for the next cell in the GDS stream
+                        local_metals_found = {n.lower(): False for n in metal_names}
+                        max_rank_from_subcells = -1
+
                         max_x, min_x, max_y, min_y = None, None, None, None
                         # Stop tracking pins once end of cell is reached
                         # Add pin list to cell info of cell
@@ -298,10 +330,15 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                         check_pin_text_layer = True
                         text_layer, text_name, text_loc_X, text_loc_Y = None, None, None, None
                     # Indicate a boundary record
-                    if rec.tag_name == 'BOUNDARY' and track_pins:
+                    if rec.tag_name == 'BOUNDARY':
+                    #if rec.tag_name == 'BOUNDARY' and track_pins:
+                    
+                        # Enable poly checking for all boundaries to facilitate top metal identification
                         check_poly_layer = True
                         poly_pin_layer = None
                         poly_left, poly_bottom, poly_right, poly_top = None, None, None, None
+                        # Reset local layer/datatype memory for this specific element
+                        curr_layer, curr_datatype = None, None
 
                     # Indicate an AREF record. Track this to treat its XY values differently
                     if rec.tag_name == 'AREF':
@@ -314,6 +351,8 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                     if rec.tag_name == 'ENDEL' and check_poly_layer:
                         check_poly_layer = False
                         if poly_pin_layer: cell_pin_boxes.append((poly_pin_layer, poly_left, poly_bottom, poly_right, poly_top))
+                        # Clear local layer memory after element is closed
+                        curr_layer, curr_datatype = None, None
                     
                     if rec.tag_name == 'ENDEL' and (mirror_cell_x or mirror_cell_y):
                         mirror_cell_x = False
@@ -351,11 +390,18 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                     # If cell is already defined and is being called, account for its width
                     # Store the sub cell width to make sure the cell being called is not rotated
                     if rec.tag_name == 'SNAME':
-                        sub_cell_width = int(cell_info[rec.data.decode()]['width'])
+                        called_cell_name = rec.data.decode()
+                        sub_cell_width = int(cell_info[called_cell_name]['width'])
                         # needs investigation
                         # However, i havent run into a situation where i need it so it stays commented out
                         #max_y = max(int(cell_info[rec.data.decode()]['height']), max_y)
-                        sref_name = rec.data.decode()
+                        sref_name = called_cell_name
+
+                        # Inherit top metal from sub-cell: update the max rank if the sub-cell uses a higher metal
+                        if called_cell_name in cell_info and 'top_metal' in cell_info[called_cell_name]:
+                            sub_metal = cell_info[called_cell_name]['top_metal'].lower()
+                            if sub_metal in m_to_rank:
+                                max_rank_from_subcells = max(max_rank_from_subcells, m_to_rank[sub_metal])
 
                     # Start tracking pins for top level cells
                     if rec.tag_name == 'STRNAME' and sub_cell_name in module_list:
@@ -383,6 +429,8 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                     # If in a boundary record, check if layer is in pin list
                     # Also check to see if its a prBoundary layer
                     if rec.tag_name == 'LAYER' and check_poly_layer:
+                        # Capture layer number to identify metal usage in the following XY record
+                        curr_layer = rec.data[0]
                         poly_pin_layer = rec.data[0] if (str(rec.data[0]), pin_list[0][1]) in pin_list else poly_pin_layer
 
                         if prBoundary_layer == None or int(rec.data[0]) == int(prBoundary_layer):
@@ -393,6 +441,10 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                     if rec.tag_name == 'DATATYPE' and poly_pin_layer:
                         poly_pin_layer = None if int(rec.data[0]) != int(pin_list[0][1]) else poly_pin_layer
                     
+                    # Capture datatype number to identify metal usage in the following XY record
+                    if rec.tag_name == 'DATATYPE' and check_poly_layer:
+                        curr_datatype = rec.data[0]
+
                     # Mirroring a cell across x axis and rotating 180 deg is same as mirror across y axis
                     if rec.tag_name == 'ANGLE' and mirror_cell_x and rec.data[0] == 180:
                         mirror_cell_y = True
@@ -451,6 +503,14 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                         # For a text record on a pin layer, get pin location
 
                     if rec.tag_name == 'XY':
+                        # Identify the metal layer for the current polygon using the layer map and mark as used
+                        if check_poly_layer and curr_layer is not None and curr_datatype is not None:
+                            lookup_key = f"{curr_layer},{curr_datatype}"
+                            if lookup_key in layer_map:
+                                metal_layer_name = layer_map[lookup_key]['layer'].lower()
+                                if metal_layer_name in local_metals_found:
+                                    local_metals_found[metal_layer_name] = True
+
                         if check_pin_text_layer and text_layer:
                             text_loc_X, text_loc_Y = rec.data[0], rec.data[1]
                         # For a boundary record on a pin layer, get polygon location
@@ -461,7 +521,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     except:
         raise CellNotFound(f'Problem opening and parsing cell {name}.gds file.')
     return ''.join(ret_string)
-    
+
 
 def generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc,lib_path,prBoundary_layer):
     ''' 
@@ -2338,8 +2398,6 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
     def_file.write('END DESIGN')
     def_file.close()
     return def_blocks, def_nets
-
-
 def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table, lef_file_path, blockage_exemptions=None):
     '''
     Create a def file with automated metal blockages and layer-specific exemptions.
@@ -2384,17 +2442,31 @@ def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_pa
         h = (cell_info[cell_name]['height'] * dbu) / 1000
         ux, uy = lx + w, ly + h
 
+        # Identify the top metal layer for this specific cell (determined during GDS parsing)
+        cell_top_m = cell_info[cell_name].get('top_metal', 'none').lower()
+
+        # If no metal is detected in the cell, we do not need to generate blockages
+        if cell_top_m == 'none':
+            return
+
         # 2. EXEMPTION LOGIC: Look up by Standard Cell Name (c_name)
         # Example: blockage_exemptions = {"BUFF_X1": ["M1", "M2"]}
         layers_to_skip = blockage_exemptions.get(cell_name, [])
 
-        for layer in blockage_layers:
-            if layer in layers_to_skip:
-                continue # Skip this layer for this cell type
+        # Iterate through the metal stack provided for the tech process
+        for layer in metal_layers:
+            curr_layer_name = layer.lower()
             
-            # 3. DEF OUTPUT: Remains exactly as your example (using inst_name)
-            blockage_string.append(f'   - LAYER {layer} + COMPONENT {inst_name} RECT ( {int(lx)} {int(ly)} ) ( {int(ux)} {int(uy)} ) ;\n')
-            blockage_cnt += 1
+            if layer in layers_to_skip:
+                pass # If skipped, we still need to check the break condition below
+            else:
+                # 3. DEF OUTPUT: Create blockage entry for this layer
+                blockage_string.append(f'   - LAYER {layer} + COMPONENT {inst_name} RECT ( {int(lx)} {int(ly)} ) ( {int(ux)} {int(uy)} ) ;\n')
+                blockage_cnt += 1
+
+            # Stop generating blockages once the identified top metal for this specific cell is reached
+            if curr_layer_name == cell_top_m:
+                break
 
     # 2. Iterate through islands and items to place components and calculate blockages
     for val, island in cell_order_in_island.items():
@@ -2505,7 +2577,6 @@ def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_pa
         if blockage_exemptions:
             print(f"Exemptions applied to {len(blockage_exemptions)} instances/cells.")
         print(f"-------------------------------")
-
 
 
 def merge_def_with_gds(file_path, file_name, layer_map, cell_info, dbu, pwd, router_tool):
