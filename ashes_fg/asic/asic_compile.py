@@ -467,6 +467,77 @@ class Island:
         # Place instance at bottom left corner of matrix
         self.placementGrid[row][col] = instance
 
+    def getSize(self, rows = None, cols = None):
+        """
+        Gives physical dimensions of island
+        """
+        totalRows = np.shape(self.placementGrid)[0]
+        totalCols = np.shape(self.placementGrid)[1]
+
+
+        if rows == None:
+            startRow = 0
+            endRow = totalRows
+        else:
+            startRow = rows[0]
+            endRow = rows[1]
+
+        if cols == None:
+            startCol = 0
+            endCol = totalCols
+        else:
+            startCol = cols[0]
+            endCol = cols[1]
+
+        numRows = endRow-startRow
+        numCols = endCol-startCol
+
+        width_array = np.zeros([totalRows,totalCols])
+        height_array = np.zeros([totalRows,totalCols])
+
+        cell_catalog = {}
+
+        for row in range(startRow,endRow):
+            for col in range(startCol,endCol):
+                cell = self.placementGrid[row,col]
+                if isinstance(cell,StandardCell):
+                    if cell_catalog.get(cell.name) == None:
+                        cell_catalog[cell.name] = [cell.size[0],cell.size[1]]
+                elif cell != 0:
+                    if cell_catalog.get(cell) == None:
+                        for r in range(0,totalRows):
+                            for c in range(0,totalCols):
+                                cell_look = self.placementGrid[r,c]
+                                if isinstance(cell_look,StandardCell):
+                                    if cell_look.name == cell:
+                                        cell_catalog[cell_look.name] = [cell_look.size[0],cell_look.size[1]]
+
+
+        cell_catalog[0] = [0,0]
+
+        for row in range(startRow,endRow):
+            for col in range(startCol,endCol):
+                cell = self.placementGrid[row,col]
+                if isinstance(self.placementGrid[row,col],StandardCell):
+                    width_array[row,col] = cell.size[0]
+                    height_array[row,col] = cell.size[1]
+                else:
+                    cell_size = cell_catalog[cell]
+                    width_array[row,col] = cell_size[0]
+                    height_array[row,col] = cell_size[1]
+
+        width_array = np.sum(width_array,axis=1)
+        height_array = np.sum(height_array,axis=0)
+
+        island_width = max(width_array)
+        island_height = max(height_array)
+
+
+        return [round(island_width,3),round(island_height,3)]
+
+
+
+
     def printPlacement(self):
         """
         Prints visual CSV file of island placement
