@@ -372,6 +372,9 @@ class Island:
     def insertRows(self,rowNum,numNewRows=1):
         self.placementGrid = self.addRows(self.placementGrid,rowNum,numNewRows)
 
+    def insertCols(self,colNum,numNewCols=1):
+        self.placementGrid = self.addCols(self.placementGrid,colNum,numNewCols)
+
     def getLocation(self,instance):
         """
         Find the location of an instance in the placement grid    
