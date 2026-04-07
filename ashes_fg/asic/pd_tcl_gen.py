@@ -117,35 +117,82 @@ def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath):
     # 4. Write to file
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))
-
 def generate_power_tcl(config_data, filepath):
-    p_cfg = {}
-    for item in config_data.get("power", []): p_cfg.update(item)
-    nets = p_cfg.get("nets_order", "VDD GND").replace(",", " ")
+    # Get the main power block (assuming first item in list)
+    power_entry = config_data.get("power", [{}])[0]
     
-    tcl = [
-        "################### Power Ring ###################",
-        f"set_db add_rings_stacked_via_top_layer {p_cfg.get('top_via_stack')}",
-        f"set_db add_rings_stacked_via_bottom_layer {p_cfg.get('bot_via_stack')}",
-        #Defaults
-        f"set_db add_rings_target default ",
-        f"set_db add_rings_extend_over_row 0 ",
-        f"set_db add_rings_ignore_rows 0 ",
-        f"set_db add_rings_avoid_short 0 ",
-        f"set_db add_rings_skip_shared_inner_ring none ",
-        f"set_db add_rings_via_using_exact_crossover_size 1 ",
-        f"set_db add_rings_orthogonal_only true ",
-        f"set_db add_rings_skip_via_on_pin {{ standardcell }} ",
-        f"set_db add_rings_skip_via_on_wire_shape {{ noshape }} ",
-        f"add_rings -nets {{ {nets} }} -type core_rings -follow core "
-        f"-layer {{top {p_cfg.get('horiz_ly')} bottom {p_cfg.get('horiz_ly')} left {p_cfg.get('vert_ly')} right {p_cfg.get('vert_ly')}}} "
-        f"-width {{top {p_cfg.get('met_width')} bottom {p_cfg.get('met_width')} left {p_cfg.get('met_width')} right {p_cfg.get('met_width')}}} "  
-        f"-spacing {{top {p_cfg.get('net_spacing')} bottom {p_cfg.get('net_spacing')} left {p_cfg.get('net_spacing')} right {p_cfg.get('net_spacing')}}} " 
-        f"-offset {{top {p_cfg.get('offset')} bottom {p_cfg.get('offset')} left {p_cfg.get('offset')} right {p_cfg.get('offset')}}} " 
-        f"-center 0 -threshold 0 -jog_distance 0 -snap_wire_center_to_grid none"
-    ]
+    # Extract Globals
+    globals_cfg = power_entry.get("power_globals", {})
+    nets_list = globals_cfg.get("nets", ["VDD", "GND"])
+    nets_str = " ".join(nets_list)
+    top_via = globals_cfg.get("top_via_stack", "M7")
+    bot_via = globals_cfg.get("bot_via_stack", "M1")
+    route_type = globals_cfg.get("type", "rings")
+
+    tcl = []
+    tcl.append("####################################################")
+    tcl.append("## Power Routing Script (Generated)")
+    tcl.append("####################################################\n")
+
+    # 1. Global Via Settings
+    tcl.append(f"set_db add_rings_stacked_via_top_layer {top_via}")
+    tcl.append(f"set_db add_rings_stacked_via_bottom_layer {bot_via}")
+    tcl.append(f"set_db add_stripes_stacked_via_top_layer {top_via}")
+    tcl.append(f"set_db add_stripes_stacked_via_bottom_layer {bot_via}\n")
+
+    if route_type == "rings":
+        # 2. Process Rings
+        rings = power_entry.get("rings", [])
+        if rings:
+            tcl.append("################### Power Rings ###################")
+            for ring in rings:
+                h_ly = ring.get("horiz_layer")
+                v_ly = ring.get("vert_layer")
+                wid  = ring.get("width")
+                spc  = ring.get("spacing")
+                off  = ring.get("offset")
+                
+                tcl.append(
+                    f"add_rings -nets {{ {nets_str} }} -type core_rings -follow core "
+                    f"-layer {{top {h_ly} bottom {h_ly} left {v_ly} right {v_ly}}} "
+                    f"-width {{top {wid} bottom {wid} left {wid} right {wid}}} "
+                    f"-spacing {{top {spc} bottom {spc} left {spc} right {spc}}} "
+                    f"-offset {{top {off} bottom {off} left {off} right {off}}} "
+                    f"-center {1 if ring.get('center') else 0} -threshold 0 -jog_distance 0 -snap_wire_center_to_grid none"
+                )
+            tcl.append("")
+
+    if route_type == "stripes":
+        # 3. Process Stripes
+        stripes = power_entry.get("stripes", [])
+        if stripes:
+            tcl.append("################### Power Stripes ##################")
+            #Default Conditions
+            
+            for stripe in stripes:
+                layer = stripe.get("layer")
+                direction = stripe.get("direction")
+                width = stripe.get("width")
+                spacing = stripe.get("spacing")
+                sets = stripe.get("no_of_sets", 1)
+                offset = stripe.get("start_offset", 0)
+                
+                # Using the command template you provided
+                tcl.append(
+                    f"add_stripes -nets {{ {nets_str} }} -layer {layer} -direction {direction} "
+                    f"-width {width} -spacing {spacing} -number_of_sets {sets} "
+                    f"-start_from bottom -start_offset {offset} -switch_layer_over_obs false "
+                    f"-max_same_layer_jog_length 2 -pad_core_ring_top_layer_limit {top_via} "
+                    f"-pad_core_ring_bottom_layer_limit {bot_via} -block_ring_top_layer_limit {top_via} "
+                    f"-block_ring_bottom_layer_limit {bot_via} -use_wire_group 0 -snap_wire_center_to_grid none"
+                )
+            tcl.append("")
+            tcl.append("update_power_vias -skip_via_on_pin standardcell -bottom_layer M1 -add_vias 1 -top_layer AP")
+    # Write to file
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))
+    print(f"Successfully generated: {filepath}")
+
         
 def generate_route_tcl(config_data, ndr_info, filepath):
     """
