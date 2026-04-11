@@ -212,10 +212,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         new_dev_fgs = f"{old_dev_fgs}\n\t\t\t'{macrocab_name}[0]',[0,0],"
         lines = lines.replace(old_dev_fgs, new_dev_fgs) # checked
 
-        if "rasp30a" in rasp30_file:
-            anchor = "### MACROCAB MODIFICATION LINE SELF.DEV_FGS BELOW ###"
-        else:
-            anchor = "\t\t\t'cap_4x_cs[0:3]',[[28,29,28,29], 0]]\n\t\tself.dev_fgs = smDictFromList(dev_fgs_sm)"
+        anchor = "### MACROCAB MODIFICATION LINE SELF.DEV_FGS BELOW ###"
         # Build the new content
         new_entry = f"            '{macrocab_name}_ls[0]', {fg_cells}"
 
@@ -234,6 +231,8 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         if anchor in lines:
             lines = lines.replace(anchor, replacement)
         else:
+            print(anchor)
+            print(replacement)
             print(f"Error: Could not find any valid anchor in {rasp30_file}")
 
         old_dev_pins_1 = "} ### MACROCAB MODIFICATION LINE SELF.DEV_PINS ###"
@@ -255,7 +254,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         lines = lines.replace(old_li_sm_0b, f",{out_pin}{old_li_sm_0b}")
 
         old_li_sm_1 = "] ### MACROCAB MODIFICATION LINES LI_SM_1 ABOVE ###"
-        lines = lines.replace(old_li_sm_1, f"{in_pin}{old_li_sm_1}") #fgbias, pbias, etc? 
+        lines = lines.replace(old_li_sm_1, f", {in_pin}{old_li_sm_1}") #fgbias, pbias, etc? 
 
     with open(rasp30_file, 'w') as file:
         file.write(lines)
