@@ -208,7 +208,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         )
     else:
 
-        old_dev_fgs = "'vmm_offc[0]',[0,0],"
+        old_dev_fgs = "### MACROCAB MODIFICATION LINE DEV_FGS_SM BELOW ###"
         new_dev_fgs = f"{old_dev_fgs}\n\t\t\t'{macrocab_name}[0]',[0,0],"
         lines = lines.replace(old_dev_fgs, new_dev_fgs) # checked
 
@@ -248,13 +248,13 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         old_li_sm_in = "### MACROCAB MODIFICATION LINE LI_SM_IN BELOW ###"
         lines = lines.replace(old_li_sm_in, f"{old_li_sm_in}\n\t\t\t{in_pin},{input_cells},")
 
-        old_li_sm_out = "'### MACROCAB MODIFICATION LINE LI_SM_OUT BELOW ###"
+        old_li_sm_out = "### MACROCAB MODIFICATION LINE LI_SM_OUT BELOW ###"
         lines = lines.replace(old_li_sm_out, f"{old_li_sm_out}\n\t\t\t{out_pin},{output_cells},")
 
-        old_li_sm_0b = "]\n		### MACROCAB MODIFICATION LINES LI_SM_0B ABOVE ###"
+        old_li_sm_0b = "] ### MACROCAB MODIFICATION LINES LI_SM_0B ###"
         lines = lines.replace(old_li_sm_0b, f",{out_pin}{old_li_sm_0b}")
 
-        old_li_sm_1 = "]\n		### MACROCAB MODIFICATION LINES LI_SM_1 ABOVE ###"
+        old_li_sm_1 = "] ### MACROCAB MODIFICATION LINES LI_SM_1 ABOVE ###"
         lines = lines.replace(old_li_sm_1, f"{in_pin}{old_li_sm_1}") #fgbias, pbias, etc? 
 
     with open(rasp30_file, 'w') as file:
