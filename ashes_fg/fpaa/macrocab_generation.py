@@ -201,11 +201,17 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         lines = lines.replace(f"+['{macrocab_name}']*1", "")  # dev_types
         lines = lines.replace(f",'{macrocab_name}_in':{num_inputs}", "")   # dev_pins
         lines = lines.replace(f",'{macrocab_name}_out':{num_outputs}", "")  # dev_pins
+        lines = lines.replace(f"\t\t\t'{macrocab_name}[0]',[0,0],\n", "")  # dev_fgs_sm
 
-        lines = "\n".join(
-            l for l in lines.splitlines()
-            if macrocab_name not in l
-        )
+        dev_fgs_entry = f"\n            '{macrocab_name}_ls[0]', {fg_cells}"
+        if isinstance(resource_cells, dict):
+            caps = resource_cells.get("CAP0", [])
+            caps_nums = {1: 4, 2: 2, 3: 1}
+            for i, cell in enumerate(caps):
+                cap_val = caps_nums.get(i + 1, 1)
+                dev_fgs_entry += f",\n            '{macrocab_name}_cap0_{cap_val}x_cs[0]', {cell}"
+        dev_fgs_entry += ",\n"
+        lines = lines.replace(dev_fgs_entry, "")
     else:
 
         old_dev_fgs = "### MACROCAB MODIFICATION LINE DEV_FGS_SM BELOW ###"
