@@ -226,7 +226,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
                 new_entry += f",\n            '{macrocab_name}_cap0_{cap_val}x_cs[0]', {cell}"
 
         # Use a comma and newline to maintain the list structure
-        replacement = f"{anchor}\n{new_entry}\n"
+        replacement = f"{anchor}\n{new_entry},\n"
 
         if anchor in lines:
             lines = lines.replace(anchor, replacement)
