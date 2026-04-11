@@ -144,9 +144,18 @@ class cabStats(stats):
 		#Local Interconnect
 		li_sm_0a = ['gnd','vcc','cab.I[0:15]']
 		# outputs order into the CAB   ## order is very important here
-		li_sm_0b = ['fgota[0].out[0]','ota_buf[0].out[0]','ota[0].out[0]','cap[0].out[0]','nfet[0].out[0]','pfet[0].out[0]','tgate[0].out[0]','nmirror[0].out[0]','c4_sp[0].out[0]','gnd_out[0].out[0]','vdd_out[0].out[0]','in2in_x1[0].out[0]','in2in_x6[0].out[0]','lpf[0].out[0]','nfet_i2v[0].out[0]','pfet_i2v[0].out[0]','i2v_pfet_gatefgota[0].out[0]','mismatch_meas[0].out[0]','mmap_local_swc[0].out[0]','ramp_fe[0].out[0:3]','hhneuron[0].out[0:2]','TIA_blk[0].out[0]','ichar_nfet[0].out[0]','tgate_so[0].out[0]','vmm4x4_SR[0].out[0]','vmm8x4_SR[0].out[0]','SR4[0].out[0:7]','vmm4x4_SR2[0].out[0]','vmm4x4[0].out[0:3]','sftreg[0].out[0]','DAC_sftreg[0].out[0]','sftreg2[0].out[0]','sftreg3[0].out[0]','sftreg4[0].out[0]','vmm8x4[0].out[0]','vmm8inx8in[0].out[0]','vmm8x4_in[0].out[0]','vmm12x1[0].out[0]','vmm12x1_wowta[0].out[0]','ota_vmm[0].out[0]','Hyst_diff[0].out[0]','Max_detect[0].out[0]','Min_detect[0].out[0]','hhn[0].out[0]','fgswitch[0].out[0]','common_drain[0].out[0]','common_drain_nfet[0].out[0]','hhn_debug[0].out[0:2]','wta_new[0].out[0]','common_source[0].out[0]','VolDivide1[0].out[0]','I_SenseAmp[0].out[0]','nmirror_w_bias[0].out[0]','SubbandArray[0].out[0:1]','HH_RG[0].out[0:1]','HH_RG_2s[0].out[0:1]','HH_RG_3s[0].out[0:1]','SOSLPF[0].out[0]','MSOS02[0].out[0]','vmm_offc[0].out[0:1]','test[0].out[0]']
-		li_sm_1 = ['fgota[0].in[0:1]','ota_buf[0].in[0]','ota[0].in[0:1]','cap[0].in[0]','nfet[0].in[0:1]','pfet[0].in[0:1]','tgate[0].in[0:1]','nmirror[0].in[0]','c4_sp[0].in[0:1]','gnd_out[0].in[0:1]','vdd_out[0].in[0:1]','in2in_x1[0].in[0:2]','in2in_x6[0].in[0:12]','lpf[0].in[0]','nfet_i2v[0].in[0]','pfet_i2v[0].in[0]','i2v_pfet_gatefgota[0].in[0]','mismatch_meas[0].in[0:2]','mmap_local_swc[0].in[0:2]','ramp_fe[0].in[0:1]','hhneuron[0].in[0:3]','TIA_blk[0].in[0]','ichar_nfet[0].in[0:1]','tgate_so[0].in[0:7]','vmm4x4_SR[0].in[0:6]','vmm8x4_SR[0].in[0:10]','SR4[0].in[0:3]','vmm4x4_SR2[0].in[0:7]','vmm4x4[0].in[0:3]','sftreg[0].in[0:18]','DAC_sftreg[0].in[0:2]','sftreg2[0].in[0:2]','sftreg3[0].in[0:3]','sftreg4[0].in[0:3]','vmm8x4[0].in[0:12]','vmm8inx8in[0].in[0:16]','vmm8x4_in[0].in[0:12]','vmm12x1[0].in[0:12]','vmm12x1_wowta[0].in[0:11]','ota_vmm[0].in[0:1]','Hyst_diff[0].in[0]','Max_detect[0].in[0]','Min_detect[0].in[0]','hhn[0].in[0:3]','fgswitch[0].in[0]','common_drain[0].in[0]','common_drain_nfet[0].in[0]','hhn_debug[0].in[0:3]','wta_new[0].in[0:2]','common_source[0].in[0]','VolDivide1[0].in[0]','I_SenseAmp[0].in[0:1]','nmirror_w_bias[0].in[0:1]','SubbandArray[0].in[0:1]','HH_RG[0].in[0:4]','HH_RG_2s[0].in[0:5]','HH_RG_3s[0].in[0:6]','SOSLPF[0].in[0]','MSOS02[0].in[0]','vmm_offc[0].in[0:12]','test[0].in[0]','cab.O[0:7]']
-		#O/PS        
+
+		
+		li_sm_0b = ['fgota[0].out[0]','ota_buf[0].out[0]','ota[0].out[0]','cap[0].out[0]','nfet[0].out[0]','pfet[0].out[0]','tgate[0].out[0]','nmirror[0].out[0]','c4_sp[0].out[0]','gnd_out[0].out[0]','vdd_out[0].out[0]','in2in_x1[0].out[0]','in2in_x6[0].out[0]','lpf[0].out[0]','nfet_i2v[0].out[0]','pfet_i2v[0].out[0]','i2v_pfet_gatefgota[0].out[0]','mismatch_meas[0].out[0]','mmap_local_swc[0].out[0]','ramp_fe[0].out[0:3]','hhneuron[0].out[0:2]','TIA_blk[0].out[0]','ichar_nfet[0].out[0]','tgate_so[0].out[0]','vmm4x4_SR[0].out[0]','vmm8x4_SR[0].out[0]','SR4[0].out[0:7]','vmm4x4_SR2[0].out[0]','vmm4x4[0].out[0:3]','sftreg[0].out[0]','DAC_sftreg[0].out[0]','sftreg2[0].out[0]','sftreg3[0].out[0]','sftreg4[0].out[0]','vmm8x4[0].out[0]','vmm8inx8in[0].out[0]','vmm8x4_in[0].out[0]','vmm12x1[0].out[0]','vmm12x1_wowta[0].out[0]','ota_vmm[0].out[0]','Hyst_diff[0].out[0]','Max_detect[0].out[0]','Min_detect[0].out[0]','hhn[0].out[0]','fgswitch[0].out[0]','common_drain[0].out[0]','common_drain_nfet[0].out[0]','hhn_debug[0].out[0:2]','wta_new[0].out[0]','common_source[0].out[0]','VolDivide1[0].out[0]','I_SenseAmp[0].out[0]','nmirror_w_bias[0].out[0]','SubbandArray[0].out[0:1]','HH_RG[0].out[0:1]','HH_RG_2s[0].out[0:1]','HH_RG_3s[0].out[0:1]','SOSLPF[0].out[0]','MSOS02[0].out[0]','vmm_offc[0].out[0:1]']
+		### MACROCAB MODIFICATION LINES LI_SM_0B ABOVE ###
+
+		
+		li_sm_1 = ['fgota[0].in[0:1]','ota_buf[0].in[0]','ota[0].in[0:1]','cap[0].in[0]','nfet[0].in[0:1]','pfet[0].in[0:1]','tgate[0].in[0:1]','nmirror[0].in[0]','c4_sp[0].in[0:1]','gnd_out[0].in[0:1]','vdd_out[0].in[0:1]','in2in_x1[0].in[0:2]','in2in_x6[0].in[0:12]','lpf[0].in[0]','nfet_i2v[0].in[0]','pfet_i2v[0].in[0]','i2v_pfet_gatefgota[0].in[0]','mismatch_meas[0].in[0:2]','mmap_local_swc[0].in[0:2]','ramp_fe[0].in[0:1]','hhneuron[0].in[0:3]','TIA_blk[0].in[0]','ichar_nfet[0].in[0:1]','tgate_so[0].in[0:7]','vmm4x4_SR[0].in[0:6]','vmm8x4_SR[0].in[0:10]','SR4[0].in[0:3]','vmm4x4_SR2[0].in[0:7]','vmm4x4[0].in[0:3]','sftreg[0].in[0:18]','DAC_sftreg[0].in[0:2]','sftreg2[0].in[0:2]','sftreg3[0].in[0:3]','sftreg4[0].in[0:3]','vmm8x4[0].in[0:12]','vmm8inx8in[0].in[0:16]','vmm8x4_in[0].in[0:12]','vmm12x1[0].in[0:12]','vmm12x1_wowta[0].in[0:11]','ota_vmm[0].in[0:1]','Hyst_diff[0].in[0]','Max_detect[0].in[0]','Min_detect[0].in[0]','hhn[0].in[0:3]','fgswitch[0].in[0]','common_drain[0].in[0]','common_drain_nfet[0].in[0]','hhn_debug[0].in[0:3]','wta_new[0].in[0:2]','common_source[0].in[0]','VolDivide1[0].in[0]','I_SenseAmp[0].in[0:1]','nmirror_w_bias[0].in[0:1]','SubbandArray[0].in[0:1]','HH_RG[0].in[0:4]','HH_RG_2s[0].in[0:5]','HH_RG_3s[0].in[0:6]','SOSLPF[0].in[0]','MSOS02[0].in[0]','vmm_offc[0].in[0:12]','cab.O[0:7]']
+		### MACROCAB MODIFICATION LINES LI_SM_1 ABOVE ###
+		
+		#O/PS
+
+		  
 		li_sm = ['gnd'             ,[0,  0],     #inputs from CAB and device outputs
 			'vcc'              ,[0,  1],#y
 			'cab.I[0:12]'        ,[0, range( 2, 15)],#y to be shifted for the decoder
@@ -213,8 +222,7 @@ class cabStats(stats):
 			'HH_RG_3s[0].out[0:1]',[0,[17,23]],
 			'SOSLPF[0].out[0]',[0,18],
 			'MSOS02[0].out[0]',[0,18],
-			'vmm_offc[0].out[0:1]',[0,[17,18]],
-			'test[0].out[0]',[0, 24],
+			'vmm_offc[0].out[0:1]',[0,[17,18]], ### MACROCAB MODIFICATION LINE LI_SM_OUT BELOW ###
 			'fgota[0].in[0:1]' ,[[33,32], 0],
 			'fgota[1].in[0:1]' ,[[31,30], 0],
 			'ota_buf[0].in[0]' ,  [29, 0],# in<0:7> y
@@ -270,8 +278,7 @@ class cabStats(stats):
 			'HH_RG_3s[0].in[0:6]',[[24,23,22,16,20,31,27],0],
 			'SOSLPF[0].in[0]',[33,0],
 			'MSOS02[0].in[0]',[33,0],
-			'vmm_offc[0].in[0:12]',[[6,7,8,9,10,11,12,13,14,15,16,17,27],0],
-			'test[0].in[0]',[33, 0],
+			'vmm_offc[0].in[0:12]',[[6,7,8,9,10,11,12,13,14,15,16,17,27],0], ### MACROCAB MODIFICATION LINE LI_SM_IN BELOW ###
 			'cab.O[0:5]'          ,[range( 29, 23, -1), 21]] ## o/ps connectn to i/ps?? ummmmm !!! ---we need this 
 		self.li = smDictFromList(li_sm)
 		li0b = recStrExpand(li_sm_0b)
@@ -279,8 +286,10 @@ class cabStats(stats):
 		self.li0 = recStrExpand(li_sm_0a) + li0b
 		self.li1 = recStrExpand(li_sm_1)
 		#CAB Devices ## order is very important here
-		self.dev_types =['fgota']*1+['ota_buf']*1+['ota']*1+['cap']*1+['nfet']*1+['pfet']*1+['tgate']*1+['nmirror']*1+['c4_sp']*1+['gnd_out']*1+['vdd_out']*1+['in2in_x1']*1+['in2in_x6']*1+['lpf']*1+['nfet_i2v']*1+['pfet_i2v']*1+['i2v_pfet_gatefgota']*1+['mismatch_meas']*1+['mmap_local_swc']*1+['ramp_fe']*1+['hhneuron']*1+['TIA_blk']*1+['ichar_nfet']*1+['tgate_so']*1+['vmm4x4_SR']*1+['vmm8x4_SR']*1+['SR4']*1+['vmm4x4_SR2']*1+['vmm4x4']*1+['sftreg']*1+['DAC_sftreg']*1 +['sftreg2']*1+['sftreg3']*1+['sftreg4']*1+['vmm8x4']*1+['vmm8inx8in']*1+['vmm8x4_in']*1+['vmm12x1']*1+['vmm12x1_wowta']*1+['ota_vmm']*1+['Hyst_diff']*1+['Max_detect']*1+['Min_detect']*1+['hhn']*1+['fgswitch']*1+['common_drain']*1+['common_drain_nfet']*1+['hhn_debug']*1+['wta_new']*1+['common_source']*1+['VolDivide1']*1+['I_SenseAmp']*1+['nmirror_w_bias']*1+['SubbandArray']*1+['HH_RG']*1+['HH_RG_2s']*1+['HH_RG_3s']*1+['SOSLPF']*1+['MSOS02']*1+['vmm_offc']*1+['test']*1
-		self.dev_pins = {'fgota_in':2,'ota_buf_in':1,'ota_in':2, 'cap_in':1, 'nfet_in':2, 'pfet_in':2,'tgate_in':2,'nmirror_in':1,'c4_sp_in':2,'gnd_out_in':2,'vdd_out_in':2,'in2in_x1_in':3,'in2in_x6_in':13,'lpf_in':1,'nfet_i2v_in':1,'pfet_i2v_in':1,'i2v_pfet_gatefgota_in':1,'mismatch_meas_in':3,'mmap_local_swc_in':3,'ramp_fe_in':2,'hhneuron_in':4,'TIA_blk_in':1,'ichar_nfet_in':2,'tgate_so_in':8,'vmm4x4_SR_in':7,'vmm8x4_SR_in':11,'SR4_in':4,'vmm4x4_SR2_in':8,'vmm4x4_in':4,'sftreg_in':19, 'DAC_sftreg_in':3,'sftreg2_in':3,'sftreg3_in':4,'sftreg4_in':4,'vmm8x4_in':13,'vmm8inx8in_in':17,'vmm8x4_in_in':13,'vmm12x1_in':13,'vmm12x1_wowta_in':12,'ota_vmm_in':2,'Hyst_diff_in':1,'Max_detect_in':1,'Min_detect_in':1,'hhn_in':4,'fgswitch_in':1,'common_drain_in':1,'common_drain_nfet_in':1,'hhn_debug_in':4,'wta_new_in':3,'common_source_in':1,'VolDivide1_in':1,'I_SenseAmp_in':2,'nmirror_w_bias_in':2,'SubbandArray_in':2,'HH_RG_in':5,'HH_RG_2s_in':6,'HH_RG_3s_in':7,'SOSLPF_in':1,'MSOS02_in':1,'vmm_offc_in':13,'test_in':1,'fgota_out':1,'ota_buf_out':1,'ota_out':1, 'cap_out':1, 'nfet_out':1, 'pfet_out':1,'tgate_out':1,'nmirror_out':1,'c4_sp_out':1,'gnd_out_out':1,'vdd_out_out':1,'in2in_x1_out':1,'in2in_x6_out':1,'lpf_out':1,'nfet_i2v_out':1,'pfet_i2v_out':1,'i2v_pfet_gatefgota_out':1,'mismatch_meas_out':1,'mmap_local_swc_out':1,'ramp_fe_out':4,'hhneuron_out':3,'TIA_blk_out':1,'ichar_nfet_out':1,'tgate_so_out':1,'vmm4x4_SR_out':1,'vmm8x4_SR_out':1,'SR4_out':8,'vmm4x4_SR2_out':1,'vmm4x4_out':4,'sftreg_out':1,'DAC_sftreg_out':1,'sftreg2_out':1,'sftreg3_out':1,'sftreg4_out':1,'vmm8x4_out':1,'vmm8inx8in_out':1,'vmm8x4_in_out':1,'vmm12x1_out':1,'vmm12x1_wowta_out':1,'ota_vmm_out':1,'Hyst_diff_out':1,'Max_detect_out':1,'Min_detect_out':1,'hhn_out':1,'fgswitch_out':1,'common_drain_out':1,'common_drain_nfet_out':1,'hhn_debug_out':3,'wta_new_out':1,'common_source_out':1,'VolDivide1_out':1,'I_SenseAmp_out':1,'nmirror_w_bias_out':1,'SubbandArray_out':2,'HH_RG_out':2,'HH_RG_2s_out':2,'HH_RG_3s_out':2,'SOSLPF_out':1,'MSOS02_out':1,'vmm_offc_out':2,'test_out':1}
+		self.dev_types =['fgota']*1+['ota_buf']*1+['ota']*1+['cap']*1+['nfet']*1+['pfet']*1+['tgate']*1+['nmirror']*1+['c4_sp']*1+['gnd_out']*1+['vdd_out']*1+['in2in_x1']*1+['in2in_x6']*1+['lpf']*1+['nfet_i2v']*1+['pfet_i2v']*1+['i2v_pfet_gatefgota']*1+['mismatch_meas']*1+['mmap_local_swc']*1+['ramp_fe']*1+['hhneuron']*1+['TIA_blk']*1+['ichar_nfet']*1+['tgate_so']*1+['vmm4x4_SR']*1+['vmm8x4_SR']*1+['SR4']*1+['vmm4x4_SR2']*1+['vmm4x4']*1+['sftreg']*1+['DAC_sftreg']*1 +['sftreg2']*1+['sftreg3']*1+['sftreg4']*1+['vmm8x4']*1+['vmm8inx8in']*1+['vmm8x4_in']*1+['vmm12x1']*1+['vmm12x1_wowta']*1+['ota_vmm']*1+['Hyst_diff']*1+['Max_detect']*1+['Min_detect']*1+['hhn']*1+['fgswitch']*1+['common_drain']*1+['common_drain_nfet']*1+['hhn_debug']*1+['wta_new']*1+['common_source']*1+['VolDivide1']*1+['I_SenseAmp']*1+['nmirror_w_bias']*1+['SubbandArray']*1+['HH_RG']*1+['HH_RG_2s']*1+['HH_RG_3s']*1+['SOSLPF']*1+['MSOS02']*1+['vmm_offc']*1 ### MACROCAB MODIFICATION LINE SELF.DEV_TYPES ###
+		
+		self.dev_pins = {'fgota_in':2,'ota_buf_in':1,'ota_in':2, 'cap_in':1, 'nfet_in':2, 'pfet_in':2,'tgate_in':2,'nmirror_in':1,'c4_sp_in':2,'gnd_out_in':2,'vdd_out_in':2,'in2in_x1_in':3,'in2in_x6_in':13,'lpf_in':1,'nfet_i2v_in':1,'pfet_i2v_in':1,'i2v_pfet_gatefgota_in':1,'mismatch_meas_in':3,'mmap_local_swc_in':3,'ramp_fe_in':2,'hhneuron_in':4,'TIA_blk_in':1,'ichar_nfet_in':2,'tgate_so_in':8,'vmm4x4_SR_in':7,'vmm8x4_SR_in':11,'SR4_in':4,'vmm4x4_SR2_in':8,'vmm4x4_in':4,'sftreg_in':19, 'DAC_sftreg_in':3,'sftreg2_in':3,'sftreg3_in':4,'sftreg4_in':4,'vmm8x4_in':13,'vmm8inx8in_in':17,'vmm8x4_in_in':13,'vmm12x1_in':13,'vmm12x1_wowta_in':12,'ota_vmm_in':2,'Hyst_diff_in':1,'Max_detect_in':1,'Min_detect_in':1,'hhn_in':4,'fgswitch_in':1,'common_drain_in':1,'common_drain_nfet_in':1,'hhn_debug_in':4,'wta_new_in':3,'common_source_in':1,'VolDivide1_in':1,'I_SenseAmp_in':2,'nmirror_w_bias_in':2,'SubbandArray_in':2,'HH_RG_in':5,'HH_RG_2s_in':6,'HH_RG_3s_in':7,'SOSLPF_in':1,'MSOS02_in':1,'vmm_offc_in':13,'fgota_out':1,'ota_buf_out':1,'ota_out':1, 'cap_out':1, 'nfet_out':1, 'pfet_out':1,'tgate_out':1,'nmirror_out':1,'c4_sp_out':1,'gnd_out_out':1,'vdd_out_out':1,'in2in_x1_out':1,'in2in_x6_out':1,'lpf_out':1,'nfet_i2v_out':1,'pfet_i2v_out':1,'i2v_pfet_gatefgota_out':1,'mismatch_meas_out':1,'mmap_local_swc_out':1,'ramp_fe_out':4,'hhneuron_out':3,'TIA_blk_out':1,'ichar_nfet_out':1,'tgate_so_out':1,'vmm4x4_SR_out':1,'vmm8x4_SR_out':1,'SR4_out':8,'vmm4x4_SR2_out':1,'vmm4x4_out':4,'sftreg_out':1,'DAC_sftreg_out':1,'sftreg2_out':1,'sftreg3_out':1,'sftreg4_out':1,'vmm8x4_out':1,'vmm8inx8in_out':1,'vmm8x4_in_out':1,'vmm12x1_out':1,'vmm12x1_wowta_out':1,'ota_vmm_out':1,'Hyst_diff_out':1,'Max_detect_out':1,'Min_detect_out':1,'hhn_out':1,'fgswitch_out':1,'common_drain_out':1,'common_drain_nfet_out':1,'hhn_debug_out':3,'wta_new_out':1,'common_source_out':1,'VolDivide1_out':1,'I_SenseAmp_out':1,'nmirror_w_bias_out':1,'SubbandArray_out':2,'HH_RG_out':2,'HH_RG_2s_out':2,'HH_RG_3s_out':2,'SOSLPF_out':1,'MSOS02_out':1,'vmm_offc_out':2} ### MACROCAB MODIFICATION LINE SELF.DEV_PINS ###
+		
 		dev_fgs_sm = [
 			'ota[0]'	,[0, 0],
 			'ota_buf[0]' 	,[0, 0],
@@ -338,8 +347,7 @@ class cabStats(stats):
 			'HH_RG_3s[0]',[0,0],
 			'SOSLPF[0]',[0,0],
 			'MSOS02[0]',[0,0],
-			'vmm_offc[0]',[0,0],
-			'test[0]',[0,0],
+			'vmm_offc[0]',[0,0], ### MACROCAB MODIFICATION LINE DEV_FGS_SM BELOW ###
 			##### now the define parts
 			#'ota_bias'	,[[32, 0],[33,0]],
 			'ladder_fg[0]',[[31,15],[29,16],[32,16],[28,17]],
@@ -735,12 +743,8 @@ class cabStats(stats):
 			'vmm_offc_w11n[0]',[7,19],
 			'vmm_offc_w21n[0]',[7,20],
 			'vmm_offc_w11p[0]',[6,19],
-			'vmm_offc_w21p[0]',[6,20],
-            'test_ls[0]', [[18, 0], [19, 2], [17, 2], [16, 1], [25, 24], [25, 25]],
-            'test_cap0_4x_cs[0]', [28, 57],
-            'test_cap0_2x_cs[0]', [28, 58],
-            'test_cap0_1x_cs[0]', [28, 59],
-			'cap_4x_cs[0:3]',[[28,29,28,29], 0]]
+			'vmm_offc_w21p[0]',[6,20], ### MACROCAB MODIFICATION LINE SELF.DEV_FGS BELOW ###
+			'cap_4x_cs[0:3]',[[28,29,28,29], 0]] 
 		self.dev_fgs = smDictFromList(dev_fgs_sm)
 
 ###########################################

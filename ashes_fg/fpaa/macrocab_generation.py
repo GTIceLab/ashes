@@ -213,14 +213,14 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         lines = lines.replace(old_dev_fgs, new_dev_fgs) # checked
 
         if "rasp30a" in rasp30_file:
-            anchor = "            \"cap_4x_cs[0:3]\",\n            [[28, 29, 28, 29], 0],\n        ]\n        self.dev_fgs = smDictFromList(dev_fgs_sm)"
+            anchor = "### MACROCAB MODIFICATION LINE SELF.DEV_FGS BELOW ###"
         else:
             anchor = "\t\t\t'cap_4x_cs[0:3]',[[28,29,28,29], 0]]\n\t\tself.dev_fgs = smDictFromList(dev_fgs_sm)"
         # Build the new content
         new_entry = f"            '{macrocab_name}_ls[0]', {fg_cells}"
 
         if isinstance(resource_cells, dict):
-            caps = resource_cells.get("CAP0", [])
+            caps = resource_cells.get("CAP0", []) # need to do for rest, i don't think nfet/pfets need this
             caps_nums = {1: 4, 2: 2, 3: 1}
             
             for i, cell in enumerate(caps):
@@ -229,33 +229,33 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
                 new_entry += f",\n            '{macrocab_name}_cap0_{cap_val}x_cs[0]', {cell}"
 
         # Use a comma and newline to maintain the list structure
-        replacement = f"{new_entry},\n{anchor}"
+        replacement = f"{anchor}\n{new_entry}\n"
 
         if anchor in lines:
             lines = lines.replace(anchor, replacement)
         else:
             print(f"Error: Could not find any valid anchor in {rasp30_file}")
 
-        old_dev_pins_1 = "'vmm_offc_in':13,"
-        lines = lines.replace(old_dev_pins_1, f"{old_dev_pins_1}'{macrocab_name}_in':{num_inputs},") # checked
+        old_dev_pins_1 = "} ### MACROCAB MODIFICATION LINE SELF.DEV_PINS ###"
+        lines = lines.replace(old_dev_pins_1, f", '{macrocab_name}_in':{num_inputs} {old_dev_pins_1}") # checked
 
-        old_dev_pins_2 = "'vmm_offc_out':2"
-        lines = lines.replace(old_dev_pins_2, f"{old_dev_pins_2},'{macrocab_name}_out':{num_outputs}") # checked
+        old_dev_pins_2 = "} ### MACROCAB MODIFICATION LINE SELF.DEV_PINS ###"
+        lines = lines.replace(old_dev_pins_2, f",'{macrocab_name}_out':{num_outputs} {old_dev_pins_2}") 
 
-        old_dev_types = "+['vmm_offc']*1"
-        lines = lines.replace(old_dev_types, f"{old_dev_types}+['{macrocab_name}']*1") # checked
+        old_dev_types = "### MACROCAB MODIFICATION LINE SELF.DEV_TYPES ###"
+        lines = lines.replace(old_dev_types, f"+['{macrocab_name}']*1 {old_dev_types}") 
 
-        old_li_sm_in = "'vmm_offc[0].in[0:12]',[[6,7,8,9,10,11,12,13,14,15,16,17,27],0],"
+        old_li_sm_in = "### MACROCAB MODIFICATION LINE LI_SM_IN BELOW ###"
         lines = lines.replace(old_li_sm_in, f"{old_li_sm_in}\n\t\t\t{in_pin},{input_cells},")
 
-        old_li_sm_out = "'vmm_offc[0].out[0:1]',[0,[17,18]],"
+        old_li_sm_out = "'### MACROCAB MODIFICATION LINE LI_SM_OUT BELOW ###"
         lines = lines.replace(old_li_sm_out, f"{old_li_sm_out}\n\t\t\t{out_pin},{output_cells},")
 
-        old_li_sm_0b = ",'vmm_offc[0].out[0:1]'"
-        lines = lines.replace(old_li_sm_0b, f"{old_li_sm_0b},{out_pin}") # checked
+        old_li_sm_0b = "]\n		### MACROCAB MODIFICATION LINES LI_SM_0B ABOVE ###"
+        lines = lines.replace(old_li_sm_0b, f",{out_pin}{old_li_sm_0b}")
 
-        old_li_sm_1 = ",'vmm_offc[0].in[0:12]'"
-        lines = lines.replace(old_li_sm_1, f"{old_li_sm_1},{in_pin}") #fgbias, pbias, etc? # checked
+        old_li_sm_1 = "]\n		### MACROCAB MODIFICATION LINES LI_SM_1 ABOVE ###"
+        lines = lines.replace(old_li_sm_1, f"{in_pin}{old_li_sm_1}") #fgbias, pbias, etc? 
 
     with open(rasp30_file, 'w') as file:
         file.write(lines)
