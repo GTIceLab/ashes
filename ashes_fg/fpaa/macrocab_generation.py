@@ -197,12 +197,13 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
     if delete:
 
         lines = lines.replace(f",{out_pin}", "")  # li_sm_0b
-        lines = lines.replace(f",{in_pin}",    "")     # li_sm_1
+        lines = lines.replace(f", {in_pin}",    "")     # li_sm_1
         lines = lines.replace(f"+['{macrocab_name}']*1", "")  # dev_types
-        lines = lines.replace(f",'{macrocab_name}_in':{num_inputs}", "")   # dev_pins
+        lines = lines.replace(f", '{macrocab_name}_in':{num_inputs}", "")   # dev_pins
         lines = lines.replace(f",'{macrocab_name}_out':{num_outputs}", "")  # dev_pins
         lines = lines.replace(f"\t\t\t'{macrocab_name}[0]',[0,0],\n", "")  # dev_fgs_sm
-
+        lines = lines.replace(f"\n\t\t\t{in_pin},{input_cells},", "")  # li_sm_in
+        lines = lines.replace(f"\n\t\t\t{out_pin},{output_cells},", "")  # li_sm_out
         dev_fgs_entry = f"\n            '{macrocab_name}_ls[0]', {fg_cells}"
         if isinstance(resource_cells, dict):
             caps = resource_cells.get("CAP0", [])
