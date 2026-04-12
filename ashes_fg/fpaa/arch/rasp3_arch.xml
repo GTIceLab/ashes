@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0"?>
 <architecture>
 	<models>
 		<model name="fgota">
@@ -632,7 +632,7 @@
 				<port name="out"/>
 			</output_ports>
 		</model>
-	<model name="test"><input_ports><port name="in"/></input_ports><output_ports><port name="out"/></output_ports></model></models>
+	</models>
 	<layout width="14" height="14"/>
 	<device>
 		<sizing R_minW_nmos="5726.870117" R_minW_pmos="15491.700195" ipin_mux_trans_size="1.000000"/>
@@ -730,8 +730,8 @@
 					<T_setup value="2.448e-10" port="ff.D" clock="clk"/>
 					<T_clock_to_Q max="7.732e-11" port="ff.Q" clock="clk"/>
 				</pb_type>
-				<pb_type name="ff_custom" blif_model=".latch_custom" num_pb="1">
-					<input name="D" num_pins="1"/>
+				<pb_type name="ff_custom" blif_model=".latch_custom" num_pb="1" >
+					<input name="D" num_pins="1" />
 					<input name="clk" num_pins="1"/>
 					<input name="reset" num_pins="1"/>
 					<output name="Q" num_pins="1"/>
@@ -754,7 +754,7 @@
 					<mux name="mux3" input="ff.Q ff_custom.Q soft_logic.out" output="ble.out"/>
 				</interconnect>
 			</pb_type>
-			<pb_type name="counter8" blif_model=".counter8" num_pb="1">
+			<pb_type name="counter8" blif_model=".counter8" num_pb="1" >
 					<input name="clk" num_pins="1"/>
 					<input name="reset" num_pins="1"/>
 					<output name="out" num_pins="8"/>
@@ -1136,7 +1136,7 @@ CAB
 				<direct name="volswc6" input="volswc[0].co" output="volswc[1].ci"/>
 				<direct name="volswc7" input="volswc[1].co" output="cab.O[7:5]"/>	
 				<direct name="crossbar" input="cab.I[15:13]" output="mmap_local_swc[0].in[2:0]"/>
-				<complete name="crossbar" input="cab.I[12:8] fgota.out cap.out nfet.out pfet.out tgate.out nmirror.out volswc[1:0].out" output="fgota.in[1:0] ichar_nfet[0].in[1:0] TIA_blk.in[0] cap.in nfet.in[1:0] pfet.in[1:0] tgate.in[1:0] nmirror.in"/>
+				<complete name="crossbar" input="cab.I[12:8] fgota.out cap.out nfet.out pfet.out tgate.out nmirror.out volswc[1:0].out" output="fgota.in[1:0] ichar_nfet[0].in[1:0] TIA_blk.in[0] cap.in nfet.in[1:0] pfet.in[1:0] tgate.in[1:0] nmirror.in"></complete>
 				<complete name="crossbar" input="fgota.out ota.out cap.out nfet.out pfet.out nmirror.out volswc[1:0].out ota_buf.out lpf.out nfet_i2v.out pfet_i2v.out i2v_pfet_gatefgota.out[0] mismatch_meas.out[0] gnd_out.out vdd_out.out in2in_x1.out in2in_x6.out tgate.out" output="cab.O[4]"/>
 				<complete name="crossbar" input="cab.I[8]" output="ota_buf.in lpf.in"/>				
 				<complete name="crossbar" input="cab.I[12:0]" output="gnd_out.in[1:0] vdd_out.in[1:0] in2in_x1.in[2:0] in2in_x6.in[12:0] nfet_i2v.in[0] pfet_i2v.in[0] i2v_pfet_gatefgota.in[0] mismatch_meas.in[2:0]"/>
@@ -1153,7 +1153,7 @@ CAB
 				<complete name="crossbar" input="c4_sp.out[0] cap.out[0]" output="cab.O[4]"/>
 				<direct name="crossbar" input="ramp_fe.out[3:1]" output="cab.O[3:1] "/>
 				<direct name="crossbar" input="ramp_fe.out[0]" output="cab.O[4] "/>
-				<direct name="crossbar" input="mmap_local_swc[0].out[3:0]" output="cab.O[7:4]"/>	
+				<direct name="crossbar" input="mmap_local_swc[0].out[3:0]" output="cab.O[7:4]" />	
 				<complete name="crossbar" input="cab.I[12:0]" output="Hyst_diff.in[0]"/>
 				<complete name="crossbar" input="Hyst_diff[0].out[0]" output="cab.O[4]"/>
 				<complete name="crossbar" input="cab.I[12:0]" output="Max_detect.in[0]"/>
@@ -1171,14 +1171,14 @@ CAB
 				<complete name="crossbar" input="cab.I[12:0]" output="hhn_debug.in[3:0]"/>
 				<complete name="crossbar" input="hhn_debug[0].out[2:0]" output="cab.O[4:2]"/>
 				<direct name="a2a" input="cab.I" output="vmm_16x16.in"> </direct>
-				<direct name="b2b" input="vmm_16x16.out" output="cab.O"/>
+				<direct name="b2b" input="vmm_16x16.out" output="cab.O"></direct>
 				<complete name="sub" input="cab.I[1:0]" output="vmm_2x2.in[1:0]"> </complete>
-				<complete name="sub2" input="vmm_2x2.out[1:0]" output="cab.O[1:0]"/>
-				<complete name="crossbar" input="tgate_so.out" output="cab.O[3]"/>
-				<complete name="crossbar" input="cab.I[12:0]" output="tgate_so.in[7:0]"/>
-				<complete name="crossbar" input="ota_vmm.out" output="cab.O[4]"/>
-				<complete name="crossbar" input="vmm12x1.out vmm12x1_wowta.out" output="cab.O[4]"/>
-				<complete name="crossbar" input="vmm8x4_in.out" output="cab.O[4]"/>
+				<complete name="sub2" input="vmm_2x2.out[1:0]" output="cab.O[1:0]"></complete>
+				<complete name="crossbar" input="tgate_so.out" output="cab.O[3]"></complete>
+				<complete name="crossbar" input="cab.I[12:0]" output="tgate_so.in[7:0]"></complete>
+				<complete name="crossbar" input="ota_vmm.out" output="cab.O[4]"></complete>
+				<complete name="crossbar" input="vmm12x1.out vmm12x1_wowta.out" output="cab.O[4]"></complete>
+				<complete name="crossbar" input="vmm8x4_in.out" output="cab.O[4]"></complete>
 				<direct name="crossbar" input="cab.I[12:11]" output="ota_vmm.in"> </direct>
 				<direct name="crossbar" input="cab.I[1]" output="vmm8x4_SR.in[4]"> </direct>
 				<direct name="crossbar" input="cab.I[2]" output="vmm8x4_SR.in[5]"> </direct>
@@ -1217,9 +1217,9 @@ CAB
 				<direct name="crossbar" input="cab.si[3:2]" output="sftreg[0].in[7:6]"/>
 				<direct name="crossbar" input="cab.si[1:0]" output="sftreg[0].in[15:14]"/>
 				<direct name="crossbar" input="cab.I[15:13]" output="sftreg[0].in[18:16]"/>
-				<direct name="crossbar" input="sftreg[0].out[3:0]" output="cab.O[7:4]"/>
+				<direct name="crossbar" input="sftreg[0].out[3:0]" output="cab.O[7:4]" />
 				<direct name="crossbar" input="cab.I[15:13]" output="DAC_sftreg[0].in[2:0]"/>
-				<direct name="crossbar" input="DAC_sftreg[0].out[3:0]" output="cab.O[7:4]"/>
+				<direct name="crossbar" input="DAC_sftreg[0].out[3:0]" output="cab.O[7:4]" />
 				<direct name="crossbar" input="cab.I[15:13]" output="sftreg2[0].in[2:0]"/>
 				<direct name="crossbar" input="cab.I[15:13]" output="sftreg3[0].in[2:0]"/>
 				<direct name="crossbar" input="cab.I[15:13]" output="sftreg4[0].in[2:0]"/>
@@ -1227,19 +1227,19 @@ CAB
 				<direct name="crossbar" input="cab.I[12]" output="sftreg4[0].in[3]"/>
 				<direct name="crossbar" input="sftreg2[0].out[9:4]" output="cab.so[11:6] "/>
 				<direct name="crossbar" input="sftreg2[0].out[17:12]" output="cab.so[5:0] "/>
-				<direct name="crossbar" input="sftreg2[0].out[11:10]" output="cab.O[3:2]"/>
-				<direct name="crossbar" input="sftreg2[0].out[19:18]" output="cab.O[1:0]"/>
-				<direct name="crossbar" input="sftreg2[0].out[3:0]" output="cab.O[7:4]"/>
+				<direct name="crossbar" input="sftreg2[0].out[11:10]" output="cab.O[3:2]" />
+				<direct name="crossbar" input="sftreg2[0].out[19:18]" output="cab.O[1:0]" />
+				<direct name="crossbar" input="sftreg2[0].out[3:0]" output="cab.O[7:4]" />
 				<direct name="crossbar" input="sftreg3[0].out[9:4]" output="cab.so[11:6] "/>
 				<direct name="crossbar" input="sftreg3[0].out[17:12]" output="cab.so[5:0] "/>
-				<direct name="crossbar" input="sftreg3[0].out[11:10]" output="cab.O[3:2]"/>
-				<direct name="crossbar" input="sftreg3[0].out[19:18]" output="cab.O[1:0]"/>
-				<direct name="crossbar" input="sftreg3[0].out[3:0]" output="cab.O[7:4]"/>	
+				<direct name="crossbar" input="sftreg3[0].out[11:10]" output="cab.O[3:2]" />
+				<direct name="crossbar" input="sftreg3[0].out[19:18]" output="cab.O[1:0]" />
+				<direct name="crossbar" input="sftreg3[0].out[3:0]" output="cab.O[7:4]" />	
 				<direct name="crossbar" input="sftreg4[0].out[9:4]" output="cab.so[11:6] "/>
 				<direct name="crossbar" input="sftreg4[0].out[17:12]" output="cab.so[5:0] "/>
-				<direct name="crossbar" input="sftreg4[0].out[11:10]" output="cab.O[3:2]"/>
-				<direct name="crossbar" input="sftreg4[0].out[19:18]" output="cab.O[1:0]"/>
-				<direct name="crossbar" input="sftreg4[0].out[3:0]" output="cab.O[7:4]"/>	
+				<direct name="crossbar" input="sftreg4[0].out[11:10]" output="cab.O[3:2]" />
+				<direct name="crossbar" input="sftreg4[0].out[19:18]" output="cab.O[1:0]" />
+				<direct name="crossbar" input="sftreg4[0].out[3:0]" output="cab.O[7:4]" />	
 				<!-- fg devices -->
 				<direct name="crossbar" input="cab.I[12]" output="vmm8inx8in.in[0]"/>
 				<direct name="crossbar" input="cab.I[11:0]" output="vmm8inx8in.in[12:1]"/>
@@ -1277,7 +1277,7 @@ CAB
 				<complete name="crossbar" input="relu2in_v1[0].out[0]" output="cab.O[4]"/>
 				<direct name="crossbar" input="cab.I[1:0]" output="volt_wta_v1.in[1:0]"/>
 				<direct name="crossbar" input="volt_wta_v1[0].out[1:0]" output="cab.O[4:3]"/>
-			<direct name="crossbar" input="cab.I[0]" output="test.in[0]"/><complete name="crossbar" input="test[0].out[0]" output="cab.O[4]"/></interconnect>
+			</interconnect>
 			<fc_in type="frac">1</fc_in>
 			<fc_out type="frac">1</fc_out>
 			<pinlocations pattern="custom">
@@ -1294,7 +1294,7 @@ CAB
 				<loc type="col" start="10" priority="6"/>
 				<loc type="col" start="11" priority="6"/>
 			</gridlocations>
-		<pb_type name="test" blif_model=".test" num_pb="1"><input name="in" num_pins="1"/><output name="out" num_pins="1"/><delay_constant max="1.667e-9" in_port="test.in" out_port="test.out"/></pb_type></pb_type>
+		</pb_type>
 <!-->
 CAB2
 -->
@@ -1369,7 +1369,7 @@ CAB2
 				<direct name="volswc5" input="cab2.I[15:13]" output="volswc[0].ci"/>
 				<direct name="volswc6" input="volswc[0].co" output="volswc[1].ci"/>
 				<direct name="volswc7" input="volswc[1].co" output="cab2.O[7:5]"/>				
-				<complete name="crossbar" input="cab2.I[12:0] ota_buffer.out tgate[2:0].out cap2[2:0].out ota2[0].out[0] tgate2[2:0].out mite[2:0].out signalmult.out[1:0] volswc[1:0].out" output="ota_buffer.in current_ref.in tgate[2:0].in cap2[2:0].in ota2[0].in[1:0] tgate2[2:0].in signalmult.in[3:0]"/>
+				<complete name="crossbar" input="cab2.I[12:0] ota_buffer.out tgate[2:0].out cap2[2:0].out ota2[0].out[0] tgate2[2:0].out mite[2:0].out signalmult.out[1:0] volswc[1:0].out" output="ota_buffer.in current_ref.in tgate[2:0].in cap2[2:0].in ota2[0].in[1:0] tgate2[2:0].in signalmult.in[3:0]"></complete>
 				<complete name="crossbar" input="ota_buffer.out tgate[2:0].out cap2[2:0].out signalmult.out[1:0] volswc[1:0].out" output="cab2.O[4:0]"/>
 				<complete name="crossbar" input="meas_volt_mite[1:0].out mite[2:0].out" output="cab2.O[3]"/>
 				<complete name="crossbar" input="tgate2[2:0].out" output="cab2.O[3]"/>
@@ -1378,7 +1378,7 @@ CAB2
 				<direct name="crossbar" input="mite2[0].out[1:0]" output="cab2.O[3:2]"/>
 				<direct name="crossbar" input="cab2.I[2:1]" output="mite2[0].in[1:0]"/>
 				<complete name="crossbar" input="current_ref.out" output="cab2.O[0]"/>
-				<direct name="crossbar" input="cab2.I[1:0]" output="meas_volt_mite[1:0].in[0]"/>
+				<direct name="crossbar" input="cab2.I[1:0]" output="meas_volt_mite[1:0].in[0]" />
 			</interconnect>
 			<fc_in type="frac">1</fc_in>
 			<fc_out type="frac">1</fc_out>
