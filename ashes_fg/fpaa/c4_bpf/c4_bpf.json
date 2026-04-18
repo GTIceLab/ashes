@@ -1,0 +1,123 @@
+{
+  "metadata": {
+    "project_name": "YOUR_PROJECT_NAME",
+    "author": "YOUR_NAME",
+    "version": "1.0",
+    "notes": "Template for Macrocab based routing without GUI."
+  },
+
+  "resources": {
+    "FGOTA0": {
+      "sel": true,
+      "bias_name": "Forward_ibias",
+      "bias_default_value": "1e-6",
+      "+_bias_name": "Forward_pbias",
+      "+_bias_default_value": "1e-6",
+      "-_bias_name": "Forward_nbias",
+      "-_bias_default_value": "1e-6",
+      "input_cap": 0,
+      "fg_address": [[32,58],[33,59],[33,58],[31,59],[31,58]] // last 2 added to C list
+    },
+    "FGOTA1": {
+      "sel": true,
+      "bias_name": "Feedback_ibias",
+      "bias_default_value": "5e-9",
+      "+_bias_name": "Feedback_pbias",
+      "+_bias_default_value": "5e-9",
+      "-_bias_name": "Feedback_nbias",
+      "-_bias_default_value": "5e-9",
+      "input_cap": 0,
+      "fg_address": [[32,60],[33,61],[33,60],[31,61],[31,60]] // last 2 added to C list
+    },
+    "OTA0": {
+      "sel": true,
+      "bias_name": "Buffer_ibias",
+      "bias_default_value": "10e-6",
+      "fg_address": [32,62]
+    },
+    "OTA1": {
+      "sel": false,
+      "bias_name": "ota1_ibias",
+      "bias_default_value": "2e-6",
+      "fg_address": [32,63]
+    },
+
+    "CAP0": {
+      "sel": true,
+      "cap_name": "Cin",
+      "fg_address": [[28,57],[28,58],[28,59]]
+    },
+
+    "CAP1": {
+      "sel": true,
+      "cap_name": "Cfb",
+      "fg_address": [[28,60],[28,61],[28,62]]
+    },
+
+    "CAP2": {
+      "sel": false,
+      "cap_name": "cap2",
+      "fg_address": [[29,57],[29,58],[29,59]]
+    },
+
+    "CAP3": {
+      "sel": false,
+      "cap_name": "cap3",
+      "fg_address": [[29,60],[29,61],[29,62]]
+    },
+
+    "NFET0": {
+      "enabled": false,
+      "params": {
+        "value": "1e-9"
+      }
+    },
+
+    "NFET1": {
+      "enabled": false,
+      "params": {
+        "value": "1e-9"
+      }
+    },
+
+    "PFET0": {
+      "enabled": false,
+      "params": {
+        "value": "1e-9"
+      }
+    },
+
+    "PFET1": {
+      "enabled": false,
+      "params": {
+        "value": "1e-9"
+      }
+    }
+  },
+
+   "io": {
+    "inputs": {
+      "input": [0,1],
+      "local_input": [0,1],
+      "fg_address": [[33,0], [32,0]],
+      "num_inputs": 2
+    },
+    "outputs": {
+      "output": 0,
+      "local_output": 2,
+      "fg_address": [0,17],
+      "num_outputs": 1
+  }
+},
+
+  "routing": {
+    "C": {
+      "fg_address": [[32,16], [32,19], [32,30], [31,15], [30,16], [29,15], [28,17], [24,15], [33,3], [25,2], [31,61], [31,60], [31,59], [31,58]],
+      "bias_name": "fgswc_ibias",
+      "bias_default_value": "50e-9"
+    }
+  
+  }
+    
+
+}
