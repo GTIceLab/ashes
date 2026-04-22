@@ -34,10 +34,11 @@ def main():
     # Make local imports work
     sys.path.insert(0, str(project_dir))
 
-   # ---- load design ----
+    # ---- load design ----
     globals_dict = {}
     with open(design_path) as f:
-        exec(f.read(), globals_dict)
+        code = compile(f.read(), design_path, "exec")
+        exec(code, globals_dict)
 
     # Remove local modules from path
     sys.path.pop(0)
