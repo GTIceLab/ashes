@@ -9,6 +9,57 @@ from ashes_fg.asic import compile
 
 # Functions
 # ---------------------------------------------------------------------------------------------------------------------------
+def compile_asic(circuit,process="Process",fileName = "compiled",path = "./example_verilog", p_and_r = True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10):
+    """
+    Main ASIC compilation function
+    - Makes Verilog netlist for a given Circuit
+    - Creates directory for physical design
+    - Calls P&R tools
+    """
+
+    filePathandName = os.path.join(path,fileName+".v")
+    f = open(filePathandName, "w")
+    f.write(circuit.print(process))
+    f.close() # Close file so that P&R can access netlist
+
+    test_project = fileName
+    test_path = os.path.join('.', test_project, 'verilog_files')
+    # create a working directory for project. 
+    if not os.path.exists(test_path):
+        os.makedirs(test_path)
+
+    # copy over the verilog file
+    shutil.copy(os.path.join('.', 'example_verilog', f'{test_project}.v'), test_path)
+
+    # All units in nanometers
+    tech_process = 'vis350'
+    cell_pitch = 22000
+    dbu = 1000
+    track_spacing = 1400
+    # placement offset to make space for pin routing
+    x_offset, y_offset = 400*track_spacing, 2000*track_spacing 
+
+    design_area = (0, 0, design_limits[0], design_limits[1], x_offset, y_offset)
+
+    # Run P&R if desired
+    if p_and_r == True:
+        compile(None, 
+        project_name=test_project, 
+        tech_process=tech_process, 
+        dbu=dbu, 
+        track_spacing=track_spacing,
+        cell_pitch=cell_pitch,
+        x_offset=x_offset, y_offset=y_offset,
+        design_area=design_area,
+        location_islands=location_islands,
+        drainmux_space_isle_idx=drainSpaceIdx,
+        drainmux_space = drainSpace,
+        gatemux_space_isle_idx=gateSpaceIdx,
+        gatemux_space = gateSpace)
+
+
+
+
 def printPlacement(island,fileName = "island_placement",path = "./"):
     """
     Debug aid for placement
@@ -92,31 +143,14 @@ class Circuit:
         #TODO Check if nets pins are already in another net, merge if so or throw error
         self.Nets.append(net)
 
-
-    
-    def mergeNets(self, nets):
+    def mergeNets(self,nets):
         """
-        Merges a list of nets together and handles NDR rule propagation.
+        Merges a list of nets together
         """
         newNet = Net(self)
-
-        # Identify all unique NDR rules among the nets being merged
-        unique_ndrs = list(set(n.ndr for n in nets))
-        non_default_ndrs = [rule for rule in unique_ndrs if rule != "default"]
-
-        if len(non_default_ndrs) > 1:
-            # ISSUE: Conflicting rules (e.g. one net is 'Clock' NDR, another is 'Power' NDR)
-            print(f"NDR CONFLICT: Merging nets with multiple non-default rules: {non_default_ndrs}. Using '{non_default_ndrs[0]}'.")
-            newNet.ndr = non_default_ndrs[0]
-        elif len(non_default_ndrs) == 1:
-            # Only one specific NDR exists, carry it over
-            newNet.ndr = non_default_ndrs[0]
-        else:
-            # Everything was default
-            newNet.ndr = "default"
-
         for n in nets:
             # Update pins from old net to point to new
+            # p.move handles net <-> pin 
             for p in n.pins:
                 p.move(newNet)
             # Remove old net from Circuit
@@ -137,15 +171,13 @@ class Circuit:
                 if net.containsVector() == True:
                     largestDim = 0
                     largestPin = None
-                    
                     # Find the dominant pin
                     for pin in net.pins:
-                        if pin.cell != None:
                         # Ignore decoder cells (because they print flat, so their vector doesn't count)
-                            if pin.cell.isDecoder() == False:
-                                if pin.getVectorSize() > largestDim:
-                                    largestDim = pin.getVectorSize()
-                                    largestPin = pin
+                        if pin.cell.isDecoder() == False:
+                            if pin.getVectorSize() > largestDim:
+                                largestDim = pin.getVectorSize()
+                                largestPin = pin
                             
                     # If the net only contain a decoder, it will mistakenly trigger containsVector() but 
                     # will never pick up a largestPin because of the decoder ignore check
@@ -155,16 +187,13 @@ class Circuit:
                         idxNum = self.Nets.index(net)
                         idx = 0
                         physicalPinIdx = largestPin.getPhysicalPin()
-                        
+
             
                         for i in range(port.getVectorSize()):
                             p = port.pins[physicalPinIdx + i*port.numPins()]
                             p.net.number = idxNum
                             p.net.index = idx
                             idx += 1
-                            if largestPin.isShorted()==True:
-                                idx = -1
-                            p.markDominant = True
                     else:
                        net.number = self.Nets.index(net) 
 
@@ -181,17 +210,6 @@ class Circuit:
             if net.number == -1:
                 wrongPort = net.pins[0].port.name
                 raise Exception("Error: Not all nets named (" + wrongPort + ")")
-
-    def nameNetsFlat(self):
-        """
-        Names all nets uniquely without vectorization.
-        Every wire gets a unique name (net0, net1, net2...).
-        """
-        for net in self.Nets:
-            if net.index == -1:
-            # Ensure a Flat ID for all net
-                net.number = self.Nets.index(net)
-            
 
  
     def print(self,processPrefix):
@@ -222,96 +240,7 @@ class Circuit:
 
         text += "\n endmodule"
         return text
-    
-    def print_cadence(self, processPrefix):
-        """
-        Creates Verilog netlist for Cadence with inout declarations.
-        Returns: (text, pin_info, ndr_info)
-        """
-        self.cleanIslands()
-        # 1. Assign unique generic names to everything (net0, net1...)
-        self.nameNetsFlat()
 
-        # 2. Rename nets connected to Frame and fetch physical pin info
-        pin_info = self.handle_frame_ports_fr_cadence()
-
-        # 3. Build the Module Header and Port Declarations
-        if self.frame:
-            port_names = []
-            declarations = []
-            for port in self.frame.ports:
-                # Clean name: Replace < > with [ ]
-                clean_name = port.name.replace('<', '[').replace('>', ']')
-                port_names.append(clean_name)
-                
-                # Add inout declaration with bit-width if it's a bus
-                width = len(port.pins)
-                if width > 1:
-                    declarations.append(f"\tinout [{width-1}:0] {clean_name};")
-                else:
-                    declarations.append(f"\tinout {clean_name};")
-            
-            port_header = ", ".join(port_names)
-            port_decls = "\n".join(declarations)
-        else:
-            port_header = "port1"
-            port_decls = "\tinout port1;"
-            
-        text = f"module TOP({port_header});\n\n{port_decls}\n"
-
-        # 4. Process Islands (the logic body)
-        for isle in self.Islands:
-            islandNum = self.Islands.index(isle)
-            text += f"\n\n\t/* Island {islandNum} */\n"
-            text += isle.print_cadence(islandNum, processPrefix)
-
-        text += "\n endmodule"
-        
-        # 5. Find all NDRs defined and map them to their Verilog net names
-        ndr_info = {}
-        for net in self.Nets:
-            if not net.isEmpty():
-                # net.print() returns the name used in the Verilog file (e.g., 'net5' or 's6')
-                ndr_info[net.print()] = net.ndr
-
-
-        return text, pin_info, ndr_info
-
-    def handle_frame_ports_fr_cadence(self):
-        """
-        Processes frame ports to:
-        1. Globally rename nets to match frame names (e.g., 's6', 'drainbit10').
-        2. Gather pin location info for Cadence scripts.
-        """
-        pin_info = {"N": [], "S": [], "E": [], "W": []}
-        
-        if self.frame is None:
-            return pin_info
-
-        for port in self.frame.ports:
-            # Map location (E, W, N, S) to the dictionary
-            loc = port.location.upper() if port.location else "N"
-            if loc not in pin_info:
-                pin_info[loc] = []
-
-            for i, pin in enumerate(port.pins):
-                target_net = pin.getNet()
-                
-                # Determine name: e.g. "s6" or "drainbit[0]"
-                if len(port.pins) > 1:
-                    final_name = f"{port.name}[{i}]"
-                else:
-                    final_name = port.name
-                
-                # GLOBAL RENAME: Update the shared Net object so all internal
-                # cells connected to this net use the frame port name.
-                target_net.number = final_name
-                target_net.index = -1 
-                
-                # Save to pin_info list for this direction
-                pin_info[loc].append(final_name)
-        
-        return pin_info
 
 class Island:
     """
@@ -368,13 +297,7 @@ class Island:
         """
         newCol = np.zeros((numNewCols,1))
         return np.insert(array,colNum,newCol,axis=1)
-
-    def insertRows(self,rowNum,numNewRows=1):
-        self.placementGrid = self.addRows(self.placementGrid,rowNum,numNewRows)
-
-    def insertCols(self,colNum,numNewCols=1):
-        self.placementGrid = self.addCols(self.placementGrid,colNum,numNewCols)
-
+    
     def getLocation(self,instance):
         """
         Find the location of an instance in the placement grid    
@@ -418,24 +341,6 @@ class Island:
         if decoderText != "\n\n \t/*Programming Mux */ \n":
             text += decoderText
         return text
-    
-    
-    def print_cadence(self, islandNum, processPrefix):
-        text = ""
-        #printPlacement(self)
-        for i, instance in enumerate(self.instances):
-            loc = self.getLocation(instance)
-            # For standard cells, find grid location. 
-            # For MUX/Decoders, getLocation returns zeros, which we handle in the MUX class.            
-            if isinstance(loc, tuple) and len(loc[0]) > 0:
-                r, c = loc[0][0], loc[1][0]
-            else:
-                r, c = 0, 0
-            
-             # Pass i as instanceNum to ensure uniqueness for non-grid cells
-            text += instance.print_cadence(i, islandNum, r, c)
-        return text
-
 
     def placeInstance(self,instance,location):
         """
@@ -470,77 +375,6 @@ class Island:
         # Place instance at bottom left corner of matrix
         self.placementGrid[row][col] = instance
 
-    def getSize(self, rows = None, cols = None):
-        """
-        Gives physical dimensions of island
-        """
-        totalRows = np.shape(self.placementGrid)[0]
-        totalCols = np.shape(self.placementGrid)[1]
-
-
-        if rows == None:
-            startRow = 0
-            endRow = totalRows
-        else:
-            startRow = rows[0]
-            endRow = rows[1]
-
-        if cols == None:
-            startCol = 0
-            endCol = totalCols
-        else:
-            startCol = cols[0]
-            endCol = cols[1]
-
-        numRows = endRow-startRow
-        numCols = endCol-startCol
-
-        width_array = np.zeros([totalRows,totalCols])
-        height_array = np.zeros([totalRows,totalCols])
-
-        cell_catalog = {}
-
-        for row in range(startRow,endRow):
-            for col in range(startCol,endCol):
-                cell = self.placementGrid[row,col]
-                if isinstance(cell,StandardCell):
-                    if cell_catalog.get(cell.name) == None:
-                        cell_catalog[cell.name] = [cell.size[0],cell.size[1]]
-                elif cell != 0:
-                    if cell_catalog.get(cell) == None:
-                        for r in range(0,totalRows):
-                            for c in range(0,totalCols):
-                                cell_look = self.placementGrid[r,c]
-                                if isinstance(cell_look,StandardCell):
-                                    if cell_look.name == cell:
-                                        cell_catalog[cell_look.name] = [cell_look.size[0],cell_look.size[1]]
-
-
-        cell_catalog[0] = [0,0]
-
-        for row in range(startRow,endRow):
-            for col in range(startCol,endCol):
-                cell = self.placementGrid[row,col]
-                if isinstance(self.placementGrid[row,col],StandardCell):
-                    width_array[row,col] = cell.size[0]
-                    height_array[row,col] = cell.size[1]
-                else:
-                    cell_size = cell_catalog[cell]
-                    width_array[row,col] = cell_size[0]
-                    height_array[row,col] = cell_size[1]
-
-        width_array = np.sum(width_array,axis=1)
-        height_array = np.sum(height_array,axis=0)
-
-        island_width = max(width_array)
-        island_height = max(height_array)
-
-
-        return [round(island_width,3),round(island_height,3)]
-
-
-
-
     def printPlacement(self):
         """
         Prints visual CSV file of island placement
@@ -574,21 +408,11 @@ class Net:
         self.pins = []
         self.number = -1
         self.index = -1
-        self.ndr = "default"  # Initialized to default NDR
-
         if pins != None:
             self.addPins(pins)
    
         self.circuit = circuit
         self.circuit.addNet(self)
-    
-    
-    def setNDR(self, rule_name):
-        """
-        Sets the Non-Default Rule for this net.
-        Example: net.setNDR("double_spacing")
-        """
-        self.ndr = rule_name
 
     def __call__(self):
         return self
@@ -632,30 +456,17 @@ class Net:
     def removePin(self,pin):
         self.pins.remove(pin)
 
-    # def print(self):
-    #     """
-    #     Returns Verilog text string for net
-    #     """
-    #     text = "net" + str(self.number)
-        
-    #     if self.index != -1:
-    #         text += "[" + str(self.index) + "]"
-
-    #     return text
-    
     def print(self):
         """
         Returns Verilog text string for net
         """
-        # If number is a string (assigned by frame), return it directly
-        if isinstance(self.number, str):
-            return self.number
-            
-        # Otherwise, use default "net" prefix logic
         text = "net" + str(self.number)
+        
         if self.index != -1:
             text += "[" + str(self.index) + "]"
+
         return text
+       
 
 class Pin:
     """
@@ -670,7 +481,6 @@ class Pin:
         self.port = port
         self.cell = cell
         self.circuit = circuit
-        self.markDominant = False
 
         if self.net == None:
             self.net = Net(self.circuit,pins=self)
@@ -744,12 +554,7 @@ class Pin:
 
         pinArr = self.port.pins[idx:len(self.port)+1:self.port.numPins()]
 
-        netArr = []
-        # Check to see if all nets in each pin are shorted
-        for pin in pinArr:
-            netArr.append(pin.net)
-
-        if len(set(netArr)) == 1:
+        if len(set(pinArr)) == 1:
             return True
         else:
             return False
@@ -866,7 +671,7 @@ class Port:
                 for i in range(0,len(connection)):
                     self.assignPin(i,connection[i])
             else:
-                raise Exception("Mismatched net sizes assigned together: "+connection.cell.name+" "+connection.name+" <-> "+self.cell.name + " " + self.name )
+                raise Exception("Mismatched net sizes assigned together")
         # Short Pin <-> Port
         elif isinstance(connection,Pin):
             self.shortPins(connection.net)
@@ -1001,84 +806,29 @@ class Port:
                         line += "row_" + str(self.cell.dim[0]-1)
 
                 line += "("
+                
+                if pin.cell.isMatrix() == True:
+                    if pin.isShorted() == True:
+                        #line += pin.print()
+                        idxStart = pin.net.index
+                        pinVectorText = "[" + str(idxStart) + ":" + str(idxStart + 1) + "]"
+                        line += "net" + str(pin.net.number) + pinVectorText
+                    else:
+                        idxStart = 0
+                        idxEnd = self.getVectorSize()
+                        pinVectorText = "[" + str(idxStart) + ":" + str(idxEnd) + "]"
+                        line += "net" + str(pin.net.number) + pinVectorText
+                   
 
-                if pin.isVector() == True and pin.isShorted() == True:
-                    # If largest pin is shorted, just print net number 
-                    line += "net" + str(pin.net.number)
-                if pin.isVector() == True and pin.isShorted() == False:
-                    idxStart = 0
-                    idxEnd = self.getVectorSize()
-                    pinVectorText = "[" + str(idxStart) + ":" + str(idxEnd) + "]"
-                    line += "net" + str(pin.net.number) + pinVectorText
-                if pin.isVector() == False:
+                elif pin.isVector() == False:
                     line += pin.print()
 
                 line += ")"
             
 
         return line
-
-
-
-    def print_cadence(self, r, c):
-        """
-        Returns Verilog port mapping, handling slicing for vectorized 
-        MUX/Decoder cells and edge-connectivity for Matrix cells.
-        """
-        # 1. Determine grid dimensions
-        dim_r = self.cell.dim[0] if self.cell.dim[0] > 0 else 1
-        dim_c = self.cell.dim[1] if self.cell.dim[1] > 0 else 1
         
-        # 2. Determine how many pins belong to this specific sub-instance (r, c)
-        if self.cell.isDecoder():
-            # MUX/Decoders are 1D arrays. The vector is spread across the active dimension.
-            num_units = max(dim_r, dim_c)
-            pins_per_inst = len(self.pins) // num_units
-            # For a MUX, the index is simply whichever dimension is iterating
-            inst_idx = r if self.cell.dim[0] > 0 else c
-        else:
-            # Standard Cell Matrix logic: Use the original numPins() helper
-            pins_per_inst = int(self.numPins())
-            inst_idx = r if (self.location in ["E", "W"]) else c
-            
-            # Connectivity check: Only print if pin is on the physical perimeter
-            is_on_edge = False
-            if self.isStatic: 
-                is_on_edge = True
-            elif self.location == "W" and c == 0: is_on_edge = True
-            elif self.location == "E" and c == dim_c - 1: is_on_edge = True
-            elif self.location == "N" and r == 0: is_on_edge = True
-            elif self.location == "S" and r == dim_r - 1: is_on_edge = True
-            
-            if not is_on_edge:
-                return ""
 
-        # 3. Extract the nets
-        net_list = []
-        if self.isStatic:
-            # Static pins (like shared Enable/VDD) are applied to every instance in full
-            for pin in self.pins:
-                net_list.append(pin.net.print())
-        else:
-            # Vectorized pins: extract the specific slice for this instance index
-            start_idx = inst_idx * pins_per_inst
-            for i in range(pins_per_inst):
-                if (start_idx + i) < len(self.pins):
-                    net_list.append(self.pins[start_idx + i].net.print())
-
-        if not net_list:
-            return ""
-
-        # 4. Format for Verilog
-        if len(net_list) == 1:
-            return f".{self.name}({net_list[0]})"
-        else:
-            # Reverse for Verilog {MSB, ..., LSB} convention
-            net_list.reverse()
-            return f".{self.name}({{{', '.join(net_list)}}})"
-        
-        
-        
 class StandardCell:
     """
     Defines single/array instance of a standard cell
@@ -1225,30 +975,6 @@ class StandardCell:
         text += ");"
         return text
     
-    def print_cadence(self, instanceNum, islandNum, row, col, instancePrefix="I"):
-        text = ""
-        rows = self.dim[0] if self.dim[0] > 0 else 1
-        cols = self.dim[1] if self.dim[1] > 0 else 1
-
-        for r in range(rows):
-            for c in range(cols):
-                if self.dim[0] > 1 or self.dim[1] > 1:
-                    inst_name = f"{instancePrefix}_{islandNum}_{row+r}_{col+c}_{r}_{c}"
-                else:
-                    inst_name = f"{instancePrefix}_{islandNum}_{row}_{col}"
-
-                text += f"\t{self.name} {inst_name} ("
-                port_connections = []
-                for port in self.ports:
-                    p_text = port.print_cadence(r, c)
-                    if p_text:
-                        port_connections.append(p_text)
-                
-                text += ", ".join(port_connections)
-                text += ");\n"
-        return text
-
-    
 class MUX(StandardCell):
     def __init__(self,circuit,island,num):
         self.circuit = circuit
@@ -1315,44 +1041,6 @@ class MUX(StandardCell):
                 i+=1
         text += ");"
         return text
-
-
-    def print_cadence(self, instanceNum, islandNum, row, col, instancePrefix="MUX"):
-        # 1. Calculate idx by counting how many MUXes exist in this island before 'self'
-        # This replaces the need for an external counter or class-level attribute.
-        idx = 0
-        for inst in self.island.instances:
-            if inst == self:
-                break  # Found the current instance, idx is now correct
-            if isinstance(inst, MUX):
-                idx += 1
-
-        text = ""
-        # 2. Handle dimensions (if 0, treat as 1 for the loop)
-        rows = self.dim[0] if self.dim[0] > 0 else 1
-        cols = self.dim[1] if self.dim[1] > 0 else 1
-
-        for r in range(rows):
-            for c in range(cols):
-                # 3. Determine bit index (inst0, inst1...)
-                inst_id = r if self.dim[0] > 0 else c
-                
-                # 4. Construct name: e.g., MUX_switch_isle0_idx0_inst0
-                inst_name = f"{instancePrefix}_{self.type}_isle{islandNum}_idx{idx}_inst{inst_id}"
-
-                text += f"\t{self.name} {inst_name} ("
-                
-                port_connections = []
-                for port in self.ports:
-                    # Pass local r, c to the port's cadence print logic
-                    p_text = port.print_cadence(r, c)
-                    if p_text:
-                        port_connections.append(p_text)
-                
-                text += ", ".join(port_connections)
-                text += ");\n"
-        return text
-
         
 class PortDecoderBit(Port):
     """

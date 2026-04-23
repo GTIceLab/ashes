@@ -1,7 +1,0 @@
-{
-    "process": "tsmc_350nm",
-    "drainSpaceIdx": 0,
-    "drainSpace": 15,
-    "gateSpaceIdx": 0,
-    "gateSpace": 10
-}

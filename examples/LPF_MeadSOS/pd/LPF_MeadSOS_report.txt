@@ -1,8 +1,0 @@
-3 nets failed to route:
- net322
- net323
- net322
-Placement Time: 0.345
-Routing Time: 4.851
-Merge Time: 0.333
-Total Time: 5.529
