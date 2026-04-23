@@ -1,17 +1,22 @@
+# Package Information
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools >= 77.0.3"]
 build-backend = "setuptools.build_meta"
 
+
 [project]
-name = "ashes_fg"
-version = "0.1.0"
-description = "Analog Synthesis for High Level Systems (ASHES)"
-requires-python = ">=3.8"
+name = "ASHES"
+version = "1.6"
 dependencies = [
-    "numpy",
-    "verilog-parser",
-    "lxml",
+  "numpy",
+  "shapely",
+  "verilog-parser",
+  "lxml",
+
+  "argparse",
+  "gdstk"
 ]
 
-[tool.setuptools.packages.find]
-include = ["ashes_fg*"]
+[project.scripts]
+ashes = "ashes_fg.cli:main"
+gen_stdcell_defs = "ashes_fg.gds_to_celldef.gen_stdcell_defs:main"
