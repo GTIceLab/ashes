@@ -1,5 +1,10 @@
 __pycache__
 .gitignore
+ashes_fg/asic/lib/gds/vis350
+ashes_fg/asic/lib/gds/privA_65
+py2asic.py
+/ASHES.egg-info
+/venv
 .env
 site/
 cell2cell_350nm/
