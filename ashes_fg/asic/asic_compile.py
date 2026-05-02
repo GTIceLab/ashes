@@ -19,14 +19,17 @@ def printPlacement(island,fileName = "island_placement",path = "./"):
     f = open(filePathandName, "w")
     f.write(island.printPlacement())
 
-def Bus(circuit,size,busElements = None):
+def Bus(circuit,size=0,busElements = None):
     """
     Helper function to easily create vectors of nets
     """
     if busElements == None:
         return Port(circuit,None,"Bus",None,size)
-
-
+    else:
+        bus = Port(circuit,None,"Bus",None,len(busElements))
+        for i in range(len(busElements)):
+            busElements[i] += bus[i]
+        return bus
 
 def Wire(circuit):
     """
@@ -75,6 +78,22 @@ class Circuit:
         for i in self.Islands:
             if i.instances == []:
                 self.Islands.remove(i)
+
+    def offsetIslandLocs(self,offset):
+        for island in self.Islands:
+            if island.instances != []:
+                currentLoc = island.loc
+                island.loc = (currentLoc[0]+offset[0],currentLoc[1]+offset[1])
+
+
+    def getIslandLocs(self):
+        locs = []
+        for island in self.Islands:
+            if island.instances != []:
+                locs.append(island.loc)
+
+        return locs
+
 
     def addInstance(self,instance,island):
         self.Instances.append(instance)
@@ -313,6 +332,30 @@ class Circuit:
         
         return pin_info
 
+class Archipelago:
+    """
+    Defines a logical grouping of islands and their macro connections
+    Contains
+    - Islands (list)
+    - Ports (Dictionary)
+    """
+
+    def __init(self,circuit,islands=None):
+        self.islands = []
+
+        self.circuit = circuit
+        self.ports = {}
+
+        self.loc = (0,0)
+
+        if islands != None:
+            self.addIslands(islands)
+
+    def addIslands(self,islands):
+        for i in islands:
+            self.islands.append(i)
+
+
 class Island:
     """
     Defines grouping of instances and their placement
@@ -326,6 +369,7 @@ class Island:
         self.circuit = circuit
         self.circuit.addIsland(self)
         self.placementGrid = np.array([[]], dtype=object)
+        self.loc = (0,0)
 
         if instances != None:
             self.addInstances(instances)
