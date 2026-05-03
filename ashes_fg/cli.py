@@ -37,7 +37,9 @@ def main():
    # ---- load design ----
     globals_dict = {}
     with open(design_path) as f:
-        exec(f.read(), globals_dict)
+        #exec(f.read(), globals_dict)
+        code = compile(f.read(), design_path, "exec")
+        exec(code, globals_dict)
 
     # Remove local modules from path
     sys.path.pop(0)

@@ -139,7 +139,10 @@ class Circuit:
             for p in n.pins:
                 p.move(newNet)
             # Remove old net from Circuit
-            self.Nets.remove(n)
+            try:
+                self.Nets.remove(n)
+            except:
+                raise Exception("Error: Net already connected")
 
         return newNet
 
