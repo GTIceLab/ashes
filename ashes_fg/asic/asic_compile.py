@@ -19,6 +19,11 @@ def printPlacement(island,fileName = "island_placement",path = "./"):
     f = open(filePathandName, "w")
     f.write(island.printPlacement())
 
+# TODO Weird bug where assigning pins like
+# BUS += PORT
+# Causes the PORT to have no connections, but
+# PORT += BUS
+# works fine
 def Bus(circuit,size=0,busElements = None):
     """
     Helper function to easily create vectors of nets
@@ -85,6 +90,20 @@ class Circuit:
                 currentLoc = island.loc
                 island.loc = (currentLoc[0]+offset[0],currentLoc[1]+offset[1])
 
+    def getCircuitDimensions(self):
+        maxX = 0
+        maxY = 0
+
+        for island in self.Islands:
+            rightEdge = island.loc[0]+1000*island.getSize()[0]
+            topEdge = island.loc[1]+1000*island.getSize()[1]
+
+            if rightEdge > maxX:
+                maxX = rightEdge
+            if topEdge > maxY:
+                maxY = topEdge
+
+        return [maxX,maxY]
 
     def getIslandLocs(self):
         locs = []
@@ -579,8 +598,12 @@ class Island:
         width_array = np.sum(width_array,axis=1)
         height_array = np.sum(height_array,axis=0)
 
-        island_width = max(width_array)
-        island_height = max(height_array)
+        try:
+            island_width = max(width_array)
+            island_height = max(height_array)
+        except:
+            island_width = 0
+            island_height= 0
 
 
         return [round(island_width,3),round(island_height,3)]
@@ -1111,7 +1134,8 @@ class Port:
             start_idx = inst_idx * pins_per_inst
             for i in range(pins_per_inst):
                 if (start_idx + i) < len(self.pins):
-                    net_list.append(self.pins[start_idx + i].net.print())
+                    if not self.pins[start_idx+i].net.isEmpty():
+                        net_list.append(self.pins[start_idx + i].net.print())
 
         if not net_list:
             return ""
