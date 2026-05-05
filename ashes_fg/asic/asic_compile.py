@@ -297,8 +297,11 @@ class Circuit:
         else:
             port_header = "port1"
             port_decls = "\tinout port1;"
-            
-        text = f"module TOP({port_header});\n\n{port_decls}\n"
+        
+        ## Create patch for port collisions
+        patch_fr_collision = self.handle_port_collision()
+
+        text = f"module TOP({port_header});\n\n{port_decls}\n{patch_fr_collision}\n"
 
         # 4. Process Islands (the logic body)
         for isle in self.Islands:
@@ -353,6 +356,35 @@ class Circuit:
                 pin_info[loc].append(final_name)
         
         return pin_info
+    
+    def handle_port_collision(self):
+
+        net_collision = {}
+        net_patch_flag = 0
+        patch_str = "\n\n\n\n"
+
+        for port in self.frame.ports:
+            net_tmp = port.pins[0].getNet()
+
+            if net_tmp in net_collision:
+                net_collision[net_tmp].append(port.name)
+            else:
+                net_collision[net_tmp] = [port.name]
+
+        
+        for key in net_collision:
+
+            if len(net_collision[key]) > 1:
+                patch_str += f"\twire patch_{net_patch_flag};\n"
+
+                for port_name in net_collision[key]:
+                    patch_str += f"\tassign {port_name} = patch_{net_patch_flag};\n"
+                
+                net_patch_flag = net_patch_flag + 1
+
+        return patch_str
+
+
 
 class Archipelago:
     """
