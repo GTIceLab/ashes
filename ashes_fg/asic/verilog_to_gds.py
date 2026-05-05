@@ -331,7 +331,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                         check_pin_text_layer = True
                         text_layer, text_name, text_loc_X, text_loc_Y = None, None, None, None
                     # Indicate a boundary record
-                    if rec.tag_name == 'BOUNDARY':
+                    if rec.tag_name == 'BOUNDARY' or rec.tag_name == 'PATH':
                     #if rec.tag_name == 'BOUNDARY' and track_pins:
                     
                         # Enable poly checking for all boundaries to facilitate top metal identification
