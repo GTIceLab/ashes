@@ -90,6 +90,13 @@ def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath):
             # Skip this side if the signals list is empty
             if not signals:
                 continue
+
+            # Correct the pin placement in opposite sides to match
+            if side == "S" or side == "W":
+                spread_direction = "counterclockwise"
+            else:
+                spread_direction = "clockwise"
+
                 
             props = full_pin_props[side]
             layer = re.search(r'\d+', props.get("met_layer", "3")).group()
@@ -105,7 +112,7 @@ def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath):
                                   f"-spread_type {place_type} "
                                   f"-offset_start {props.get('offset_start', 0.6)} "
                                   f"-offset_end {props.get('offset_end', 0.6)} "
-                                  f"-spread_direction clockwise "
+                                  f"-spread_direction  {spread_direction} "
                                   f"-pin {pin_str} ")
             pin_tcl_buffer.append("set_db assign_pins_edit_in_batch false\n")
 

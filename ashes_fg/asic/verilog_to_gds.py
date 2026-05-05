@@ -307,13 +307,14 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                         cell_width = max_x - min_x if max_x is not None and min_x is not None else 0
                         cell_height = max_y - min_y if max_y is not None and min_y is not None else 0
                         #if verbose: print((f'Sub cell: {sub_cell_name} Min x: {min_x} Max x: {max_x}'))
+                            
                         cell_info.update({sub_cell_name: {
                             'width': cell_width, 
                             'height': cell_height, 
                             'origin': (min_x, min_y),
                             'top_metal': final_top_metal # Store the highest metal layer ID
                         }})
-
+                        
                         # Reset metal trackers for the next cell in the GDS stream
                         local_metals_found = {n.lower(): False for n in metal_names}
                         max_rank_from_subcells = -1
@@ -520,6 +521,15 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
       
     except:
         raise CellNotFound(f'Problem opening and parsing cell {name}.gds file.')
+    
+    # Check if the top-level cell (name) is at origin (0,0)
+    if name in cell_info:
+        origin_x, origin_y = cell_info[name]['origin']
+        if origin_x != 0 or origin_y != 0:
+            print(f"Error: The top-level cell '{name}' is not at the origin.")
+            print(f"Detected Origin: ({origin_x}, {origin_y})")
+            #sys.exit(1)
+
     return ''.join(ret_string)
 
 
@@ -1797,11 +1807,10 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
         block_ext_len = 1*dbu # this is how far the block should extend from the internal blockage
     
     elif tech_process == "tsmcN16":
-        pin_const = 0.5 # this is for amount of distance between blockage edge and true cell edge
         pin_const = 0.1 # this is for amount of distance between blockage edge and true cell edge
-        pin_spacing = 0.2*dbu # this is for space from pin block to pin
-        pin_threshold = 1.5*dbu # this is the minimum distance between pins for a blockage to be inserted
-        block_ext_len = 1*dbu # this is how far the block should extend from the internal blockage
+        pin_spacing = 0.1*dbu # this is for space from pin block to pin
+        pin_threshold = 0.1*dbu # this is the minimum distance between pins for a blockage to be inserted
+        block_ext_len = 0.2*dbu # this is how far the block should extend from the internal blockage
 
     else:
         sys.exit("Error: Please update the pin constants and spacing for this process node")
