@@ -99,7 +99,7 @@
     "inputs": {
       "input": [0,1],
       "local_input": [0,1],
-      "fg_address": [[33,0], [32,0]],
+      "fg_address": [[33,32],0],
       "num_inputs": 2
     },
     "outputs": {

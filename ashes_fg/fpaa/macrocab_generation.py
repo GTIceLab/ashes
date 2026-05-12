@@ -223,7 +223,7 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
         # Build the new content
         new_entry = f"            '{macrocab_name}_ls[0]', {fg_cells}"
 
-        if isinstance(resource_cells, dict):
+        if isinstance(resource_cells, dict): # need to change so it works for all cap names
             caps = resource_cells.get("CAP0", []) # need to do for rest, i don't think nfet/pfets need this
             caps_nums = {1: 4, 2: 2, 3: 1}
             
@@ -232,6 +232,15 @@ def edit_rasp30(rasp30_file, macrocab_name, num_inputs, num_outputs, output_cell
                 # Match the 12-space indentation of the file
                 new_entry += f",\n            '{macrocab_name}_cap0_{cap_val}x_cs[0]', {cell}"
 
+
+        # need to add ibias,pbias,nbias for fgota
+        # need to add for ota
+        # need to add if in ibias
+        # need to add if in pbias/nbias
+
+        # add t -> specific individual bias rows
+
+        # need to add if in target cells
         # Use a comma and newline to maintain the list structure
         replacement = f"{anchor}\n{new_entry},\n"
 
