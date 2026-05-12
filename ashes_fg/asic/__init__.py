@@ -82,7 +82,8 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 
                 if(run_fr_cadence):
                         #x_IO, y_IO = 9990, 9984
-                        x_IO, y_IO = 1980, 2016
+                        x_IO, y_IO = 1980, 1728
+
                         
                 ## Account for IO area so, location islands in python code can start from 0,0
                 location_islands = tuple((x + x_IO, y + y_IO) for x, y in location_islands)

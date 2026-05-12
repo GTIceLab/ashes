@@ -1041,6 +1041,15 @@ class Port:
         """
         return int(len(self.pins)/self.numPins())
     
+    
+    def setNDR(self, rule_name):
+        """
+        Applies the NDR rule to all nets connected to this port.
+        Usage: my_port.setNDR("ANALOG_THICK")
+        """
+        for pin in self.pins:
+            pin.net.setNDR(rule_name)
+    
     def printFlat(self,type = "decode",extraIdx = -1):
         """
         Returns Verilog text for a decoder port
