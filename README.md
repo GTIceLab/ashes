@@ -6,7 +6,7 @@ ASHES is an (in-progress) tool that is capable of programming Field Programmable
 - Learn more about FPAAs. [IEEE Link](https://ieeexplore.ieee.org/document/8915721), [PDF](https://hasler.ece.gatech.edu/FPAA_IEEEXPlore_2020.pdf)
 - Learn more about the programmable analog standard cell flow across process nodes. [65nm](https://ieeexplore.ieee.org/document/10639182), [130nm](https://ieeexplore.ieee.org/document/10431551) 
 
-![Architecture](doc/ashes_flow_v3.jpg)
+![Architecture](docs/figures/ashes_flow_v3.jpg)
 
 ## Project Requirements
 - **Operating system:** The project has been tested in a linux environment on an Ubuntu 22 distro.  
