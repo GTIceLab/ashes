@@ -11,6 +11,21 @@ def update_output_layout(text, file_path):
     with open(file_path, 'a') as outfile:
         outfile.writelines(text)
 
+def calculate_offset_row(row_heights, curr_row):
+    #print(row_heights)
+    offset = 0
+    row_keys = list(row_heights.keys())
+    row_keys.sort()
+   # print(row_keys)
+    for key in row_keys:
+        if key == curr_row: break
+        val = row_heights[key]
+        if val[1] == 'matrix':
+            offset += val[0]
+        elif val[1] == 'cell':
+            offset += val[0]
+    return offset
+
 
 def calculate_offset(col_widths, curr_col, cell_padding):
     '''
@@ -82,17 +97,52 @@ def count_metal_layers(layer_map, tech_process):
     
     return metal_layers
 
+# def count_metal_layers_drawing(layer_map, tech_process):
+#     '''
+#     Return a list of metal routing layers with purpose 'DRAWING' available in PDK
+#     '''
+#     metal_layers = []
+#     for item, value in layer_map.items():
+#         if value['layer'][:5] == 'metal' and value['purpose'] == 'drawing':
+#             metal_layers.append(value['pdk_name'])
+    
+#     if not metal_layers: 
+#         raise PinNotDefined(f'Cannot find any metal layers in {tech_process}.json')
+    
+#     return metal_layers
+
 def count_metal_layers_drawing(layer_map, tech_process):
     '''
-    Return a list of metal routing layers with purpose 'DRAWING' available in PDK
+    Return a unique list of metal routing layers with purpose 'drawing' 
+    available in PDK. Ignores M0/metal0 but includes M1/metal1 and higher.
     '''
     metal_layers = []
+    seen_layers = set()  # Track names to avoid repetitions
+    
     for item, value in layer_map.items():
-        if value['layer'][:5] == 'metal' and value['purpose'] == 'drawing':
-            metal_layers.append(value['pdk_name'])
+        lname = value['layer'].lower()
+        pdk_name = value['pdk_name']
+        
+        # 1. Basic metal check (starts with 'm' and has a digit)
+        is_metal = lname.startswith('m') and any(c.isdigit() for c in lname)
+        
+        # 2. Purpose check
+        is_drawing = value.get('purpose') == 'drawing'
+        
+        # 3. Exclusion check (ignore M0/metal0)
+        is_ignored = lname.startswith('m0') or lname.startswith('metal0')
+
+        if is_metal and is_drawing and not is_ignored:
+            # 4. Repetition check
+            if pdk_name not in seen_layers:
+                metal_layers.append(pdk_name)
+                seen_layers.add(pdk_name)
     
     if not metal_layers: 
-        raise PinNotDefined(f'Cannot find any metal layers in {tech_process}.json')
+        raise Exception(f'Cannot find any metal layers (M1+) in {tech_process}.json')
+    
+    # Optional: Sort the layers if they appear out of order in the JSON
+    # metal_layers.sort() 
     
     return metal_layers
 

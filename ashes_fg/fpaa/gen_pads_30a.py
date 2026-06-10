@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Mar 13 13:33:13 2023
+Created on Mar 13 2023
+Updated on Mar 22 2026
 
 @author: lyang
 """
-import os
-import sys
+from .ir import Module
 
-def gen_pads_30a(infile_name, verilog, outpath):
+def gen_pads_30a(infile_name: str, module: Module, outpath: str):
     file1 = open(infile_name+'.blif','r')
     lines = file1.readlines()
 
-    lines2 = verilog
-
     pads_final = []
 
-    for i in range(len(lines2)):
-        if 'GENARB_f' in lines2[i]:
-            dac_in = lines2[i+1].split(' ')[1].split(';')[0]
-            pads_final.append('out:out_mite_adc_1 8 1 0 #int[0]\n')
-            pads_final.append(dac_in+'_1 0 8 3 #int[3]\n')
+    for inst in module.instances.values():
+        if inst.model == "GENARB_f":
+            in_port = inst.ports["in"] or inst.ports["input"]
+            # If in_port exists and has a net
+            if in_port and in_port.net:
+                dac_in = in_port.name
+                pads_final.append("out:out_mite_adc_1 8 1 0 #int[0]\n")
+                pads_final.append(f"{dac_in}_1 0 8 3 #int[3]\n")
 
     for line in lines:
         if '.inputs ' in line:

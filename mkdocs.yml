@@ -1,0 +1,39 @@
+site_name: ASHES Documentation
+
+theme:
+  name: "material"
+  features:
+    - content.code.copy
+
+plugins:
+  - mkdocstrings
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra_javascript:
+  - javascripts/katex.js
+  - https://unpkg.com/katex@0/dist/katex.min.js
+  - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
+
+extra_css:
+  - https://unpkg.com/katex@0/dist/katex.min.css
+
+nav:
+  - Home: index.md
+  - Local Installation: local-install.md
+  - Tutorials:
+    - Using Python for FPAA Programming: tutorials/python-for-fpaa
+  - Reference: reference.md
+  - Explanation: explanation.md
+  - Contribution Guidelines: contribution.md
