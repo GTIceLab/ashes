@@ -332,7 +332,18 @@ class ota_buf:
 
         return out_net
 
-
+class test:
+    def __init__(self,
+                 input,
+                 num_instances='1',
+                 type='FPAA',
+                 board=['3.0', '3.0a'],
+                 test_ls='0',
+                 test_cap0_1x_cs='1'):
+        self.input = input
+        self.num_instances = num_instances
+        self.test_ls = test_ls
+        self.test_cap0_1x_cs = test_cap0_1x_cs
 
 class hhn:
     def __init__(self,

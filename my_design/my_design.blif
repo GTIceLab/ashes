@@ -1,0 +1,10 @@
+.model my_design
+.inputs net2_1
+.outputs net1_1
+# 5 pad_in
+# 6 pad_out
+
+#test
+.subckt test in[0]=net2_1 out[0]=net1_1
+
+.end
