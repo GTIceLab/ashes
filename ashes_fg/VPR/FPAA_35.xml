@@ -1,0 +1,224 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<architecture>
+  <models>
+    <model name="TA2Cell_Weak">
+      <input_ports>
+        <port name="in"/>
+      </input_ports>
+      <output_ports>
+        <port name="out"/>
+      </output_ports>
+    </model>
+    <model name="TGate_2nMirror">
+      <input_ports>
+        <port name="in"/>
+      </input_ports>
+      <output_ports>
+        <port name="out"/>
+      </output_ports>
+    </model>
+    <model name="TA2Cell_Strong">
+      <input_ports>
+        <port name="in"/>
+      </input_ports>
+      <output_ports>
+        <port name="out"/>
+      </output_ports>
+    </model>
+    <model name="Cap_Bank">
+      <input_ports>
+        <port name="in"/>
+      </input_ports>
+      <output_ports>
+        <port name="out"/>
+      </output_ports>
+    </model>
+    <model name="WTA_IndirectProg">
+      <input_ports>
+        <port name="in"/>
+      </input_ports>
+      <output_ports>
+        <port name="out"/>
+      </output_ports>
+    </model>
+    <model name="NandPfets">
+      <input_ports>
+        <port name="in"/>
+      </input_ports>
+      <output_ports>
+        <port name="out"/>
+      </output_ports>
+    </model>
+    <model name="volswc">
+      <input_ports>
+        <port name="in"/>
+        <port name="ci"/>
+      </input_ports>
+      <output_ports>
+        <port name="out"/>
+        <port name="co"/>
+      </output_ports>
+    </model>
+  </models>
+  <tiles>
+    <tile name="io" area="0">
+      <sub_tile name="io">
+        <equivalent_sites>
+          <site pb_type="io" pin_mapping="direct"/>
+        </equivalent_sites>
+        <input name="outpad" num_pins="20" is_non_clock_global="false"/>
+        <output name="inpad" num_pins="20"/>
+        <fc in_type="abs" in_val="2" out_type="abs" out_val="2"/>
+        <pinlocations pattern="custom">
+          <loc side="left">io.outpad io.inpad</loc>
+          <loc side="top">io.outpad io.inpad</loc>
+          <loc side="right">io.outpad io.inpad</loc>
+          <loc side="bottom">io.outpad io.inpad</loc>
+        </pinlocations>
+      </sub_tile>
+    </tile>
+    <tile name="cab1" area="30000">
+      <sub_tile name="cab1">
+        <equivalent_sites>
+          <site pb_type="cab1" pin_mapping="direct"/>
+        </equivalent_sites>
+        <input name="I" num_pins="14" is_non_clock_global="false"/>
+        <input name="si" num_pins="1"/>
+        <output name="O" num_pins="8"/>
+        <output name="so" num_pins="12"/>
+        <fc in_type="frac" in_val="1.0" out_type="frac" out_val="1.0"/>
+        <pinlocations pattern="custom">
+          <loc side="left">cab1.I[3:0] cab1.O[3:0] cab1.si cab1.so[2:0]</loc>
+          <loc side="top">cab1.I[7:4] cab1.so[5:3]</loc>
+          <loc side="right">cab1.I[10:8] cab1.so[8:6]</loc>
+          <loc side="bottom">cab1.I[13:11] cab1.O[7:4] cab1.so[11:9]</loc>
+        </pinlocations>
+      </sub_tile>
+    </tile>
+  </tiles>
+  <layout>
+    <fixed_layout name="device" width="9" height="9">
+      <fill type="cab1" priority="10"/>
+      <perimeter type="io" priority="100"/>
+    </fixed_layout>
+  </layout>
+  <device>
+    <sizing R_minW_nmos="4000" R_minW_pmos="9000"/>
+    <connection_block input_switch_name="ipin_cblock"/>
+    <area grid_logic_tile_area="30000.000000"/>
+    <chan_width_distr>
+      <x distr="uniform" peak="1.000000"/>
+      <y distr="uniform" peak="2.000000"/>
+    </chan_width_distr>
+    <switch_block type="subset" fs="3"/>
+  </device>
+  <switchlist>
+    <switch type="mux" name="0" R="94.841003" Cin="1.537000e-14" Cout="2.194000e-13" Tdel="6.562000e-11" mux_trans_size="10.000000" buf_size="1"/>
+    <switch type="mux" name="delayless_switch" R="0" Cin="0" Cout="0" Tdel="0" mux_trans_size="0" buf_size="1"/>
+    <switch type="mux" name="ipin_cblock" R="0" Cin="1.191000e-14" Cout="0" Tdel="1.482000e-10" buf_size="1"/>
+  </switchlist>
+  <segmentlist>
+    <segment name="SC" freq="1" length="1" type="bidir" axis="y" Rmetal="11.064550" Cmetal="4.727860e-14">
+      <sb type="pattern">0 0</sb>
+      <cb type="pattern">1</cb>
+      <wire_switch name="0"/>
+      <opin_switch name="0"/>
+    </segment>
+    <segment name="SS" freq="1" length="1" type="bidir" axis="y" Rmetal="0" Cmetal="0">
+      <sb type="pattern">0 0</sb>
+      <cb type="pattern">0</cb>
+      <wire_switch name="delayless_switch"/>
+      <opin_switch name="delayless_switch"/>
+    </segment>
+    <segment name="CS" freq="1" length="1" type="bidir" axis="x" Rmetal="11.064550" Cmetal="4.727860e-14">
+      <sb type="pattern">0 0</sb>
+      <cb type="pattern">1</cb>
+      <wire_switch name="0"/>
+      <opin_switch name="0"/>
+    </segment>
+  </segmentlist>
+  <complexblocklist>
+    <pb_type name="io">
+      <input name="outpad" num_pins="20"/>
+      <output name="inpad" num_pins="20"/>
+      <pb_type name="io_cell" num_pb="20">
+        <input name="outpad" num_pins="1"/>
+        <output name="inpad" num_pins="1"/>
+        <mode name="inpad">
+          <pb_type name="inpad" blif_model=".input" num_pb="1">
+            <output name="inpad" num_pins="1"/>
+          </pb_type>
+          <interconnect>
+            <direct name="inpad" input="inpad.inpad" output="io_cell.inpad">
+              <delay_constant max="6.562000e-11" in_port="inpad.inpad" out_port="io_cell.inpad"/>
+            </direct>
+          </interconnect>
+        </mode>
+        <mode name="outpad">
+          <pb_type name="outpad" blif_model=".output" num_pb="1">
+            <input name="outpad" num_pins="1"/>
+          </pb_type>
+          <interconnect>
+            <direct name="outpad" input="io_cell.outpad" output="outpad.outpad">
+              <delay_constant max="6.562000e-11" in_port="io_cell.outpad" out_port="outpad.outpad"/>
+            </direct>
+          </interconnect>
+        </mode>
+      </pb_type>
+      <interconnect>
+        <direct name="outpad_direct" input="io.outpad" output="io_cell.outpad"/>
+        <direct name="inpad_direct" input="io_cell.inpad" output="io.inpad"/>
+      </interconnect>
+    </pb_type>
+    <pb_type name="cab1">
+      <input name="I" num_pins="14"/>
+      <input name="si" num_pins="1"/>
+      <output name="O" num_pins="8"/>
+      <output name="so" num_pins="12"/>
+      <pb_type name="TA2Cell_Weak" num_pb="2" blif_model=".subckt TA2Cell_Weak">
+        <input name="in" num_pins="4"/>
+        <output name="out" num_pins="2"/>
+        <delay_constant max="2.69e-10" in_port="TA2Cell_Weak.in" out_port="TA2Cell_Weak.out"/>
+      </pb_type>
+      <pb_type name="TA2Cell_Strong" num_pb="1" blif_model=".subckt TA2Cell_Strong">
+        <input name="in" num_pins="4"/>
+        <output name="out" num_pins="2"/>
+        <delay_constant max="2.69e-10" in_port="TA2Cell_Strong.in" out_port="TA2Cell_Strong.out"/>
+      </pb_type>
+      <pb_type name="Cap_Bank" num_pb="1" blif_model=".subckt Cap_Bank">
+        <input name="in" num_pins="2"/>
+        <output name="out" num_pins="2"/>
+        <delay_constant max="2.69e-10" in_port="Cap_Bank.in" out_port="Cap_Bank.out"/>
+      </pb_type>
+      <pb_type name="WTA_IndirectProg" num_pb="1" blif_model=".subckt WTA_IndirectProg">
+        <input name="in" num_pins="4"/>
+        <output name="out" num_pins="6"/>
+        <delay_constant max="2.69e-10" in_port="WTA_IndirectProg.in" out_port="WTA_IndirectProg.out"/>
+      </pb_type>
+      <pb_type name="NandPfets" num_pb="1" blif_model=".subckt NandPfets">
+        <input name="in" num_pins="4"/>
+        <output name="out" num_pins="2"/>
+        <delay_constant max="2.69e-10" in_port="NandPfets.in" out_port="NandPfets.out"/>
+      </pb_type>
+      <pb_type name="TGate_2nMirror" num_pb="1" blif_model=".subckt TGate_2nMirror">
+        <input name="in" num_pins="4"/>
+        <output name="out" num_pins="3"/>
+        <delay_constant max="2.69e-10" in_port="TGate_2nMirror.in" out_port="TGate_2nMirror.out"/>
+      </pb_type>
+      <pb_type name="volswc" num_pb="1" blif_model=".subckt volswc">
+        <input name="in" num_pins="12"/>
+        <input name="ci" num_pins="8"/>
+        <output name="out" num_pins="1"/>
+        <output name="co" num_pins="8"/>
+        <delay_constant max="2.69e-10" in_port="volswc.in" out_port="volswc.out"/>
+      </pb_type>
+      <interconnect>
+        <direct name="volswc1" input="cab1.I[11:0]" output="volswc.in[11:0]"/>
+        <direct name="volswc2" input="cab1.I[7:0]" output="volswc.ci[7:0]"/>
+        <direct name="volswc3" input="volswc.co[7:0]" output="cab1.O[7:0]"/>
+        <complete name="crossbar1" input="cab1.I[13:0] TA2Cell_Weak[1:0].out TGate_2nMirror.out TA2Cell_Strong.out Cap_Bank.out WTA_IndirectProg.out NandPfets.out" output="TA2Cell_Weak[1:0].in TGate_2nMirror.in TA2Cell_Strong.in Cap_Bank.in WTA_IndirectProg.in NandPfets.in"/>
+        <complete name="crossbar2" input="cab1.I[13:0] TA2Cell_Weak[1:0].out TGate_2nMirror.out TA2Cell_Strong.out Cap_Bank.out WTA_IndirectProg.out NandPfets.out" output="cab1.O[7:0]"/>
+      </interconnect>
+    </pb_type>
+  </complexblocklist>
+</architecture>

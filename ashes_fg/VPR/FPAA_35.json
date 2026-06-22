@@ -1,0 +1,9 @@
+{   
+    "foundry": "TSMC",
+    "process_node": "350nm",
+    "cab1": ["TA2Cell_Weak__0","TA2Cell_Weak__1","TA2Cell_Strong","Cap_Bank","WTA_IndirectProg","NandPfets","TGate_2nMirror"],
+    "cab1_in":"14",
+    "col_cab1":[1,2,3,4,5,6,7]
+}
+
+

@@ -1,0 +1,24 @@
+1. Create the tech file, example TSMC_350nm_Tech.json
+
+2. Move the json standard cell library into the same folder.
+
+3. In json2arch.py, change the FPAA type to the desired one and run.
+
+4. Install VTR 9.
+
+5. An FPAA_xxx.xml file will be created. Move this architecture xml file to folder:
+vtr-verilog-to-routing-9.0.0/vtr-verilog-to-routing/build/vpr
+
+6. Create the design you wish in Python, and run the regular ASHES flow to create the .blif file (In this example test_35.blif). Move this blif file into the same folder in step 5.
+
+7. Run:
+./vpr FPAA_35.xml test_35.blif --route_chan_width 20 --timing_analysis off --disp on --write_rr_graph rrgraph.xml --constant_net_method route
+The FPAA_xx.xml file should be the type you want.
+
+8. Run:
+python graph_mod.py (or graph_mod_35p.py for the PDE fabric)
+Now the modified graph file is generated
+
+9. Run:
+./vpr FPAA_35.xml test_35.blif --route_chan_width 20 --timing_analysis off --disp on --read_rr_graph rrgraph_modified.xml --constant_net_method route
+This will generate the final place and route result.
