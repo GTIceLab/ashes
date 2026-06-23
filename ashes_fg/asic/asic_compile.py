@@ -269,6 +269,8 @@ class Circuit:
         Creates Verilog netlist for Cadence with inout declarations.
         Returns: (text, pin_info, ndr_info)
         """
+        text = ""
+
         self.cleanIslands()
         # 1. Assign unique generic names to everything (net0, net1...)
         self.nameNetsFlat()
@@ -299,9 +301,12 @@ class Circuit:
             port_decls = "\tinout port1;"
         
         ## Create patch for port collisions
-        patch_fr_collision = self.handle_port_collision()
+        if self.frame:
+            patch_fr_collision = self.handle_port_collision()
+            text = f"module TOP({port_header});\n\n{port_decls}\n{patch_fr_collision}\n"
+        else:
+            text = f"module TOP();\n\n"
 
-        text = f"module TOP({port_header});\n\n{port_decls}\n{patch_fr_collision}\n"
 
         # 4. Process Islands (the logic body)
         for isle in self.Islands:
@@ -452,6 +457,12 @@ class Island:
         Python Index -> Row number
         """
         return index + (np.shape(self.placementGrid)[0] - 1)
+
+    def getNumRows(self):
+        return np.shape(self.placementGrid)[0]
+
+    def getNumCols(self):
+        return np.shape(self.placementGrid)[1]
 
     def addRows(self,array,rowNum=0,numNewRows=1):
         """

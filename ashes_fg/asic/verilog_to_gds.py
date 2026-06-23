@@ -314,7 +314,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                             'origin': (min_x, min_y),
                             'top_metal': final_top_metal # Store the highest metal layer ID
                         }})
-                        
+
                         # Reset metal trackers for the next cell in the GDS stream
                         local_metals_found = {n.lower(): False for n in metal_names}
                         max_rank_from_subcells = -1
