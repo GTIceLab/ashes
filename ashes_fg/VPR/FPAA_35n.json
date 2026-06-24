@@ -1,0 +1,12 @@
+{   
+    "foundry": "TSMC",
+    "process_node": "350nm",
+    "cab1": ["TA2Cell_Strong","TA2Cell_Weak__0","TA2Cell_Weak__1","C4","TA2Cell_NoFG","Ampdet_Strong","Ampdet_NoFG"],
+    "cab1_in":"6",
+    "cab2": ["NeuralNetworkProgActFunc__0","NeuralNetworkProgActFunc__1","NeuralNetworkProgActFunc__2","NeuralNetworkProgActFunc__3"],
+    "cab2_in":"16",
+    "col_cab1":[1],
+    "col_cab2":[2,3,4,5,6,7]
+}
+
+
