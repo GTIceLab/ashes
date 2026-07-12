@@ -50,9 +50,14 @@ def make_pin_list(layer_map, tech_process):
     '''
     pin_list = []
     for item, value in layer_map.items():
-        if value['purpose'] == 'pin':
-            layer, datatype = item.split(',')
-            pin_list.append((layer, datatype))
+        if tech_process == "gf180mcuD":
+            if value['purpose'] == 'label':
+                layer, datatype = item.split(',')
+                pin_list.append((layer,datatype))
+        else:
+            if value['purpose'] == 'pin':
+                layer, datatype = item.split(',')
+                pin_list.append((layer, datatype))
     
     if not pin_list: 
         raise PinNotDefined(f'Cannot find any pin mapping in {tech_process}.json')

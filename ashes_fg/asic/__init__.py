@@ -70,7 +70,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 track_spacing = 1600 # M5 metal spacing
                 # placement offset to make space for pin routing
                 x_offset, y_offset = 400*track_spacing, 2000*track_spacing
-                
+
         elif (process.split('_')[0].lower() == "tsmc" and process.split('_')[1].lower() == "16nm"):
                 # All units in nanometers
                 tech_process = 'tsmcN16'
@@ -85,10 +85,17 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                         #x_IO, y_IO = 1980, 1728
                         x_IO, y_IO = 0,0
 
-                        
+
                 ## Account for IO area so, location islands in python code can start from 0,0
                 location_islands = tuple((x + x_IO, y + y_IO) for x, y in location_islands)
 
+        elif (process.split('_')[0].lower() == "gf" and process.split('_')[1].lower() == "180nm"):
+                # All units in nanometers
+                tech_process = 'gf180mcuD'
+                cell_pitch =  11000
+                dbu = 1000
+                track_spacing = 2000
+                x_offset, y_offset = 400*track_spacing, 2000*track_spacing
 
         design_area = (x_IO, y_IO, design_limits[0], design_limits[1], x_offset, y_offset)
 

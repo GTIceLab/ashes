@@ -1811,6 +1811,12 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
         pin_spacing = 0.1*dbu # this is for space from pin block to pin
         pin_threshold = 0.1*dbu # this is the minimum distance between pins for a blockage to be inserted
         block_ext_len = 0.2*dbu # this is how far the block should extend from the internal blockage
+    
+    elif tech_process == "gf180mcuD":
+        pin_const = .5
+        pin_spacing = .1*dbu
+        pin_threshold = 1*dbu
+        block_ext_len = .1*dbu
 
     else:
         sys.exit("Error: Please update the pin constants and spacing for this process node")
