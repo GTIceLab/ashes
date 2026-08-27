@@ -26,23 +26,32 @@ def generate_main_tcl(filepath, subdir="inputs"):
 
 def generate_init_tcl(config_data, filepath, top_level="proj_name"):
     init_section = config_data.get("init", [])
-    tlef_path, pwr_nets, gnd_nets, ndr_rules = "", "", "", []
+    tlef_path, pwr_nets, gnd_nets, ndr_rules = [], "", "", []
 
     for entry in init_section:
-        if "tlef_path" in entry: tlef_path = entry["tlef_path"]
+        if "tlef_path" in entry:
+            val = entry["tlef_path"]
+            if isinstance(val, list):
+                tlef_path.extend(val) # Add all elements if it's a list
+            else:
+                tlef_path.append(val) # Append if it's a single string
         if "pwr_nets" in entry: pwr_nets = entry["pwr_nets"].replace(",", " ")
         if "gnd_nets" in entry: gnd_nets = entry["gnd_nets"].replace(",", " ")
         if "ndr" in entry: ndr_rules = entry["ndr"]
 
+    # Create a string for all the lef file path
+    lef_files_str = " ".join([f'"{p}"' for p in tlef_path + ["../inputs/cells.lef"]])
+
+
     tcl = [
         "################### Read In Tech and Design Files ###################\n",
         f'set_db init_read_netlist_files [list "../inputs/{top_level}.v"]',
-        f'set_db init_lef_files [list "{tlef_path}" "../inputs/cells.lef"]',
-        f'read_physical -lefs "{tlef_path}" "../inputs/cells.lef"',
+        f'set_db init_lef_files [list {lef_files_str}]',
+        f'read_physical -lefs {{ {lef_files_str} }}',
         f'read_netlist ../inputs/{top_level}.v',
         "",
-        "set_multi_cpu_usage -local_cpu 16 -cpu_per_remote_host 16 -remote_host 8 -keep_license true",
-        "set_distributed_hosts -local",
+        #"set_multi_cpu_usage -local_cpu 16 -cpu_per_remote_host 16 -remote_host 8 -keep_license true",
+        #"set_distributed_hosts -local",
         f"set_db init_ground_nets {gnd_nets}",
         f"set_db init_power_nets {{{pwr_nets}}}",
         "init_design",
@@ -59,24 +68,25 @@ def generate_init_tcl(config_data, filepath, top_level="proj_name"):
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))
 
-import re
-
 def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath):
     pin_config_list = config_data.get("pins", [])
     full_pin_props = {}
     place_type = "side" 
+    site = "core" 
 
     for item in pin_config_list:
         full_pin_props.update(item)
         if "place_type" in item:
             place_type = item["place_type"]
-
+        if "site" in item:
+            site = item["site"]
+            
     edge_map = {"W": 0, "N": 1, "E": 2, "S": 3}
     
     # 1. Start with the Floorplan section
     tcl = [
         "######## Floorplan ########",
-        f'create_floorplan -site core -core_size {design_area[2]/1000} {design_area[3]/1000} {design_area[0]/1000} {design_area[1]/1000} {design_area[0]/1000} {design_area[1]/1000} \n'
+        f'create_floorplan -site {site} -core_size {design_area[2]/1000} {design_area[3]/1000} {design_area[0]/1000} {design_area[1]/1000} {design_area[0]/1000} {design_area[1]/1000} \n'
     ]
 
     # 2. Buffer the Pin Assignment logic so we only add headers if pins exist
@@ -124,6 +134,8 @@ def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath):
     # 4. Write to file
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))
+
+
 def generate_power_tcl(config_data, filepath):
     # Get the main power block (assuming first item in list)
     power_entry = config_data.get("power", [{}])[0]

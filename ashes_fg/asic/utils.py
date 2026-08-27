@@ -118,39 +118,47 @@ def count_metal_layers(layer_map, tech_process):
 
 def count_metal_layers_drawing(layer_map, tech_process):
     '''
-    Return a unique list of metal routing layers with purpose 'drawing' 
-    available in PDK. Ignores M0/metal0 but includes M1/metal1 and higher.
+    Return a unique list of metal routing layers with purpose 'drawing'.
+    - Considers 'M', 'C', or 'Metal' followed strictly by numbers (e.g., M1, C1, Metal2).
+    - Rejects anything with extra characters (e.g., CUE2D1, M1_drawing, M1PIN).
+    - Ignores M0/C0/Metal0.
     '''
     metal_layers = []
-    seen_layers = set()  # Track names to avoid repetitions
+    seen_layers = set()
     
     for item, value in layer_map.items():
         lname = value['layer'].lower()
         pdk_name = value['pdk_name']
         
-        # 1. Basic metal check (starts with 'm' and has a digit)
-        is_metal = lname.startswith('m') and any(c.isdigit() for c in lname)
-        
-        # 2. Purpose check
-        is_drawing = value.get('purpose') == 'drawing'
-        
-        # 3. Exclusion check (ignore M0/metal0)
-        is_ignored = lname.startswith('m0') or lname.startswith('metal0')
-
-        if is_metal and is_drawing and not is_ignored:
-            # 4. Repetition check
+        # 1. Identify the prefix and extract the potential number part
+        if lname.startswith('metal'):
+            num_part = lname[5:] # Everything after 'metal'
+        elif lname.startswith('m') or lname.startswith('c'):
+            num_part = lname[1:] # Everything after 'm' or 'c'
+        else:
+            continue # Not a metal layer
+            
+        # 2. Strict Check: The part after the prefix must be ONLY digits
+        # This rejects 'ue2d1', '1_drawing', '1pin', etc.
+        if not num_part.isdigit():
+            continue
+            
+        # 3. Exclusion check (ignore index 0)
+        if num_part == '0':
+            continue
+            
+        # 4. Purpose check
+        if value.get('purpose') == 'drawing':
             if pdk_name not in seen_layers:
                 metal_layers.append(pdk_name)
                 seen_layers.add(pdk_name)
     
     if not metal_layers: 
-        raise Exception(f'Cannot find any metal layers (M1+) in {tech_process}.json')
-    
-    # Optional: Sort the layers if they appear out of order in the JSON
-    # metal_layers.sort() 
+        raise Exception(f'Cannot find any pure metal layers (M1+/C1+) in {tech_process}.json')
     
     return metal_layers
-
+    
+    
 def find_pitch_in_lef(layer_name, lef_path, dbu=1000):
     '''
     Returns the routing pitch of layer_name from the LEF file (converted to DBU)

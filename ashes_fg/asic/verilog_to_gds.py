@@ -92,7 +92,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
         raise CellNotFound(f'Could not open layer map {layer_map_path}. ')
     layer_map = json.load(open(layer_map_path))
     pin_list = make_pin_list(layer_map, tech_process)
-
+    
     ## Patch for putting the most used pin data type number on first index
     common_dt = max(set(x[1] for x in pin_list), key=[x[1] for x in pin_list].count)
     pin_list.sort(key=lambda x: x[1] != common_dt)
@@ -260,8 +260,23 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     - Handle cell rotation, mirroring and translation
     """
     # Initialize hierarchy tracking: Get official metal names and create a rank mapping (m1=0, m2=1, etc.)
-    metal_names = count_metal_layers_drawing(layer_map, tech_process)
+    
+    # 1. Get the raw list of metals
+    raw_metals = count_metal_layers_drawing(layer_map, tech_process)
+    # 2. Split into M layers and 'other' layers, sorting them numerically
+    # This ensures M1, M2... come first, followed by D1, D2...
+    m_layers = sorted([m for m in raw_metals if m.lower().startswith('m')], 
+                      key=lambda x: int(''.join(filter(str.isdigit, x)) or 0))
+    
+    other_layers = sorted([m for m in raw_metals if not m.lower().startswith('m')], 
+                          key=lambda x: int(''.join(filter(str.isdigit, x)) or 0))
+
+    # 3. Combine them: M first, then others
+    metal_names = m_layers + other_layers
+
+    # 4. Create the rank mapping (M layers get the lowest ranks 0, 1, 2...)
     m_to_rank = {name.lower(): i for i, name in enumerate(metal_names)}
+
     # Tracking used metals for the current cell and highest rank inherited from sub-cells
     local_metals_found = {n.lower(): False for n in metal_names}
     max_rank_from_subcells = -1

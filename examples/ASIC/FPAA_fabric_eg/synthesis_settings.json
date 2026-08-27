@@ -1,6 +1,6 @@
 {
     "process": "tsmc_350nm",
-    "lib_path": "/srv/lib_for_ashes/lib",
+    "lib_path": "/home/praveen/Projects/wafer5/6_Tools/lib",
     "drainSpaceIdx": 0,
     "drainSpace": 0,
     "gateSpaceIdx": 0,

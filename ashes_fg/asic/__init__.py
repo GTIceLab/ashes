@@ -85,7 +85,6 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                         #x_IO, y_IO = 1980, 1728
                         x_IO, y_IO = 0,0
 
-
                 ## Account for IO area so, location islands in python code can start from 0,0
                 location_islands = tuple((x + x_IO, y + y_IO) for x, y in location_islands)
 
@@ -97,8 +96,25 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 track_spacing = 2000
                 x_offset, y_offset = 400*track_spacing, 2000*track_spacing
 
-        design_area = (x_IO, y_IO, design_limits[0], design_limits[1], x_offset, y_offset)
+        elif (process.split('_')[0].lower() == "gf" and process.split('_')[1].lower() == "22nm"):
+                # All units in nanometers
+                tech_process = 'gfN22'
+                cell_pitch = 3640
+                dbu = 1000
+                track_spacing = 160 # M5 metal spacing
+                # placement offset to make space for pin routing
+                x_offset, y_offset = 400*track_spacing, 2000*track_spacing
 
+                if(run_fr_cadence):
+                        #x_IO, y_IO = 9990, 9984
+                        #x_IO, y_IO = 1980, 1728
+                        x_IO, y_IO = 3960, 3960
+
+                ## Account for IO area so, location islands in python code can start from 0,0
+                location_islands = tuple((x + x_IO, y + y_IO) for x, y in location_islands)
+
+
+        design_area = (x_IO, y_IO, design_limits[0], design_limits[1], x_offset, y_offset)
 
 
        # 4. Cadence Physical Design Setup
