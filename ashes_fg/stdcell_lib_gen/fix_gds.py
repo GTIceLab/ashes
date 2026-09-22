@@ -22,6 +22,36 @@ def get_pin_direction(label: gdstk.Label, box: tuple) -> str:
     ]
 
     min_distance = min(distances)
+
+    # Check for corners (TODO Make process agnostic)
+    vertical_layer = [131,133,135] #M1,M3,M5
+    horizontal_layer = [132,134] #M2, M4
+    close_dist = 0.25
+    # Northwest corner
+    if distances[0] < close_dist and distances[3] < close_dist:
+        if label.layer in vertical_layer:
+            min_distance = distances[0]
+        elif label.layer in horizontal_layer:
+            min_distance = distances[3]
+    # Northeast
+    if distances[0] < close_dist and distances[2] < close_dist:
+        if label.layer in vertical_layer:
+            min_distance = distances[0]
+        elif label.layer in horizontal_layer:
+            min_distance = distances[2]
+    # Southwest corner
+    if distances[1] < close_dist and distances[3] < close_dist:
+        if label.layer in vertical_layer:
+            min_distance = distances[1]
+        elif label.layer in horizontal_layer:
+            min_distance = distances[3]
+    # Southeast
+    if distances[1] < close_dist and distances[2] < close_dist:
+        if label.layer in vertical_layer:
+            min_distance = distances[1]
+        elif label.layer in horizontal_layer:
+            min_distance = distances[2]
+
     if min_distance == distances[0]:
         return "n"
     elif min_distance == distances[1]:

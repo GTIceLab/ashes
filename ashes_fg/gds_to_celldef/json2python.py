@@ -43,6 +43,10 @@ def load_spec(json_path):
 	top_key = next(iter(data.keys()))
 	return data[top_key]
 
+def get_dimensions(spec):
+	cell_width = spec.get('width')
+	cell_height = spec.get('height')
+	return [cell_width,cell_height]
 
 def gather_pins(spec):
 	ordered_pins = []
@@ -67,7 +71,7 @@ def gather_pins(spec):
 	return ordered_pins, pin_meta
 
 
-def render_class(class_name, pin_order, pin_meta):
+def render_class(class_name, pin_order, pin_meta, cell_dimension):
 	args = ["self", "circuit", "island=None", "dim=(1,1)"]
 	args.extend(f"{pin}=None" for pin in pin_order)
 	args_str = ",".join(args)
@@ -81,6 +85,7 @@ def render_class(class_name, pin_order, pin_meta):
 	lines.append("        self.ports = []")
 	lines.append("        self.island = island")
 	lines.append("        self.dim = dim")
+	lines.append("        self.size = [" + str(cell_dimension[0]) + "," + str(cell_dimension[1]) + "]")
 	lines.append("")
 	lines.append("        # Define cell information")
 	lines.append(f"        self.name = '{class_name}'")
@@ -169,7 +174,8 @@ def generate_from_json(
 	spec = load_spec(json_path)
 	class_name = extract_class_name(json_path)
 	pin_order, pin_meta = gather_pins(spec)
-	class_text = render_class(class_name, pin_order, pin_meta)
+	cell_dimension = get_dimensions(spec)
+	class_text = render_class(class_name, pin_order, pin_meta, cell_dimension)
 	if history_dir is None:
 		history_path = json_path.with_name(f"{class_name}_history.txt")
 	else:
@@ -253,4 +259,3 @@ if __name__ == "__main__":
 # 		    # Add cell to circuit
 # 		    circuit.addInstance(self,self.island)
 #             """
-            

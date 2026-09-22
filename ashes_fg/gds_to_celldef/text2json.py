@@ -38,6 +38,49 @@ import re
 import os
 import json
 
+def get_max_dimensions(content):
+    # Find cell dimensions (The layer mentioned here is process specific)
+    pattern = r"prBoundary:\s*\(\(([^,]+), ([^)]+)\), \(([^,]+), ([^)]+)\)\)"
+    matches = re.findall(pattern, content)
+
+
+    if not matches:
+        print("cell size inferred from GDS")
+        pattern = r"Cell Dim:\s*\(\(([^,]+), ([^)]+)\), \(([^,]+), ([^)]+)\)\)"
+        matches = re.findall(pattern, content)
+    else:
+        print("cell size inferred from prBoundary layer")
+
+
+
+    max_height = 0
+    max_area = 0
+    max_width = 0
+    max_height = 0
+    max_cell = None
+
+    max_x = 0
+    max_y = 0
+    min_x = 0
+    min_y = 0
+
+    for x1, y1, x2, y2 in matches:
+        x1, y1, x2, y2 = map(float, (x1, y1, x2, y2))
+        if x1 < min_x:
+            min_x = x1
+        if x2 > max_x:
+            max_x = x2
+        if y1 < min_y:
+            min_y = y1
+        if y2 > max_y:
+            max_y = y2
+    max_width = max_x - min_x
+    max_height = max_y - min_y
+
+    max_width = round(max_width,3)
+    max_height = round(max_height,3)
+
+    return (max_x,min_x,max_y,min_y)
 
 def _normalize_process_node(value: str) -> str:
     normalized = value.strip()
@@ -102,13 +145,7 @@ def process_text_output(file: str, process_node_override: str | None = None, fou
         labels.append({'text': text, 'x': float(x), 'y': float(y)})
 
     # Find max and min coordinates
-    max_x = max(label['x'] for label in labels)
-    min_x = min(label['x'] for label in labels)
-    max_y = max(label['y'] for label in labels)
-    min_y = min(label['y'] for label in labels)
-
-    total_width = max_x - min_x
-    total_height = max_y - min_y
+    (max_x,min_x,max_y,min_y) = get_max_dimensions(content)
 
     # Parse labels to extract base name and pin number
     def parse_label(text):
@@ -121,37 +158,31 @@ def process_text_output(file: str, process_node_override: str | None = None, fou
     directions = {'N': {}, 'S': {}, 'E': {}, 'W': {}}
 
     for label in labels:
+        base_name, pin_num = parse_label(label['text'])
         x, y = label['x'], label['y']
         direction = None
 
         # Calculate distances to each edge
-        dist_north = max_y - y
-        dist_south = y - min_y
-        dist_east = max_x - x
-        dist_west = x - min_x
+        dist_north = abs(max_y - y)
+        dist_south = abs(y - min_y)
+        dist_east = abs(max_x - x)
+        dist_west = abs(x - min_x)
 
         # Find closest edge
         min_dist = min(dist_north, dist_south, dist_east, dist_west)
 
-        # If any two distances are equally close, throw an error
-        distances = [dist_north, dist_south, dist_east, dist_west]
-        if distances.count(min_dist) > 1:
-            # if contains _b, put in south
-            if label['text'].endswith('_n') or '_n' in label['text']:
-                direction = 'N'
-            elif label['text'].endswith('_s') or '_s' in label['text']:
-                direction = 'S'
-            elif label['text'].endswith('_e') or '_e' in label['text']:
-                direction = 'E'
-            elif label['text'].endswith('_w') or '_w' in label['text']:
-                direction = 'W'
-            else:
-                raise ValueError(
-                    f"Ambiguous direction for label '{label['text']}' at ({x}, {y}): multiple edges are equally close."
-                )
-
-        # Parse label to get base name and pin
-        base_name, pin_num = parse_label(label['text'])
+        # Check for corners (TODO Make process agnostic)
+        close_dist = 0.25
+        if dist_north < close_dist or dist_south < close_dist:
+            if dist_west < close_dist or dist_east < close_dist:
+                if base_name[-1] == "n":
+                    min_dist = dist_north
+                if base_name[-1] == "s":
+                    min_dist = dist_south
+                if base_name[-1] == "e":
+                    min_dist = dist_east
+                if base_name[-1] == "w":
+                    min_dist = dist_west
 
         # Determine direction
         if direction is None:
@@ -191,6 +222,13 @@ def process_text_output(file: str, process_node_override: str | None = None, fou
 
     directions = formatted_directions
 
+    # Find cell dimensions
+    max_width = max_x - min_x
+    max_height = max_y - min_y
+
+    max_width = round(max_width,3)
+    max_height = round(max_height,3)
+
     # Save to JSON
     output_file = os.path.splitext(file)[0] + "_directions.json"
 
@@ -205,7 +243,9 @@ def process_text_output(file: str, process_node_override: str | None = None, fou
         'W': directions['W'],
         'E': directions['E'],
         'N': directions['N'],
-        'S': directions['S']
+        'S': directions['S'],
+        'width': max_width,
+        'height': max_height
     }
 
     nested_json = json.dumps(nested_dict, separators=(',', ':'))
