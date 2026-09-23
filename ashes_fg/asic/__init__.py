@@ -1,6 +1,7 @@
 from ashes_fg.asic.py_to_verilog import asic_compiler
 from ashes_fg.asic.verilog_to_gds import gds_synthesis
-from ashes_fg.asic import pd_tcl_gen as pd_cadence_tcl_gen
+from ashes_fg.asic import pd_tcl_gen
+from ashes_fg.asic.pd_tools import is_external_pd_tool
 
 import os
 import subprocess
@@ -9,38 +10,49 @@ import time
 import json
 from pathlib import Path
 
-def compile(circuit,process="Process",project_path = ".",project_name = "project",lib_path = None, place=True, route=True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,qparams=None,pd_args=None,prBoundary_layer = None,run_fr_cadence=0):
+def compile(circuit,process="Process",project_path = ".",project_name = "project",lib_path = None, place=True, route=True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,qparams=None,pd_args=None,prBoundary_layer = None,pd_tool=None):
 
         """
         Main ASIC compilation function
         - Makes Verilog netlist for a given Circuit
         - Creates directory for physical design
         - Calls P&R tools
+
+        pd_tool must explicitly select a tool registered in pd_tools.PD_TOOLS.
+        The ASHES flow selects its detailed router independently.
         """
+
+        external_pd = is_external_pd_tool(pd_tool)
 
         # 1. Path Definitions
         syn_path = os.path.join(project_path, 'syn')
-        cadence_base = os.path.join(project_path, 'cadence')
-        cadence_proj_dir = os.path.join(cadence_base, project_name)
-        cadence_tcl = os.path.join(cadence_proj_dir, 'tcl')
-        cadence_inputs = os.path.join(cadence_proj_dir, 'inputs')
-        cadence_outputs = os.path.join(cadence_proj_dir, 'outputs')
-        cadence_run= os.path.join(cadence_proj_dir, 'run')
 
         # 2. Directory Creation
         dirs_to_create = [syn_path]
-        if run_fr_cadence == 1:
-                dirs_to_create += [cadence_proj_dir, cadence_tcl, cadence_inputs, cadence_outputs, cadence_run]
-        
+        if external_pd:
+                pd_proj_dir = os.path.join(project_path, pd_tool, project_name)
+                pd_tcl = os.path.join(pd_proj_dir, 'tcl')
+                pd_inputs = os.path.join(pd_proj_dir, 'inputs')
+                pd_outputs = os.path.join(pd_proj_dir, 'outputs')
+                pd_run = os.path.join(pd_proj_dir, 'run')
+                dirs_to_create += [pd_proj_dir, pd_tcl, pd_inputs, pd_outputs, pd_run]
+
         for folder in dirs_to_create:
                 if not os.path.exists(folder):
                         os.makedirs(folder)
 
-        # 3. Generate Standard Verilog (Synthesis)
+        # 3. Generate ASHES Verilog (Synthesis)
         verilog_path = os.path.join(syn_path, project_name + '.v')
         with open(verilog_path, "w") as f:
                 f.write(circuit.print(process))
 
+        # Generate conventional Verilog for the selected external PD tool.
+        if external_pd:
+                flat_verilog, pin_info, ndr_info = circuit.print_conventional(process)
+                flat_verilog_path = os.path.join(pd_inputs, project_name + '.v')
+
+                with open(flat_verilog_path, "w") as f:
+                        f.write(flat_verilog)
 
 
         # Variables to set space between IO edge and Core edge
@@ -80,7 +92,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 # placement offset to make space for pin routing
                 x_offset, y_offset = 400*track_spacing, 2000*track_spacing
 
-                if(run_fr_cadence):
+                if external_pd:
                         x_IO, y_IO = 9990, 9984
                         #x_IO, y_IO = 1980, 1728
                         #x_IO, y_IO = 0,0
@@ -105,7 +117,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 # placement offset to make space for pin routing
                 x_offset, y_offset = 400*track_spacing, 2000*track_spacing
 
-                if(run_fr_cadence):
+                if external_pd:
                         #x_IO, y_IO = 9990, 9984
                         #x_IO, y_IO = 1980, 1728
                         x_IO, y_IO = 3960, 3960
@@ -117,40 +129,30 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
         design_area = (x_IO, y_IO, design_limits[0], design_limits[1], x_offset, y_offset)
 
 
-       # 4. Cadence Physical Design Setup
-        if run_fr_cadence == 1:
+        # 4. External Physical Design Setup
+        if external_pd:
                 if pd_args is None:
-                        raise ValueError("pd_args (JSON settings) must be provided for Cadence flow.")
+                        raise ValueError(f"pd_args (JSON settings) must be provided for {pd_tool} flow.")
 
-                # Generate flattened verilog for Cadence
-                flat_verilog, pin_info, ndr_info = circuit.print_cadence(process)
-                verilog_cadence_path = os.path.join(cadence_inputs, project_name + '.v')
+                pd_tcl_gen.generate_init_tcl(pd_args, os.path.join(pd_tcl, "init.tcl"), top_level=project_name, pd_tool=pd_tool)
+                pd_tcl_gen.generate_pins_tcl(pd_args, design_area, pin_info, os.path.join(pd_tcl, "pins.tcl"), pd_tool=pd_tool)
+                pd_tcl_gen.generate_power_tcl(pd_args, os.path.join(pd_tcl, "power.tcl"), pd_tool=pd_tool)
+                pd_tcl_gen.generate_route_tcl(pd_args, ndr_info, os.path.join(pd_tcl, "route.tcl"), pd_tool=pd_tool)
+                pd_tcl_gen.generate_signoff_tcl(pd_args, os.path.join(pd_tcl, "signoff.tcl"), top_level=project_name, pd_tool=pd_tool)
+                pd_tcl_gen.generate_main_tcl(os.path.join(pd_proj_dir, "main.tcl"), subdir="../tcl", pd_tool=pd_tool)
 
-                with open(verilog_cadence_path, "w") as f:
-                        f.write(flat_verilog)
-
-                # Generate individual TCL scripts inside cadence/inputs/
-                pd_cadence_tcl_gen.generate_init_tcl( pd_args, os.path.join(cadence_tcl, "init.tcl"), top_level=project_name)
-                pd_cadence_tcl_gen.generate_pins_tcl(pd_args, design_area, pin_info, os.path.join(cadence_tcl, "pins.tcl"))
-                pd_cadence_tcl_gen.generate_power_tcl(pd_args, os.path.join(cadence_tcl, "power.tcl"))
-                pd_cadence_tcl_gen.generate_route_tcl(pd_args, ndr_info, os.path.join(cadence_tcl, "route.tcl"))
-                pd_cadence_tcl_gen.generate_signoff_tcl(pd_args, os.path.join(cadence_tcl, "signoff.tcl"),top_level=project_name)
-
-                pd_cadence_tcl_gen.generate_main_tcl(os.path.join(cadence_proj_dir, "main.tcl"), subdir="../tcl")
-                
-                print(f"--- Cadence PD Scripts generated in {cadence_proj_dir} ---")
-
+                print(f"--- {pd_tool} PD Scripts generated in {pd_proj_dir} ---")
 
 
         if place == True:
                 pdPath = os.path.join(project_path,'pd')
                 #drainmux_space_isle_idx = 0
-                process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer,run_fr_cadence)
+                process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer,pd_tool)
                 pl_start = time.time()
                 gds_synthesis(process_params, design_area, project_name,project_path,isle_loc=location_islands)
                 pl_end = time.time()
 
-                if route == True:
+                if route == True and not external_pd:
 
                         if qparams == None:
                                 qdefpath = os.path.join(Path(__file__).parent,'qrouter_default.json')

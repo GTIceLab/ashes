@@ -264,9 +264,9 @@ class Circuit:
         text += "\n endmodule"
         return text
     
-    def print_cadence(self, processPrefix):
+    def print_conventional(self, processPrefix):
         """
-        Creates Verilog netlist for Cadence with inout declarations.
+        Creates a conventional Verilog netlist with inout declarations.
         Returns: (text, pin_info, ndr_info)
         """
         text = ""
@@ -312,7 +312,7 @@ class Circuit:
         for isle in self.Islands:
             islandNum = self.Islands.index(isle)
             text += f"\n\n\t/* Island {islandNum} */\n"
-            text += isle.print_cadence(islandNum, processPrefix)
+            text += isle.print_conventional(islandNum, processPrefix)
 
         text += "\n endmodule"
         
@@ -529,7 +529,7 @@ class Island:
         return text
     
     
-    def print_cadence(self, islandNum, processPrefix):
+    def print_conventional(self, islandNum, processPrefix):
         text = ""
         #printPlacement(self)
         for i, instance in enumerate(self.instances):
@@ -542,7 +542,7 @@ class Island:
                 r, c = 0, 0
             
              # Pass i as instanceNum to ensure uniqueness for non-grid cells
-            text += instance.print_cadence(i, islandNum, r, c)
+            text += instance.print_conventional(i, islandNum, r, c)
         return text
 
 
@@ -1142,7 +1142,7 @@ class Port:
 
 
 
-    def print_cadence(self, r, c):
+    def print_conventional(self, r, c):
         """
         Returns Verilog port mapping, handling slicing for vectorized 
         MUX/Decoder cells and edge-connectivity for Matrix cells.
@@ -1348,7 +1348,7 @@ class StandardCell:
         text += ");"
         return text
     
-    def print_cadence(self, instanceNum, islandNum, row, col, instancePrefix="I"):
+    def print_conventional(self, instanceNum, islandNum, row, col, instancePrefix="I"):
         text = ""
         rows = self.dim[0] if self.dim[0] > 0 else 1
         cols = self.dim[1] if self.dim[1] > 0 else 1
@@ -1363,7 +1363,7 @@ class StandardCell:
                 text += f"\t{self.name} {inst_name} ("
                 port_connections = []
                 for port in self.ports:
-                    p_text = port.print_cadence(r, c)
+                    p_text = port.print_conventional(r, c)
                     if p_text:
                         port_connections.append(p_text)
                 
@@ -1440,7 +1440,7 @@ class MUX(StandardCell):
         return text
 
 
-    def print_cadence(self, instanceNum, islandNum, row, col, instancePrefix="MUX"):
+    def print_conventional(self, instanceNum, islandNum, row, col, instancePrefix="MUX"):
         # 1. Calculate idx by counting how many MUXes exist in this island before 'self'
         # This replaces the need for an external counter or class-level attribute.
         idx = 0
@@ -1467,8 +1467,8 @@ class MUX(StandardCell):
                 
                 port_connections = []
                 for port in self.ports:
-                    # Pass local r, c to the port's cadence print logic
-                    p_text = port.print_cadence(r, c)
+                    # Pass local r, c to the port's conventional print logic
+                    p_text = port.print_conventional(r, c)
                     if p_text:
                         port_connections.append(p_text)
                 
