@@ -25,3 +25,6 @@ routing_two.txt
 # Ignore Windows Zone.Identifier metadata files
 *Zone.Identifier
 *:Zone.Identifier
+
+# Ignore files added by vscode
+.vscode
