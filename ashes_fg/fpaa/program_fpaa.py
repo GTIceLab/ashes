@@ -4,13 +4,12 @@ RASPPATH = os.getenv("RASPPATH", "/home/ubuntu/rasp30")
 OFF = "0.000000000000000\n"
 
 ## All the command execution code is of the same form
-def exec_command(cmd, filename):
+def exec_command(cmd, filename, success_message):
     while True:
         try:
             proc = subprocess.run([f"sudo tclsh {RASPPATH}/prog_assembly/libs/tcl/{cmd} {filename}"], shell=True, capture_output=True, text=True)
             output = proc.stdout
             print(output)
-            success_message = "Program completed."
             if success_message in output and proc.returncode == 0:
                 print("Ran subprocess: success")
                 break
@@ -21,10 +20,10 @@ def exec_command(cmd, filename):
             print("failed: trying again")
 
 def program(filename):
-    exec_command('program.tcl -speed 115200', filename)
+    exec_command('program.tcl -speed 115200', filename, 'Program completed.')
 
 def write_mem2_NoRelease(addr, fname):
-    exec_command(f'write_mem2_NoRelease.tcl -start_address {addr} -input_file_name', fname)
+    exec_command(f'write_mem2_NoRelease.tcl -start_address {addr} -input_file_name', fname, 'Writing file: ')
 
 def main():
     #os.chdir(path)
@@ -267,10 +266,12 @@ def main():
 
     write_mem2_NoRelease('0x4300', 'input_vector')
     write_mem2_NoRelease('0x4200', 'output_info')
-    write_mem2_NoRelease('0x5500', 'gpin_vector')
 
-    exec_command('run_new.tcl -speed 115200', 'voltage_meas.elf')
+    if os.path.exists('./gpin_vector'):
+        write_mem2_NoRelease('0x5500', 'gpin_vector')
+
+    exec_command('run_new.tcl -speed 115200', 'voltage_meas.elf', 'Run-mode.')
     os.system("sleep 2")
 
-    exec_command('read_mem2_NoRelease.tcl -start_address 0x6000 -length 1000 -output_file_name', 'output_vector')
+    exec_command('read_mem2_NoRelease.tcl -start_address 0x6000 -length 1000 -output_file_name', 'output_vector', 'Writing to file: ')
     os.system("sleep 2")
