@@ -150,3 +150,5 @@ routing layers, and physical rules are not rotated by the coordinate option.
 - The known mapped IO-margin duplication and external MUX-group naming issues
   remain follow-ups. Full production routing/signoff is not established by the
   synthetic regression tests.
+
+See [PD settings](pd-settings.md) for all pd_settings.json sections and backend-specific options.
