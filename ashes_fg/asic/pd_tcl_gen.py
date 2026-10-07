@@ -702,8 +702,13 @@ def generate_init_tcl(config_data, filepath, top_level="proj_name", pd_tool="cad
     return _generate_tcl(pd_tool, "init", config_data, filepath, top_level)
 
 
-def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath, pd_tool="cadence"):
-    return _generate_tcl(pd_tool, "pins", config_data, design_area, pin_signal_groups, filepath)
+def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath, pd_tool="cadence", process_coordinates="xy"):
+    from ashes_fg.asic.placement_axes import PlacementAxes
+
+    # Python frame directions describe the logical layout. Technology settings
+    # (layers, offsets, pin dimensions) continue to describe native edges.
+    native_groups = PlacementAxes(process_coordinates).native_pin_groups(pin_signal_groups)
+    return _generate_tcl(pd_tool, "pins", config_data, design_area, native_groups, filepath)
 
 
 def generate_power_tcl(config_data, filepath, pd_tool="cadence"):

@@ -7,6 +7,7 @@ import math
 import re
 import time
 import sys
+import subprocess
 import tracemalloc
 from pathlib import Path
 
@@ -25,6 +26,7 @@ import numpy as np
 
 from ashes_fg.asic.exceptions import *
 from ashes_fg.asic.pd_tools import is_external_pd_tool
+from ashes_fg.asic.placement_axes import PlacementAxes, matrix_position, native_island_text
 from ashes_fg.asic.global_router import global_router
 from ashes_fg.asic.utils import *
 
@@ -39,7 +41,8 @@ verbose = False
 pypath = sys.executable
 
 
-def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None, routed_def=False, router_tool='qrouter'):
+def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None, routed_def=False, router_tool='qrouter', process_coordinates="xy"):
+    placement_axes = PlacementAxes(process_coordinates)
     tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer,pd_tool = process_params
     external_pd = is_external_pd_tool(pd_tool)
 
@@ -81,6 +84,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
 
     if lib_path == None:
         lib_path = os.path.join(Path(__file__).parent,'lib', tech_process)
+
     
 
     # Delete previously generated files if not merging routes
@@ -199,7 +203,27 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     cell_order_in_island = {}
     island_params = (track_spacing, cell_pitch, cells_only_module, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space)
     parse_cell_params = (module_list, pin_list, layer_map, tech_process, dbu, text_layout_path)
-    island_text, island_dims = generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc,lib_path,prBoundary_layer)
+    # Placement works with logical extents; physical cell geometry remains native.
+    placement_cells = placement_axes.logical_cells(cell_info) if placement_axes.swapped else cell_info
+    island_text, island_dims = generate_islands(
+        island_info, placement_cells, island_place, cell_order_in_island,
+        placement_axes.logical_area(design_area), frame_module, island_params,
+        parse_cell_params, isle_loc, lib_path, prBoundary_layer,
+        native_cell_info=cell_info if placement_axes.swapped else None,
+        placement_axes=placement_axes)
+
+    if placement_axes.swapped:
+        placement_axes.map_islands(cell_order_in_island, cell_info, design_area)
+        island_dims = []
+        island_place.clear()
+        for number, island in cell_order_in_island.items():
+            boxes = np.asarray(island['coords'])
+            left, bottom = np.min(boxes[:, :2], axis=0)
+            right, top = np.max(boxes[:, 2:], axis=0)
+            island_place.append([left, bottom])
+            island_dims.append([right - left, top - bottom, number])
+        island_text = native_island_text(cell_order_in_island, cell_info,
+                                        reverse_pdk_doc(layer_map), frame_module)
     if verbose: 
         print(f'Island Placements:\n {island_place}')
         print('Post island gen, island info')
@@ -210,7 +234,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     frame_text = None
     if generate_cells_list:
         process_misc = (dbu, os.path.join(lib_path, 'tech_lef', f'{tech_process}'))
-        frame_text, frame_module = generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc,pd_tool)
+        frame_text, frame_module = generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc,pd_tool, process_coordinates=process_coordinates)
         if verbose:
             print("Post frame generation, relative ordering within islands")
             pprint.pprint(cell_order_in_island)
@@ -225,7 +249,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
         if frame_text: update_output_layout(frame_text, text_layout_path)
         update_output_layout('ENDSTR\n', text_layout_path)
         update_output_layout('ENDLIB\n', text_layout_path)
-        os.system(f'{pypath} {txt2gds_path} -o {gds_path} {text_layout_path}')
+        subprocess.run([pypath, txt2gds_path, '-o', gds_path, text_layout_path], check=True)
 
         generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu, cell_order_in_island,lib_path,pd_tool)
 
@@ -251,7 +275,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
         rev_layer_map = reverse_pdk_doc(layer_map)
         if verbose: print(f'Reversed layer map:\n {rev_layer_map}')
         merge_def_with_gds(file_path, file_name_no_ext, rev_layer_map, cell_info, dbu, file_path, router_tool)
-        os.system(f'{pypath} {txt2gds_path} -o {merged_gds_file_path} {text_merged_layout_path}')
+        subprocess.run([pypath, txt2gds_path, '-o', merged_gds_file_path, text_merged_layout_path], check=True)
     
 
 def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process,lib_path,prBoundary_layer):
@@ -552,7 +576,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     return ''.join(ret_string)
 
 
-def generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc,lib_path,prBoundary_layer):
+def generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc,lib_path,prBoundary_layer, native_cell_info=None, placement_axes=None):
     ''' 
     Generate gds output for islands 
     - Place all cells and matrices into islands
@@ -751,7 +775,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
             
             mat_to_cell_padding = int(80.5*dbu)
             prev_row = cell_order[0][1][0]
-            num_matrix_prev = 0
+            num_matrix_prev = 1
             rel_y=0
             for idx in range(len(cell_order)):
                 # implicit assumption that col_widths has outlined every column up to requested value.
@@ -770,14 +794,14 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     #curr_row = curr_row + num_mat_rows -1
                 #rel_y = cell_pitch*(max_row - curr_row)
                 if curr_row != prev_row:
-                    num_mat_rows = cell_order[idx-1][6][0]
+                    num_mat_rows = cell_order[idx-1][6][0] if cell_order[idx-1][3] == 'matrix' else 1
                     rel_y += row_heights[prev_row][0]*num_matrix_prev
                     #rel_y += row_heights[prev_row][0]*(prev_row-curr_row+2)
                     prev_row = curr_row
                     #rel_y += cell_order[idx-1][2][1]
-                    num_matrix_prev = 0
+                    num_matrix_prev = cell_order[idx][6][0] if cell_order[idx][3] == 'matrix' else 1
                 else:
-                    num_mat_rows = cell_order[idx][6][0]
+                    num_mat_rows = cell_order[idx][6][0] if cell_order[idx][3] == 'matrix' else 1
                     if num_mat_rows > num_matrix_prev:
                         num_matrix_prev = num_mat_rows
 
@@ -791,7 +815,7 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                 details = inst.ports
                 cell_width = int(cell_info[str(inst.module_name)]['width'])
                 curr_col = int(details['col'])
-                temp_order = [str(inst.module_name), (None, curr_col), (cell_width, None)]
+                temp_order = [str(inst.module_name), (None, curr_col), (cell_width, cell_info[str(inst.module_name)]['height'])]
                 key_except = ['island_num', 'row', 'col']
                 temp_nets = {}
                 for pin_key, pin_val in details.items():
@@ -832,10 +856,15 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
                     # If the helper cells have previously been parsed without being considered as top cells, 
                     # remove them from cell info and re-parse so their pins are populated. Dont update GDS again.
                     should_update_layout = True
-                    if name in cell_info: 
-                        del cell_info[name]
+                    parse_info = native_cell_info if native_cell_info is not None else cell_info
+                    if name in parse_info:
+                        del parse_info[name]
+                        if native_cell_info is not None:
+                            cell_info.pop(name, None)
                         should_update_layout = False
-                    cell_text = parse_cell_gds(name, False, cell_info, decoder_helper_cell_names, pin_list, layer_map, tech_process,lib_path,prBoundary_layer)
+                    cell_text = parse_cell_gds(name, False, parse_info, decoder_helper_cell_names, pin_list, layer_map, tech_process,lib_path,prBoundary_layer)
+                    if native_cell_info is not None:
+                        cell_info.update(placement_axes.logical_cells(native_cell_info))
                     if should_update_layout: update_output_layout(cell_text, text_layout_path)  
                 total_outputs = 2**bit_width
                 #decoder_cols = int(math.ceil(math.log2(bit_width))+ math.ceil(math.log2(bit_width))-1)
@@ -1323,8 +1352,9 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
     return ''.join(ret_string), island_dims
 
 
-def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc, pd_tool):
+def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc, pd_tool, process_coordinates="xy"):
     external_pd = is_external_pd_tool(pd_tool)
+    placement_axes = PlacementAxes(process_coordinates)
     module_inst = generate_cells_list[0]
     ret_string = []
     frame_module = None
@@ -1368,14 +1398,15 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
             pattern = re.compile(r'^[NSEW]_(?:metal\d+_)?(.+)$')
             match = pattern.search(pin_key)
             if match: pin_name = match.group(1)
-            # sort into buckets
-            if pin_key[0] == 'N':
+            # Keep the logical port identifier, but place it on its native edge.
+            native_side = placement_axes.native_side(pin_key[0])
+            if native_side == 'N':
                 north_pins.append({'name': pin_name, 'layer': new_pin_layer, 'net': pin_val})
-            elif pin_key[0] == 'E':
+            elif native_side == 'E':
                 east_pins.append({'name': pin_name, 'layer': new_pin_layer, 'net': pin_val})
-            elif pin_key[0] == 'W':
+            elif native_side == 'W':
                 west_pins.append({'name': pin_name, 'layer': new_pin_layer, 'net': pin_val})
-            elif pin_key[0] == 'S':
+            elif native_side == 'S':
                 south_pins.append({'name': pin_name, 'layer': new_pin_layer, 'net': pin_val})
             else:
                 raise ParsingError(f'Pin must have cardinal direction when generating a cab frame {pin_key}')
@@ -1798,8 +1829,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                     mat_cell_id = f'I_{val}_{idx}_{mat_loc[0]}_{mat_loc[1]}'
                     mat_cell_height = cell_info[c_name]['height']
                     mat_cell_width = cell_info[c_name]['width']
-                    y_loc = (mat_row - 1 - mat_loc[0])*mat_cell_height + mat_y_loc 
-                    x_loc = mat_loc[1]*mat_cell_width + mat_x_loc
+                    x_loc, y_loc = matrix_position(item, mat_loc[0], mat_loc[1], array[idx], cell_info[c_name])
                     comp_string.append(f'- {mat_cell_id} {c_name} + PLACED ( {x_loc} {y_loc} ) N ;\n')
                     comp_cnt += 1
 
@@ -1884,8 +1914,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                 for inst_idx in insts_list:
                     # For matrices, update the location for the cell being worked on
                     if item['type'] == 'matrix':
-                        y_loc = (mat_row - 1 - inst_idx[0])*mat_cell_height + mat_y_loc 
-                        x_loc = inst_idx[1]*mat_cell_width + mat_x_loc
+                        x_loc, y_loc = matrix_position(item, inst_idx[0], inst_idx[1], array[idx], cell_info[c_name])
                         loc = [x_loc, y_loc, x_loc + mat_cell_width, y_loc + mat_cell_height]
                         block_x1 = loc[0] + pin_const*dbu
                         block_y1 = loc[1] + pin_const*dbu
@@ -2172,8 +2201,7 @@ def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal
                         
                             # --- Handle matrix instance location ---
                             if item['type'] == 'matrix':
-                                y_loc = (mat_row - 1 - inst_idx[0]) * mat_cell_height + mat_y_loc
-                                x_loc = inst_idx[1] * mat_cell_width + mat_x_loc
+                                x_loc, y_loc = matrix_position(item, inst_idx[0], inst_idx[1], array[idx], cell_info[c_name])
                                 loc = [x_loc, y_loc, x_loc + mat_cell_width, y_loc + mat_cell_height]
                                 block_x1 = loc[0] + pin_const * dbu
                                 block_y1 = loc[1] + pin_const * dbu
@@ -2549,8 +2577,7 @@ def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_pa
                             # Coordinate math for sub-cells
                             cell_w = cell_info[c_name]['width']
                             cell_h = cell_info[c_name]['height']
-                            sub_x_raw = (c * cell_w + x_loc_raw)
-                            sub_y_raw = ((mat_row_total - 1 - r) * cell_h + y_loc_raw)
+                            sub_x_raw, sub_y_raw = matrix_position(item, r, c, array[idx], cell_info[c_name])
 
                             x_def = int(sub_x_raw * dbu / 1000)
                             y_def = int(sub_y_raw * dbu / 1000)
@@ -2558,6 +2585,25 @@ def generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_pa
                             comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_def} {y_def} ) N ;\n')
                             comp_cnt += 1
                             generate_cell_blockage(inst_name, c_name, sub_x_raw, sub_y_raw)
+
+            elif item['type'] == 'cell':
+                # Single cells and peripheral cells also need native placements.
+                c_name = item['name']
+                if 'logical_row' in item:
+                    inst_name = f"I_{val}_{item['logical_row']}_{item['logical_col']}"
+                else:
+                    if c_name != last_c_name:
+                        mux_idx += 1
+                        inst_idx = 0
+                    else:
+                        inst_idx += 1
+                    last_c_name = c_name
+                    inst_name = f"MUX_switch_isle{val}_idx{mux_idx}_inst{inst_idx}"
+                x_def = int(x_loc_raw * dbu / 1000)
+                y_def = int(y_loc_raw * dbu / 1000)
+                comp_string.append(f'- {inst_name} {c_name} + SOURCE DIST + PLACED ( {x_def} {y_def} ) N ;\n')
+                comp_cnt += 1
+                generate_cell_blockage(inst_name, c_name, x_loc_raw, y_loc_raw)
 
 
             # if item['type'] == 'matrix':

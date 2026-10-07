@@ -10,7 +10,7 @@ import time
 import json
 from pathlib import Path
 
-def compile(circuit,process="Process",project_path = ".",project_name = "project",lib_path = None, place=True, route=True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,qparams=None,pd_args=None,prBoundary_layer = None,pd_tool=None):
+def compile(circuit,process="Process",project_path = ".",project_name = "project",lib_path = None, place=True, route=True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,qparams=None,pd_args=None,prBoundary_layer = None,pd_tool=None,process_coordinates="xy"):
 
         """
         Main ASIC compilation function
@@ -23,6 +23,10 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
         """
 
         external_pd = is_external_pd_tool(pd_tool)
+
+        # Validate the placement convention before creating outputs.
+        from ashes_fg.asic.placement_axes import PlacementAxes
+        placement_axes = PlacementAxes(process_coordinates)
 
         # 1. Path Definitions
         syn_path = os.path.join(project_path, 'syn')
@@ -98,7 +102,10 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                         #x_IO, y_IO = 0,0
 
                 ## Account for IO area so, location islands in python code can start from 0,0
-                location_islands = tuple((x + x_IO, y + y_IO) for x, y in location_islands)
+                if location_islands is not None:
+                        location_islands = tuple((x + (y_IO if placement_axes.swapped else x_IO),
+                                                 y + (x_IO if placement_axes.swapped else y_IO))
+                                                for x, y in location_islands)
 
         elif (process.split('_')[0].lower() == "gf" and process.split('_')[1].lower() == "180nm"):
                 # All units in nanometers
@@ -123,7 +130,10 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                         x_IO, y_IO = 3960, 3960
 
                 ## Account for IO area so, location islands in python code can start from 0,0
-                location_islands = tuple((x + x_IO, y + y_IO) for x, y in location_islands)
+                if location_islands is not None:
+                        location_islands = tuple((x + (y_IO if placement_axes.swapped else x_IO),
+                                                 y + (x_IO if placement_axes.swapped else y_IO))
+                                                for x, y in location_islands)
 
 
         design_area = (x_IO, y_IO, design_limits[0], design_limits[1], x_offset, y_offset)
@@ -135,7 +145,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                         raise ValueError(f"pd_args (JSON settings) must be provided for {pd_tool} flow.")
 
                 pd_tcl_gen.generate_init_tcl(pd_args, os.path.join(pd_tcl, "init.tcl"), top_level=project_name, pd_tool=pd_tool)
-                pd_tcl_gen.generate_pins_tcl(pd_args, design_area, pin_info, os.path.join(pd_tcl, "pins.tcl"), pd_tool=pd_tool)
+                pd_tcl_gen.generate_pins_tcl(pd_args, design_area, pin_info, os.path.join(pd_tcl, "pins.tcl"), pd_tool=pd_tool, process_coordinates=process_coordinates)
                 pd_tcl_gen.generate_power_tcl(pd_args, os.path.join(pd_tcl, "power.tcl"), pd_tool=pd_tool)
                 pd_tcl_gen.generate_route_tcl(pd_args, ndr_info, os.path.join(pd_tcl, "route.tcl"), pd_tool=pd_tool)
                 pd_tcl_gen.generate_signoff_tcl(pd_args, os.path.join(pd_tcl, "signoff.tcl"), top_level=project_name, pd_tool=pd_tool)
@@ -149,7 +159,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 #drainmux_space_isle_idx = 0
                 process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer,pd_tool)
                 pl_start = time.time()
-                gds_synthesis(process_params, design_area, project_name,project_path,isle_loc=location_islands)
+                gds_synthesis(process_params, design_area, project_name,project_path,isle_loc=location_islands, process_coordinates=process_coordinates)
                 pl_end = time.time()
 
                 if route == True and not external_pd:
@@ -202,7 +212,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                                                 print(output.strip())
                                 rt_end = time.time()
 
-                                gds_synthesis(process_params, design_area, project_name,project_path,routed_def=True, router_tool='qrouter')
+                                gds_synthesis(process_params, design_area, project_name,project_path,routed_def=True, router_tool='qrouter', process_coordinates=process_coordinates)
                                 fin_end = time.time()
                                 pl_time = round(pl_end - pl_start, 3)
                                 rt_time = round(rt_end - pl_end, 3)
@@ -230,4 +240,4 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                                                 break
                                         if output:
                                                 print(output.strip())
-                                gds_synthesis(process_params, design_area, project_name, routed_def=True, router_tool='triton')
+                                gds_synthesis(process_params, design_area, project_name, project_path, routed_def=True, router_tool='triton', process_coordinates=process_coordinates)
