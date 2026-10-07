@@ -71,8 +71,8 @@ def main():
         qparams = None
 
 
-    # ---- load synthesis settings ----
-    config_path = project_dir / "pd_cadence_settings.json"
+    # ---- load physical design settings ----
+    config_path = project_dir / "pd_settings.json"
     pd_args = {}
     if config_path.exists():
         with open(config_path) as f:

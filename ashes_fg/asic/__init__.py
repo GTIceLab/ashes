@@ -93,8 +93,8 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 x_offset, y_offset = 400*track_spacing, 2000*track_spacing
 
                 if external_pd:
-                        x_IO, y_IO = 9990, 9984
-                        #x_IO, y_IO = 1980, 1728
+                        #x_IO, y_IO = 9990, 9984
+                        x_IO, y_IO = 1980, 1728
                         #x_IO, y_IO = 0,0
 
                 ## Account for IO area so, location islands in python code can start from 0,0
