@@ -917,13 +917,15 @@ class Port:
     - Pins (list)
     - Cell (single)
     """
-    def __init__(self,circuit,cell,name,location,pinNumber,static = False,native_name=None):
+    def __init__(self,circuit,cell,name,location,pinNumber,static = False,native_name=None,native_location=None):
         self.circuit = circuit
         self.name = name
         # Logical name/side govern the designer API and matrix indexing.
         # Netlists reference the physical pin identifier supplied by the library.
         self.native_name = native_name if native_name is not None else name
         self.location = location
+        if native_location is not None:
+            self.native_location = native_location
         self.cell = cell
         self.isStatic = static
 
@@ -1150,6 +1152,8 @@ class Port:
         Returns Verilog port mapping, handling slicing for vectorized 
         MUX/Decoder cells and edge-connectivity for Matrix cells.
         """
+        if getattr(self, 'routing_hidden', False):
+            return ''
         # 1. Determine grid dimensions
         dim_r = self.cell.dim[0] if self.cell.dim[0] > 0 else 1
         dim_c = self.cell.dim[1] if self.cell.dim[1] > 0 else 1
@@ -1251,6 +1255,8 @@ class StandardCell:
             return False
         
     def isMatrix(self):
+        if getattr(self, 'physical_companion', False):
+            return True
         if self.dim[0] > 1:
             return True
         elif self.dim[1] > 1:
@@ -1334,7 +1340,7 @@ class StandardCell:
         text += ".col(" + str(col) + ")"
 
         # Matrix definition
-        if self.dim[0] > 1 or self.dim[1] > 1:
+        if self.isMatrix():
             text += ", .matrix_row(" + str(self.dim[0]) + "), "
             text += ".matrix_col(" + str(self.dim[1]) + ")"
 
@@ -1345,7 +1351,7 @@ class StandardCell:
         # Pins
         i = 0
         for port in self.ports:
-            if port.isEmpty() == False:
+            if port.isEmpty() == False and not getattr(port, 'routing_hidden', False):
                 text += port.print()
                 i+=1
         text += ");"
@@ -1358,7 +1364,9 @@ class StandardCell:
 
         for r in range(rows):
             for c in range(cols):
-                if self.dim[0] > 1 or self.dim[1] > 1:
+                # DEF uses the ordinary grid name for a 1x1 item, even when
+                # matrix placement metadata suppresses companion padding.
+                if rows > 1 or cols > 1:
                     inst_name = f"{instancePrefix}_{islandNum}_{row+r}_{col+c}_{r}_{c}"
                 else:
                     inst_name = f"{instancePrefix}_{islandNum}_{row}_{col}"

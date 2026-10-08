@@ -10,7 +10,7 @@ import time
 import json
 from pathlib import Path
 
-def compile(circuit,process="Process",project_path = ".",project_name = "project",lib_path = None, place=True, route=True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,qparams=None,pd_args=None,prBoundary_layer = None,pd_tool=None,process_coordinates="xy"):
+def compile(circuit,process="Process",project_path = ".",project_name = "project",lib_path = None, place=True, route=True, location_islands=None, design_limits = [1e6, 6.1e5],drainSpaceIdx=None,drainSpace=10,gateSpaceIdx=None,gateSpace=10,qparams=None,pd_args=None,prBoundary_layer = None,pd_tool=None,process_coordinates="xy",physical_cells=None):
 
         """
         Main ASIC compilation function
@@ -27,6 +27,10 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
         # Validate the placement convention before creating outputs.
         from ashes_fg.asic.placement_axes import PlacementAxes
         placement_axes = PlacementAxes(process_coordinates)
+        from ashes_fg.asic.physical_cell_placement import prepare_physical_cells
+        circuit, physical_cells_plan = prepare_physical_cells(
+                circuit, physical_cells, process_coordinates,
+                log_path=os.path.join(project_path, 'syn', 'physical_cells.log') if physical_cells else None)
 
         # 1. Path Definitions
         syn_path = os.path.join(project_path, 'syn')
@@ -159,7 +163,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 #drainmux_space_isle_idx = 0
                 process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer,pd_tool)
                 pl_start = time.time()
-                gds_synthesis(process_params, design_area, project_name,project_path,isle_loc=location_islands, process_coordinates=process_coordinates)
+                gds_synthesis(process_params, design_area, project_name,project_path,isle_loc=location_islands, process_coordinates=process_coordinates, physical_cells_plan=physical_cells_plan)
                 pl_end = time.time()
 
                 if route == True and not external_pd:
@@ -212,7 +216,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                                                 print(output.strip())
                                 rt_end = time.time()
 
-                                gds_synthesis(process_params, design_area, project_name,project_path,routed_def=True, router_tool='qrouter', process_coordinates=process_coordinates)
+                                gds_synthesis(process_params, design_area, project_name,project_path,routed_def=True, router_tool='qrouter', process_coordinates=process_coordinates, physical_cells_plan=physical_cells_plan)
                                 fin_end = time.time()
                                 pl_time = round(pl_end - pl_start, 3)
                                 rt_time = round(rt_end - pl_end, 3)
@@ -240,4 +244,4 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                                                 break
                                         if output:
                                                 print(output.strip())
-                                gds_synthesis(process_params, design_area, project_name, project_path, routed_def=True, router_tool='triton', process_coordinates=process_coordinates)
+                                gds_synthesis(process_params, design_area, project_name, project_path, routed_def=True, router_tool='triton', process_coordinates=process_coordinates, physical_cells_plan=physical_cells_plan)

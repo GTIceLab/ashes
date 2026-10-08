@@ -41,7 +41,7 @@ verbose = False
 pypath = sys.executable
 
 
-def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None, routed_def=False, router_tool='qrouter', process_coordinates="xy"):
+def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None, routed_def=False, router_tool='qrouter', process_coordinates="xy", physical_cells_plan=None):
     placement_axes = PlacementAxes(process_coordinates)
     tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer,pd_tool = process_params
     external_pd = is_external_pd_tool(pd_tool)
@@ -210,7 +210,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
         placement_axes.logical_area(design_area), frame_module, island_params,
         parse_cell_params, isle_loc, lib_path, prBoundary_layer,
         native_cell_info=cell_info if placement_axes.swapped else None,
-        placement_axes=placement_axes)
+        placement_axes=placement_axes, physical_cells_plan=physical_cells_plan)
 
     if placement_axes.swapped:
         placement_axes.map_islands(cell_order_in_island, cell_info, design_area)
@@ -576,7 +576,7 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
     return ''.join(ret_string)
 
 
-def generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc,lib_path,prBoundary_layer, native_cell_info=None, placement_axes=None):
+def generate_islands(island_info, cell_info, island_place, cell_order_in_island, design_area, frame_module, island_params, parse_cell_params, isle_loc,lib_path,prBoundary_layer, native_cell_info=None, placement_axes=None, physical_cells_plan=None):
     ''' 
     Generate gds output for islands 
     - Place all cells and matrices into islands
@@ -1267,6 +1267,10 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
     if verbose: 
         print('Relative ordering within islands')
         pprint.pprint(cell_order_in_island) 
+    if physical_cells_plan:
+        from ashes_fg.asic.physical_cell_placement import resolve_abutments
+        resolve_abutments(cell_order_in_island, cell_info, physical_cells_plan,
+                          swapped=bool(placement_axes and placement_axes.swapped))
     # Fit islands into design area
     island_dims = []
     for val, island in cell_order_in_island.items():
