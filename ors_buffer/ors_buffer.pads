@@ -1,0 +1,2 @@
+net_inpad_5 8 5 5 #tgate[1]
+out:net_ota_buf_140036368156720_out 8 6 5 #tgate[1]

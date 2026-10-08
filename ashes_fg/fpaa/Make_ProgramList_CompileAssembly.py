@@ -74,8 +74,8 @@ def compile(project_name, board_type, chip_num):
 		os.mkdir(hid_dir)
 	
 	# remove old files
-	os.system(f"rm {path}/{hid_dir}/switch_list_ble") 
-	os.system(f"rm {path}/{hid_dir}/switch_info_ble")
+	os.system(f"rm {hid_dir}/switch_list_ble")
+	os.system(f"rm {hid_dir}/switch_info_ble")
 
 	# Make switch list (dec) for ble switches.
 	n = len(switch_list_temp)
@@ -481,7 +481,7 @@ def mismatch_map_compensation(target_list, chip_num, brdtype, path, switch_list_
 	b1 = os.system(f"ls {RASPPATH}/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}")
 
 	if b1 == 0: # 0 if no error occurred, 1 if error.
-		mismatch_map = np.loadtxt(fname = f"{RASPPATH}/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}", delimiter = ',', ndmin = 2)
+		mismatch_map = np.loadtxt(fname = f"{RASPPATH}/prog_assembly/libs/chip_parameters/mismatch_map/mismatch_map_chip{chip_num}{brdtype}", delimiter = ',', ndmin = 2)
 		r_size_mmap = len(mismatch_map)
 		n = len(target_list)
 

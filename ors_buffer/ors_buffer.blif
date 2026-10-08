@@ -1,0 +1,10 @@
+.model ors_buffer
+.inputs net_inpad_5
+.outputs net_ota_buf_140036368156720_out
+# 5 pad_in
+# 6 pad_out
+
+#ota_buf
+.subckt ota_buf in[0]=net_inpad_5 out[0]=net_ota_buf_140036368156720_out #ota_buf_bias =1e-05&ota_buf_ls =0
+
+.end

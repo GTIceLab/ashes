@@ -1,0 +1,8 @@
+Netlist file: /home/pin/Research/ashes/ors_buffer/ors_buffer.net   Architecture file: /home/pin/Research/ashes/ashes_fg/fpaa/arch/rasp3a_arch.xml
+Array size: 7 x 14 logic blocks
+
+#block name	x	y	subblk	block number
+#----------	--	--	------	------------
+net_ota_buf_140036368156720_out 5 5 0 #0
+out:net_ota_buf_140036368156720_out	8	6	5	#1
+net_inpad_5	8	5	5	#2
