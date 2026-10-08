@@ -50,7 +50,7 @@ def prepare_physical_cells(circuit, settings=None, process_coordinates='xy', log
 
 
 def _prepare_physical_cells(circuit, settings=None, process_coordinates='xy', report=print):
-    """Return an isolated augmented circuit and exact abutment relationships.
+    """Return an isolated augmented circuit and companion validation relationships.
 
     Library classes must support (circuit, island=None, dim=(rows, cols)).
     Same-name native E/W ports are assumed electrically continuous.
@@ -85,7 +85,7 @@ def _prepare_physical_cells(circuit, settings=None, process_coordinates='xy', re
     relationships = []
     swapped = process_coordinates != 'xy'
     native_sides = {'N': 'W', 'E': 'N', 'S': 'E', 'W': 'S'} if swapped else {}
-    # Reserve distinct grid bands; exact geometry is resolved before island fitting.
+    # Reserve pure grid bands; validate their natural contact before island fitting.
     for island_number, island in enumerate(work.Islands):
         for parent in list(island.instances):
             if parent.isDecoder() or parent.name.endswith(('_EdgeL', '_EdgeR', '_TAP')):
@@ -250,36 +250,47 @@ def _prepare_physical_cells(circuit, settings=None, process_coordinates='xy', re
     return work, plan
 
 
-def resolve_abutments(islands, cells, plan, swapped=False):
-    """Resolve logical boxes using physical dimensions before native conversion."""
+def validate_abutments(islands, plan, swapped=False):
+    """Validate pure companion bands and grid-generated contact without moving cells."""
     for relation in plan:
         island = islands[relation['island']]
         def find(location):
             matches = [idx for idx, item in island['items'].items()
                        if (item.get('logical_row'), item.get('logical_col')) == tuple(location)]
             if len(matches) != 1:
-                raise ValueError(f'Cannot resolve physical companion at {location}')
+                raise ValueError(f'Cannot locate physical companion at {location}')
             return matches[0]
         idx, parent_idx = find(relation['cell']), find(relation['parent'])
         parent = island['coords'][parent_idx]
         box = island['coords'][idx]
         width, height = box[2] - box[0], box[3] - box[1]
+        band_axis = 'logical_row' if swapped else 'logical_col'
+        dimension = 'mat_row' if swapped else 'mat_col'
+        thickness = height if swapped else width
+        band = island['items'][idx][band_axis]
+        for other_idx, other in island['items'].items():
+            if other['type'] not in ('cell', 'matrix') or band_axis not in other:
+                continue
+            count = other.get('mat_info', {}).get(dimension, 1)
+            if other[band_axis] <= band < other[band_axis] + count:
+                other_box = island['coords'][other_idx]
+                other_thickness = ((other_box[3] - other_box[1]) if swapped
+                                   else (other_box[2] - other_box[0])) / count
+                if other_thickness != thickness:
+                    raise ValueError(f'Companion band {band} in island {relation["island"]} is not pure: '
+                                     f'{island["items"][idx]["name"]} and {other["name"]} have different widths')
         if swapped:
-            if width != parent[2] - parent[0]:
-                raise ValueError('Companion native height does not match parent boundary')
-            bottom = parent[3] if relation['side'] == 'W' else parent[1] - height
-            island['coords'][idx] = [parent[0], bottom, parent[0] + width, bottom + height]
+            aligned = box[0] == parent[0] and box[2] == parent[2]
+            touching = (box[1] == parent[3] if relation['side'] == 'W' else box[3] == parent[1])
         else:
-            if height != parent[3] - parent[1]:
-                raise ValueError('Companion native height does not match parent boundary')
-            left = parent[0] - width if relation['side'] == 'W' else parent[2]
-            island['coords'][idx] = [left, parent[1], left + width, parent[1] + height]
+            aligned = box[1] == parent[1] and box[3] == parent[3]
+            touching = (box[2] == parent[0] if relation['side'] == 'W' else box[0] == parent[2])
+        if not aligned or not touching:
+            raise ValueError(f'Grid placement does not abut {island["items"][idx]["name"]} to '
+                             f'{island["items"][parent_idx]["name"]} on native {relation["side"]}; '
+                             'check companion widths, boundary heights, and grid alignment')
     for number in {r['island'] for r in plan}:
         island = islands[number]
-        boxes = island['coords']
-        # Grid bands reserve space, but a left/bottom boundary may need an offset.
-        dx, dy = max(0, -min(b[0] for b in boxes)), max(0, -min(b[1] for b in boxes))
-        island['coords'] = [[b[0]+dx, b[1]+dy, b[2]+dx, b[3]+dy] for b in boxes]
         physical_boxes = [island['coords'][idx] for idx, item in island['items'].items()
                           if item['type'] in ('cell', 'matrix')]
         for i, a in enumerate(physical_boxes):

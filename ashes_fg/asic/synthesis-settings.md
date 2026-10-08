@@ -79,9 +79,12 @@ cells. A matrix gets companion strips along its outer native boundaries;
 members inside the matrix do not get additional companions. Native left/right
 always mean West/East, including `columns_y_rows_minus_x` processes.
 Companions must have the same native member height as their parent; incompatible
-boundary dimensions stop placement. Grid bands reserve space and shift existing
-instances. Exact abutment uses parsed library dimensions before fitting islands
-and generating GDS/DEF. A grid insertion that would split another matrix is
+boundary dimensions stop placement. Pure grid bands reserve space and shift
+existing instances, sharing bands for aligned arrays where slots are free.
+The normal grid placer generates all coordinates. Before fitting islands,
+`validate_abutments` checks uniform native widths within companion bands,
+boundary alignment, contact, and overlaps without changing any coordinates.
+A grid insertion that would split another matrix is
 rejected; align those matrix boundaries or put the groups in separate islands.
 Final overlaps are also rejected rather than silently creating invalid geometry.
 
@@ -112,7 +115,7 @@ a fallback; custom logical-side overrides should explicitly set
 
 The pass works on a circuit copy, so repeated compiles do not accumulate cells
 or alter the designer's connections. The implementation is in
-`physical_cell_placement.py`; its geometry resolver is shared by the downstream
+`physical_cell_placement.py`; its placement validation is shared by the downstream
 physical outputs. Run `check_physical_cells.py` in a Python environment with
 NumPy for the focused regression checks.
 

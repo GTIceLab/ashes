@@ -1268,8 +1268,8 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
         print('Relative ordering within islands')
         pprint.pprint(cell_order_in_island) 
     if physical_cells_plan:
-        from ashes_fg.asic.physical_cell_placement import resolve_abutments
-        resolve_abutments(cell_order_in_island, cell_info, physical_cells_plan,
+        from ashes_fg.asic.physical_cell_placement import validate_abutments
+        validate_abutments(cell_order_in_island, physical_cells_plan,
                           swapped=bool(placement_axes and placement_axes.swapped))
     # Fit islands into design area
     island_dims = []
