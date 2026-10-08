@@ -26,5 +26,6 @@ routing_two.txt
 *Zone.Identifier
 *:Zone.Identifier
 
-# Ignore files added by vscode
+# Ignore files added by IDEs
 .vscode
+.idea
