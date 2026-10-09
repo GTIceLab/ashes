@@ -24,4 +24,4 @@ def cs_amp(name):
 if __name__ == "__main__":
     top = cs_amp("cs_amp")
 
-    fpaa.compile(top, "cs_amp", 16)
+    fpaa.compile(top, "cs_amp", 15)

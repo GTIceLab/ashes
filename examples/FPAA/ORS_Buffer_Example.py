@@ -1,5 +1,5 @@
 import ashes_fg.fpaa as fpaa
-import ashes_fg.class_lib as lib
+import ashes_fg.test_class_lib as lib
 from ashes_fg.fpaa import Module, emit_py_to_blif, save_blif
 
 def ors_buffer(name="ors_buffer"):
