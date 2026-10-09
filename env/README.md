@@ -21,8 +21,8 @@ By default, Linux assigns USB serial devices dynamically (e.g., `/dev/ttyUSB0`, 
 Before running the installation script, ensure the `udev` rules file contains the correct Vendor and Product IDs for your specific FPAA board:
 1. Plug in the FPAA board.
 2. Run `lsusb` in your terminal.
-3. Locate the board (often labeled FTDI or Cypress) and note the ID (e.g., `ID 0403:6001`). 
-4. Open `setup/99-rasp30.rules` and verify the `idVendor` (e.g., `0403`) and `idProduct` (e.g., `6001`) match your device.
+3. Locate the board (often labeled FTDI or Cypress) and note the ID (e.g., `ID 0403:6010`). 
+4. Open `setup/99-rasp30.rules` and verify the `idVendor` (e.g., `0403`) and `idProduct` (e.g., `6010`) match your device.
 
 #### Installation
 Run the provided bash script to copy the rules to your system directory and reload the device manager.
