@@ -4,6 +4,9 @@
 # This file is licensed under GNU Lesser General Public License version 3 or later.
 """Converter from format produced by gds2txt back to GDSII."""
 from __future__ import print_function
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from gdsii import tags, types
 from gdsii.record import Record
 import sys

@@ -1,12 +1,12 @@
 import numpy as np
 import ashes_fg as af
 
-import ashes_fg.asic.asic_compile as ac
+import ashes_fg.asic.model.asic_compile as ac
 
 import ashes_fg.class_lib_new as lib_new
 import ashes_fg.class_lib_mux as lib_mux
 import ashes_fg.class_lib_cab as lib_cab
-import ashes_fg.asic.asic_systems as algs
+import ashes_fg.asic.model.asic_systems as algs
 import MeadSOS as ms
 
 def LPF_MeadSOS(Top,numStages=1,Vin=None):

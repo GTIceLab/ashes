@@ -2,7 +2,7 @@ import numpy as np
 import re
 import math
 from collections import OrderedDict as OD
-from ashes_fg.asic.exceptions import *
+from ashes_fg.asic.common.exceptions import *
 
 track_idx_margin = 2 # number of tracks to skip from edges of design
 verbose = False

@@ -1,4 +1,4 @@
-from ashes_fg.asic.asic_compile import *
+from ashes_fg.asic.model.asic_compile import *
 
 class AveragerDAC(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),AVDD_N=None,AVDD_S=None,VINJ_N=None,VINJ_S=None,GND_N=None,GND_S=None,VTUN=None,DrainB=None,DrainEnable=None,GateEnable=None,GateB=None,Prog=None,Run=None,Code=None,DEBUG=None,Vout=None,Drainline_Prog=None,Drainline_Run=None,VGRUN=None,VGPROG=None):

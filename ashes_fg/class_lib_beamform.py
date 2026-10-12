@@ -1,4 +1,4 @@
-from ashes_fg.asic.asic_compile import *
+from ashes_fg.asic.model.asic_compile import *
 
 class DelayLinesAlgFlip(StandardCell):
 	def __init__(self,circuit,island=None,dim=(1,1),n_OUTS=None,w_Input=None,w_Drainline_Prog=None,w_Drainline_Run=None,w_DrainB=None,w_DrainEnable_Del=None,n_Prog=None,n_Run=None,n_VGPROG=None,n_GateB=None,n_GateEnable_Del=None,n_VTUN=None,n_AVDD=None,n_vinj=None,n_gnd=None,e_Din=None,e_Out=None,e_CLK=None,e_RSTBar=None,e_WTA_Vg=None,e_WTA_Prog=None):

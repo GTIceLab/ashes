@@ -1,4 +1,4 @@
-from ashes_fg.asic.asic_compile import *
+from ashes_fg.asic.model.asic_compile import *
 
 
 class TSMC350nm_volatile_swcs(StandardCell):

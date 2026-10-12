@@ -69,6 +69,37 @@ class Circuit:
         self.Islands = []
         self.DefaultIsle = Island(self)
 
+    def __deepcopy__(self, memo):
+        """Clone the circuit graph without recursively walking long shared nets.
+
+        Preallocate cells, ports, pins, nets, and islands before copying their
+        state. Dense decoder helpers otherwise exceed Python's recursion limit
+        while traversing the same bit net from cell to cell.
+        """
+        from copy import deepcopy
+        objects = [self, self.frame, self.DefaultIsle, *self.Islands,
+                   *self.Instances, *self.Nets]
+        for cell in [self.frame, *self.Instances]:
+            if cell is not None:
+                objects.extend(cell.ports)
+                objects.extend(cell.pins)
+        for net in self.Nets:
+            for pin in net.pins:
+                objects.extend((pin, pin.port, pin.cell))
+        unique, seen = [], set()
+        for obj in objects:
+            if obj is None or id(obj) in seen:
+                continue
+            seen.add(id(obj))
+            unique.append(obj)
+            if id(obj) not in memo:
+                memo[id(obj)] = type(obj).__new__(type(obj))
+        for obj in unique:
+            clone = memo[id(obj)]
+            clone.__dict__.update(deepcopy(obj.__dict__, memo))
+        return memo[id(self)]
+
+
     def createIsland(self,instances):
         newIsland = Island(self,instances=instances)
 
@@ -432,6 +463,21 @@ class Island:
 
         if instances != None:
             self.addInstances(instances)
+
+    def add_fg_peripherals(self, **options):
+        """Attach a Python FG plan with optional cell/decoder overrides."""
+        from ashes_fg.asic.peripherals.fg_peripherals import prepare
+        return prepare(self, **options)
+
+    def share_fg_bits(self, other, role='both'):
+        """Share address inputs while preserving separate island enables."""
+        from ashes_fg.asic.peripherals.fg_peripherals import share_bits
+        return share_bits(self, other, role)
+
+    def generate_fg_peripherals(self, **options):
+        """Build regular VMM switches, shifters, Python decoders, and placement."""
+        from ashes_fg.asic.peripherals.fg_generation import generate
+        return generate(self, **options)
 
     def addInstances(self,instances):
         if isinstance(instances,list) == False:

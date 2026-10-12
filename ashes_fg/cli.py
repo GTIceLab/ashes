@@ -35,7 +35,7 @@ def main():
     sys.path.insert(0, str(project_dir))
 
    # ---- load design ----
-    globals_dict = {}
+    globals_dict = {"__file__": str(design_path)}
     with open(design_path) as f:
         #exec(f.read(), globals_dict)
         code = compile(f.read(), design_path, "exec")

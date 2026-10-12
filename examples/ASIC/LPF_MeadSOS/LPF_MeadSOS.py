@@ -1,6 +1,6 @@
 import ashes_fg as af
 
-import ashes_fg.asic.asic_compile as ac
+import ashes_fg.asic.model.asic_compile as ac
 
 import LPF as lpf
 

@@ -88,7 +88,8 @@ def _prepare_physical_cells(circuit, settings=None, process_coordinates='xy', re
     # Reserve pure grid bands; validate their natural contact before island fitting.
     for island_number, island in enumerate(work.Islands):
         for parent in list(island.instances):
-            if parent.isDecoder() or parent.name.endswith(('_EdgeL', '_EdgeR', '_TAP')):
+            if (parent.isDecoder() or getattr(parent, 'fg_peripheral', False)
+                    or parent.name.endswith(('_EdgeL', '_EdgeR', '_TAP'))):
                 continue
             if scope == 'matrix' and not parent.isMatrix():
                 continue

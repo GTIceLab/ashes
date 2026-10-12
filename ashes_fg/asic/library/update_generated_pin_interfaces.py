@@ -1,7 +1,7 @@
 """Update generated classes from their saved native Port declarations."""
 import ast
 from pathlib import Path
-from json2python import logical_pin_interface, render_class
+from ashes_fg.asic.library.json2python import logical_pin_interface, render_class
 
 root = Path('/home/praveen/Projects/NNopt_FPAA_16nm/5_Tools/lib')
 paths = [root / 'stdcell_defs/cells.py', root / 'algorithms/cells.py']

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import os
-from ashes_fg.asic.asic_compile import Port
-from ashes_fg.asic.asic_compile import Pin
-import ashes_fg.asic.asic_compile as ac
+from ashes_fg.asic.model.asic_compile import Port
+from ashes_fg.asic.model.asic_compile import Pin
+import ashes_fg.asic.model.asic_compile as ac
 import json
 
 class DynamicPort(Port):

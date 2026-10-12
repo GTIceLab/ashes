@@ -1,4 +1,4 @@
-from ashes_fg.asic.asic_compile import *
+from ashes_fg.asic.model.asic_compile import *
 
 class std_cell(StandardCell):
 	def __init__(self, input, num_instances, cell_type):

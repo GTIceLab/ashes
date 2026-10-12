@@ -1,4 +1,4 @@
-from ashes_fg.asic.asic_compile import *
+from ashes_fg.asic.model.asic_compile import *
 
 
 class STD_GorS_IndirectSwitches(MUX):

@@ -1,4 +1,4 @@
-from ashes_fg.asic.asic_compile import *
+from ashes_fg.asic.model.asic_compile import *
 
 class TunnelingChargePump(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),VDD_w=None,CLK_IN_w=None,GND_w=None,Vout_e=None,Vin_w=None):

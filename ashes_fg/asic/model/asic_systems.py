@@ -1,6 +1,6 @@
 import ashes_fg.class_lib_ext as fg
 
-from ashes_fg.asic.asic_compile import *
+from ashes_fg.asic.model.asic_compile import *
 from ashes_fg.class_lib_new import *
 from ashes_fg.class_lib_mux import *
 from ashes_fg.class_lib_cab import *

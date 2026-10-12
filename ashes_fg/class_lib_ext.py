@@ -1,5 +1,5 @@
 from ashes_fg.class_lib import *
-from ashes_fg.asic.exceptions import *
+from ashes_fg.asic.common.exceptions import *
 import sys
 
 class tsmc65_stdcell_nfetGroup(tsmc65_stdcell_nfetGroup):

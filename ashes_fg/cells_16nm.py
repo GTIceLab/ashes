@@ -1,4 +1,4 @@
-from ashes_fg.asic.asic_compile import *
+from ashes_fg.asic.model.asic_compile import *
 
 class IndirectVMM_4x2(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),Vsel_w=None,Vs_w=None,Vg_w=None,VTUN_w=None,GND_w=None,Vd_R_n=None,Vd_P_n=None):

@@ -30,11 +30,11 @@ for cab in cab_list:
     
 f = open('Fabric.py','w')
 f.write("import ashes_fg as af\n")
-f.write("from ashes_fg.asic.asic_compile import *\n")
+f.write("from ashes_fg.asic.model.asic_compile import *\n")
 f.write("from ashes_fg.class_lib_new import *\n")
 f.write("from ashes_fg.class_lib_mux import *\n")
 f.write("from ashes_fg.class_lib_cab import *\n")
-f.write("from ashes_fg.asic.asic_systems import *\n")
+f.write("from ashes_fg.asic.model.asic_systems import *\n")
 f.write("Top = Circuit()\n")
 f.write("FabricIsland = Island(Top)\n")
 

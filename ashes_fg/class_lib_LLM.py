@@ -1,4 +1,4 @@
-from ashes_fg.asic.asic_compile import *
+from ashes_fg.asic.model.asic_compile import *
 
 class dotproduct_L(StandardCell):
     def __init__(self,circuit,island=None,dim=(1,1),phi1=None,phi2=None,out1=None,out2=None,Q=None,K=None,GND=None,phi1_B=None,phi2_B=None,GND_B=None):
