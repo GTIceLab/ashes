@@ -8,6 +8,7 @@ from copy import copy, deepcopy
 import importlib
 import inspect
 from types import SimpleNamespace
+from ..placement.algorithm_grid import AlgorithmGrid
 
 
 DEFAULTS = {
@@ -61,10 +62,11 @@ class DecoderResult:
 
 @dataclass(frozen=True)
 class DecoderPlacementContext:
-    """GDS dimensions and an abutment anchor supplied to the chosen algorithm.
+    """Canonical local XY footprints supplied to the chosen algorithm.
 
-    entries maps item indices to opaque algorithm-owned placement descriptors.
-    Return an index-to-[x0, y0, x1, y1] mapping for exactly those entries.
+    entries maps indices to opaque algorithm-owned descriptors. Return local
+    XY boxes for exactly those entries. ASHES orients and anchors the block.
+    anchor is a local Y origin; slot_pitch is the canonical X slot width.
     """
     role: str
     island: object
@@ -73,6 +75,7 @@ class DecoderPlacementContext:
     anchor: float
     core_size: tuple
     core_shape: tuple
+    slot_pitch: float = None
 
 
 @dataclass
@@ -86,6 +89,7 @@ class DecoderContext:
     process_coordinates: str
     channels: tuple
     layouts: tuple
+    placement: object = None
 
 
 @dataclass
@@ -102,6 +106,8 @@ class Chain:
     process_coordinates: str
     cells: object
     decoder_result: object = None
+    external_inputs: dict = field(default_factory=dict)
+    decoder_placement: object = None
 
     def __deepcopy__(self, memo):
         # A library module is shared immutable configuration, not circuit state.
@@ -113,6 +119,8 @@ class Chain:
 
     @property
     def inputs(self):
+        if self.decoder is False:
+            raise ValueError('Decoder placement is disabled; use external_inputs selection signals')
         if self.decoder_result is None:
             raise ValueError('Build the decoder before accessing its input ports')
         return SimpleNamespace(address=self.decoder_result.bits,
@@ -134,10 +142,22 @@ class Chain:
         return []
 
     def decoder_context(self):
+        placement = self.decoder_placement
+        core = getattr(self.owner, '_fg_core', None)
+        if placement is None and core is not None:
+            loc = self.owner.getLocation(core)
+            row, col = int(loc[0][0]), int(loc[1][0])
+            # Reserve a staging region for each chain. Algorithms always use
+            # local X=slot, Y=band; only this manager knows its island axes.
+            if self.role == 'gate':
+                placement = AlgorithmGrid(self.owner, (row + core.dim[0] + 2, col))
+            else:
+                placement = AlgorithmGrid(self.owner, (row, col + core.dim[1] + 2),
+                                          (1, 0), (0, 1))
         return DecoderContext(self.owner.circuit, self.owner, self.cells, self.role,
                               self.output_count, self.layouts[0],
                               self.process_coordinates, tuple(self.channels),
-                              tuple(self.layouts))
+                              tuple(self.layouts), placement)
 
     def build_decoder(self):
         """Run a normalized Python builder; never call the GDS decoder generator.
@@ -202,7 +222,7 @@ class Peripherals:
     @property
     def missing_algorithms(self):
         return sorted({chain.decoder for chain in (self.gate, self.drain)
-                       if chain is not None and not callable(chain.decoder)})
+                       if chain is not None and chain.decoder is not False and not callable(chain.decoder)})
 
 
 def _library(island, cells):
@@ -256,7 +276,7 @@ def _snapshot(circuit):
 
 
 def _resolve(cells, selected, default):
-    value = default if selected is None else selected
+    value = default if selected is None or selected is True else selected
     return getattr(cells, value, value) if isinstance(value, str) else value
 
 
@@ -410,7 +430,7 @@ def prepare(island, *, cells=None, gate_switch=None, drain_switch=None,
         resolved = tuple(_resolve(cells, value, default)
                          for value, default in zip(chosen, DEFAULTS[role]))
         for cls in resolved[:2]:
-            if not callable(cls):
+            if cls is not False and not callable(cls):
                 raise ValueError(f'Missing standard cell {cls}')
         chain = Chain(role, island, [island], *resolved, channels,
                       [_layout(island, parents, role)], process_coordinates, cells)

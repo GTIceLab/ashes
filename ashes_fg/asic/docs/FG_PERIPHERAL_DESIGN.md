@@ -341,15 +341,16 @@ returns dictionaries containing `Bits`, `Enable`, `VDD`, and `GND`.
 
 Wrap these builders to normalize their result; do not reuse the GDS decoder
 generator. Normalize requested size to *output count*, because local algorithms
-do not all use the same convention: the central `lib/algorithms/Decoders.py`
+do not all use the same convention: the central `lib/algorithms/decoders/folded_radix4.py`
 accepts a `bits` parameter whereas the CAB_NN builders calculate bits internally.
 
 The common algorithm contract takes a context (circuit, target island, selected
 cell library, coordinate/pitch contract), ordered requested outputs, and a local
 placement origin. It returns instances, local placement/extent, output bindings,
 address bus with declared bit order, enable/controls, supplies, and abutment
-relationships. An algorithm may instantiate connection/filler/TAP cells, but
-must declare them in its result. The manager translates local placement into the
+relationships. An algorithm instantiates connection/filler body cells and
+declares them in its result. Edge/TAP placement belongs to the shared physical
+pass; algorithms declare companion groups rather than instantiate terminations. The manager translates local placement into the
 island and owns integration with neighboring chains. Existing builders that
 insert rows/columns need an adapter documenting those mutations or a refactor
 to local placement, rather than hidden changes to the final island grid.

@@ -32,7 +32,8 @@ Add this object to `synthesis_settings.json`:
 | `libraries` | List of importable Python module names | `[]` | Scan additional cell-definition modules. |
 
 Modules defining existing circuit instances are scanned automatically.
-Decoders and existing companion cells are excluded from parent selection.
+Decoder body cells are handled through declared companion groups. Existing
+companion cells are excluded from parent selection.
 Unknown settings and invalid option values raise errors.
 
 Left/right always mean native West/East. They do not change meaning when
@@ -336,3 +337,62 @@ library geometries and external routing runs still require their own checks.
 Install cooperating runtime changes together. An older compile entry point
 rejects `physical_cells`; an older physical writer cannot consume the plan;
 inconsistent naming between writers causes missing external-tool components.
+
+## Generated FG peripherals
+
+Generated switch and level-shifter arrays participate in the same companion
+discovery and `physical_cells` settings as other eligible arrays. Decoder
+algorithms declare body bands; the shared pass adds their terminations once
+per band. The algorithms retain connector and filler selection.
+
+With the current 16nm library, `SWC_Drain` and `LevelShift_4x_Drain` each gain
+EdgeL, EdgeR and two TAP strips when both sides are enabled. Gate switch and
+gate level-shifter companion classes are currently absent and produce missing
+cell warnings. No substitute cell is invented. Supply pins that exist only on
+an FG companion join the corresponding generated FG supply net by native name.
+
+FG layout resolves each companion chain after its parent band is placed using
+actual GDS dimensions. Gate band spacing includes its companion strips. Logical
+grid locations identify these objects; the selected FG layout determines their
+physical positions independently of grid row pitch. For these islands only,
+validation skips the uniform-grid-band thickness requirement. Parent-boundary
+alignment, exact abutment and cell-overlap checks still apply. Ordinary grid
+islands retain all existing checks.
+
+## Bands declared by algorithms
+
+`placement/companion_groups.py` supplies `register_companion_group()`. Decoder
+and S-block algorithms use it after placing their body cells. It records live
+member and supply references without constructing edges or TAPs. During
+compilation, the shared pass discovers the library cells, reserves staging
+strips, adds nets and produces the same abutment-validation plan used for
+ordinary arrays. Group boundaries use the union of final member boxes.
+
+Cell classes may define `physical_companions` with `edge_left`, `edge_right`
+and `tap` names. `None` explicitly disables a companion kind. The default
+remains `<cell>_EdgeL`, `<cell>_EdgeR`, `<cell>_TAP`. Explicit profiles also allow
+arbitrary companion names, `TAP_FILL` and `TopBot` variants. Members of a band
+must share one profile. `supply_aliases` maps native supply families to declared
+supply keys, for example `VDD` to `VDD_CORE`. `shared_families` declares a bus
+that reaches both terminations despite only one-sided interior pins; the pass
+requires its member nets to agree lane by lane.
+
+S-block `OUT` signals exist on termination cells. The builder returns live
+wires and declares native W/E `OUT` endpoint bindings for its routing bands.
+The pass attaches those wires when it creates the matching cells. Disabling
+both sides, or omitting all matching companions on a required side, raises an
+error instead of leaving those required endpoints floating. Other unconnected
+signals remain unconnected. Supplies declared by the group are attached to
+matching companion supply pins.
+
+With `edges="both", taps="both"`, each drain decoder or S-block band gets one
+edge and one TAP at each boundary. No termination is inserted between internal
+members. DecoderResult contains body cells only; generated companions belong
+to the shared physical-cell plan. FG layout applies their geometry after the
+algorithm callback has placed the corresponding body. Ordinary grid bands
+continue to use grid-generated coordinates and all existing grid checks.
+
+The old `insertDrainTapFiller` and `insertDrainEdgeFiller` algorithm helpers are
+removed. Configure `physical_cells` instead. Missing gate companion variants
+are logged and skipped. This is placement and connectivity verification;
+routing and physical signoff remain separate.

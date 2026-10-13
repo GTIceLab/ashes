@@ -23,7 +23,7 @@ removed. See the [import and script migration guide](import-migration.md) for
 the new paths to use in designs and external cell/algorithm libraries.
 
 Decoder algorithms stay in the shared technology library's
-`5_Tools/lib/algorithms/Decoders.py`; this package only invokes their interface.
+`5_Tools/lib/algorithms/decoders/folded_radix4.py`; this package only invokes their interface.
 No test scripts or backups are stored in this package.
 
 ## Documentation
@@ -32,3 +32,5 @@ No test scripts or backups are stored in this package.
 - [FG peripheral architecture](FG_PERIPHERAL_DESIGN.md)
 - [Physical edge and TAP placement](PHYSICAL_CELL_PLACEMENT_README.md)
 - [Synthesis settings](synthesis-settings.md)
+
+- [FG generation options](FG_GENERATION_OPTIONS.md): selected cells/algorithms, disabled stages, external signals and mixed S-block callbacks.

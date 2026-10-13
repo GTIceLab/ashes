@@ -1275,7 +1275,8 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
     if physical_cells_plan:
         from ashes_fg.asic.placement.physical_cell_placement import validate_abutments
         validate_abutments(cell_order_in_island, physical_cells_plan,
-                          swapped=bool(placement_axes and placement_axes.swapped))
+                          swapped=bool(placement_axes and placement_axes.swapped),
+                          custom_layout_islands={p['island'] for p in fg_layout_plan or ()})
     # Fit islands into design area
     island_dims = []
     for val, island in cell_order_in_island.items():

@@ -8,7 +8,7 @@ look for each part of the flow.
 | --- | --- | --- |
 | [model/](model/) | Circuit, island, pin, port, net and standard-cell objects, plus system helpers | `asic_compile.py`, `asic_systems.py` |
 | [peripherals/](peripherals/) | FG pin discovery, peripheral plans, switch/shifter generation, shared bits, and the interface to decoder algorithms | `fg_peripherals.py`, `fg_generation.py` |
-| [placement/](placement/) | Logical/native coordinate mapping and automatic edge/TAP cell placement | `placement_axes.py`, `physical_cell_placement.py` |
+| [placement/](placement/) | Logical/native coordinate mapping and automatic edge/TAP cell placement | `algorithm_grid.py`, `placement_axes.py`, `physical_cell_placement.py`, `companion_groups.py` |
 | [netlist/](netlist/) | Python-to-Verilog compilation | `py_to_verilog.py` |
 | [layout/](layout/) | Verilog-to-GDS compilation, layout assembly and text-to-GDS conversion | `verilog_to_gds.py`, `txt2gds.py` |
 | [routing/](routing/) | Global routing and global signal connections | `global_router.py`, `add_global.py` |
@@ -32,9 +32,11 @@ modules and decoder libraries must update their references too.
 
 ## Decoder algorithms and cell libraries
 
-Technology-specific decoder algorithms, including core/CON/FILL/edge/TAP cell
-selection, wiring and multirow/multicolumn placement, live in the shared project
-library at `5_Tools/lib/algorithms/Decoders.py`. The FG manager calls the selected
+Technology-specific decoder algorithms own core/CON/FILL selection, wiring
+and multirow/multicolumn placement. They declare companion bands; the shared
+physical-cell pass selects and places edge/TAP cells from library metadata.
+Decoder algorithms live in the shared project
+library at `5_Tools/lib/algorithms/decoders/folded_radix4.py`. The FG manager calls the selected
 algorithm and consumes its results. Designs can select algorithms through
 `gate_decoder=` and `drain_decoder=`.
 
@@ -44,3 +46,9 @@ not contain a duplicate of the project's `cells_16nm.py` library.
 See [FG peripheral usage](docs/FG_PERIPHERALS_README.md) for supported generation
 cases and [physical cell placement](docs/PHYSICAL_CELL_PLACEMENT_README.md) for
 edge/TAP configuration.
+
+Algorithm placement uses canonical XY indices through AlgorithmGrid. Decoder
+callbacks return local XY boxes; ASHES supplies their orientation and anchor.
+See [placement support](placement/README.md) for the coordinate contract.
+
+See [FG generation options](docs/FG_GENERATION_OPTIONS.md) for stage switches and custom peripheral algorithms.
