@@ -23,7 +23,7 @@ removed. See the [import and script migration guide](import-migration.md) for
 the new paths to use in designs and external cell/algorithm libraries.
 
 Decoder algorithms stay in the shared technology library's
-`5_Tools/lib/algorithms/decoders/folded_radix4.py`; this package only invokes their interface.
+`5_Tools/lib/algorithms/decoders/folded_radix4/__init__.py`; this package only invokes their interface.
 No test scripts or backups are stored in this package.
 
 ## Documentation
@@ -34,3 +34,9 @@ No test scripts or backups are stored in this package.
 - [Synthesis settings](synthesis-settings.md)
 
 - [FG generation options](FG_GENERATION_OPTIONS.md): selected cells/algorithms, disabled stages, external signals and mixed S-block callbacks.
+
+See [decoder fillers across intervening cells](DECODER_GAPS.md) for gap discovery,
+library profiles, variable-width bands and connection ownership.
+
+See [local peripheral fillers, routing bridges and extensions](PERIPHERAL_GAP_FILLERS.md)
+for automatic mixed bands, general library profiles and separate connection ownership.

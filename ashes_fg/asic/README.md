@@ -36,7 +36,7 @@ Technology-specific decoder algorithms own core/CON/FILL selection, wiring
 and multirow/multicolumn placement. They declare companion bands; the shared
 physical-cell pass selects and places edge/TAP cells from library metadata.
 Decoder algorithms live in the shared project
-library at `5_Tools/lib/algorithms/decoders/folded_radix4.py`. The FG manager calls the selected
+library at `5_Tools/lib/algorithms/decoders/folded_radix4/__init__.py`. The FG manager calls the selected
 algorithm and consumes its results. Designs can select algorithms through
 `gate_decoder=` and `drain_decoder=`.
 
@@ -52,3 +52,8 @@ callbacks return local XY boxes; ASHES supplies their orientation and anchor.
 See [placement support](placement/README.md) for the coordinate contract.
 
 See [FG generation options](docs/FG_GENERATION_OPTIONS.md) for stage switches and custom peripheral algorithms.
+
+See [decoder gap fillers](docs/DECODER_GAPS.md) for traversing registered non-FG columns.
+
+See [local peripheral fillers, routing bridges and extensions](docs/PERIPHERAL_GAP_FILLERS.md)
+for automatic mixed bands, general library profiles and separate connection ownership.

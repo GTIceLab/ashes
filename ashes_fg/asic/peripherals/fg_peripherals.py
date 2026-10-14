@@ -9,6 +9,7 @@ import importlib
 import inspect
 from types import SimpleNamespace
 from ..placement.algorithm_grid import AlgorithmGrid
+from .peripheral_gaps import discover_gaps
 
 
 DEFAULTS = {
@@ -58,6 +59,7 @@ class DecoderResult:
     supplies: dict = field(default_factory=dict)
     abutments: list = field(default_factory=list)
     layout: object = None
+    gap_connections: dict = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -90,6 +92,7 @@ class DecoderContext:
     channels: tuple
     layouts: tuple
     placement: object = None
+    gaps: tuple = ()
 
 
 @dataclass
@@ -154,10 +157,26 @@ class Chain:
             else:
                 placement = AlgorithmGrid(self.owner, (row, col + core.dim[1] + 2),
                                           (1, 0), (0, 1))
+        if placement is None and self.members == [self.owner]:
+            # Mixed bodies do not have one _fg_core. Reserve a region beyond
+            # the complete placed body; custom generators may override it.
+            placed = [(cell, self.owner.getLocation(cell)) for cell in self.owner.instances
+                      if not getattr(cell, 'fg_peripheral', False)]
+            placed = [(cell, loc) for cell, loc in placed if len(loc[0]) and len(loc[1])]
+            if placed:
+                row = min(int(loc[0][0]) for cell, loc in placed)
+                col = min(int(loc[1][0]) for cell, loc in placed)
+                end_row = max(int(loc[0][0]) + cell.dim[0] for cell, loc in placed)
+                end_col = max(int(loc[1][0]) + cell.dim[1] for cell, loc in placed)
+                placement = (AlgorithmGrid(self.owner, (end_row + 2, col))
+                             if self.role == 'gate' else
+                             AlgorithmGrid(self.owner, (row, end_col + 2), (1, 0), (0, 1)))
         return DecoderContext(self.owner.circuit, self.owner, self.cells, self.role,
                               self.output_count, self.layouts[0],
                               self.process_coordinates, tuple(self.channels),
-                              tuple(self.layouts), placement)
+                              tuple(self.layouts), placement,
+                              discover_gaps(self.owner, self.role,
+                                                    self.layouts[0], self.channels))
 
     def build_decoder(self):
         """Run a normalized Python builder; never call the GDS decoder generator.

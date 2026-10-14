@@ -17,7 +17,7 @@ fg = island.generate_fg_peripherals(
 This creates `SWC_Gate`, `SWC_Drain`, `LevelShift_2x_Gate`, and
 `LevelShift_4x_Drain` arrays, plus ordinary `GateDecode_2x4` and
 `DrainDecode_2x4` instances. The default `GateDecoder` / `DrainDecoder`
-builders in the shared `5_Tools/lib/algorithms/decoders/folded_radix4.py` construct electrically
+builders in the shared `5_Tools/lib/algorithms/decoders/folded_radix4/__init__.py` construct electrically
 explicit radix-four trees using the
 central CAB placement topology: leaf cores, first connection band, packed upper
 cores/fillers, then connection/tree bands. They also place `CON0`–`CON3`,
@@ -42,7 +42,7 @@ shared pass separately adds 20 drain-decoder companions across five bands.
 The earlier algorithm added 15 boundary cells because it included TAPs only
 on the left; both sides now follow the common settings.
 
-The default physical generator currently supports one contiguous
+The original regular physical path supports one contiguous
 `IndirectVMM_4x2` per island, using cell definitions generated for the logical
 swapped-axis convention. Automatic edge/TAP preparation runs afterward and
 includes generated switches/shifters and declared decoder bands. Actual GDS cell bounds determine the
@@ -88,7 +88,7 @@ ASHES contains no decoder tree or CON/FILL selection. Omitting decoder overrides
 builders; put the shared library directory on `sys.path` once in the design.
 The unified `GateDecoder(context)` / `DrainDecoder(context)` functions return
 DecoderResult objects. The old positional decoder entry points were removed;
-standalone filler utilities are retained in `decoders/cell_helpers.py`.
+historical cell_helpers module is removed; active gap fillers use library profiles.
 
 `DecoderContext.placement` is an ASHES AlgorithmGrid adapted to the chosen
 chain region. Builders place cells with canonical `(x=slot, y=band)` indices;
@@ -128,8 +128,10 @@ non-VMM FG cells, or extended groups. Plans record filler coordinates, edge
 boundaries, target channels, and bridge requirements. Compile rejects an
 unmaterialized plan rather than quietly omitting its peripherals.
 
-Default materialization of bridge-dependent extensions, segmented arrays,
-gap fillers, xy libraries, and gate program/run isolation is not implemented.
+Registered local switch/shifter/decoder gap fillers are supported by automatic
+abutting-band generation. Bridge-dependent extensions, arbitrary segmented
+layouts, xy physical libraries and new gate program/run isolation remain outside
+that automatic path.
 The assumed missing bridge names remain `FG_RoutingBridge_Gate` and
 `FG_RoutingBridge_Drain`; they require physical views and defined lane mappings.
 The shared address/separate-enable mode works with regular generated islands.
@@ -149,3 +151,9 @@ have not been run.
 
 See [configurable generation](FG_GENERATION_OPTIONS.md) for cell-name/class overrides,
 stage switches and the whole-peripheral algorithm contract.
+
+See [decoder fillers across intervening cells](DECODER_GAPS.md) for gap discovery,
+library profiles, variable-width bands and connection ownership.
+
+See [automatic local bands](PERIPHERAL_GAP_FILLERS.md) for the supported mixed-body
+path, roles selection, returned buses and its separation from bridges/extensions.

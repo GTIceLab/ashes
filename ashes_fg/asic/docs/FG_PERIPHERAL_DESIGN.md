@@ -5,7 +5,8 @@ Proposed design, grounded in `physical_cell_placement.py`, `asic_compile.py`,
 `C:/Users/prave/OneDrive/Desktop/VMM_Swcs_to_frame_old_node/cells_16nm.py`.
 This document specifies the target abstraction. `fg_peripherals.py` implements
 planning; `fg_generation.py` now materializes the regular swapped-axis VMM case
-with explicit routed Python decoder trees. Bridge-dependent and arbitrary CAB
+with explicit Python decoder trees. Registered local mixed-body bands are
+also implemented; see PERIPHERAL_GAP_FILLERS.md for the current bounded scope. Bridge-dependent and arbitrary CAB
 topologies remain future work. See `FG_PERIPHERALS_README.md` for verified scope.
 
 ## Assumptions and selection rules
@@ -341,7 +342,7 @@ returns dictionaries containing `Bits`, `Enable`, `VDD`, and `GND`.
 
 Wrap these builders to normalize their result; do not reuse the GDS decoder
 generator. Normalize requested size to *output count*, because local algorithms
-do not all use the same convention: the central `lib/algorithms/decoders/folded_radix4.py`
+do not all use the same convention: the central `lib/algorithms/decoders/folded_radix4/__init__.py`
 accepts a `bits` parameter whereas the CAB_NN builders calculate bits internally.
 
 The common algorithm contract takes a context (circuit, target island, selected
@@ -421,3 +422,11 @@ physical consumers per bit, independent enables, and explicit unequal-width
 bit mappings; non-abutting consumers must remain visible to routing.
 Check both gate and drain address sharing together, distinct island enable nets,
 enable polarity, and inactive programming paths for the deselected island.
+
+## Implemented local fillers are separate from bridges
+
+Registered peripheral_fillers and decoder_fillers describe how local bands cross
+non-FG columns. They add physical support cells, not channels or shared body nets.
+Routing bridge insertion, island/switch extension and connection ties require
+separate topology and electrical contracts. See
+[implemented scope and examples](PERIPHERAL_GAP_FILLERS.md).

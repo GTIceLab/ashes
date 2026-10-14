@@ -5,6 +5,7 @@
 | `algorithm_grid.py` | Convert canonical algorithm XY indices to staging row/column indices, including origins and band orientation |
 | `placement_axes.py` | Map logical coordinates and matrix members to native process coordinates |
 | `physical_cell_placement.py` | Discover edge/TAP cells, augment an isolated circuit, reserve strips and validate contact/overlap |
+| `peripheral_layout.py` | Compose automatic mixed-body peripheral bands with real pitches and shared termination strips |
 | `companion_groups.py` | Declare algorithm body bands, resolve library companion profiles and connect their boundary endpoints |
 
 Algorithms place functional cells, connectors and fillers. They declare bands

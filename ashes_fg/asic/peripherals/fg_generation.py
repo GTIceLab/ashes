@@ -1,4 +1,4 @@
-"""Generate regular 16nm VMM programming chains entirely in Python.
+"""Generate regular or registered mixed-body VMM peripheral bands in Python.
 
 Selected shared decoder algorithms own core/support cells, electrical nets
 and their multicolumn/multirow layout. Switch/shifter bands
@@ -13,6 +13,8 @@ from ..placement.algorithm_grid import AlgorithmGrid
 
 
 def native_port(cell, name):
+    if isinstance(cell, tuple):
+        return [pin for member in cell for pin in native_port(member, name)]
     ports = [p for p in cell.ports if p.native_name == name]
     if len(ports) != 1:
         raise ValueError(f'{cell.name}: expected native port {name}')
@@ -33,6 +35,8 @@ class Generated:
     configuration: object = None
     instances: tuple = ()
     layout: object = None
+    bands: dict = field(default_factory=dict)
+    gap_connections: dict = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -53,6 +57,7 @@ class PeripheralPlacementContext:
     island: object
     cells: dict
     entries: dict
+    companions: tuple = ()
 
 
 def _algorithm(value):
@@ -72,19 +77,23 @@ def _place(cell, location, descriptor):
 
 
 def generate(island, *, cells=None, process_coordinates='columns_y_rows_minus_x',
-             algorithm=None, switches=True, level_shifters=True, decoders=True, **options):
-    """Build a default VMM chain or call a selected algorithm around a placed body.
+             algorithm=None, switches=True, level_shifters=True, decoders=True,
+             roles=('gate', 'drain'), **options):
+    """Build local VMM peripheral bands or call a selected whole-peripheral algorithm.
 
     Class/name overrides choose cells; False disables an individual stage.
-    Whole-peripheral algorithms own mixed-layout/bridge placement and wiring.
+    Registered gaps use local fillers; bridges/extensions require separate algorithms.
     """
     if any(type(flag) is not bool for flag in (switches, level_shifters, decoders)):
         raise ValueError('switches, level_shifters and decoders must be booleans')
+    roles = tuple(roles)
+    if not roles or len(set(roles)) != len(roles) or set(roles) - {'gate', 'drain'}:
+        raise ValueError('roles must contain distinct gate/drain roles')
     algorithm = _algorithm(algorithm)
     if algorithm is False:
         raise ValueError('algorithm=False is invalid; use stage switches instead')
     config = (id(cells), process_coordinates, algorithm, switches, level_shifters,
-              decoders, tuple(sorted(options.items())))
+              decoders, roles, tuple(sorted(options.items())))
     if hasattr(island, 'fg_generated'):
         if island.fg_generated.configuration != config:
             raise ValueError('Reconfigure FG generation from the original circuit')
@@ -118,7 +127,7 @@ def generate(island, *, cells=None, process_coordinates='columns_y_rows_minus_x'
                 raise ValueError('The selected island has no discovered FG channels')
             context = PeripheralContext(island, circuit, library, plan,
                                         AlgorithmGrid.for_process(island, process_coordinates),
-                                        process_coordinates, dict(options))
+                                        process_coordinates, dict(options, roles=roles))
             generated = algorithm(context)
             if not isinstance(generated, Generated) or not callable(generated.layout):
                 raise TypeError('A peripheral algorithm must return Generated with a layout callback')
@@ -133,9 +142,17 @@ def generate(island, *, cells=None, process_coordinates='columns_y_rows_minus_x'
             return generated
         parents = {pin.cell for chain in (plan.gate, plan.drain) if chain
                    for channel in chain.channels for pin in channel.targets}
-        if len(parents) != 1 or next(iter(parents)).name != 'IndirectVMM_4x2':
-            raise ValueError('Default generation needs one contiguous IndirectVMM_4x2; '
-                             'other layouts need a bridge-aware generator')
+        if (len(parents) != 1 or any(cell not in parents for cell in island.instances)
+                or set(roles) != {'gate', 'drain'}):
+            from .mixed_generation import generate_mixed
+            generated = generate_mixed(island, plan, roles)
+            generated.configuration = config
+            generated.instances = tuple(island.instances)
+            plan.signature = _signature(island)
+            island.fg_generated = generated
+            return generated
+        if next(iter(parents)).name != 'IndirectVMM_4x2':
+            raise ValueError('Default generation requires VMM parents; use a custom generator for other FG interfaces')
         core = next(iter(parents))
         if plan.gate is None or plan.drain is None:
             raise ValueError('Regular VMM generation needs gate and drain channels')
@@ -160,89 +177,7 @@ def generate(island, *, cells=None, process_coordinates='columns_y_rows_minus_x'
                 _place(cell, position, (role + '_' + kind, 0, 0))
             plan.signature = _signature(island)
             result = None if chain.decoder is False else chain.build_decoder()
-            selections = result.outputs if result is not None else model.Bus(circuit, size=chain.output_count)
-            complements = result.output_complements if result is not None else []
-            if result is None:
-                chain.external_inputs['select'] = selections
-                generated.controls[role.upper() + '_SELECT'] = selections
-            need_complements = (chain.level_shifters is not None and role == 'gate') or (
-                chain.level_shifters is None and chain.switches is not None)
-            if need_complements and not complements:
-                complements = model.Bus(circuit, size=chain.output_count)
-                chain.external_inputs['select_n'] = complements
-                generated.controls[role.upper() + '_SELECT_N'] = complements
-            if complements and len(complements) != chain.output_count:
-                raise ValueError(f'{role}: complementary selection width mismatch')
-            true_out, complement_out = selections, complements
-            if chain.level_shifters is not None:
-                shifter = chain.level_shifters
-                x = native_port(shifter, 'X_w' if role == 'gate' else 'X_s')
-                xn = native_port(shifter, 'XN_w') if role == 'gate' else None
-                true_out = native_port(shifter, 'X_VINJ_e' if role == 'gate' else 'X_VINJ_n')
-                complement_out = native_port(shifter, 'XN_VINJ_e' if role == 'gate' else 'XN_VINJ_n')
-                for port in (x, true_out, complement_out):
-                    if len(port) != chain.output_count:
-                        raise ValueError(f'{role}: selected shifter pin width mismatch')
-                for index, output in enumerate(selections):
-                    connect(output, x[index])
-                    if xn is not None:
-                        connect(complements[index], xn[index])
-            chain.selection_outputs = {'select': true_out, 'select_n': complement_out}
-            if chain.switches is not None:
-                switch = chain.switches
-                select = native_port(switch, 'SEL_w' if role == 'gate' else 'Sel_s')
-                select_n = native_port(switch, 'SELN_w' if role == 'gate' else 'SelN_s')
-                if len(select) != chain.output_count or len(select_n) != chain.output_count:
-                    raise ValueError(f'{role}: selected switch pin width mismatch')
-                for index in range(chain.output_count):
-                    connect(true_out[index], select[index])
-                    connect(complement_out[index], select_n[index])
-            for prefix, native_name, external_name in (
-                    [('Vg_', 'VG_e', 'GATE_PROGRAM')] if role == 'gate' else
-                    [('Vd_P_', 'Vd_P_n', 'DRAIN_PROGRAM_P'), ('Vd_R_', 'Vd_R_n', 'DRAIN_PROGRAM_R')]):
-                for port in core.ports:
-                    if not port.native_name.startswith(prefix):
-                        continue
-                    if chain.switches is None:
-                        if external_name not in generated.controls:
-                            generated.controls[external_name] = model.Bus(circuit, size=len(port))
-                        switched = generated.controls[external_name]
-                    else:
-                        switched = native_port(chain.switches, native_name)
-                    if len(port) != len(switched):
-                        raise ValueError(f'{prefix}: core/switch width mismatch')
-                    for a, b in zip(port.pins, switched):
-                        connect(a, b)
-            for name, pin in (result.supplies.items() if result is not None else ()):
-                if name in generated.supplies:
-                    connect(pin, generated.supplies[name])
-                else:
-                    generated.supplies[name] = pin
-            for cell in (core, chain.switches, chain.level_shifters):
-                if cell is None:
-                    continue
-                for p in cell.ports:
-                    family = p.native_name.rsplit('_', 1)[0]
-                    # Analog core tuning/source ports remain designer-owned.
-                    # Some EdgeR variants do not expose VTUN pass-throughs.
-                    if cell is core and family == 'VTUN':
-                        continue
-                    if family in ('GND', 'VINJ', 'VDD_CORE', 'VTUN'):
-                        if family not in generated.supplies:
-                            generated.supplies[family] = model.Wire(circuit)
-                        for pin in p.pins:
-                            connect(pin, generated.supplies[family])
-                    elif cell is chain.switches and family in ('RUN', 'PROG', 'VGPROG', 'VGRUN',
-                                                              'Drainline_Indirect', 'Drainline_Direct'):
-                        if family not in generated.controls:
-                            generated.controls[family] = model.Wire(circuit)
-                        for pin in p.pins:
-                            connect(pin, generated.controls[family])
-                    elif cell is chain.switches and family in ('VG_RUN', 'VS'):
-                        name = role.upper() + '_' + family
-                        if name not in generated.controls:
-                            generated.controls[name] = model.Bus(circuit, size=len(p))
-                        generated.controls[name].connectPort(p)
+            wire_chain(chain, generated, (core,), result)
         island.fg_generated = generated
         return generated
     except Exception:
@@ -252,9 +187,118 @@ def generate(island, *, cells=None, process_coordinates='columns_y_rows_minus_x'
         raise
 
 
+
+def _stage_cells(stage):
+    return () if stage is None else stage if isinstance(stage, tuple) else (stage,)
+
+
+def wire_chain(chain, generated, parents, result):
+    """Wire selections and controls without deriving lanes from physical gaps."""
+    role, circuit = chain.role, chain.owner.circuit
+    model = inspect.getmodule(type(circuit))
+    selections = result.outputs if result is not None else model.Bus(circuit, size=chain.output_count)
+    complements = result.output_complements if result is not None else []
+    if result is None:
+        chain.external_inputs['select'] = selections
+        generated.controls[role.upper() + '_SELECT'] = selections
+    need_complements = (chain.level_shifters is not None and role == 'gate') or (
+        chain.level_shifters is None and chain.switches is not None)
+    if need_complements and not complements:
+        complements = model.Bus(circuit, size=chain.output_count)
+        chain.external_inputs['select_n'] = complements
+        generated.controls[role.upper() + '_SELECT_N'] = complements
+    if complements and len(complements) != chain.output_count:
+        raise ValueError(f'{role}: complementary selection width mismatch')
+    true_out, complement_out = selections, complements
+    if chain.level_shifters is not None:
+        shifter = chain.level_shifters
+        x = native_port(shifter, 'X_w' if role == 'gate' else 'X_s')
+        xn = native_port(shifter, 'XN_w') if role == 'gate' else None
+        true_out = native_port(shifter, 'X_VINJ_e' if role == 'gate' else 'X_VINJ_n')
+        complement_out = native_port(shifter, 'XN_VINJ_e' if role == 'gate' else 'XN_VINJ_n')
+        for port in (x, true_out, complement_out):
+            if len(port) != chain.output_count:
+                raise ValueError(f'{role}: selected shifter pin width mismatch')
+        for index, output in enumerate(selections):
+            connect(output, x[index])
+            if xn is not None:
+                connect(complements[index], xn[index])
+    chain.selection_outputs = {'select': true_out, 'select_n': complement_out}
+    if chain.switches is not None:
+        switch = chain.switches
+        select = native_port(switch, 'SEL_w' if role == 'gate' else 'Sel_s')
+        select_n = native_port(switch, 'SELN_w' if role == 'gate' else 'SelN_s')
+        if len(select) != chain.output_count or len(select_n) != chain.output_count:
+            raise ValueError(f'{role}: selected switch pin width mismatch')
+        for index in range(chain.output_count):
+            connect(true_out[index], select[index])
+            connect(complement_out[index], select_n[index])
+    for prefix, native_name, external_name in (
+            [('Vg_', 'VG_e', 'GATE_PROGRAM')] if role == 'gate' else
+            [('Vd_P_', 'Vd_P_n', 'DRAIN_PROGRAM_P'), ('Vd_R_', 'Vd_R_n', 'DRAIN_PROGRAM_R')]):
+        switched = (model.Bus(circuit, size=chain.output_count) if chain.switches is None
+                    else native_port(chain.switches, native_name))
+        if len(switched) != chain.output_count:
+            raise ValueError(f'{prefix}: core/switch width mismatch')
+        if chain.switches is None:
+            generated.controls[external_name] = switched
+        for channel in chain.channels:
+            for target in channel.targets:
+                if target.port.native_name.startswith(prefix):
+                    connect(target, switched[channel.index])
+    for name, pin in (result.supplies.items() if result is not None else ()):
+        if name in generated.supplies:
+            connect(pin, generated.supplies[name])
+        else:
+            generated.supplies[name] = pin
+    switch_cells = _stage_cells(chain.switches)
+    analog_slices = {}
+    for family in ('VG_RUN', 'VS'):
+        offset = 0
+        for cell in switch_cells:
+            widths = {len(port) for port in cell.ports
+                      if port.native_name.rsplit('_', 1)[0] == family}
+            if not widths:
+                continue
+            if len(widths) != 1:
+                raise ValueError(f'{family}: inconsistent opposite-side widths')
+            width = widths.pop()
+            analog_slices[(cell, family)] = (offset, width)
+            offset += width
+        if offset:
+            generated.controls[role.upper() + '_' + family] = model.Bus(circuit, size=offset)
+    for cell in (*parents, *switch_cells, *_stage_cells(chain.level_shifters)):
+        if cell is None:
+            continue
+        for p in cell.ports:
+            family = p.native_name.rsplit('_', 1)[0]
+            # Analog core tuning/source ports remain designer-owned.
+            # Some EdgeR variants do not expose VTUN pass-throughs.
+            if cell in parents and family == 'VTUN':
+                continue
+            if family in ('GND', 'VINJ', 'VDD_CORE', 'VTUN'):
+                if family not in generated.supplies:
+                    generated.supplies[family] = model.Wire(circuit)
+                for pin in p.pins:
+                    connect(pin, generated.supplies[family])
+            elif cell in switch_cells and family in ('RUN', 'PROG', 'VGPROG', 'VGRUN',
+                                                      'Drainline_Indirect', 'Drainline_Direct'):
+                if family not in generated.controls:
+                    generated.controls[family] = model.Wire(circuit)
+                for pin in p.pins:
+                    connect(pin, generated.controls[family])
+            elif cell in switch_cells and family in ('VG_RUN', 'VS'):
+                name = role.upper() + '_' + family
+                offset, width = analog_slices[(cell, family)]
+                for index, pin in enumerate(p.pins):
+                    connect(pin, generated.controls[name][offset + index])
+
+
 def collect_layout(circuit):
     plans = []
-    for number, island in enumerate(circuit.Islands):
+    # Verilog writers omit empty islands; use their numbering even when the
+    # physical-cell pass is disabled and has not cleaned the default island.
+    for number, island in enumerate(isle for isle in circuit.Islands if isle.instances):
         if not hasattr(island, 'fg_generated'):
             if hasattr(island, 'fg'):
                 raise ValueError('FG plan is not materialized; call generate_fg_peripherals() '
@@ -311,7 +355,8 @@ def apply_layout(islands, cells, plans, companions=(), swapped=True):
             return matches[0]
         entries = {find(e['location']): e['geometry'] for e in plan['entries']}
         if 'layout' in plan:
-            context = PeripheralPlacementContext(island, cells, entries)
+            context = PeripheralPlacementContext(island, cells, entries,
+                                                 tuple(r for r in companions or () if r['island'] == number))
             boxes = plan['layout'](context)
             if set(boxes) != set(entries):
                 raise ValueError('Custom peripheral layout must place exactly its declared instances')
