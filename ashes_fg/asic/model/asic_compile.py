@@ -963,12 +963,19 @@ class Port:
     - Pins (list)
     - Cell (single)
     """
+<<<<<<< HEAD:ashes_fg/asic/model/asic_compile.py
     def __init__(self,circuit,cell,name,location,pinNumber,static = False,native_name=None,native_location=None):
         self.circuit = circuit
         self.name = name
         # Logical name/side govern the designer API and matrix indexing.
         # Netlists reference the physical pin identifier supplied by the library.
         self.native_name = native_name if native_name is not None else name
+=======
+    def __init__(self,circuit,cell,name,location,pinNumber,static = False,native_name=None):
+        self.circuit = circuit
+        self.name = name
+        self.native_name = name if native_name is None else native_name
+>>>>>>> 868a5e4 (feat: centralize process-independent cell library generation):ashes_fg/asic/asic_compile.py
         self.location = location
         if native_location is not None:
             self.native_location = native_location
@@ -1132,7 +1139,11 @@ class Port:
                     if extraIdx > 0:
                         line += "_n" + str(extraIdx)
 
+<<<<<<< HEAD:ashes_fg/asic/model/asic_compile.py
                     line += "_n" + str(i) + "_" + self.native_name
+=======
+                    line += "_n" + str(i) + "_" + getattr(self, "native_name", self.name)
+>>>>>>> 868a5e4 (feat: centralize process-independent cell library generation):ashes_fg/asic/asic_compile.py
 
                     # Add pin number for ports with size > 1
                     if self.numPins() > 1:
@@ -1156,7 +1167,11 @@ class Port:
             pin = self.pins[i]
 
             if pin.isVectorConnected():
+<<<<<<< HEAD:ashes_fg/asic/model/asic_compile.py
                 line += ", ." + self.native_name
+=======
+                line += ", ." + getattr(self, "native_name", self.name)
+>>>>>>> 868a5e4 (feat: centralize process-independent cell library generation):ashes_fg/asic/asic_compile.py
                 # Add vector notation for a vectorized port
                 if self.numPins() > 1:
                     line +=  "_" + str(i) + "_"
@@ -1247,11 +1262,19 @@ class Port:
 
         # 4. Format for Verilog
         if len(net_list) == 1:
+<<<<<<< HEAD:ashes_fg/asic/model/asic_compile.py
             return f".{self.native_name}({net_list[0]})"
         else:
             # Reverse for Verilog {MSB, ..., LSB} convention
             net_list.reverse()
             return f".{self.native_name}({{{', '.join(net_list)}}})"
+=======
+            return f".{getattr(self, 'native_name', self.name)}({net_list[0]})"
+        else:
+            # Reverse for Verilog {MSB, ..., LSB} convention
+            net_list.reverse()
+            return f".{getattr(self, 'native_name', self.name)}({{{', '.join(net_list)}}})"
+>>>>>>> 868a5e4 (feat: centralize process-independent cell library generation):ashes_fg/asic/asic_compile.py
         
         
         

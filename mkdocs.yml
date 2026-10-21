@@ -32,6 +32,7 @@ extra_css:
 nav:
   - Home: index.md
   - Local Installation: local-install.md
+  - Cell Library Generation: cell-library.md
   - Tutorials:
     - Using Python for FPAA Programming: tutorials/python-for-fpaa
   - Reference: reference.md
