@@ -1,178 +1,59 @@
+"""Compatibility entry point for generating one explicit GDS cell."""
 import argparse
-import json
-import os
 from pathlib import Path
 import sys
 
-
-SCRIPT_DIR = Path(__file__).resolve().parent
-if str(SCRIPT_DIR) not in sys.path:
-	sys.path.insert(0, str(SCRIPT_DIR))
-
-import gds2text
-import text2json
-import json2python
-
-
-def _load_json_dict_lenient(path: Path) -> dict:
-	text = path.read_text(encoding="utf-8").strip()
-	if not text:
-		return {}
-
-	try:
-		data = json.loads(text)
-		if not isinstance(data, dict):
-			raise ValueError(f"JSON must be an object at top-level: {path}")
-		return data
-	except json.JSONDecodeError:
-		pass
-
-	decoder = json.JSONDecoder()
-	idx = 0
-	merged = {}
-	while idx < len(text):
-		while idx < len(text) and text[idx].isspace():
-			idx += 1
-		if idx >= len(text):
-			break
-
-		obj, end = decoder.raw_decode(text, idx)
-		if not isinstance(obj, dict):
-			raise ValueError(f"Found non-object JSON block in {path} near char {idx}")
-		merged.update(obj)
-		idx = end
-
-	return merged
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from ashes_fg.gds_to_celldef import library as lib
+    from ashes_fg.gds_to_celldef.cli import layer_spec, node
+else:
+    from . import library as lib
+    from .cli import layer_spec, node
 
 
-def merge_into_json_library(generated_json_path: Path, json_library_path: Path) -> Path:
-	generated_data = _load_json_dict_lenient(generated_json_path)
-	if not generated_data:
-		raise ValueError(f"Generated JSON is empty: {generated_json_path}")
-
-	if not json_library_path.exists():
-		print(f"Warning: JSON library file not found, creating: {json_library_path}")
-		json_library_path.parent.mkdir(parents=True, exist_ok=True)
-		json_library_path.write_text("{}\n", encoding="utf-8")
-
-	existing_data = _load_json_dict_lenient(json_library_path)
-	existing_data.update(generated_data)
-	json_library_path.write_text(json.dumps(existing_data, indent=2) + "\n", encoding="utf-8")
-	return json_library_path
-
-
-def ensure_py_defs_file(py_defs_path: Path) -> None:
-	if not py_defs_path.exists():
-		print(f"Warning: Python defs file not found, creating: {py_defs_path}")
-		py_defs_path.parent.mkdir(parents=True, exist_ok=True)
-		py_defs_path.write_text("", encoding="utf-8")
-
-
-def orchestrate(
-	gds_path: Path,
-	json_library_path: Path,
-	py_defs_path: Path,
-	process_node_override: str | None = None,
-	foundry_override: str | None = None,
-) -> tuple[Path, Path]:
-	txt_path: Path | None = None
-	json_path: Path | None = None
-	try:
-		# Step 1: GDS -> text output
-		txt_path = Path(gds2text.process_gds(str(gds_path)))
-
-		# Step 2: text output -> directions JSON
-		json_path = Path(
-			text2json.process_text_output(
-				str(txt_path),
-				process_node_override=process_node_override,
-				foundry_override=foundry_override,
-			)
-		)
-		merged_json_lib = merge_into_json_library(json_path, json_library_path)
-
-		# Step 3: directions JSON -> Python class
-		ensure_py_defs_file(py_defs_path)
-		history_dir = py_defs_path.parent / "cell_histories"
-		final_py = json2python.generate_from_json(
-			json_path,
-			py_defs_path,
-			append=True,
-			history_dir=history_dir,
-		)
-		return merged_json_lib, final_py
-	finally:
-		protected_paths = {
-			json_library_path.resolve(),
-			py_defs_path.resolve(),
-			gds_path.resolve(),
-		}
-		for intermediate in (json_path, txt_path):
-			if intermediate is None:
-				continue
-			try:
-				resolved = intermediate.resolve()
-				if intermediate.exists() and resolved not in protected_paths:
-					intermediate.unlink()
-			except OSError as err:
-				print(f"Warning: could not remove intermediate file {intermediate}: {err}")
+def orchestrate(gds_path, json_library_path, py_defs_path, process_node_override=None,
+                foundry_override=None, process_coordinates='xy', pin_map=None,
+                boundary=None, label_layers=None):
+    if not process_node_override or not foundry_override:
+        raise ValueError('Explicit process node and foundry are required; use ashes cells generate --help')
+    gds_path = Path(gds_path)
+    if not gds_path.is_file() or gds_path.suffix.lower() != '.gds':
+        raise ValueError(f'Missing .gds input file: {gds_path}')
+    json_library_path, py_defs_path = Path(json_library_path), Path(py_defs_path)
+    if json_library_path.suffix != '.json' or py_defs_path.suffix != '.py':
+        raise ValueError('Library outputs must have .json and .py extensions')
+    if json_library_path.resolve() == gds_path.resolve() or py_defs_path.resolve() == gds_path.resolve():
+        raise ValueError('Output files must not overwrite the GDS input')
+    library = lib.gdstk.read_gds(str(gds_path), unit=1e-6)
+    spec, text = lib.specification(library, gds_path.stem, node(str(process_node_override)),
+                                  foundry_override, process_coordinates, boundary, label_layers, pin_map=pin_map)
+    lib.commit_library([(gds_path.stem, spec, text)], json_library_path, py_defs_path)
+    return json_library_path, py_defs_path
 
 
 def main():
-	parser = argparse.ArgumentParser(description="End-to-end: GDS -> Python StandardCell")
-	parser.add_argument("gds_path", help="Path to source GDS file")
-	parser.add_argument(
-		"-json",
-		dest="json_lib_path",
-		default=str(SCRIPT_DIR / "ex.json"),
-		help="Path to JSON library file (default: ./ex.json)",
-	)
-	parser.add_argument(
-		"-pydef",
-		dest="py_defs_path",
-		default=str(SCRIPT_DIR / "standard_cells.py"),
-		help="Path to Python defs file (default: ./standard_cells.py)",
-	)
-	parser.add_argument(
-		"-pn",
-		"--process-node",
-		dest="process_node",
-		default=None,
-		help="Override process node (e.g. 350 or 350nm)",
-	)
-	parser.add_argument(
-		"-foundry",
-		"--foundry",
-		dest="foundry",
-		default=None,
-		help="Override foundry (e.g. TSMC)",
-	)
-	args = parser.parse_args()
-
-	gds_path = Path(args.gds_path)
-	if not gds_path.exists():
-		raise FileNotFoundError(f"File not found: {gds_path}")
-	if gds_path.suffix.lower() != ".gds":
-		raise ValueError(f"Input file must have .gds extension: {gds_path}")
-
-	json_lib_path = Path(args.json_lib_path)
-	if json_lib_path.suffix.lower() != ".json":
-		raise ValueError(f"-json path must have .json extension: {json_lib_path}")
-
-	py_defs_path = Path(args.py_defs_path)
-	if py_defs_path.suffix.lower() != ".py":
-		raise ValueError(f"-pydef path must have .py extension: {py_defs_path}")
-
-	json_lib_written, final_py = orchestrate(
-		gds_path,
-		json_lib_path,
-		py_defs_path,
-		process_node_override=args.process_node,
-		foundry_override=args.foundry,
-	)
-	print(f"JSON library updated: {json_lib_written}")
-	print(f"Python definitions updated: {final_py}")
+    parser = argparse.ArgumentParser(description='Generate one explicit GDS cell. For directory workflows use ashes cells --help.')
+    parser.add_argument('gds_path', type=Path)
+    parser.add_argument('-json', '--json', dest='json_path', type=Path, default=Path('cell_def/cells.json'))
+    parser.add_argument('-pydef', '--pydef', dest='python_path', type=Path, default=Path('cell_def/cells.py'))
+    parser.add_argument('-pn', '--process-node', required=True, type=node)
+    parser.add_argument('-foundry', '--foundry', required=True)
+    parser.add_argument('--process-coordinates', choices=lib.COORDINATES, default='xy')
+    parser.add_argument('--pin-map', type=Path)
+    parser.add_argument('--boundary-layer', type=layer_spec)
+    parser.add_argument('--label-layer', type=layer_spec, action='append', default=[])
+    args = parser.parse_args()
+    try:
+        if args.boundary_layer and args.boundary_layer[1] is None:
+            raise ValueError('--boundary-layer requires LAYER:DATATYPE')
+        pin_map = lib.load_object(args.pin_map).get(args.gds_path.stem)
+        outputs = orchestrate(args.gds_path, args.json_path, args.python_path, args.process_node,
+                              args.foundry, args.process_coordinates, pin_map, args.boundary_layer, args.label_layer)
+    except (ValueError, OSError, SyntaxError, TypeError) as error:
+        parser.error(str(error))
+    print('Updated:', *outputs)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

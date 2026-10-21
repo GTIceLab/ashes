@@ -43,27 +43,68 @@ ashes fpaa /path/to/design.py
 ```
 Depending on if you want to target an FPAA or synthesize an ASIC
 
-To add std cell def (json or py) from GDS, run,
+### Shared standard-cell library generation
+
+Run from any public or private project's `Tools/lib` directory. Keep original
+editor exports in `gds_source/` (legacy `gds_cadence/` is supported), prepared
+layouts in `gds/`, and generated definitions in `cell_def/`.
+
+```bash
+cd /path/to/project/Tools/lib
+# Existing prepared GDS:
+ashes cells generate --process-node 130 --foundry sky --process-coordinates xy
+# Or prepare originals and generate as one batch:
+ashes cells build --process-node 130 --foundry sky --process-coordinates xy
 ```
-gen_stdcell_defs <gds_path_input> -json <json_lib_path_output> -pydef <py_defs_path_output> -pn XXX -foundry XXXX
 
-Flags:
--pydef specifies output pydefinition file
--json specifies output json file
+The process arguments above are examples; the shared implementation has no
+foundry or process-node defaults. Missing input folders are errors. No GDS/PDK
+files are installed into ASHES, and generated outputs stay in the project.
+No requested cells are silently skipped; validation errors preserve the existing
+library. The older `gen_stdcell_defs` single-file command is also supported.
 
-(process node and foundry defaults to TSMC 350nm if not overridden)
--pn or --process_node 
--foundry or--foundry 
-
-Notes:
--gds input path input must go first
--foundry is case sensitive
--providing an argument for process node will default to appending ‘nm’ to the end. <130> or <130nm> are acceptable
-
-
+```bash
+ashes cells --help
+ashes cells generate --help
 ```
+
+See [the complete library guide](docs/cell-library.md) for installation, directory
+options, cell selection, optional boundary and label layers, coordinate mappings,
+error behavior, migration, and importing `cell_def/cells.py` in a design.
 
 ### ASIC Flow: OpenROAD
+
+Use the public [ASHES-Skywater130nm](https://github.com/GTIceLab/ASHES-Skywater130nm)
+repository as the base project and worked Sky130 example. ASHES provides the
+shared tools; the process repository contains the cell layouts, generated
+interfaces, technology settings, and example designs. Keep process data in that
+repository when adapting this flow to another technology.
+
+After installing ASHES from `ashes_2p0` and activating its environment, run in
+Linux, WSL2, or a Linux VM:
+
+```bash
+git clone https://github.com/GTIceLab/ASHES-Skywater130nm.git
+cd ASHES-Skywater130nm/Tools/lib
+ashes cells generate --cells IndirectVMM_4x2 TA_FGbias_1x2 \
+  --process-node 130 --foundry sky --process-coordinates xy
+cd ../run_syn/Sky130_Trial
+ashes asic Trail.py
+# Requires OpenROAD installed as described below:
+openroad -threads 8 -exit -log openroad.log openroad/Trail/main.tcl
+```
+
+The explicit cell list generates the interfaces used by this trial. Generating
+all cells validates the entire library and can report unresolved source pin
+issues; see the process repository's validation notes. The trial is a worked
+flow example with remaining routing DRC violations, not a signoff-clean design.
+
+Refer to its [library generation guide](https://github.com/GTIceLab/ASHES-Skywater130nm/blob/main/Tools/lib/cell_def/README.md),
+[trial design and settings](https://github.com/GTIceLab/ASHES-Skywater130nm/tree/main/Tools/run_syn/Sky130_Trial),
+[OpenROAD guide](https://github.com/GTIceLab/ASHES-Skywater130nm/blob/main/docs/openroad.md),
+and [Xschem setup](https://github.com/GTIceLab/ASHES-Skywater130nm/blob/main/docs/xschem.md).
+The Xschem setup uses the installed open PDK and repository-relative symbol
+paths; its guide also records the unresolved RDAC symbols.
 
 #### Linux environment required
 
@@ -126,8 +167,8 @@ Use Python cell definitions generated from the same GDS files used for physical
 synthesis. Existing direction suffixes must not be added a second time.
 
 Put `synthesis_settings.json` and `pd_settings.json` beside the design. For a
-Sky130 project arranged as `project/lib/` and
-`project/run_syn/Sky130_Trial/`, an example synthesis configuration is:
+Sky130 project arranged as `project/Tools/lib/` and
+`project/Tools/run_syn/Sky130_Trial/`, an example synthesis configuration is:
 
 ```json
 {
@@ -172,7 +213,7 @@ explicitly. Adapt all settings to the actual circuit and technology.
 Activate the ASHES environment, then run from the design directory:
 
 ```bash
-cd /path/to/project/run_syn/Sky130_Trial
+cd /path/to/project/Tools/run_syn/Sky130_Trial
 ashes asic Trail.py
 openroad -threads 8 -exit -log openroad.log openroad/Trail/main.tcl
 ```

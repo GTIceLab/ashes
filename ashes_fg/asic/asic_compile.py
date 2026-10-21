@@ -917,9 +917,10 @@ class Port:
     - Pins (list)
     - Cell (single)
     """
-    def __init__(self,circuit,cell,name,location,pinNumber,static = False):
+    def __init__(self,circuit,cell,name,location,pinNumber,static = False,native_name=None):
         self.circuit = circuit
         self.name = name
+        self.native_name = name if native_name is None else native_name
         self.location = location
         self.cell = cell
         self.isStatic = static
@@ -1081,7 +1082,7 @@ class Port:
                     if extraIdx > 0:
                         line += "_n" + str(extraIdx)
 
-                    line += "_n" + str(i) + "_" + self.name
+                    line += "_n" + str(i) + "_" + getattr(self, "native_name", self.name)
 
                     # Add pin number for ports with size > 1
                     if self.numPins() > 1:
@@ -1105,7 +1106,7 @@ class Port:
             pin = self.pins[i]
 
             if pin.isVectorConnected():
-                line += ", ." + self.name
+                line += ", ." + getattr(self, "native_name", self.name)
                 # Add vector notation for a vectorized port
                 if self.numPins() > 1:
                     line +=  "_" + str(i) + "_"
@@ -1194,11 +1195,11 @@ class Port:
 
         # 4. Format for Verilog
         if len(net_list) == 1:
-            return f".{self.name}({net_list[0]})"
+            return f".{getattr(self, 'native_name', self.name)}({net_list[0]})"
         else:
             # Reverse for Verilog {MSB, ..., LSB} convention
             net_list.reverse()
-            return f".{self.name}({{{', '.join(net_list)}}})"
+            return f".{getattr(self, 'native_name', self.name)}({{{', '.join(net_list)}}})"
         
         
         

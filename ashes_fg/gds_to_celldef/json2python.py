@@ -1,16 +1,5 @@
-# class TSMC350nm_C4(StandardCell):
-# 	def __init__(self,circuit,island=None,dim=(1,1),VD_P=None,VIN=None,VREF=None,OUTPUT=None,Vsel=None,RUN=None,Vg=None,PROG=None,VTUN=None,VINJ=None,GND=None,VPWR=None,Vsel_b=None,RUN_b=None,Vg_b=None,PROG_b=None,VTUN_b=None,VINJ_b=None,GND_b=None,VPWR_b=None):
-
-# 		# Define variables
-# 		self.circuit = circuit
-# 		self.pins = []
-# 		self.ports = []
-import argparse
-import json
-from pathlib import Path
+"""Class rendering and logical pin mapping adapted from the working NNopt generator."""
 import re
-from datetime import datetime, timezone
-
 
 DIR_ORDER = ("W", "E", "N", "S")
 
@@ -27,26 +16,6 @@ def parse_pin(pin):
 			return base, {int(idx)}
 	return pin, None
 
-
-def extract_class_name(json_path):
-	stem = json_path.stem
-	suffix = "_output_directions"
-	if stem.endswith(suffix):
-		return stem[: -len(suffix)]
-	return stem
-
-
-def load_spec(json_path):
-	data = json.loads(json_path.read_text())
-	if not data:
-		raise ValueError("JSON is empty")
-	top_key = next(iter(data.keys()))
-	return data[top_key]
-
-def get_dimensions(spec):
-	cell_width = spec.get('width')
-	cell_height = spec.get('height')
-	return [cell_width,cell_height]
 
 def gather_pins(spec):
 	ordered_pins = []
@@ -71,7 +40,40 @@ def gather_pins(spec):
 	return ordered_pins, pin_meta
 
 
-def render_class(class_name, pin_order, pin_meta, cell_dimension):
+def logical_pin_interface(pin_order, pin_meta, process_coordinates="xy", pin_map=None):
+	"""Return logical API pins and their original native identifiers.
+
+	An optional explicit map is {logical_pin_name: native_pin_name}.
+	Unspecified pins use the configured native-to-logical side mapping.
+	"""
+	if process_coordinates not in ('xy', 'columns_y_rows_minus_x'):
+		raise ValueError('Invalid process_coordinates')
+	sides = {'W': 'N', 'E': 'S', 'N': 'E', 'S': 'W'}
+	overrides = {native: logical for logical, native in (pin_map or {}).items()}
+	if len(overrides) != len(pin_map or {}):
+		raise ValueError('Each native pin must map to one logical pin')
+	missing = set(overrides) - set(pin_order)
+	if missing:
+		raise ValueError(f'Pin map references missing native pins: {sorted(missing)}')
+	logical_order, logical_meta, native_names = [], [], {}
+	for native, direction, width in pin_meta:
+		logical_side = sides[direction] if process_coordinates != 'xy' else direction
+		logical = re.sub(r'_[nesw]$', '_' + logical_side.lower(), native) if process_coordinates != 'xy' else native
+		if native in overrides:
+			logical = overrides[native]
+			match = re.search(r'_([nesw])$', logical)
+			if not match:
+				raise ValueError(f'Logical pin {logical} must end in _n, _e, _s, or _w')
+			logical_side = match.group(1).upper()
+		if logical in native_names:
+			raise ValueError(f'Multiple native pins map to {logical}; provide an explicit pin map')
+		logical_order.append(logical)
+		logical_meta.append((logical, logical_side, width))
+		native_names[logical] = native
+	return logical_order, logical_meta, native_names
+
+
+def render_class(class_name, pin_order, pin_meta, cell_dimension, native_names=None):
 	args = ["self", "circuit", "island=None", "dim=(1,1)"]
 	args.extend(f"{pin}=None" for pin in pin_order)
 	args_str = ",".join(args)
@@ -92,8 +94,10 @@ def render_class(class_name, pin_order, pin_meta, cell_dimension):
 
 	for name, direction, width in pin_meta:
 		axis = "0" if direction in ("W", "E") else "1"
+		native = (native_names or {}).get(name, name)
+		mapping_arg = f",native_name={native!r}" if native != name else ''
 		lines.append(
-			f"        self.{name} = Port(circuit,self,'{name}','{direction}',{width}*self.dim[{axis}])"
+			f"        self.{name} = Port(circuit,self,{name!r},{direction!r},{width}*self.dim[{axis}]{mapping_arg})"
 		)
 
 	lines.append("")
@@ -152,110 +156,3 @@ def extract_existing_class_text(existing_text: str, class_name: str) -> str | No
 		end = len(existing_text)
 
 	return existing_text[start:end].strip() + "\n"
-
-
-def append_history(history_path: Path, class_name: str, previous_text: str) -> None:
-	timestamp = datetime.now(timezone.utc).isoformat()
-	entry = (
-		f"===== {class_name} overwrite @ {timestamp} =====\n"
-		f"{previous_text.rstrip()}\n"
-		"===== end =====\n\n"
-	)
-	with open(history_path, "a", encoding="utf-8") as history_file:
-		history_file.write(entry)
-
-
-def generate_from_json(
-	json_path: Path,
-	output_path: Path | None = None,
-	append: bool = False,
-	history_dir: Path | None = None,
-) -> Path:
-	spec = load_spec(json_path)
-	class_name = extract_class_name(json_path)
-	pin_order, pin_meta = gather_pins(spec)
-	cell_dimension = get_dimensions(spec)
-	class_text = render_class(class_name, pin_order, pin_meta, cell_dimension)
-	if history_dir is None:
-		history_path = json_path.with_name(f"{class_name}_history.txt")
-	else:
-		history_dir.mkdir(parents=True, exist_ok=True)
-		history_path = history_dir / f"{class_name}_history.txt"
-
-	if output_path is None:
-		output_path = json_path.with_name(f"{class_name}.py")
-
-	if append:
-		if output_path.exists():
-			existing_text = output_path.read_text(encoding="utf-8")
-			previous_class_text = extract_existing_class_text(existing_text, class_name)
-			if previous_class_text is not None and previous_class_text.strip() != class_text.strip():
-				append_history(history_path, class_name, previous_class_text)
-			updated_text = upsert_class_text(existing_text, class_name, class_text)
-			output_path.write_text(updated_text, encoding="utf-8")
-		else:
-			output_path.write_text(class_text, encoding="utf-8")
-	else:
-		if output_path.exists():
-			existing_text = output_path.read_text(encoding="utf-8")
-			if existing_text.strip() != class_text.strip():
-				append_history(history_path, class_name, existing_text)
-		output_path.write_text(class_text, encoding="utf-8")
-	return output_path
-
-
-def main():
-	parser = argparse.ArgumentParser(description="Generate StandardCell classes from JSON.")
-	parser.add_argument("json_path", help="Path to *_output_directions.json")
-	parser.add_argument(
-		"--out",
-		dest="output_path",
-		default=None,
-		help="Output .py path (default: sibling file based on json name)",
-	)
-	args = parser.parse_args()
-
-	json_path = Path(args.json_path)
-	if not json_path.exists():
-		raise FileNotFoundError(json_path)
-
-	output_path = Path(args.output_path) if args.output_path else None
-	generate_from_json(json_path, output_path)
-
-
-if __name__ == "__main__":
-	main()
-#     file_content = f"""
-# class {json_file}(StandardCell):
-#         def __init__(self,circuit,island=None,): 
-#             # Define variables
-#             self.circuit = circuit
-#             self.pins = []
-#             self.ports = []
-#             self.island = island
-#             self.dim = dim
-
-#             # Define cell information
-#             #self.name = 'filename' """ 
-
-#     for key in 
-#     for values in key,
-#         if direction 'W' or 'E' then the pin dim[0]
-#             #append \n to file_content
-#             file_content.append("self.{PIN_NAME} = Port(circuit,self,'{PIN_NAME}','{PIN_DIRECTION}',{Max_Wire}*self.dim[0])")
-#         else 'N' or "S"
-#             #append \n to file_content
-#             write self.{PIN_NAME} = Port(circuit,self,'{PIN_NAME}','{PIN_DIRECTION}',{Max_Wire}*self.dim[1])
-#         #add Pin to PINLIST
-
-#             file_content_2 = f"""
-#             Initialize ports with given values
-#             portsInit = {PIN_LIST}
-#             i=0
-# 		    for p in self.ports:
-# 			    self.assignPort(p,portsInit[i])
-# 			    i+=1
-
-# 		    # Add cell to circuit
-# 		    circuit.addInstance(self,self.island)
-#             """

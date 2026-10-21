@@ -26,7 +26,15 @@ def main():
     asic = subparsers.add_parser("asic", help="ASIC compile flow")
     asic.add_argument("design", help="Design file")
 
+    from ashes_fg.gds_to_celldef.cli import add_parser as add_cells_parser, run as run_cells
+    add_cells_parser(subparsers)
     args = parser.parse_args()
+    if args.flow == "cells":
+        try:
+            run_cells(args)
+        except (ValueError, OSError, SyntaxError, TypeError) as error:
+            parser.error(str(error))
+        return
 
     design_path = Path(args.design).resolve()
     project_dir = design_path.parent
