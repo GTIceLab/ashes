@@ -43,25 +43,241 @@ ashes fpaa /path/to/design.py
 ```
 Depending on if you want to target an FPAA or synthesize an ASIC
 
-To add std cell def (json or py) from GDS, run,
+### Shared standard-cell library generation
+
+Run from any public or private project's `Tools/lib` directory. Keep original
+editor exports in `gds_source/` (legacy `gds_cadence/` is supported), prepared
+layouts in `gds/`, and generated definitions in `cell_def/`.
+
+```bash
+cd /path/to/project/Tools/lib
+# Existing prepared GDS:
+ashes cells generate --process-node 130 --foundry sky --process-coordinates xy
+# Or prepare originals and generate as one batch:
+ashes cells build --process-node 130 --foundry sky --process-coordinates xy
 ```
-gen_stdcell_defs <gds_path_input> -json <json_lib_path_output> -pydef <py_defs_path_output> -pn XXX -foundry XXXX
 
-Flags:
--pydef specifies output pydefinition file
--json specifies output json file
+The process arguments above are examples; the shared implementation has no
+foundry or process-node defaults. Missing input folders are errors. No GDS/PDK
+files are installed into ASHES, and generated outputs stay in the project.
+No requested cells are silently skipped; validation errors preserve the existing
+library. The older `gen_stdcell_defs` single-file command is also supported.
 
-(process node and foundry defaults to TSMC 350nm if not overridden)
--pn or --process_node 
--foundry or--foundry 
-
-Notes:
--gds input path input must go first
--foundry is case sensitive
--providing an argument for process node will default to appending ‘nm’ to the end. <130> or <130nm> are acceptable
-
-
+```bash
+ashes cells --help
+ashes cells generate --help
 ```
+
+See [the complete library guide](docs/cell-library.md) for installation, directory
+options, cell selection, optional boundary and label layers, coordinate mappings,
+error behavior, migration, and importing `cell_def/cells.py` in a design.
+
+### ASIC Flow: OpenROAD
+
+Use the public [ASHES-Skywater130nm](https://github.com/GTIceLab/ASHES-Skywater130nm)
+repository as the base project and worked Sky130 example. ASHES provides the
+shared tools; the process repository contains the cell layouts, generated
+interfaces, technology settings, and example designs. Keep process data in that
+repository when adapting this flow to another technology.
+
+After installing ASHES from `ashes_2p0` and activating its environment, run in
+Linux, WSL2, or a Linux VM:
+
+```bash
+git clone https://github.com/GTIceLab/ASHES-Skywater130nm.git
+cd ASHES-Skywater130nm/Tools/lib
+ashes cells generate --cells IndirectVMM_4x2 TA_FGbias_1x2 \
+  --process-node 130 --foundry sky --process-coordinates xy
+cd ../run_syn/Sky130_Trial
+ashes asic Trail.py
+# Requires OpenROAD installed as described below:
+openroad -threads 8 -exit -log openroad.log openroad/Trail/main.tcl
+```
+
+The explicit cell list generates the interfaces used by this trial. Generating
+all cells validates the entire library and can report unresolved source pin
+issues; see the process repository's validation notes. The trial is a worked
+flow example with remaining routing DRC violations, not a signoff-clean design.
+
+Refer to its [library generation guide](https://github.com/GTIceLab/ASHES-Skywater130nm/blob/main/Tools/lib/cell_def/README.md),
+[trial design and settings](https://github.com/GTIceLab/ASHES-Skywater130nm/tree/main/Tools/run_syn/Sky130_Trial),
+[OpenROAD guide](https://github.com/GTIceLab/ASHES-Skywater130nm/blob/main/docs/openroad.md),
+and [Xschem setup](https://github.com/GTIceLab/ASHES-Skywater130nm/blob/main/docs/xschem.md).
+The Xschem setup uses the installed open PDK and repository-relative symbol
+paths; its guide also records the unresolved RDAC symbols.
+
+#### Linux environment required
+
+Run all commands in **Linux**, **WSL2 with Ubuntu**, or a **Linux VM**. On
+Windows, open your Ubuntu/WSL terminal first. A GUI requires a working Linux
+display, such as WSLg; batch routing does not. Install ASHES, OpenROAD, and
+KLayout in the same Linux environment.
+
+#### Install ASHES and OpenROAD
+
+This workflow is available on `ashes_2p0`. Use Python 3.12 or newer:
+
+```bash
+cd /path/to/ashes
+git switch ashes_2p0
+python3 -m venv venv
+source venv/bin/activate
+python -m pip install -e .
+```
+
+Follow the [official OpenROAD installation guide](https://openroad.readthedocs.io/en/latest/user/Build.html)
+for supported systems and installation methods. Its source-build procedure with
+GUI support is:
+
+```bash
+git clone --recursive https://github.com/The-OpenROAD-Project/OpenROAD.git
+cd OpenROAD
+sudo ./etc/DependencyInstaller.sh
+bazelisk run --//:platform=gui //:install
+export PATH="$(realpath ../install/OpenROAD/bin):$PATH"
+openroad -version
+openroad -help
+```
+
+For new terminals, add the corresponding absolute `bin` path to your shell's
+PATH configuration. Keep the installed runtime files alongside the executable.
+See the upstream guide for prebuilt packages and CLI-only builds.
+
+For optional routed GDS export, install KLayout. On Ubuntu:
+
+```bash
+sudo apt update
+sudo apt install klayout
+klayout -v
+```
+
+ASHES generates its own OpenROAD Tcl; OpenROAD-flow-scripts is not required.
+RASP30/Scilab are needed for the FPAA workflow, not this ASIC workflow.
+
+#### Configure the design
+
+The design Python file must define `Top`, `design_limits`, and
+`location_islands`. This branch uses:
+
+```python
+import ashes_fg.asic.asic_compile as ac
+```
+
+Use Python cell definitions generated from the same GDS files used for physical
+synthesis. Existing direction suffixes must not be added a second time.
+
+Put `synthesis_settings.json` and `pd_settings.json` beside the design. For a
+Sky130 project arranged as `project/Tools/lib/` and
+`project/Tools/run_syn/Sky130_Trial/`, an example synthesis configuration is:
+
+```json
+{
+  "process": "sky_130nm",
+  "lib_path": "../../lib",
+  "pd_tool": "openroad"
+}
+```
+
+Run ASHES from the design directory: relative `lib_path` values are resolved
+from the shell working directory. This branch's compile API does not accept the
+`process_coordinates` setting introduced on newer branches.
+
+The physical-design settings use these sections (distances are in microns):
+
+| Section | Configuration |
+| --- | --- |
+| `init` | Technology LEF (`tlef_path`), optional Liberty files, power/ground net names, and NDR definitions. |
+| `pins` | Existing LEF CORE `site`, `place_type: "side"`, and N/S/E/W layer, size, and offset settings. |
+| `power` | Global power connections and optional ring/stripe geometry. |
+| `route` | `bot_layer`, `top_layer`, and `iterations`. |
+| `signoff` | Optional `def2stream` configuration for KLayout GDS export. |
+
+For Sky130, use the exact metal names from your LEF, such as `METAL2` through
+`METAL5`, and a CORE site such as `unithd` only if that site exists in the LEF.
+Define the `ANALOG` NDR, which the generator assigns to default circuit nets,
+and every other rule explicitly used by your circuit. Route settings can be:
+
+```json
+"route": [
+  {"bot_layer": "METAL2", "top_layer": "METAL5", "iterations": 10}
+]
+```
+
+The power generator creates a PDN only when ring/stripe shapes are configured.
+Global connection declarations alone do not create rings. Its PDN shape support
+currently requires one power/ground pair; design multi-supply distribution
+explicitly. Adapt all settings to the actual circuit and technology.
+
+#### Generate and run with multiple CPU threads
+
+Activate the ASHES environment, then run from the design directory:
+
+```bash
+cd /path/to/project/Tools/run_syn/Sky130_Trial
+ashes asic Trail.py
+openroad -threads 8 -exit -log openroad.log openroad/Trail/main.tcl
+```
+
+ASHES prepares the netlist, placement, and Tcl files. OpenROAD is invoked
+separately. The generated folder uses the design filename stem (`Trail`).
+`main.tcl` enters its own `run/` directory and executes `init.tcl`, `pins.tcl`,
+`power.tcl`, `route.tcl`, and `signoff.tcl` in that order.
+
+Use all available threads or run with the GUI:
+
+```bash
+openroad -threads max -exit openroad/Trail/main.tcl
+openroad -gui -threads 8 openroad/Trail/main.tcl
+```
+
+Only multithreaded stages use all selected CPUs. Outputs are saved under
+`openroad/Trail/outputs/`: `Trail.odb`, `Trail.def`, `Trail.v`, `Trail.lef`,
+`route.guide`, and `route_drc.rpt`. Review routing/DRC reports before treating
+the result as complete. To inspect the saved database without rerunning routing:
+
+```bash
+openroad -gui -db openroad/Trail/outputs/Trail.odb
+```
+
+#### Optional routed DEF-to-GDS export
+
+Add this `signoff` section to `pd_settings.json`, using paths for your project:
+
+```json
+"signoff": [
+  {"def2stream": {
+    "tech_lef": "../../../../../lib/tech_lef/sky130.lef",
+    "layer_map": "../../../../../lib/layer_map/sky130_EDA.layermap",
+    "in_files": "../../lib/gds",
+    "def_units": 1000
+  }}
+]
+```
+
+Regenerate with `ashes asic Trail.py`, then rerun OpenROAD. KLayout merges the
+routed DEF and source cell layouts into `Trail.gds`. Without `def2stream`, GDS
+export is skipped while the other signoff outputs are written.
+
+Relative technology LEF and layer-map paths are evaluated from
+`openroad/Trail/run/`. The current generator resolves `in_files` from the
+directory where `ashes` is invoked. The example paths follow the layout above;
+absolute paths can also be used.
+
+Use a KLayout LEF/DEF `.layermap`, not the ASHES `sky130.json` library map.
+Layer names must match the technology LEF. Verify GDS layer/datatype numbers
+against the [SkyWater layer reference](https://skywater-pdk.readthedocs.io/en/main/rules/layers.html).
+
+#### Troubleshooting
+
+- **Unexpected keyword `pd_tool`:** check the active branch/environment and run
+  `python -m pip install -e .` from the OpenROAD-capable checkout.
+- **Missing NDR target or cell port:** inspect earlier Verilog/LEF warnings;
+  check pin names, widths, and endpoints. `VINJ_n` and `VINJ_n_n` are different.
+- **CORE site error:** select an existing CORE site with `pins.site`.
+- **Missing layer mapping:** check exact LEF names and mapping purposes. Ignored
+  routing shapes can leave the exported GDS incomplete.
+- **Generated library syntax error:** run `python -m py_compile cells.py` and
+  resolve invalid source label/interface names before synthesis.
 
 ### ASIC Flow: Detailed Router
 For the detailed router we use the same tool from the [open circuit design flow by Tim Edwards](http://opencircuitdesign.com/qrouter/). The following instructions are copied verbatim from the [qrouter repository](https://github.com/RTimothyEdwards/qrouter). The tool has been tested using version 1.4.

@@ -24,6 +24,7 @@ from gdsii.record import Record
 import numpy as np
 
 from ashes_fg.asic.exceptions import *
+from ashes_fg.asic.pd_tools import is_external_pd_tool
 from ashes_fg.asic.global_router import global_router
 from ashes_fg.asic.utils import *
 
@@ -39,18 +40,19 @@ pypath = sys.executable
 
 
 def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None, routed_def=False, router_tool='qrouter'):
+    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer,pd_tool = process_params
+    external_pd = is_external_pd_tool(pd_tool)
+
     verilog_file_name = proj_name + '.v'
     file_name_no_ext = proj_name
     #file_path = os.path.join('.', file_name_no_ext)
     file_path = os.path.join(proj_path,'pd')
-    file_path_cadence = os.path.join(proj_path,'cadence',proj_name,'inputs')
 
     if not os.path.exists(file_path):
             os.makedirs(file_path)
     ver_file = open(os.path.join(proj_path,'syn',verilog_file_name), 'r')
     ver_file_content = ver_file.read()
     ver_file.close()
-    tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer,run_fr_cadence = process_params
   
     ast = parse_verilog(ver_file_content)
     module_list = set()
@@ -62,9 +64,11 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     text_layout_path = os.path.join(file_path, f'{file_name_no_ext}_gds.txt')
     gds_path = os.path.join(file_path, f'{file_name_no_ext}_placed.gds')
 
-    if run_fr_cadence == 1:
-        lef_file_path = os.path.join(file_path_cadence, f'cells.lef')
-        def_file_path = os.path.join(file_path_cadence, f'{file_name_no_ext}.def')
+    if external_pd:
+        pd_inputs = os.path.join(proj_path, pd_tool, proj_name, 'inputs')
+        os.makedirs(pd_inputs, exist_ok=True)
+        lef_file_path = os.path.join(pd_inputs, 'cells.lef')
+        def_file_path = os.path.join(pd_inputs, f'{file_name_no_ext}.def')
 
     else:
         lef_file_path = os.path.join(file_path, f'{file_name_no_ext}.lef')
@@ -206,7 +210,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     frame_text = None
     if generate_cells_list:
         process_misc = (dbu, os.path.join(lib_path, 'tech_lef', f'{tech_process}'))
-        frame_text, frame_module = generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc,run_fr_cadence)
+        frame_text, frame_module = generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc,pd_tool)
         if verbose:
             print("Post frame generation, relative ordering within islands")
             pprint.pprint(cell_order_in_island)
@@ -223,13 +227,13 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
         update_output_layout('ENDLIB\n', text_layout_path)
         os.system(f'{pypath} {txt2gds_path} -o {gds_path} {text_layout_path}')
 
-        generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu, cell_order_in_island,lib_path,run_fr_cadence)
+        generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu, cell_order_in_island,lib_path,pd_tool)
 
         #metal_layers = count_metal_layers(layer_map, tech_process)
         metal_layers = count_metal_layers_drawing(layer_map, tech_process)
         def_params = (track_spacing, def_file_path, dbu, design_area, file_name_no_ext, frame_module, router_tool, tech_process)
 
-        if run_fr_cadence == 0:
+        if not external_pd:
             def_blocks, def_nets = generate_def(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table,lef_file_path)
         else:
             generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table,lef_file_path)
@@ -1319,7 +1323,8 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
     return ''.join(ret_string), island_dims
 
 
-def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc, run_fr_cadence):
+def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, generate_cells_list, track_spacing, layer_map, process_misc, pd_tool):
+    external_pd = is_external_pd_tool(pd_tool)
     module_inst = generate_cells_list[0]
     ret_string = []
     frame_module = None
@@ -1397,7 +1402,7 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
             pin_right = pin_center_x + int(track_spacing/2)
             pin_bot = pin_center_y - int(track_spacing + track_spacing/2)
             pin_top = pin_center_y + int(track_spacing/2)
-            if (pin_right > frame_right) and run_fr_cadence ==0:
+            if (pin_right > frame_right) and not external_pd:
                 raise ParsingError(f'Ran out of space when placing {pin_name} on the north edge')
             pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
             pin_item['center'] = (pin_center_x, pin_center_y)
@@ -1415,7 +1420,7 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         pin_right = pin_center_x + int(track_spacing + track_spacing/2)
         pin_bot = pin_center_y - int(track_spacing/2)
         pin_top = pin_center_y + int(track_spacing/2)
-        if (pin_bot < frame_bot ) and run_fr_cadence ==0:
+        if (pin_bot < frame_bot ) and not external_pd:
             pin_item_name = pin_item['name']
             raise ParsingError(f'Ran out of space when placing {pin_item_name} on the east edge')
         pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
@@ -1438,7 +1443,7 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
             pin_right = pin_center_x + int(track_spacing/2)
             pin_bot = pin_center_y - int(track_spacing/2)
             pin_top = pin_center_y + int(track_spacing + track_spacing/2)
-            if (pin_right > frame_right ) and run_fr_cadence ==0:
+            if (pin_right > frame_right ) and not external_pd:
                 pin_item_name = pin_item['name']
                 raise ParsingError(f'Ran out of space when placing {pin_item_name} on the south edge')
             pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
@@ -1457,7 +1462,7 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         pin_right = pin_center_x + int(track_spacing/2)
         pin_bot = pin_center_y - int(track_spacing/2)
         pin_top = pin_center_y + int(track_spacing/2)
-        if (pin_bot < frame_bot)  and run_fr_cadence ==0:
+        if (pin_bot < frame_bot)  and not external_pd:
             pin_item_name = pin_item['name']
             raise ParsingError(f'Ran out of space when placing {pin_item_name} on the west edge')
         pin_item['location'] = [pin_left, pin_bot, pin_right, pin_top]
@@ -1474,7 +1479,7 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
         pin_right = pin_center_x + int(track_spacing/2)
         pin_bot = pin_center_y_top - int(track_spacing + track_spacing/2)
         pin_top = pin_center_y_top + int(track_spacing/2)
-        if (pin_left < north_pins_far_right ) and run_fr_cadence ==0:
+        if (pin_left < north_pins_far_right ) and not external_pd:
             pin_item_name = pin_item['name']
             raise ParsingError(f'Ran out of space when placing power pin {pin_item_name} on the north edge')
         power_pin = pin_item['name_nodirection']
@@ -1612,18 +1617,19 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
     return ''.join(ret_string), frame_module
 
 
-def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_order_in_island,lib_path,run_fr_cadence):
+def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_order_in_island,lib_path,pd_tool):
     '''
     Create a lef file for the design
     - Start with a copy of the technology lef
     - Use the module list to define any pins found
     '''
+    external_pd = is_external_pd_tool(pd_tool)
 
     # Copy the technology lef for the design
     tech_lef_path = os.path.join(lib_path, 'tech_lef', tech_process + '.lef')
     #tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '_toplevelroute.lef')
     
-    if run_fr_cadence == 1:
+    if external_pd:
         header_str = 'VERSION 5.8 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
         ## Harcoded fix for innovus import, because cells.lef is not recognized properly according to dbu the def is 1000
         dbu=1000
@@ -1634,7 +1640,7 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
 
     lef_file = open(file_path, 'a')
 
-    if run_fr_cadence == 1:
+    if external_pd:
         lef_file.write(header_str) 
         lef_file.write(f"UNITS\n    DATABASE MICRONS {dbu} ;\nEND UNITS\n\n") 
 
@@ -1648,7 +1654,7 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
                 module = item['name']
                 lef_file.write(f'MACRO {module}\n')
 
-                if (run_fr_cadence == 1):
+                if (external_pd):
                     lef_file.write(f'  CLASS BLOCK ;\n')
                     lef_file.write(f"  ORIGIN {cell_info[module]['origin'][0]/dbu} {cell_info[module]['origin'][1]/dbu} ;\n")
                     lef_file.write(f"  SIZE {cell_info[module]['width']/dbu} BY {cell_info[module]['height']/dbu} ;\n")
@@ -1663,7 +1669,7 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
                     pins = {}
                 for pin, value in pins.items():
                     ## Maybe Qrouter also needs [] instead of <>, relook and remove this flag later
-                    if (run_fr_cadence == 1):
+                    if (external_pd):
                         formatted_pin = pin.replace('<', '[').replace('>', ']')
                         lef_file.write(f'  PIN {formatted_pin}\n')
                     else:
@@ -1676,7 +1682,7 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
                     rect = value['RECT']
                     lef_file.write(f'        RECT {rect[0]/dbu} {rect[1]/dbu} {rect[2]/dbu} {rect[3]/dbu} ;\n')
                     lef_file.write(f'    END\n')
-                    if (run_fr_cadence == 1):
+                    if (external_pd):
                         lef_file.write(f'  END {formatted_pin}\n')
                     else:
                         lef_file.write(f'  END {pin}\n')                
@@ -1689,7 +1695,7 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
         if not processed:
             lef_file.write(f'MACRO {module}\n')
             
-            if (run_fr_cadence == 1):
+            if (external_pd):
                 lef_file.write(f'  CLASS BLOCK ;\n')
                 lef_file.write(f"  ORIGIN {cell_info[module]['origin'][0]/dbu} {cell_info[module]['origin'][1]/dbu} ;\n")
                 lef_file.write(f"  SIZE {cell_info[module]['width']/dbu} BY {cell_info[module]['height']/dbu} ;\n")
@@ -1703,7 +1709,7 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
                     print(f'Warning: module {module} has no pins defined on the cell.')
                 pins = {}
             for pin, value in pins.items():
-                if (run_fr_cadence == 1):
+                if (external_pd):
                     formatted_pin = pin.replace('<', '[').replace('>', ']')
                     lef_file.write(f'  PIN {formatted_pin}\n')
                 else:
@@ -1716,7 +1722,7 @@ def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_orde
                 rect = value['RECT']
                 lef_file.write(f'        RECT {rect[0]/dbu} {rect[1]/dbu} {rect[2]/dbu} {rect[3]/dbu} ;\n')
                 lef_file.write(f'    END\n')
-                if (run_fr_cadence == 1):
+                if (external_pd):
                     lef_file.write(f'  END {formatted_pin}\n')
                 else:
                     lef_file.write(f'  END {pin}\n')

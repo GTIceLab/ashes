@@ -1,12 +1,14 @@
 import json
 import re
+from pathlib import Path
+from ashes_fg.asic.pd_tools import get_pd_tool
 
 def dict_to_tcl_brace(d):
     """Helper to convert {M1: 0.3} to { M1 0.3 }"""
     if not d: return "{ }"
     return "{ " + " ".join([f"{k} {v}" for k, v in d.items()]) + " }"
 
-def generate_main_tcl(filepath, subdir="inputs"):
+def _cadence_main(filepath, subdir="inputs"):
     tcl = [
         "###########################################################",
         "##  Main EDA Flow Execution Script",
@@ -24,7 +26,7 @@ def generate_main_tcl(filepath, subdir="inputs"):
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))
 
-def generate_init_tcl(config_data, filepath, top_level="proj_name"):
+def _cadence_init(config_data, filepath, top_level="proj_name"):
     init_section = config_data.get("init", [])
     tlef_path, pwr_nets, gnd_nets, ndr_rules = [], "", "", []
 
@@ -68,7 +70,7 @@ def generate_init_tcl(config_data, filepath, top_level="proj_name"):
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))
 
-def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath):
+def _cadence_pins(config_data, design_area, pin_signal_groups, filepath):
     pin_config_list = config_data.get("pins", [])
     full_pin_props = {}
     place_type = "side" 
@@ -136,7 +138,7 @@ def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath):
         f.write("\n".join(tcl))
 
 
-def generate_power_tcl(config_data, filepath):
+def _cadence_power(config_data, filepath):
     # Get the main power block (assuming first item in list)
     power_entry = config_data.get("power", [{}])[0]
     
@@ -213,7 +215,7 @@ def generate_power_tcl(config_data, filepath):
     print(f"Successfully generated: {filepath}")
 
         
-def generate_route_tcl(config_data, ndr_info, filepath):
+def _cadence_route(config_data, ndr_info, filepath):
     """
     Generates a Cadence Tcl script for routing.
     Maps 'default' NDR rules to 'ANALOG' and generates one command per net.
@@ -296,7 +298,7 @@ def generate_route_tcl(config_data, ndr_info, filepath):
         f.write("\n".join(tcl))
 
 
-def generate_signoff_tcl(config_data,filepath,top_level="proj_name"):
+def _cadence_signoff(config_data,filepath,top_level="proj_name"):
     sg_cfg = {}
     for item in config_data.get("signoff", []): sg_cfg.update(item)
     tcl = [
@@ -306,3 +308,411 @@ def generate_signoff_tcl(config_data,filepath,top_level="proj_name"):
     ]
     with open(filepath, "w") as f:
         f.write("\n".join(tcl))
+
+
+# OpenROAD uses the same PD configuration sections as the Cadence generator.
+def _tcl_word(value):
+    """Quote one Tcl word without executing paths, bus indices or substitutions."""
+    text = str(value)
+    for old, new in (("\\", "\\\\"), ('"', '\\"'), ("$", "\\$"),
+                     ("[", "\\["), ("]", "\\]"), ("\n", "\\n"), ("\r", "\\r")):
+        text = text.replace(old, new)
+    return '"' + text + '"'
+
+
+def _tcl_list(values):
+    return '[list ' + ' '.join(_tcl_word(value) for value in values) + ']'
+
+
+def _pd_section(config, name):
+    section = config.get(name, [])
+    if isinstance(section, dict):
+        return section.copy()
+    result = {}
+    for item in section:
+        for key, value in item.items():
+            if key in ('tlef_path', 'liberty_path'):
+                result.setdefault(key, []).extend(value if isinstance(value, list) else [value])
+            else:
+                result[key] = value
+    return result
+
+
+def _as_list(value):
+    return value if isinstance(value, (list, tuple)) else [value]
+
+
+def _write_openroad(filepath, lines):
+    with open(filepath, 'w') as stream:
+        stream.write('# Generated for OpenROAD; distances are in microns.\n')
+        stream.write('\n'.join(lines) + '\n')
+
+
+def _openroad_main(filepath, subdir):
+    lines = ['set ashes_project [file dirname [file normalize [info script]]]',
+             'file mkdir [file join $ashes_project run]',
+             'file mkdir [file join $ashes_project outputs]',
+             'cd [file join $ashes_project run]']
+    for step in ('init', 'pins', 'power', 'route', 'signoff'):
+        lines += [f'puts "--- Executing: {step}.tcl ---"',
+                  f'source [file join $ashes_project run {_tcl_word(subdir)} {step}.tcl]']
+    lines.append('puts "--- OpenROAD flow completed ---"')
+    _write_openroad(filepath, lines)
+
+
+def _openroad_init(config, filepath, top):
+    cfg = _pd_section(config, 'init')
+    lefs = _as_list(cfg.get('tlef_path', []))
+    if not lefs:
+        raise ValueError('OpenROAD requires init.tlef_path for the technology LEF.')
+    lines = [f'read_lef {_tcl_word(path)}' for path in lefs]
+    lines.append('read_lef ../inputs/cells.lef')
+    lines.extend(f'read_liberty {_tcl_word(path)}' for path in _as_list(cfg.get('liberty_path', [])))
+    lines += [f'read_verilog {_tcl_word("../inputs/" + top + ".v")}',
+              'link_design TOP',
+              '# Merge ASHES placement and blockages while preserving netlist connectivity.',
+              f'read_def -floorplan_initialize {_tcl_word("../inputs/" + top + ".def")}']
+    for rule in cfg.get('ndr', []):
+        command = f'create_ndr -name {_tcl_word(rule["name"])}'
+        for prop in ('width', 'spacing'):
+            if rule.get(prop):
+                command += f' -{prop} ' + _tcl_list(v for pair in rule[prop].items() for v in pair)
+        if rule.get('via'):
+            command += ' -via ' + _tcl_list(_as_list(rule['via']))
+        lines.append(command)
+        for layer, count in rule.get('min_cut', {}).items():
+            if int(count) != count or count < 1:
+                raise ValueError('NDR min_cut counts must be positive integers.')
+            lines += [f'set ashes_ndr [[ord::get_db_block] findNonDefaultRule {_tcl_word(rule["name"])}]',
+                      f'set ashes_layer [[ord::get_db_tech] findLayer {_tcl_word(layer)}]',
+                      'if {$ashes_layer == "NULL"} {error "Unknown NDR cut layer"}',
+                      'if {[$ashes_layer getType] ne "CUT"} {error "NDR min_cut requires a cut layer"}',
+                      f'$ashes_ndr setMinCuts $ashes_layer {int(count)}']
+    _write_openroad(filepath, lines)
+
+
+def _openroad_pins(config, area, groups, filepath):
+    cfg = _pd_section(config, 'pins')
+    if cfg.get('place_type', 'side') != 'side':
+        raise ValueError('OpenROAD pin placement supports place_type="side".')
+    x, y, width, height = (value / 1000 for value in area[:4])
+    die_w, die_h = width + 2*x, height + 2*y
+    # Match the existing Cadence core_size interpretation; preserve imported instances.
+    command = (f'initialize_floorplan -die_area {{0 0 {die_w} {die_h}}} '
+               f'-core_area {{{x} {y} {x+width} {y+height}}}')
+    lines = []
+    if cfg.get('site'):
+        command += f' -site {_tcl_word(cfg["site"])}'
+    else:
+        # Placement rows require a LEF site even when ASHES places the cells.
+        lines += [
+            'set ashes_core_sites {}',
+            'foreach ashes_lib [[ord::get_db] getLibs] {',
+            '    foreach ashes_site [$ashes_lib getSites] {',
+            '        if {[$ashes_site getClass] eq "CORE"} {',
+            '            lappend ashes_core_sites [$ashes_site getName]',
+            '        }',
+            '    }',
+            '}',
+            'set ashes_core_sites [lsort -unique $ashes_core_sites]',
+            'if {[llength $ashes_core_sites] != 1} {',
+            '    error "Set pins.site in pd_settings.json to a LEF CORE site name. Available CORE sites: $ashes_core_sites"',
+            '}',
+            'set ashes_site [lindex $ashes_core_sites 0]',
+        ]
+        command += ' -site $ashes_site'
+    lines += [command, 'make_tracks']
+    for side in ('W', 'N', 'E', 'S'):
+        signals = groups.get(side, [])
+        if not signals or side not in cfg:
+            continue
+        props = cfg[side]
+        layer = props.get('met_layer', 'M3')
+        length = die_h if side in ('W', 'E') else die_w
+        start, end = float(props.get('offset_start', 0.6)), float(props.get('offset_end', 0.6))
+        if start < 0 or end < 0 or start + end >= length:
+            raise ValueError(f'Invalid pin offsets on {side} edge.')
+        for i, signal in enumerate(signals):
+            pos = start + (length-start-end) * (i/(len(signals)-1) if len(signals)>1 else 0.5)
+            px, py = {'W': (0, pos), 'E': (die_w, pos), 'S': (pos, 0), 'N': (pos, die_h)}[side]
+            # Limit decimal noise in micron coordinates; OpenROAD snaps to tracks.
+            location = " ".join(f"{coord:.6f}".rstrip("0").rstrip(".") for coord in (px, py))
+            lines.append(f'place_pin -pin_name {_tcl_word(signal)} -layer {_tcl_word(layer)} '
+                         f'-location {{{location}}} -pin_size {{{props.get("pin_width", 0.3)} '
+                         f'{props.get("pin_height", 0.3)}}} -force_to_die_boundary')
+    _write_openroad(filepath, lines)
+
+
+def _openroad_power(config, filepath):
+    cfg = _pd_section(config, 'power')
+    init = _pd_section(config, 'init')
+    globals_cfg = cfg.get('power_globals', {})
+    nets = globals_cfg.get('nets', ['VDD', 'GND'])
+    if isinstance(nets, str):
+        nets = nets.replace(',', ' ').split()
+    if len(nets) < 2:
+        raise ValueError('power_globals.nets must include power and ground.')
+    def net_names(value):
+        return value.replace(',', ' ').split() if isinstance(value, str) else list(value)
+    powers = net_names(init.get('pwr_nets', nets[0]))
+    grounds = net_names(init.get('gnd_nets', nets[-1]))
+    if not powers or not grounds or set(powers) & set(grounds):
+        raise ValueError('OpenROAD requires distinct power and ground nets.')
+    lines = []
+    for names, kind in ((powers, 'power'), (grounds, 'ground')):
+        for net in names:
+            lines.append(f'add_global_connection -net {_tcl_word(net)} '
+                         f'-pin_pattern {_tcl_word("^" + re.escape(net) + "$")} -{kind}')
+    lines.append('global_connect')
+    route_type = globals_cfg.get('type', 'rings')
+    if route_type not in ('rings', 'stripes'):
+        raise ValueError('OpenROAD power_globals.type must be rings or stripes.')
+    shapes = cfg.get(route_type, [])
+    if shapes:
+        if len(powers) != 1 or len(grounds) != 1 or set(nets) != set(powers + grounds):
+            raise ValueError('OpenROAD PDN currently supports one power/ground pair; align init nets and power_globals.nets.')
+        lines += [f'set_voltage_domain -name CORE -power {_tcl_word(powers[0])} -ground {_tcl_word(grounds[0])}',
+                  'define_pdn_grid -name ashes_grid -voltage_domains {CORE}']
+        for shape in shapes:
+            if route_type == 'rings':
+                if shape.get('center'):
+                    raise ValueError('Centered Cadence rings need explicit OpenROAD offsets; set center=false.')
+                lines.append('add_pdn_ring -grid ashes_grid -layers ' +
+                             _tcl_list([shape['horiz_layer'], shape['vert_layer']]) +
+                             f' -widths {shape["width"]} -spacings {shape["spacing"]} '
+                             f'-core_offsets {shape["offset"]} -add_connect')
+            else:
+                if shape.get('direction'):
+                    lines += [f'set ashes_layer [[ord::get_db_tech] findLayer {_tcl_word(shape["layer"])}]',
+                              'if {$ashes_layer == "NULL"} {error "Unknown stripe layer"}',
+                              f'if {{[string tolower [$ashes_layer getDirection]] ne {_tcl_word(shape["direction"].lower())}}} '
+                              '{error "Stripe direction must match the technology LEF"}']
+                pitch = shape.get('pitch', 2*(shape['width'] + shape['spacing']))
+                lines.append(f'add_pdn_stripe -grid ashes_grid -layer {_tcl_word(shape["layer"])} '
+                             f'-width {shape["width"]} -spacing {shape["spacing"]} -pitch {pitch} '
+                             f'-offset {shape.get("start_offset", 0)} -number_of_straps {int(shape.get("no_of_sets", 1))}')
+        for connection in cfg.get('connect', []):
+            if len(connection) != 2:
+                raise ValueError('Each power.connect entry must contain two layer names.')
+            lines.append('add_pdn_connect -grid ashes_grid -layers ' + _tcl_list(connection))
+        if not cfg.get('connect'):
+            lines.append('puts "WARNING: Add power.connect layer pairs to connect the grid to cell power pins."')
+        if globals_cfg.get('top_via_stack') or globals_cfg.get('bot_via_stack'):
+            lines.append('puts "WARNING: Cadence via-stack limits are not translated; OpenROAD uses power.connect layer pairs."')
+        lines.append('pdngen')
+    _write_openroad(filepath, lines)
+
+
+def _openroad_route(config, ndr_info, filepath):
+    cfg = _pd_section(config, 'route')
+    lines = []
+    if ndr_info:
+        assignments = []
+        for target, rule in ndr_info.items():
+            assignments.extend([target, 'ANALOG' if rule.lower() == 'default' else rule])
+        lines += [
+            '# Resolve port aliases before assigning rules to database nets.',
+            'set ashes_ndr_by_net [dict create]',
+            'set ashes_block [ord::get_db_block]',
+            'foreach {ashes_target ashes_rule} ' + _tcl_list(assignments) + ' {',
+            '    set ashes_port [$ashes_block findBTerm $ashes_target]',
+            '    if {$ashes_port ne "NULL"} {',
+            '        set ashes_net [$ashes_port getNet]',
+            '    } else {',
+            '        set ashes_net [$ashes_block findNet $ashes_target]',
+            '    }',
+            '    if {$ashes_net eq "NULL"} {',
+            '        error "NDR target $ashes_target is missing or is an unconnected port"',
+            '    }',
+            '    set ashes_net_name [$ashes_net getName]',
+            '    if {[dict exists $ashes_ndr_by_net $ashes_net_name]} {',
+            '        set ashes_previous [dict get $ashes_ndr_by_net $ashes_net_name]',
+            '        if {$ashes_previous ne $ashes_rule} {',
+            '            error "Conflicting NDRs for net $ashes_net_name: $ashes_previous and $ashes_rule (target $ashes_target)"',
+            '        }',
+            '    }',
+            '    dict set ashes_ndr_by_net $ashes_net_name $ashes_rule',
+            '    puts "NDR target $ashes_target -> net $ashes_net_name -> rule $ashes_rule"',
+            '}',
+            '# Assign once per resolved net after checking all targets for conflicts.',
+            'dict for {ashes_net_name ashes_rule} $ashes_ndr_by_net {',
+            '    assign_ndr -ndr $ashes_rule -net $ashes_net_name',
+            '}',
+        ]
+    if any('CLOCK' in rule.upper() for rule in (ndr_info or {}).values()):
+        lines.append('puts "WARNING: OpenROAD NDRs do not reproduce Innovus clock shielding or SI repair."')
+    bottom, top = cfg.get('bot_layer'), cfg.get('top_layer')
+    if bool(bottom) != bool(top):
+        raise ValueError('Specify both route.bot_layer and route.top_layer for OpenROAD.')
+    if bottom and top:
+        lines.append(f'set_routing_layers -signal {_tcl_word(bottom + "-" + top)}')
+    lines.append('global_route -guide_file ../outputs/route.guide')
+    lines.append(F'detailed_route  -droute_end_iter {cfg.get('iterations')} -output_drc ../outputs/route_drc.rpt')
+    _write_openroad(filepath, lines)
+
+
+def _openroad_signoff(config, filepath, top):
+    lines = [f'{command} {_tcl_word("../outputs/" + top + extension)}'
+             for command, extension in (('write_db', '.odb'), ('write_def', '.def'),
+                                        ('write_verilog', '.v'), ('write_abstract_lef', '.lef'))]
+    stream = _pd_section(config, 'signoff').get('def2stream')
+    if stream is not None:
+        lines.extend(_openroad_def2stream(stream, top))
+    else:
+        lines.append('puts "GDS export skipped: configure signoff.def2stream to enable KLayout conversion."')
+    _write_openroad(filepath, lines)
+
+
+def _openroad_def2stream(cfg, top):
+    """Build a KLayout invocation without reading technology or library files.
+
+    All configured relative paths are resolved from the OpenROAD run directory.
+    layer_map must be a KLayout LEF/DEF map, not an Innovus stream-out map.
+    """
+    if not isinstance(cfg, dict):
+        raise ValueError('signoff.def2stream must be a settings object.')
+    tech_file, tech_lef = cfg.get('tech_file'), cfg.get('tech_lef')
+
+    if bool(tech_file) == bool(tech_lef):
+        raise ValueError(
+            'Set exactly one of def2stream.tech_file (.lyt) or tech_lef.'
+        )
+
+    if tech_lef and not cfg.get('layer_map'):
+        raise ValueError('def2stream.tech_lef requires a KLayout layer_map.')
+
+    gds_dir = cfg.get('in_files')
+
+    if not gds_dir or not isinstance(gds_dir, str):
+        raise ValueError('def2stream.in_files must be a directory path string.')
+
+    # Convert relative path to an absolute path immediately
+    abs_gds_dir = Path(gds_dir).resolve()
+
+    if not abs_gds_dir.is_dir():
+        raise ValueError(
+            f'def2stream.in_files directory does not exist: {abs_gds_dir}. Give the path referenced to this pd_setting.json file dir'
+        )
+
+    # Collect GDS/OAS files using full absolute paths
+    gds_paths = sorted(
+        str(p.resolve())
+        for p in abs_gds_dir.iterdir()
+        if p.suffix.lower() in ('.gds', '.oas') and p.is_file()
+    )
+
+    if not gds_paths:
+        raise ValueError(f'No .gds or .oas files found in directory: {abs_gds_dir}')
+
+    if any(any(c.isspace() for c in path) for path in gds_paths):
+        raise ValueError('Found GDS/OAS file paths containing whitespace.')
+
+    in_files = ' '.join(gds_paths)
+
+    macro_lefs = cfg.get('macro_lefs', ['../inputs/cells.lef'])
+
+    if isinstance(macro_lefs, (list, tuple)):
+        if any(
+            not isinstance(path, str) or not path or ';' in path
+            for path in macro_lefs
+        ):
+            raise ValueError(
+                'def2stream.macro_lefs paths must be nonempty strings without'
+                ' semicolons.'
+            )
+        macro_lefs = ';'.join(macro_lefs)
+
+    elif not isinstance(macro_lefs, str):
+        raise ValueError(
+            'def2stream.macro_lefs must be a list or semicolon-separated'
+            ' string.'
+        )
+
+    script = cfg.get(
+        'script', str(Path(__file__).resolve().with_name('def2stream.py'))
+    )
+
+    command = [cfg.get('klayout', 'klayout'), '-b', '-r', script]
+    values = {
+        'in_def': '../outputs/' + top + '.def',
+        'out_file': '../outputs/' + top + '.gds',
+        'in_files': in_files,
+        'macro_lefs': macro_lefs,
+    }
+    for key in ('tech_file', 'tech_lef', 'layer_map', 'seal_file'):
+        if cfg.get(key):
+            values[key] = cfg[key]
+    for key, value in values.items():
+        command.extend(['-rd', f'{key}={value}'])
+    lines = [
+        '# Merge the routed DEF with cell layouts using KLayout.',
+        'set ashes_stream_cmd ' + _tcl_list(command),
+        'lappend ashes_stream_cmd -rd "design_name=[[ord::get_db_block]'
+        ' getName]"',
+    ]
+    if 'def_units' in cfg:
+        value = cfg['def_units']
+        try:
+            units = int(str(value))
+        except (TypeError, ValueError):
+            raise ValueError(
+                'def2stream.def_units must be a positive integer.'
+            ) from None
+        if units <= 0:
+            raise ValueError(
+                'def2stream.def_units must be a positive integer.'
+            )
+        lines.append(
+            f'lappend ashes_stream_cmd -rd {_tcl_word("def_units=" + str(units))}'
+        )
+    else:
+        lines.append(
+            'lappend ashes_stream_cmd -rd "def_units=[[ord::get_db_block]'
+            ' getDbUnitsPerMicron]"'
+        )
+    lines += [
+        'puts "Converting routed DEF to GDS with KLayout..."',
+        'set log_file "klayout_conversion.log"',
+        'if {[catch {exec {*}$ashes_stream_cmd > $log_file 2>&1} err]} {',
+        '    puts "KLayout failed with error: $err"',
+        '    puts "Check $log_file for full details."',
+        '}',
+        f'puts {_tcl_word("GDS written: ../outputs/" + top + ".gds")}',
+    ]
+    
+    return lines
+
+
+
+def _generate_tcl(pd_tool, step, *args):
+    tool = get_pd_tool(pd_tool)
+    prefix = tool["tcl_prefix"]
+    if not tool["external"] or not prefix:
+        raise ValueError(f"{pd_tool!r} does not use external PD Tcl generation.")
+    generator = globals().get(f"_{prefix}_{step}")
+    if not callable(generator):
+        raise ValueError(f"No {step} Tcl generator registered for {pd_tool!r}.")
+    return generator(*args)
+
+def generate_main_tcl(filepath, subdir="inputs", pd_tool="cadence"):
+    return _generate_tcl(pd_tool, "main", filepath, subdir)
+
+
+def generate_init_tcl(config_data, filepath, top_level="proj_name", pd_tool="cadence"):
+    return _generate_tcl(pd_tool, "init", config_data, filepath, top_level)
+
+
+def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath, pd_tool="cadence"):
+    return _generate_tcl(pd_tool, "pins", config_data, design_area, pin_signal_groups, filepath)
+
+
+def generate_power_tcl(config_data, filepath, pd_tool="cadence"):
+    return _generate_tcl(pd_tool, "power", config_data, filepath)
+
+
+def generate_route_tcl(config_data, ndr_info, filepath, pd_tool="cadence"):
+    return _generate_tcl(pd_tool, "route", config_data, ndr_info, filepath)
+
+
+def generate_signoff_tcl(config_data,filepath,top_level="proj_name", pd_tool="cadence"):
+    return _generate_tcl(pd_tool, "signoff", config_data, filepath, top_level)
