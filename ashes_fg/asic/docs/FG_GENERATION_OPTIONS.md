@@ -1,7 +1,8 @@
 # Configurable FG peripheral generation
 
 All options are Python arguments; no JSON registry or copied cell definitions
-are required. The default path handles a regular 16nm VMM or supported registered local bands
+are required. The regular VMM path supports `xy` and `columns_y_rows_minus_x`, using matching
+cell interfaces. The existing mixed path handles supported registered local bands
 across a mixed VMM body. See [gap-filler scope](PERIPHERAL_GAP_FILLERS.md).
 
 ```python
@@ -157,3 +158,25 @@ library profiles, variable-width bands and connection ownership.
 
 Automatic mixed-band checks additionally cover all eight stage combinations,
 profile-driven narrow/regular fillers and explicit separation from bridge ties.
+
+See [separate generated cells and hand-maintained profiles](CELL_LIBRARY_PROFILES.md)
+for cells_16nm_profiles.py, explicit registration and automatic library loading.
+
+Supplied placement profiles name cell masters only; passive gap filler continuity
+relies on designer-verified abutment. Functional active-cell wiring remains in
+the algorithms. See [simple profiles](CELL_LIBRARY_PROFILES.md#simple-placement-only-profiles).
+
+
+## Explicit routed drain extensions
+
+`peripherals.fg_extensions.generate_drain_extension(owner, scopes, cells=...,
+process_coordinates=...)` builds one program-only chain from ordered real
+(P, R) pin scopes. It reuses the selected shared decoder, wire_chain and
+physical companion manager. It creates no dummy VMM, per-scope decoder, or
+physical routing-bridge master. The returned drain output count is the sum
+of the scopes; its targets remain explicit circuit nets.
+
+Native XY mixed bands use layout_mixed_xy and library filler profiles.
+Body-only S generation (`peripherals=False`) lets a composite CSC owner
+generate its full programming bands once. The existing standalone S mode
+remains available. Passive traversal masters come from the body profiles.

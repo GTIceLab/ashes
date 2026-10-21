@@ -372,10 +372,10 @@ Cell classes may define `physical_companions` with `edge_left`, `edge_right`
 and `tap` names. `None` explicitly disables a companion kind. The default
 remains `<cell>_EdgeL`, `<cell>_EdgeR`, `<cell>_TAP`. Explicit profiles also allow
 arbitrary companion names, `TAP_FILL` and `TopBot` variants. Members of a band
-must share one profile. `supply_aliases` maps native supply families to declared
-supply keys, for example `VDD` to `VDD_CORE`. `shared_families` declares a bus
-that reaches both terminations despite only one-sided interior pins; the pass
-requires its member nets to agree lane by lane.
+must share one profile. The supplied profiles name only edge/TAP masters. No signal or supply
+annotations are required in cells_16nm_profiles.py. Existing physical-pass
+boundary matching and explicit algorithm connections remain separate from the
+profile. The designer/library guarantees passive continuity through abutment.
 
 S-block `OUT` signals exist on termination cells. The builder returns live
 wires and declares native W/E `OUT` endpoint bindings for its routing bands.
@@ -396,3 +396,6 @@ The old `insertDrainTapFiller` and `insertDrainEdgeFiller` algorithm helpers are
 removed. Configure `physical_cells` instead. Missing gate companion variants
 are logged and skipped. This is placement and connectivity verification;
 routing and physical signoff remain separate.
+
+See [separate generated cells and hand-maintained profiles](CELL_LIBRARY_PROFILES.md)
+for cells_16nm_profiles.py, explicit registration and automatic library loading.

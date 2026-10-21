@@ -98,8 +98,8 @@ def generate(island, *, cells=None, process_coordinates='columns_y_rows_minus_x'
         if island.fg_generated.configuration != config:
             raise ValueError('Reconfigure FG generation from the original circuit')
         return island.fg_generated
-    if algorithm is None and process_coordinates != 'columns_y_rows_minus_x':
-        raise ValueError('Default 16nm generation requires columns_y_rows_minus_x')
+    if process_coordinates not in ('xy', 'columns_y_rows_minus_x'):
+        raise ValueError('Invalid process_coordinates')
     model, circuit = inspect.getmodule(type(island.circuit)), island.circuit
     snapshot = _snapshot(circuit)
     try:
@@ -151,7 +151,8 @@ def generate(island, *, cells=None, process_coordinates='columns_y_rows_minus_x'
             plan.signature = _signature(island)
             island.fg_generated = generated
             return generated
-        if next(iter(parents)).name != 'IndirectVMM_4x2':
+        if (next(iter(parents)).name != 'IndirectVMM_4x2' and
+                getattr(type(next(iter(parents))), 'fg_regular_interface', None) != 'vmm'):
             raise ValueError('Default generation requires VMM parents; use a custom generator for other FG interfaces')
         core = next(iter(parents))
         if plan.gate is None or plan.drain is None:
@@ -166,16 +167,21 @@ def generate(island, *, cells=None, process_coordinates='columns_y_rows_minus_x'
         row, col = int(loc[0][0]), int(loc[1][0])
         generated = Generated(plan.gate, plan.drain, configuration=config)
         for role, chain in (('gate', plan.gate), ('drain', plan.drain)):
-            dim = (1, core.dim[1]) if role == 'gate' else (core.dim[0], 1)
+            native_xy = process_coordinates == 'xy'
+            dim = ((core.dim[0], 1) if role == 'gate' else (1, core.dim[1])) if native_xy else ((1, core.dim[1]) if role == 'gate' else (core.dim[0], 1))
             chain.switches = None if chain.switch is False else chain.switch(circuit, island, dim=dim)
             chain.level_shifters = None if chain.level_shifter is False else chain.level_shifter(circuit, island, dim=dim)
             stages = [(kind, cell) for kind, cell in (('switch', chain.switches), ('shifter', chain.level_shifters))
                       if cell is not None]
             for step, (kind, cell) in enumerate(stages):
-                position = ((row + core.dim[0] + step, col) if role == 'gate'
+                along_rows = (role == 'drain') if native_xy else (role == 'gate')
+                position = ((row + core.dim[0] + step, col) if along_rows
                             else (row, col + core.dim[1] + step))
                 _place(cell, position, (role + '_' + kind, 0, 0))
             plan.signature = _signature(island)
+            if native_xy:
+                chain.decoder_placement = (AlgorithmGrid(island, (row, col + core.dim[1] + 2), (1, 0), (0, 1))
+                                           if role == 'gate' else AlgorithmGrid(island, (row + core.dim[0] + 2, col)))
             result = None if chain.decoder is False else chain.build_decoder()
             wire_chain(chain, generated, (core,), result)
         island.fg_generated = generated
@@ -343,8 +349,12 @@ def collect_layout(circuit):
 
 def apply_layout(islands, cells, plans, companions=(), swapped=True):
     """Use actual GDS bounds; decoder double pitch must not stretch VMM columns."""
-    if not swapped and any('layout' not in plan for plan in plans or ()):
-        raise ValueError('Default FG layout requires the swapped convention')
+    if not swapped:
+        regular = [plan for plan in plans or () if 'layout' not in plan]
+        custom = [plan for plan in plans or () if 'layout' in plan]
+        if regular:
+            _apply_native_regular(islands, cells, regular, companions)
+        plans = custom
     for plan in plans or ():
         number, island = plan['island'], islands[plan['island']]
         def find(location):
@@ -474,6 +484,28 @@ def apply_layout(islands, cells, plans, companions=(), swapped=True):
                     raise ValueError('Decoder layout cannot replace another peripheral')
                 boxes.update(placed)
                 place_companions()
+        # Anchor partial gate decoder groups at the end of the core span.
+        # Extra helper slots extend into the free side, not into the next
+        # vertically abutting VMM. Companion children follow the same shift.
+        if 'layout' not in plan:
+            gate_decoder = next((d for d in plan['decoders'] if d['role'] == 'gate'), None)
+            if gate_decoder is not None:
+                group = {find(e['location']) for e in gate_decoder['entries']}
+                growing = True
+                while growing:
+                    growing = False
+                    for relation in companions or ():
+                        if relation['island'] != number:
+                            continue
+                        child = find(relation['cell'])
+                        parents = {find(loc) for loc in relation.get('parents', [relation['parent']])}
+                        if child not in group and parents <= group:
+                            group.add(child)
+                            growing = True
+                shift = min(0, boxes[core_idx][2] - max(boxes[idx][2] for idx in group))
+                for idx in group:
+                    boxes[idx][0] += shift
+                    boxes[idx][2] += shift
         if pending:
             raise ValueError('Unresolved FG companion chain')
         if set(boxes) != set(island['items']):
@@ -486,3 +518,44 @@ def apply_layout(islands, cells, plans, companions=(), swapped=True):
             for b in values[index + 1:]:
                 if min(a[2], b[2]) > max(a[0], b[0]) and min(a[3], b[3]) > max(a[1], b[1]):
                     raise ValueError('Generated FG cells overlap')
+
+
+def _apply_native_regular(islands, cells, plans, companions):
+    """Reuse the regular local-XY solver, then map boxes to native Cartesian XY.
+
+    This transforms layout data only: cell masters, pins, and native GDS
+    references remain unrotated. Decoder callbacks still see canonical XY.
+    """
+    from copy import deepcopy
+    virtual = deepcopy({plan['island']: islands[plan['island']] for plan in plans})
+    for island in virtual.values():
+        for item in island['items'].values():
+            item['logical_row'], item['logical_col'] = item['logical_col'], item['logical_row']
+            if 'mat_info' in item:
+                mat = item['mat_info']
+                mat['mat_row'], mat['mat_col'] = mat['mat_col'], mat['mat_row']
+    virtual_cells = {name: dict(info, width=info['height'], height=info['width'])
+                     for name, info in cells.items()}
+    virtual_plans = []
+    for plan in plans:
+        value = dict(plan)
+        value['entries'] = [dict(entry, location=tuple(reversed(entry['location']))) for entry in plan['entries']]
+        value['decoders'] = [dict(decoder, entries=[dict(entry, location=tuple(reversed(entry['location'])))
+                                                   for entry in decoder['entries']]) for decoder in plan['decoders']]
+        virtual_plans.append(value)
+    relations = []
+    for relation in companions or ():
+        value = dict(relation)
+        for key in ('parent', 'cell'):
+            if key in value:
+                value[key] = tuple(reversed(value[key]))
+        if 'parents' in value:
+            value['parents'] = [tuple(reversed(loc)) for loc in value['parents']]
+        relations.append(value)
+    apply_layout(virtual, virtual_cells, virtual_plans, relations, swapped=True)
+    for plan in plans:
+        number = plan['island']
+        boxes = virtual[number]['coords']
+        top = max(box[3] for box in boxes)
+        for idx, (left, bottom, right, upper) in enumerate(boxes):
+            islands[number]['coords'][idx] = [top - upper, left, top - bottom, right]

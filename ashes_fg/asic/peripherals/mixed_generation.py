@@ -5,7 +5,7 @@ Advanced body interfaces and bridge-dependent roles remain explicit callbacks.
 """
 from .fg_generation import Generated, wire_chain
 from .fg_peripherals import _signature
-from .peripheral_bands import build_band, bind_band
+from .peripheral_bands import build_band, register_band
 from ..placement.algorithm_grid import AlgorithmGrid
 from ..placement.peripheral_layout import layout_mixed
 
@@ -14,7 +14,7 @@ def generate_mixed(island, plan, roles):
     parents = {pin.cell for role in roles for channel in
                (getattr(plan, role).channels if getattr(plan, role) else ())
                for pin in channel.targets}
-    if not parents or any(parent.name != 'IndirectVMM_4x2' for parent in parents):
+    if not parents or any(parent.name != 'IndirectVMM_4x2' and getattr(type(parent), 'fg_regular_interface', None) != 'vmm' for parent in parents):
         raise ValueError('Automatic abutting bands require VMM programming interfaces; '
                          'select VMM parents explicitly with parents= or use a custom algorithm')
     for role in roles:
@@ -42,7 +42,8 @@ def generate_mixed(island, plan, roles):
     end_col = max(b[3] for b in bounds)
     start_row = min(b[0] for b in bounds)
     start_col = min(b[1] for b in bounds)
-    generated = Generated(plan.gate, plan.drain, layout=layout_mixed)
+    from ..placement.peripheral_layout import layout_mixed_xy, layout_mixed_swapped
+    generated = Generated(plan.gate, plan.drain, layout=(layout_mixed_xy if plan.gate and plan.gate.process_coordinates == 'xy' else layout_mixed_swapped))
     for role in roles:
         chain = getattr(plan, role)
         if chain is None:
@@ -50,7 +51,8 @@ def generate_mixed(island, plan, roles):
         bands = []
         # Staging is only a unique indexing space. Physical abutment is resolved
         # below from real footprints; these reserved gaps add no physical space.
-        origin = end_row + 4 if role == 'gate' else end_col + sum(
+        along_rows = chain.layouts[0].axis == 'rows'
+        origin = (end_col if along_rows else end_row) + sum(
             getattr(plan, r).output_count for r in roles if getattr(plan, r)) + 8
         for stage in ('switch', 'level_shifter'):
             band = build_band(chain, stage, origin + len(bands))
@@ -59,14 +61,13 @@ def generate_mixed(island, plan, roles):
                 generated.bands[(role, stage)] = band
         chain.switches = next((b.active for b in bands if b.stage == 'switch'), None)
         chain.level_shifters = next((b.active for b in bands if b.stage == 'level_shifter'), None)
-        chain.decoder_placement = (AlgorithmGrid(island, (origin + len(bands) + 2, start_col))
-                                   if role == 'gate' else AlgorithmGrid(
-                                       island, (start_row, origin + len(bands) + 2), (1, 0), (0, 1)))
+        chain.decoder_placement = (AlgorithmGrid(island, (start_row, origin + len(bands) + 2), (1, 0), (0, 1))
+                                   if along_rows else AlgorithmGrid(island, (origin + len(bands) + 2, start_col)))
         plan.signature = _signature(island)
         result = None if chain.decoder is False else chain.build_decoder()
         wire_chain(chain, generated, tuple(parents), result)
         for band in bands:
-            bind_band(band, generated)
+            register_band(band, generated)
         if result is not None:
             if not callable(result.layout):
                 raise ValueError('Selected decoder must return a physical layout callback')

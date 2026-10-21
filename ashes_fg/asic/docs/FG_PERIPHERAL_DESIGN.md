@@ -430,3 +430,14 @@ non-FG columns. They add physical support cells, not channels or shared body net
 Routing bridge insertion, island/switch extension and connection ties require
 separate topology and electrical contracts. See
 [implemented scope and examples](PERIPHERAL_GAP_FILLERS.md).
+
+## Profile source ownership
+
+Keep technology metadata in a hand-maintained provider beside the generated
+cell module. ASHES loads the provider before planning/catalog lookup; algorithms
+continue to declare instance bands. See
+[cell library profiles](CELL_LIBRARY_PROFILES.md).
+
+Supplied placement profiles name cell masters only; passive gap filler continuity
+relies on designer-verified abutment. Functional active-cell wiring remains in
+the algorithms. See [simple profiles](CELL_LIBRARY_PROFILES.md#simple-placement-only-profiles).

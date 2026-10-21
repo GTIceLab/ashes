@@ -108,9 +108,12 @@ absolute anchor or implementing drain-axis conversion must remove that mapping.
 Builders must reserve unique staging locations through the supplied grid and
 retain `fg_peripheral` / `physical_companion` metadata for compact placement.
 Use `register_companion_group()` for body bands. The optional `fg_geometry`
-descriptors remain algorithm-owned. The current 16nm FG materializer still
-requires its selected swapped process convention; canonical algorithm XY does
-not add physical-library support for another process convention.
+descriptors remain algorithm-owned. Regular FG generation now supports native `xy` as well as the swapped
+`columns_y_rows_minus_x` convention. Programming-channel axes come from the
+selected cell interfaces; regular native layout reuses the canonical solver
+without rotating native cell masters. Compatible additional technologies still
+need their own library/profile and physical validation. Automatic mixed-band
+layout retains its existing swapped-coordinate contract.
 
 Generation is idempotent for the same configuration. A failed generation restores
 the circuit-model state. Reconfiguration requires the original circuit. Library
@@ -157,3 +160,10 @@ library profiles, variable-width bands and connection ownership.
 
 See [automatic local bands](PERIPHERAL_GAP_FILLERS.md) for the supported mixed-body
 path, roles selection, returned buses and its separation from bridges/extensions.
+
+See [separate generated cells and hand-maintained profiles](CELL_LIBRARY_PROFILES.md)
+for cells_16nm_profiles.py, explicit registration and automatic library loading.
+
+Supplied placement profiles name cell masters only; passive gap filler continuity
+relies on designer-verified abutment. Functional active-cell wiring remains in
+the algorithms. See [simple profiles](CELL_LIBRARY_PROFILES.md#simple-placement-only-profiles).

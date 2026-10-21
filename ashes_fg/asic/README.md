@@ -13,7 +13,7 @@ look for each part of the flow.
 | [layout/](layout/) | Verilog-to-GDS compilation, layout assembly and text-to-GDS conversion | `verilog_to_gds.py`, `txt2gds.py` |
 | [routing/](routing/) | Global routing and global signal connections | `global_router.py`, `add_global.py` |
 | [pd/](pd/) | External physical-design tool selection, Tcl generation and KLayout DEF/GDS merging | `pd_tools.py`, `pd_tcl_gen.py`, `def2stream.py` |
-| [library/](library/) | Python cell-definition generation from JSON and pin-interface update utilities | `json2python.py`, `update_generated_pin_interfaces.py` |
+| [library/](library/) | Python cell-definition generation from JSON and pin-interface update utilities | `json2python.py`, `update_generated_pin_interfaces.py`, `cell_profiles.py` |
 | [common/](common/) | Shared exceptions and geometry utilities | `exceptions.py`, `utils.py` |
 | [lib/](lib/) | Process-specific resources used by the layout flow | Existing technology data |
 | [gdsii/](gdsii/) | Bundled GDSII reader/writer | GDS record, tag and type definitions |
@@ -57,3 +57,6 @@ See [decoder gap fillers](docs/DECODER_GAPS.md) for traversing registered non-FG
 
 See [local peripheral fillers, routing bridges and extensions](docs/PERIPHERAL_GAP_FILLERS.md)
 for automatic mixed bands, general library profiles and separate connection ownership.
+
+See [separate generated cells and hand-maintained profiles](docs/CELL_LIBRARY_PROFILES.md)
+for cells_16nm_profiles.py, explicit registration and automatic library loading.

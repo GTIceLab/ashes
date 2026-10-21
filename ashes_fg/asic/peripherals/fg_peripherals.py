@@ -10,6 +10,7 @@ import inspect
 from types import SimpleNamespace
 from ..placement.algorithm_grid import AlgorithmGrid
 from .peripheral_gaps import discover_gaps
+from ..library.cell_profiles import load_cell_library
 
 
 DEFAULTS = {
@@ -246,9 +247,9 @@ class Peripherals:
 
 def _library(island, cells):
     if isinstance(cells, str):
-        return importlib.import_module(cells)
+        return load_cell_library(cells)
     if cells is not None:
-        return cells
+        return load_cell_library(cells)
     candidates = []
     for parent in island.instances:
         module = inspect.getmodule(type(parent))
@@ -256,7 +257,7 @@ def _library(island, cells):
             candidates.append(module)
     if len(candidates) != 1:
         raise ValueError('Pass cells=<shared cell module> when it cannot be inferred uniquely')
-    return candidates[0]
+    return load_cell_library(candidates[0])
 
 
 def _snapshot(circuit):
@@ -333,8 +334,16 @@ def _ports(parent, role):
     return [p for p in parent.ports if p.native_name.startswith(prefixes)]
 
 
+def _channel_axis(parents, role):
+    axes = {0 if port.location in ('W', 'E') else 1
+            for parent in parents for port in _ports(parent, role)}
+    if len(axes) != 1:
+        raise ValueError(f'{role}: programming ports need one consistent native/logical axis')
+    return axes.pop()
+
+
 def _layout(island, parents, role):
-    axis = 1 if role == 'gate' else 0
+    axis = _channel_axis(parents, role)
     extent = island.getNumCols() if axis else island.getNumRows()
     occupied = set()
     for parent in parents:
@@ -362,7 +371,7 @@ def _channels(island, parents, role):
     Alias opposite-edge copies within a parent only. Different non-VMM parents
     are never shorted just because their names or coordinates match.
     """
-    axis = 1 if role == 'gate' else 0
+    axis = _channel_axis(parents, role)
     channels = {}
     intervals = {}
     for parent in parents:
@@ -381,7 +390,8 @@ def _channels(island, parents, role):
             raise ValueError(f'{parent.name}: inconsistent {role} line widths; '
                              'use cell definitions generated for the logical axes')
         lanes = next(iter(widths)) // length
-        direct = parent.name == 'IndirectVMM_4x2'
+        direct = (parent.name == 'IndirectVMM_4x2' or
+                  getattr(type(parent), 'fg_regular_interface', None) == 'vmm')
         for offset in range(length):
             coordinate = start + offset
             for lane in range(lanes):

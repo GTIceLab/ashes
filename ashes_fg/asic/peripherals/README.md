@@ -15,3 +15,11 @@ not implement routing bridges, island extension or body-signal sharing.
 See [gap fillers and separate bridge/extension concepts](../docs/PERIPHERAL_GAP_FILLERS.md),
 [generation options](../docs/FG_GENERATION_OPTIONS.md) and
 [decoder gap profiles](../docs/DECODER_GAPS.md).
+
+See [separate generated cells and hand-maintained profiles](../docs/CELL_LIBRARY_PROFILES.md)
+for cells_16nm_profiles.py, explicit registration and automatic library loading.
+
+Supplied placement profiles now name cell masters only. They require no signal
+or supply annotations. Passive gap fillers rely on designer-verified abutment;
+functional active-cell wiring remains in the algorithms. See
+[simple profiles](../docs/CELL_LIBRARY_PROFILES.md#simple-placement-only-profiles).

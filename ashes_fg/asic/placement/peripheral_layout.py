@@ -158,3 +158,43 @@ def layout_mixed(context):
                  for idx, b in local.items()}
         cursor = append_component(local, cursor, gate)
     return {idx: boxes[idx] for idx in entries}
+
+
+def layout_mixed_xy(context):
+    """Run the existing canonical mixed-band solver for native Cartesian cells."""
+    from copy import deepcopy
+    island = deepcopy(context.island)
+    for item in island['items'].values():
+        item['logical_row'], item['logical_col'] = item['logical_col'], item['logical_row']
+        if 'mat_info' in item:
+            m = item['mat_info']
+            m['mat_row'], m['mat_col'] = m['mat_col'], m['mat_row']
+    cells = {name: dict(info, width=info['height'], height=info['width'])
+             for name, info in context.cells.items()}
+    entries = {}
+    for idx, desc in context.entries.items():
+        if desc[0] == 'mixed_body':
+            _, row, col, nr, nc = desc
+            desc = ('mixed_body', col, row, nc, nr)
+        entries[idx] = desc
+    relations = []
+    for original in context.companions:
+        relation = dict(original)
+        for key in ('cell', 'parent'):
+            if key in relation:
+                relation[key] = tuple(reversed(relation[key]))
+        if 'parents' in relation:
+            relation['parents'] = [tuple(reversed(loc)) for loc in relation['parents']]
+        relations.append(relation)
+    boxes = layout_mixed(PeripheralPlacementContext(island, cells, entries, tuple(relations)))
+    top = max(box[3] for box in boxes.values())
+    right = max(box[2] for box in boxes.values())
+    return {idx: [top - box[3], right - box[2], top - box[1], right - box[0]] for idx, box in boxes.items()}
+
+
+def layout_mixed_swapped(context):
+    """Preserve native top-down band order in the swapped staging space."""
+    boxes = layout_mixed(context)
+    right = max(box[2] for box in boxes.values())
+    return {idx: [right - box[2], box[1], right - box[0], box[3]]
+            for idx, box in boxes.items()}

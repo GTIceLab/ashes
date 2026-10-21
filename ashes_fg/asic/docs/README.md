@@ -40,3 +40,6 @@ library profiles, variable-width bands and connection ownership.
 
 See [local peripheral fillers, routing bridges and extensions](PERIPHERAL_GAP_FILLERS.md)
 for automatic mixed bands, general library profiles and separate connection ownership.
+
+See [separate generated cells and hand-maintained profiles](CELL_LIBRARY_PROFILES.md)
+for cells_16nm_profiles.py, explicit registration and automatic library loading.

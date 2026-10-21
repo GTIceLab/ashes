@@ -4,7 +4,6 @@ No bridge insertion, shared peripheral extension or implicit body-net ties are
 performed here. Fillers consume physical columns but no selection channels.
 """
 from dataclasses import dataclass
-import inspect
 from .peripheral_gaps import discover_gaps
 from ..placement.companion_groups import register_companion_group
 
@@ -34,12 +33,13 @@ def build_band(chain, stage, staging_index):
         cell.fg_peripheral = True
         cell.physical_companion = True
         cell.fg_geometry = ('peripheral_band', chain.role, stage, coordinate, kind)
-        cell.place((staging_index, coordinate) if chain.role == 'gate'
-                   else (coordinate, staging_index))
+        cell.place((coordinate, staging_index) if layout.axis == 'rows'
+                   else (staging_index, coordinate))
         cell.markAbut()
 
     for span in layout.spans:
-        dim = (1, span.stop - span.start) if chain.role == 'gate' else (span.stop - span.start, 1)
+        dim = ((span.stop - span.start, 1) if layout.axis == 'rows'
+               else (1, span.stop - span.start))
         cell = selected(island.circuit, island, dim=dim)
         place(cell, span.start, 'active')
         active.append(cell)
@@ -51,32 +51,11 @@ def build_band(chain, stage, staging_index):
     return PeripheralBand(chain.role, stage, tuple(active), tuple(fillers), tuple(profiles))
 
 
-def bind_band(band, generated):
-    from .fg_generation import connect
-    model = inspect.getmodule(type(band.active[0].circuit))
-    supplies = generated.supplies
-    for cell, profile in zip(band.fillers, band.profiles):
-        buses = {}
-        for port in cell.ports:
-            family = port.native_name.rsplit('_', 1)[0]
-            supply_name = profile.get('supply_aliases', {}).get(family, family)
-            source = supplies.get(supply_name)
-            if source is not None:
-                for pin in port.pins:
-                    connect(pin, source)
-            elif family in profile.get('controls', ()):
-                if family not in generated.controls:
-                    generated.controls[family] = model.Wire(cell.circuit)
-                for pin in port.pins:
-                    connect(pin, generated.controls[family])
-            elif family in profile.get('pass_through', ()):
-                if family not in buses:
-                    buses[family] = model.Bus(cell.circuit, size=len(port))
-                if len(buses[family]) != len(port):
-                    raise ValueError('Peripheral filler pass-through width mismatch')
-                for pin, source in zip(port.pins, buses[family]):
-                    connect(pin, source)
-        coordinate = cell.fg_geometry[3]
-        for family, bus in buses.items():
-            generated.gap_connections[(band.role, band.stage, coordinate, family)] = bus
-    register_companion_group(band.active[0].island, (*band.active, *band.fillers), supplies=supplies)
+def register_band(band, generated):
+    """Declare the whole band for physical terminations, without filler wiring.
+
+    Active circuit wiring stays in the chain algorithm. Passive filler
+    continuity is supplied by the designed abutment, not profile pin metadata.
+    """
+    register_companion_group(band.active[0].island, (*band.active, *band.fillers),
+                             supplies=generated.supplies)

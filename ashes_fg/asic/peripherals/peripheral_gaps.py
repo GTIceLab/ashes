@@ -41,7 +41,7 @@ def discover_gaps(island, role, layout, channels):
     """
     if len(layout.spans) < 2:
         return ()
-    axis = 1 if role == 'gate' else 0
+    axis = 0 if layout.axis == 'rows' else 1
     occupied = {n for span in layout.spans for n in range(span.start, span.stop)}
     gaps = []
     for coordinate in range(layout.spans[0].start, layout.spans[-1].stop):

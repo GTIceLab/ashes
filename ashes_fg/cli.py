@@ -61,6 +61,10 @@ def main():
             compile_args = json.load(f)
     
 
+    # Cell-module selection belongs to algorithm construction, not compilation.
+    if args.flow == "asic":
+        compile_args.pop("cell_module", None)
+
     # ---- load routing settings ----
     config_path = project_dir / "router_settings.json"
     qparams = {}

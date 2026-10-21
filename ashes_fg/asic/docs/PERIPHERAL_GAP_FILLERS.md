@@ -69,20 +69,18 @@ not create physical bridge cells or implement extension placement.
 
 ## Registering another intervening cell family
 
-Metadata lives on source cell classes in the selected cell-definition module:
+Keep these rules in the hand-maintained profiles provider and attach them
+to the selected generated classes inside register_profiles(cells). For example,
+resolve OtherRouting = getattr(cells, 'OtherRouting') before these assignments:
 
 ```python
 OtherRouting.peripheral_fillers = {
     'gate': {
         'switch': {
             'cell': 'Other_FILL_GateSwc',
-            'pass_through': ('E',),
-            'controls': ('RUN', 'PROG', 'VGPROG'),
-            'supply_aliases': {'VDD': 'VDD_CORE'},
         },
         'level_shifter': {
             'cell': 'Other_FILL_GateLVLShift',
-            'pass_through': ('E',),
         },
     },
 }
@@ -95,7 +93,7 @@ on every projected source class, including boundary variants. Sources aligned
 at the same coordinate must agree on the profile. Unknown or empty internal
 gaps cannot silently inherit an ordinary VMM filler.
 
-The selected 16nm library registers Sblock_Routing/Sblock_Filler with regular
+The separate 16nm profile provider registers Sblock_Routing/Sblock_Filler with regular
 fillers and Sblock_Filler_Start/End with narrow variants. Its existing gate-stage
 body fillers receive matching source metadata too. Actual GDS dimensions must
 match the body's gap width and the selected active stage's thickness. A different
@@ -109,8 +107,6 @@ OtherRouting.decoder_fillers = {
     'gate': {'folded_radix4': {
         'core': 'Other_FILL_GateDecode',
         'connector': 'Other_FILL_GateDecodeCONN',
-        'pass_through': ('E',), 'address_family': 'B',
-        'supply_aliases': {'VDD': 'VDD_CORE'},
     }}
 }
 ```
@@ -121,25 +117,22 @@ that grouping; disabling the decoder removes that topology-specific constraint.
 
 ## Electrical ownership
 
-Declared supplies and scalar mode controls connect to the generated chain's
-corresponding nets. Analog VG_RUN/VS lanes are concatenated across active spans,
-not reused or shorted across them. Native pass-through families join opposite
-ports within one filler; independent filler bands get independent buses.
+Profiles select cells only. The designer/library is responsible for passive
+signal and supply continuity through correctly designed abutment. ASHES does
+not synthesize nets, mode-control bindings or address connections for gap fillers.
+Geometric checks do not verify metal-layer/pin continuity inside the masters.
 
-The returned object exposes:
+Functional decoder and active switch/shifter wiring remains in the algorithms.
+VG_RUN/VS lanes stay distinct across active spans. Their supplies and circuit
+controls remain normal design connections, outside the placement profiles.
 
-- fg.bands[(role, stage)]: active matrices, filler instances and profiles;
-- chain.switches / chain.level_shifters: tuples of active matrices in mixed
-  generation, or None when disabled; regular single-VMM generation retains its
-  existing single-matrix attributes;
-- fg.gap_connections[(role, stage, coordinate, family)]: switch/shifter pass-through buses;
-- fg.gap_connections[(role, 'decoder', coordinate, band, family)]: decoder pass-through buses.
+fg.bands[(role, stage)] exposes the active matrices and placed fillers. Mixed
+chain.switches/level_shifters are tuples of active matrices, or None when disabled;
+regular single-VMM generation retains its existing single-matrix attributes.
+gap_connections remains available to custom algorithms, but these placement-only
+profiles create no entries and require no filler bus binding in the design.
 
-The designer or a custom whole-peripheral algorithm binds pass-through buses to
-the intended S-block/body signals. No band-to-band connection, body east/west tie,
-connection between islands, or bridge lane permutation is inferred. Dummy pins
-are not assigned arbitrary signals. Active selection outputs retain the same
-logical channel order across gaps.
+No bridge, extension, cross-island connection or body-signal tie is inferred.
 
 ## Placement and advanced layouts
 
@@ -157,6 +150,9 @@ topology explicitly. This hook does not provide an extension/bridge implementati
 
 Verification includes all eight stage combinations for mixed gate bands,
 regular/narrow S-block variants, an independently named source family, analog
-lane isolation, mode-control bindings, rollback, missing-profile/bridge rejection,
+lane isolation, passive fillers without synthesized nets, rollback, missing-profile/bridge rejection,
 and placement-only GDS/DEF builds. Existing regular VMM checks remain applicable.
 Routing, DRC, LVS and electrical signoff have not been performed.
+
+Profile rules belong in cells_16nm_profiles.py, not the generated cells_16nm.py.
+See [registration and loader behavior](CELL_LIBRARY_PROFILES.md).

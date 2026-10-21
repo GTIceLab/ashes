@@ -7,13 +7,15 @@ import re
 import textwrap
 from pathlib import Path
 from .companion_groups import companion_names, prepare_groups, union_boxes
+from ..library.cell_profiles import load_cell_library
 
 
 def _catalog(circuit, libraries):
     modules = [importlib.import_module(name) for name in libraries]
     modules += [inspect.getmodule(type(cell)) for cell in circuit.Instances]
     result = {}
-    modules = list(dict.fromkeys(m for m in modules if m is not None))
+    modules = [load_cell_library(module) for module in
+               dict.fromkeys(m for m in modules if m is not None)]
     configured_names = {
         profile[key] for module in modules for cls in vars(module).values()
         if inspect.isclass(cls)
@@ -23,6 +25,11 @@ def _catalog(circuit, libraries):
     for module in modules:
         for cls in vars(module).values():
             if not inspect.isclass(cls):
+                continue
+            master = vars(cls).get('library_master_name')
+            if master is not None:
+                if master in configured_names or re.search(r'_(?:EdgeL|EdgeR|TAP)(?:_|$)', master):
+                    result[master] = cls
                 continue
             try:
                 tree = ast.parse(textwrap.dedent(inspect.getsource(cls)))
@@ -170,6 +177,13 @@ def _prepare_physical_cells(circuit, settings=None, process_coordinates='xy', re
                 dim = (1, parent.dim[1]) if swapped else (parent.dim[0], 1)
                 boundary = [(p.native_name, p, [p]) for p in parent.ports
                             if getattr(p, 'native_location', native_sides.get(p.location, p.location)) == native_side]
+                # Explicit library endpoints remain on the body even when the
+                # shared boundary family has no corresponding pass-through pin.
+                body_ports = set(profile.get('body_ports', ()))
+                unknown = body_ports - {p.native_name for p in parent.ports}
+                if unknown:
+                    raise ValueError(f'{parent.name}: unknown companion body_ports {sorted(unknown)}')
+                boundary = [entry for entry in boundary if entry[0] not in body_ports]
                 previous = parent
                 for name in chain:
                     if name is None:

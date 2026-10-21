@@ -1296,6 +1296,35 @@ def generate_islands(island_info, cell_info, island_place, cell_order_in_island,
     total_islands_width = sum(row[0] for row in island_dims)
     island_row_spacing = int(round((design_width - total_islands_width)/(len(island_dims) + 1), -3))
     island_row_spacing = round(island_row_spacing/track_spacing)*track_spacing
+    # Measured island placement callback: all companions and FG boxes exist.
+    if callable(isle_loc):
+        isle_loc = isle_loc(cell_order_in_island, cell_info, design_area)
+        if len(isle_loc) != len(cell_order_in_island):
+            raise ValueError('Island layout must return one XY origin per island')
+        placed_boxes = []
+        for width, height, number in island_dims:
+            x, y = isle_loc[number]
+            if x < design_area[0] or y < design_area[1] or x + width > design_area[2] or y + height > design_area[3]:
+                raise ValueError(f'Island {number} lies outside the requested design area')
+            box = (x, y, x + width, y + height)
+            for other_number, other_x, other_y, other in placed_boxes:
+                if min(box[2], other[2]) > max(box[0], other[0]) and min(box[3], other[3]) > max(box[1], other[1]):
+                    # Generated peripheral islands can have sparse L-shaped
+                    # footprints. Validate their actual placed macro boxes.
+                    current = cell_order_in_island[number]
+                    previous = cell_order_in_island[other_number]
+                    for index, item in current['items'].items():
+                        if item['type'] not in ('cell', 'matrix'):
+                            continue
+                        a = current['coords'][index]
+                        for old_index, old_item in previous['items'].items():
+                            if old_item['type'] not in ('cell', 'matrix'):
+                                continue
+                            b = previous['coords'][old_index]
+                            if (min(a[2]+x, b[2]+other_x) > max(a[0]+x, b[0]+other_x) and
+                                min(a[3]+y, b[3]+other_y) > max(a[1]+y, b[1]+other_y)):
+                                raise ValueError(f'Island layout overlaps {item["name"]} with {old_item["name"]}')
+            placed_boxes.append((number, x, y, box))
     # Option to have island locations set externally or dynamically
     if isle_loc:
         for idx, value in cell_order_in_island.items():

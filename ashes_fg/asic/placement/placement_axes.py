@@ -90,3 +90,33 @@ def native_island_text(islands, cells, layer_map, frame_module=None):
                 output += ['SREF\n', f'SNAME: "{item["name"]}"\n',
                            f'XY: {int(x - ox)}, {int(y - oy)}\n', 'ENDEL\n']
     return ''.join(output)
+
+
+def native_island_layout(callback, process_coordinates='xy'):
+    """Adapt one Cartesian/native block-placement recipe to staging coordinates.
+
+    Callback inputs use measured unrotated native cell bounds. Returned native
+    origins are mapped back to the backend's logical placement space once.
+    """
+    axes = PlacementAxes(process_coordinates)
+    if not axes.swapped:
+        return callback
+
+    def adapted(islands, cells, area):
+        native = deepcopy(islands)
+        widths = {}
+        for number, island in native.items():
+            boxes = island['coords']
+            extent = max(box[3] for box in boxes)
+            widths[number] = extent
+            island['coords'] = [[extent - top, left, extent - bottom, right]
+                                for left, bottom, right, top in boxes]
+            for item in island['items'].values():
+                if 'mat_info' in item:
+                    mat = item['mat_info']
+                    mat['mat_row'], mat['mat_col'] = mat['mat_col'], mat['mat_row']
+        native_cells = {name: dict(info, width=info['height'], height=info['width'])
+                        for name, info in cells.items()}
+        positions = callback(native, native_cells, (0, 0, area[3], area[2], area[5], area[4]))
+        return [(y, area[3] - x - widths[number]) for number, (x, y) in enumerate(positions)]
+    return adapted

@@ -16,7 +16,8 @@ the algorithm does not guess a suitable pitch or library master.
 
 ## Register another intervening cell
 
-Define metadata on its cell class in the selected cell library:
+Define this metadata in a separate profiles provider, inside
+register_profiles(cells), resolving OtherRouting = getattr(cells, 'OtherRouting'):
 
 ```python
 OtherRouting.decoder_fillers = {
@@ -24,9 +25,6 @@ OtherRouting.decoder_fillers = {
         'folded_radix4': {
             'core': 'Other_FILL_GateDecode',
             'connector': 'Other_FILL_GateDecodeCONN',
-            'pass_through': ('E',),
-            'address_family': 'B',
-            'supply_aliases': {'VDD': 'VDD_CORE'},
         }
     }
 }
@@ -36,18 +34,12 @@ OtherRouting.decoder_fillers = {
 must have the library constructor interface and compatible heights for their
 bands. Core and connector variants must have the same gap width. Width comes
 from their actual physical footprints, rather than the ordinary decoder slot
-pitch. Supply aliases bind the declared supply families. `address_family`
-identifies connector address pins; unused high bits connect to GND.
+pitch. These profiles name only core/connector filler masters. The physical
+library and designer provide signal/supply continuity through abutment; ASHES
+does not annotate or synthesize nets for passive gap filler pins. Functional
+decoder address, enable and selection wiring remains in the decoder algorithm.
 
-`pass_through` names native pin families. Opposite sides of each family join
-the same bus within a filler. Different bands receive independent buses,
-exposed by `DecoderResult.gap_connections[(coordinate, band, family)]`.
-The mixed-body peripheral algorithm/designer must connect these to the intended
-body signals. ASHES does not assume that S-block east/west signals or separate
-bands should be shorted. This replaces the old helper's Sblock_E return value
-with explicitly identified connection points.
-
-The selected 16nm library registers regular profiles on Sblock_Routing and
+The separate 16nm profile provider registers regular profiles on Sblock_Routing and
 Sblock_Filler, and narrow variants on Sblock_Filler_Start/End. Gate filler
 classes share the decoder core/connector companion profiles, so outer edge/TAP
 placement stays with the common physical-cell pass. Different topologies or
@@ -61,7 +53,6 @@ gate = context.plan.gate
 # Optionally set gate.decoder_placement to an AlgorithmGrid region.
 result = gate.build_decoder()
 # result.instances includes the discovered gap fillers.
-# Bind result.gap_connections to intended body signals here.
 ```
 
 Without an explicit region, ASHES reserves staging space beyond the placed
@@ -78,6 +69,9 @@ standalone Decoders.py copies under run_syn were not changed. Active decoder
 filler handling lives in decoders/folded_radix4/gaps.py; reusable gap discovery
 lives in ASHES peripherals/peripheral_gaps.py.
 
-Automatic generation aggregates decoder pass-through buses into fg.gap_connections
-under (role, 'decoder', coordinate, band, family). This does not tie them to
-switch/shifter filler buses or body signals.
+Automatic placement-only gap filling creates no gap_connections entries.
+Custom algorithms may still return explicit connections when their circuit needs
+them; that is separate from the profile's cell-selection responsibility.
+
+Profile rules belong in cells_16nm_profiles.py, not the generated cells_16nm.py.
+See [registration and loader behavior](CELL_LIBRARY_PROFILES.md).

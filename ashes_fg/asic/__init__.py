@@ -109,7 +109,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                         #x_IO, y_IO = 0,0
 
                 ## Account for IO area so, location islands in python code can start from 0,0
-                if location_islands is not None:
+                if location_islands is not None and not callable(location_islands):
                         location_islands = tuple((x + (y_IO if placement_axes.swapped else x_IO),
                                                  y + (x_IO if placement_axes.swapped else y_IO))
                                                 for x, y in location_islands)
@@ -137,7 +137,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                         x_IO, y_IO = 3960, 3960
 
                 ## Account for IO area so, location islands in python code can start from 0,0
-                if location_islands is not None:
+                if location_islands is not None and not callable(location_islands):
                         location_islands = tuple((x + (y_IO if placement_axes.swapped else x_IO),
                                                  y + (x_IO if placement_axes.swapped else y_IO))
                                                 for x, y in location_islands)
