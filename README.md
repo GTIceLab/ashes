@@ -57,6 +57,17 @@ ashes cells generate --process-node 130 --foundry sky --process-coordinates xy
 ashes cells build --process-node 130 --foundry sky --process-coordinates xy
 ```
 
+For a library that needs layer-aware corner classification, pass
+`--vertical-pin-layers`, `--horizontal-pin-layers`, and `--corner-distance`
+(in microns) to `build`. Supply the layer numbers from that project's setup;
+ASHES does not select them by foundry. See the
+[corner-pin command example](docs/cell-library.md#layer-aware-corner-pins).
+
+Warnings and errors are saved in `cell_def/cell_generation.log`; the terminal
+prints `Check log:` with its path. Each run replaces the previous log.
+Ambiguous sides and nonzero/sparse buses warn and continue; review the log
+before using the definitions for physical synthesis.
+
 The process arguments above are examples; the shared implementation has no
 foundry or process-node defaults. Missing input folders are errors. No GDS/PDK
 files are installed into ASHES, and generated outputs stay in the project.
@@ -80,7 +91,7 @@ shared tools; the process repository contains the cell layouts, generated
 interfaces, technology settings, and example designs. Keep process data in that
 repository when adapting this flow to another technology.
 
-After installing ASHES from `ashes_2p0` and activating its environment, run in
+After installing ASHES from `main` and activating its environment, run in
 Linux, WSL2, or a Linux VM:
 
 ```bash
@@ -115,11 +126,11 @@ KLayout in the same Linux environment.
 
 #### Install ASHES and OpenROAD
 
-This workflow is available on `ashes_2p0`. Use Python 3.12 or newer:
+This workflow is available on `main`. Use Python 3.12 or newer:
 
 ```bash
 cd /path/to/ashes
-git switch ashes_2p0
+git switch main
 python3 -m venv venv
 source venv/bin/activate
 python -m pip install -e .
