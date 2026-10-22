@@ -51,7 +51,36 @@ class CellLibraryTests(unittest.TestCase):
             arguments += ['--process-node', '180', '--foundry', 'test_foundry', '--process-coordinates', 'xy']
         args = parser.parse_args(arguments + list(extra))
         with contextlib.redirect_stdout(io.StringIO()):
-            cli.run(args)
+            cli._run(args)
+
+    def test_cli_diagnostics_are_file_only(self):
+        from unittest.mock import patch
+        import logging
+        args = argparse.Namespace(output_dir=Path('cell_def'))
+        output = io.StringIO()
+        def warn(_):
+            logging.getLogger(library.__name__).warning('ambiguous test pin')
+            return 0
+        with patch.object(cli, '_run', side_effect=warn), contextlib.redirect_stdout(output):
+            self.assertEqual(cli.run(args), 0)
+        self.assertNotIn('ambiguous test pin', output.getvalue())
+        self.assertIn('Check log:', output.getvalue())
+        log = self.root / 'cell_def/cell_generation.log'
+        self.assertIn('ambiguous test pin', log.read_text())
+        with patch.object(cli, '_run', side_effect=ValueError('bad bus')), contextlib.redirect_stdout(output):
+            with self.assertRaisesRegex(ValueError, 'Check log:'):
+                cli.run(args)
+        self.assertIn('bad bus', log.read_text())
+        self.assertNotIn('ambiguous test pin', log.read_text())
+
+    def test_layer_aware_corner_keeps_vmm_bus_together(self):
+        label = gdstk.Label('Vd_P<0>', (0.058, 6.463), layer=131)
+        box = ((0, 0), (1.632, 6.528))
+        layers = ({131, 133, 135}, {132, 134})
+        self.assertEqual(library.pin_side(label, box, {}, 'VMM', layers), 'N')
+        self.assertEqual(library.pin_side(label, box, {'Vd_P': 'E'}, 'VMM', layers), 'E')
+        label.layer = 132
+        self.assertEqual(library.pin_side(label, box, {}, 'VMM', layers), 'W')
 
     def outputs(self):
         return json.loads((self.root / 'cell_def/cells.json').read_text())
@@ -134,10 +163,13 @@ class CellLibraryTests(unittest.TestCase):
         self.assertIn('.VG_w(', cell.VG_n.print_conventional(0, 0))
         self.assertNotIn('.VG_n(', cell.VG_n.print_conventional(0, 0))
 
-    def test_ambiguous_corner_requires_direction_map(self):
+    def test_ambiguous_corner_warns_and_direction_map_overrides(self):
         self.gds(labels=[('IN', (0, 0))])
-        with self.assertRaisesRegex(ValueError, 'Ambiguous'):
-            self.run_command('prepare')
+        with self.assertLogs(library.__name__, level='WARNING') as logs:
+            self.run_command('build')
+        self.assertIn('Cell Example', logs.output[0])
+        self.assertIn('using S', logs.output[0])
+        self.assertIn('IN_s', self.outputs()['Example']['logical_to_native'])
         path = self.root / 'directions.json'
         path.write_text(json.dumps({'Example': {'IN': 'W'}}))
         self.run_command('build', '--direction-map', str(path))
@@ -153,10 +185,13 @@ class CellLibraryTests(unittest.TestCase):
         self.run_command('build', '--pin-map', str(path))
         self.assertEqual(self.outputs()['Example']['logical_to_native']['gate_n'], 'VG_w')
 
-    def test_sparse_bus_is_rejected_without_inventing_pins(self):
-        self.gds(labels=[('D_w[1]', (.1, 5))])
-        with self.assertRaisesRegex(ValueError, 'zero-based'):
+    def test_sparse_bus_warns_and_preserves_declared_indices(self):
+        self.gds(labels=[('D_w[1]', (.1, 5)), ('D_w[3]', (.1, 6))])
+        with self.assertLogs(library.__name__, level='WARNING') as logs:
             self.run_command('build')
+        self.assertIn('zero-based', logs.output[0])
+        self.assertEqual(self.outputs()['Example']['W'], ['D_w[1:1]', 'D_w[3:3]'])
+        self.assertIn("2*self.dim[0]", (self.root / 'cell_def/cells.py').read_text())
 
     def test_replacements_preserve_other_classes_and_record_history(self):
         self.gds()
@@ -220,7 +255,8 @@ class CellLibraryTests(unittest.TestCase):
         self.assertIn('prepare', result.stdout)
         result = subprocess.run(command + ['generate', '--process-node', '130', '--foundry', 'sky', '--process-coordinates', 'xy'], capture_output=True, text=True)
         self.assertEqual(result.returncode, 2)
-        self.assertIn('Tools/lib', result.stderr)
+        self.assertIn('Check log:', result.stderr)
+        self.assertIn('Tools/lib', (self.root / 'cell_def/cell_generation.log').read_text())
         self.assertNotIn('Traceback', result.stderr)
 
 
