@@ -1,7 +1,7 @@
 # Shared standard-cell library generation
 
 The generator is part of ASHES and is shared by all process nodes. Install ASHES
-from `ashes_2p0` with `python -m pip install -e .`, then activate that environment.
+from `main` with `python -m pip install -e .`, then activate that environment.
 Use Linux, WSL/Ubuntu, or a Linux VM. There is no need to copy Python or shell
 helper implementations into a public or private technology repository.
 
@@ -18,6 +18,7 @@ project/
       cell_def/              # generated Python + JSON
         cells.py
         cells.json
+        cell_generation.log # latest CLI warnings/errors
         cell_histories/      # previous versions of changed classes
     run_syn/
       example/
@@ -113,10 +114,15 @@ They describe geometry; they do not certify an abutment pitch or DRC/LVS.
 `prepare` adds `_n`, `_e`, `_s`, or `_w` before a bus index. Existing direction
 suffixes are preserved, so repeating preparation does not append them again.
 Directions are native physical sides, and geometry is not rotated. With no
-suffix, the nearest edge determines the side. Ties require an explicit override
-rather than a hardcoded routing-layer assumption.
+suffix, the nearest edge determines the side unless the optional layer-aware
+corner rule applies. Equal-distance ties warn and use the fallback below.
 
-Use `--direction-map directions.json` to resolve ambiguous sides:
+If a label is equally close to multiple edges, generation records a warning in
+`cell_def/cell_generation.log` and continues using the first tied side in the fixed order **N, S, E, W**.
+The warning names the cell, pin, coordinates, tied sides, and selected side.
+This fallback is deterministic; it does not establish the intended electrical
+interface. Existing direction suffixes and explicit map entries take precedence.
+Use `--direction-map directions.json` to override ambiguous sides:
 
 ```json
 {
@@ -141,9 +147,10 @@ annotation names containing dots are not silently discarded or rewritten. If
 such labels are selected, generation reports an error. Review the source pin
 interface or explicitly select the intended pin-label layers.
 
-Repeated scalar labels remain one physical pin. Indexed buses must be contiguous
-and zero-based; missing indices or scalar/bus conflicts produce errors rather
-than generating pins that do not exist.
+Repeated scalar labels remain one physical pin. Nonzero or sparse bus indices
+warn and continue, preserving declared indices in JSON and using the declared
+bit count as the Python port width. Native bus-index mapping is not implemented;
+see the limitation below. Scalar/bus conflicts still produce errors.
 
 ## Logical coordinate conventions and pin maps
 
@@ -208,8 +215,9 @@ which contains prepared `gds/`; it does not point to `cell_def`.
 ## Failure behavior
 
 Input, naming, mapping, and syntax validation finishes for the entire selected
-batch before generated outputs are replaced. An invalid cell leaves existing
-GDS/Python/JSON outputs unchanged. File replacements are staged; a normal I/O
+batch before generated outputs are replaced. A fatal validation error leaves
+existing GDS/Python/JSON outputs unchanged; the diagnostic log is still updated.
+Warning-only side ambiguities and bus-index issues allow output replacement. File replacements are staged; a normal I/O
 replacement failure rolls back already replaced outputs. This is not a filesystem
 transaction across a machine crash. No requested cell is silently skipped.
 
@@ -244,3 +252,54 @@ for folders or embed a process node. Existing project-local scripts are not
 modified automatically; replace their use with `ashes cells` after reviewing the
 new outputs. Keep original exports and generated definitions under your project's
 own access controls; the shared code contains no private process data.
+
+### Nonzero or sparse bus indices
+
+Generation warns and continues when a side-specific bus does not start at zero
+or has gaps. JSON records only the declared source indices; generated Python
+uses their count as the port width. The compiler still numbers those ports from
+zero, so this does not provide native index mapping. Review these warnings
+before physical synthesis; the resulting connections may not match physical
+pins. No source GDS labels are renamed by this fallback.
+
+### Generation log
+
+The CLI writes warning and error details only to `cell_def/cell_generation.log`
+(or the directory selected with `--output-dir`). Each invocation replaces the
+previous log and prints `Check log:` with its path. Fatal errors still return a
+failure status. The `prepare` command also writes its log in `cell_def/`.
+
+### Layer-aware corner pins
+
+For libraries whose routing layer determines a corner pin's side, supply
+`--vertical-pin-layers` and `--horizontal-pin-layers`. Within `--corner-distance`
+microns of both a horizontal and a vertical edge (default 0.25), vertical layers
+choose N/S and horizontal layers choose E/W. This reproduces the original NNopt
+corner rule without assigning its layer numbers to other processes. Explicit
+suffixes and direction-map entries still take precedence.
+
+Layer numbers are supplied by the project; no foundry-specific layer numbers
+are selected automatically by the shared generator.
+
+Rebuild from original exports: generating from already prepared GDS preserves
+existing suffixes, including any previously misclassified corner pins.
+
+A complete command has this form (replace the uppercase layer values with the
+project's pin-label layer numbers):
+
+```bash
+cd /path/to/project/Tools/lib
+ashes cells build \
+  --process-node 16 \
+  --foundry tsmc \
+  --process-coordinates columns_y_rows_minus_x \
+  --boundary-layer 108:0 \
+  --vertical-pin-layers VERTICAL_LAYER_1 VERTICAL_LAYER_2 \
+  --horizontal-pin-layers HORIZONTAL_LAYER_1 HORIZONTAL_LAYER_2 \
+  --corner-distance 0.25
+```
+
+The process metadata and boundary above are examples, not defaults. Use the
+project README's actual command. Corner distance affects side inference near
+corners; it does not move pins or change cell geometry. Use `build` to repair
+prepared labels from original exports after changing the corner settings.

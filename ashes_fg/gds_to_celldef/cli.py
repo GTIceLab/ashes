@@ -1,5 +1,7 @@
 """Project-local `ashes cells` commands; no installed-package output files."""
 import argparse
+import io
+import logging
 import tempfile
 from pathlib import Path
 import re
@@ -41,7 +43,10 @@ def add_arguments(parser, action):
         parser.add_argument('--pin-map', type=Path, help='JSON object: cell -> {logical_pin: existing_native_pin}')
     parser.add_argument('--boundary-layer', type=layer_spec, help='Optional top-cell boundary LAYER:DATATYPE; default: named-cell bounding box')
     parser.add_argument('--label-layer', type=layer_spec, action='append', default=[], help='Explicit pin-label LAYER[:TEXTTYPE]; repeat to select layers (default: all top-cell labels except & markers)')
-    parser.add_argument('--direction-map', type=Path, help='JSON object: cell -> {label_or_base: N|S|E|W}; resolves ambiguous sides')
+    parser.add_argument('--vertical-pin-layers', nargs='+', type=int, default=[], help='Pin-label layers routed vertically near corners; choose N/S')
+    parser.add_argument('--horizontal-pin-layers', nargs='+', type=int, default=[], help='Pin-label layers routed horizontally near corners; choose E/W')
+    parser.add_argument('--corner-distance', type=float, default=0.25, help='Corner proximity in microns for layer-aware inference (default: 0.25)')
+    parser.add_argument('--direction-map', type=Path, help='JSON object: cell -> {label_or_base: N|S|E|W}; overrides ambiguous sides (otherwise warns and uses N/S/E/W tie priority)')
     return parser
 
 
@@ -58,6 +63,33 @@ def add_parser(subparsers):
 
 
 def run(args):
+    # Capture library diagnostics without propagating warnings to the terminal.
+    messages = io.StringIO()
+    handler = logging.StreamHandler(messages)
+    handler.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
+    logger = logging.getLogger(lib.__name__)
+    old_handlers, old_propagate, old_level = logger.handlers[:], logger.propagate, logger.level
+    logger.handlers = [handler]
+    logger.propagate = False
+    logger.setLevel(logging.WARNING)
+    log_path = (Path.cwd() / getattr(args, 'output_dir', Path('cell_def')) / 'cell_generation.log').resolve()
+    try:
+        result = _run(args)
+    except Exception as error:
+        logger.error('%s', error)
+        # Validation errors still fail the command; diagnostics live in the log.
+        raise ValueError(f'Check log: {log_path}') from None
+    else:
+        return result
+    finally:
+        logger.handlers, logger.propagate, logger.level = old_handlers, old_propagate, old_level
+        handler.close()
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        log_path.write_text(messages.getvalue() or 'Generation completed without warnings.\n')
+        print(f'Check log: {log_path}')
+
+
+def _run(args):
     root = Path.cwd()
     boundary = args.boundary_layer
     if boundary and boundary[1] is None:
@@ -75,12 +107,19 @@ def run(args):
     else:
         files = lib.files_in(prepared, args.cells)
     pin_maps = lib.load_object(getattr(args, 'pin_map', None))
+    vertical = set(args.vertical_pin_layers)
+    horizontal = set(args.horizontal_pin_layers)
+    if vertical & horizontal:
+        raise ValueError('Vertical and horizontal pin layers must not overlap')
+    if not 0 < args.corner_distance < float('inf'):
+        raise ValueError('--corner-distance must be finite and positive')
+    corner_layers = (vertical, horizontal)
     extra, generated = {}, []
     for path in files:
         library = lib.gdstk.read_gds(str(path), unit=1e-6)
         per_cell_directions = directions.get(path.stem, {})
         if action in ('prepare', 'build'):
-            lib.prepare(library, path.stem, boundary, args.label_layer, per_cell_directions)
+            lib.prepare(library, path.stem, boundary, args.label_layer, per_cell_directions, corner_layers, args.corner_distance)
             with tempfile.TemporaryDirectory() as temporary:
                 temporary_gds = Path(temporary) / path.name
                 library.write_gds(temporary_gds)
@@ -89,7 +128,7 @@ def run(args):
             if not args.foundry.strip():
                 raise ValueError('--foundry must not be empty')
             spec, text = lib.specification(library, path.stem, args.process_node, args.foundry.strip(),
-                args.process_coordinates, boundary, args.label_layer, per_cell_directions, pin_maps.get(path.stem))
+                args.process_coordinates, boundary, args.label_layer, per_cell_directions, pin_maps.get(path.stem), corner_layers, args.corner_distance)
             generated.append((path.stem, spec, text))
     if action == 'prepare':
         lib.write_outputs(extra)

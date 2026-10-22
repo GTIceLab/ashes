@@ -5,6 +5,7 @@ import ast
 from datetime import datetime, timezone
 import json
 import keyword
+import logging
 import os
 from pathlib import Path
 import re
@@ -93,7 +94,7 @@ def label_parts(text):
     return base, bits
 
 
-def pin_side(label, box, overrides):
+def pin_side(label, box, overrides, cell_name="<unknown>", corner_layers=None, corner_distance=0.25):
     base, _ = label_parts(label.text)
     override = overrides.get(label.text, overrides.get(base))
     if override is not None:
@@ -106,10 +107,22 @@ def pin_side(label, box, overrides):
     (xmin, ymin), (xmax, ymax) = box
     x, y = label.origin
     distances = {'N': abs(ymax-y), 'S': abs(y-ymin), 'E': abs(xmax-x), 'W': abs(x-xmin)}
+    if corner_layers:
+        vertical, horizontal = corner_layers
+        ns = min(('N', 'S'), key=distances.get)
+        ew = min(('E', 'W'), key=distances.get)
+        if distances[ns] < corner_distance and distances[ew] < corner_distance:
+            if label.layer in vertical:
+                return ns
+            if label.layer in horizontal:
+                return ew
     minimum = min(distances.values())
     closest = [side for side, value in distances.items() if abs(value-minimum) <= 1e-9]
     if len(closest) != 1:
-        raise ValueError(f"Ambiguous side for pin {label.text!r}; supply --direction-map rather than guessing at a corner")
+        logging.getLogger(__name__).warning(
+            "Cell %s: ambiguous side for pin %r at %s; tied sides %s; "
+            "using %s (tie priority N, S, E, W). Set --direction-map to override.",
+            cell_name, label.text, label.origin, ", ".join(closest), closest[0])
     return closest[0]
 
 
@@ -122,12 +135,12 @@ def labels_for(cell, label_layers):
     return labels
 
 
-def prepare(library, name, boundary=None, label_layers=None, directions=None):
+def prepare(library, name, boundary=None, label_layers=None, directions=None, corner_layers=None, corner_distance=0.25):
     cell = selected_cell(library, name)
     box = bounds(cell, boundary)
     for label in labels_for(cell, label_layers):
         base, bits = label_parts(label.text)
-        side = pin_side(label, box, directions or {})
+        side = pin_side(label, box, directions or {}, cell.name, corner_layers, corner_distance)
         if not SIDES.search(base):
             # Preserve the original bus notation and indices verbatim.
             label.text = base + '_' + side.lower() + label.text[len(base):]
@@ -135,7 +148,7 @@ def prepare(library, name, boundary=None, label_layers=None, directions=None):
 
 
 def specification(library, name, process_node, foundry, coordinates='xy', boundary=None,
-                  label_layers=None, directions=None, pin_map=None):
+                  label_layers=None, directions=None, pin_map=None, corner_layers=None, corner_distance=0.25):
     identifier(name, 'Cell name')
     cell = selected_cell(library, name)
     box = bounds(cell, boundary)
@@ -144,7 +157,7 @@ def specification(library, name, process_node, foundry, coordinates='xy', bounda
         base, bits = label_parts(label.text)
         if not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_$]*', base):
             raise ValueError(f"Cell {name}: native label {base!r} is not a supported Verilog pin identifier. Review internal annotations or explicitly select pin-label layers; no labels were silently removed.")
-        side = pin_side(label, box, directions or {})
+        side = pin_side(label, box, directions or {}, name, corner_layers, corner_distance)
         if base in groups:
             old_side, old_bits = groups[base]
             if old_side != side or (old_bits is None) != (bits is None):
@@ -158,10 +171,19 @@ def specification(library, name, process_node, foundry, coordinates='xy', bounda
             'width': round(box[1][0]-box[0][0], 6), 'height': round(box[1][1]-box[0][1], 6)}
     for base, (side, bits) in groups.items():
         if bits is not None and bits != set(range(max(bits)+1)):
-            raise ValueError(f"Cell {name}: bus {base!r} must be contiguous and zero-based, got {sorted(bits)}")
+            logging.getLogger(__name__).warning(
+                "Cell %s: bus %r is not contiguous and zero-based, got %s; "
+                "continuing with %s declared bits. JSON preserves the source indices, "
+                "but compiler ports use zero-based numbering; review before physical synthesis.",
+                name, base, sorted(bits), len(bits))
         # Keep [0] for a physical one-bit indexed pin in metadata.
-        label = base if bits is None else f'{base}[0:{max(bits)}]'
-        spec[side].append(label)
+        if bits is None:
+            labels = [base]
+        elif bits == set(range(min(bits), max(bits)+1)):
+            labels = [f'{base}[{min(bits)}:{max(bits)}]']
+        else:
+            labels = [f'{base}[{bit}:{bit}]' for bit in sorted(bits)]
+        spec[side].extend(labels)
     order, meta = json2python.gather_pins(spec)
     order, meta, native = json2python.logical_pin_interface(order, meta, coordinates, pin_map)
     for logical in order:
