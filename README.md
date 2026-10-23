@@ -1,10 +1,16 @@
 # Analog Synthesis for High Level Systems (ASHES)
 
 ASHES is an (in-progress) tool that is capable of programming Field Programmable Analog Arrays (FPAAs) or generating tapout files (.gds) for analog computing applications using a programmable analog standard cell library. 
-
+## Literature
 - Check out the initial paper on the tool. [Journal](https://www.mdpi.com/2079-9268/13/4/58)
 - Learn more about FPAAs. [IEEE Link](https://ieeexplore.ieee.org/document/8915721), [PDF](https://hasler.ece.gatech.edu/FPAA_IEEEXPlore_2020.pdf)
-- Learn more about the programmable analog standard cell flow across process nodes. [65nm](https://ieeexplore.ieee.org/document/10639182), [130nm](https://ieeexplore.ieee.org/document/10431551) 
+- Learn more about the programmable analog standard cell flow across process nodes. [65nm](https://ieeexplore.ieee.org/document/10639182), [130nm](https://ieeexplore.ieee.org/document/10431551)
+
+### Lineage
+1. 2023 [ASHES Journal Paper](https://www.mdpi.com/2079-9268/13/4/58)
+2. 2024 [Extending ASHES Symposium Paper](https://ieeexplore.ieee.org/document/10697957)
+3. 2025 [ASHES 1.5 Conference Paper](https://ieeexplore.ieee.org/document/10993219/)
+4. 2026 [Unifying ASHES Symposium Paper](https://ieeexplore.ieee.org/document/11684007/)
 
 ![Architecture](docs/figures/ashes_flow_v3.jpg)
 
