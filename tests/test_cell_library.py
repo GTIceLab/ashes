@@ -98,6 +98,63 @@ class CellLibraryTests(unittest.TestCase):
         self.assertEqual(spec['foundry'], 'test_foundry')
         self.assertIn('IN_w', (self.root / 'cell_def/cells.py').read_text())
 
+    def test_no_pin_cell_builds_and_logs_warning(self):
+        source = self.gds(name='NoPins', labels=[('&boundary', (0, 0))])
+        original = source.read_bytes()
+        self.gds(name='Other')
+        command = [sys.executable, '-m', 'ashes_fg.cli', 'cells', 'build',
+                   '--process-node', '350', '--foundry', 'tsmc',
+                   '--process-coordinates', 'xy']
+        result = subprocess.run(command, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(source.read_bytes(), original)
+        self.assertTrue((self.root / 'gds/NoPins.gds').exists())
+        self.assertEqual(set(self.outputs()), {'NoPins', 'Other'})
+        spec = self.outputs()['NoPins']
+        for side in ('W', 'E', 'N', 'S'):
+            self.assertEqual(spec[side], [])
+        self.assertEqual(spec['logical_to_native'], {})
+        self.assertEqual((spec['width'], spec['height']), (10, 10))
+        self.assertEqual(spec['process_node'], '350nm')
+        self.assertEqual(spec['foundry'], 'tsmc')
+        log = (self.root / 'cell_def/cell_generation.log').read_text()
+        self.assertIn('WARNING: Cell NoPins: no selected top-cell pin labels', log)
+        self.assertNotIn('ERROR:', log)
+        self.assertNotIn('no selected top-cell pin labels', result.stdout + result.stderr)
+        module_spec = importlib.util.spec_from_file_location(
+            'generated_no_pin_cells', self.root / 'cell_def/cells.py')
+        module = importlib.util.module_from_spec(module_spec)
+        module_spec.loader.exec_module(module)
+        import ashes_fg.asic.asic_compile as ac
+        circuit = ac.Circuit()
+        cell = module.NoPins(circuit, ac.Island(circuit))
+        self.assertEqual(cell.pins, [])
+        self.assertEqual(cell.ports, [])
+
+    def test_invalid_label_reports_cell_and_gds_location(self):
+        source = self.gds(name='BlankLabel', labels=[('', (2, 3))])
+        original = source.read_bytes()
+        lib = gdstk.read_gds(source)
+        for action in ('prepare', 'specification', 'pin_side'):
+            with self.subTest(action=action):
+                with self.assertRaisesRegex(ValueError,
+                        r"Cell BlankLabel: Invalid pin label '' at .*layer 34, texttype 5"):
+                    if action == 'prepare':
+                        library.prepare(lib, 'BlankLabel')
+                    elif action == 'specification':
+                        library.specification(lib, 'BlankLabel', '350', 'tsmc')
+                    else:
+                        library.pin_side(lib.cells[0].labels[0], ((0, 0), (10, 10)), {}, 'BlankLabel')
+        result = subprocess.run([sys.executable, '-m', 'ashes_fg.cli', 'cells', 'build',
+            '--process-node', '350', '--foundry', 'tsmc', '--process-coordinates', 'xy'],
+            capture_output=True, text=True)
+        self.assertEqual(result.returncode, 2)
+        log = (self.root / 'cell_def/cell_generation.log').read_text()
+        self.assertIn("ERROR: Cell BlankLabel: Invalid pin label ''", log)
+        self.assertIn('at (2.0, 3.0) on layer 34, texttype 5', log)
+        self.assertEqual(source.read_bytes(), original)
+        self.assertFalse((self.root / 'cell_def/cells.py').exists())
+
     def test_non_micron_gds_units_are_normalized(self):
         directory = self.root / 'gds_source'
         directory.mkdir()
@@ -123,6 +180,15 @@ class CellLibraryTests(unittest.TestCase):
         self.run_command('generate')
         self.assertIn('IN_w', self.outputs()['Example']['W'])
         self.assertNotIn('IN_w_w', (self.root / 'cell_def/cells.py').read_text())
+
+    def test_uppercase_signal_suffix_is_not_a_direction(self):
+        self.gds(labels=[('SEL_S<0>', (.1, 4)), ('SEL_S<1>', (.1, 6))])
+        self.run_command('build', '--process-coordinates', 'columns_y_rows_minus_x')
+        spec = self.outputs()['Example']
+        self.assertIn('SEL_S_w[0:1]', spec['W'])
+        self.assertEqual(spec['logical_to_native']['SEL_S_n'], 'SEL_S_w')
+        generated = (self.root / 'cell_def/cells.py').read_text()
+        self.assertIn("2*self.dim[1],native_name='SEL_S_w'", generated)
 
     def test_two_source_directories_require_explicit_choice(self):
         self.gds('gds_source')
@@ -164,7 +230,7 @@ class CellLibraryTests(unittest.TestCase):
         self.assertNotIn('.VG_n(', cell.VG_n.print_conventional(0, 0))
 
     def test_ambiguous_corner_warns_and_direction_map_overrides(self):
-        self.gds(labels=[('IN', (0, 0))])
+        self.gds(labels=[('IN', (.01, .01))])
         with self.assertLogs(library.__name__, level='WARNING') as logs:
             self.run_command('build')
         self.assertIn('Cell Example', logs.output[0])
@@ -189,7 +255,7 @@ class CellLibraryTests(unittest.TestCase):
         self.gds(labels=[('D_w[1]', (.1, 5)), ('D_w[3]', (.1, 6))])
         with self.assertLogs(library.__name__, level='WARNING') as logs:
             self.run_command('build')
-        self.assertIn('zero-based', logs.output[0])
+        self.assertTrue(any('zero-based' in message for message in logs.output))
         self.assertEqual(self.outputs()['Example']['W'], ['D_w[1:1]', 'D_w[3:3]'])
         self.assertIn("2*self.dim[0]", (self.root / 'cell_def/cells.py').read_text())
 

@@ -301,6 +301,7 @@ class Circuit:
         Returns: (text, pin_info, ndr_info)
         """
         text = ""
+        self._conventional_open_wires = set()
 
         self.cleanIslands()
         # 1. Assign unique generic names to everything (net0, net1...)
@@ -345,6 +346,7 @@ class Circuit:
             text += f"\n\n\t/* Island {islandNum} */\n"
             text += isle.print_conventional(islandNum, processPrefix)
 
+        text += ''.join(f'\nwire {name};' for name in sorted(self._conventional_open_wires))
         text += "\n endmodule"
         
         # 5. Find all NDRs defined and map them to their Verilog net names
@@ -368,6 +370,7 @@ class Circuit:
         if self.frame is None:
             return pin_info
 
+        named_nets = set()
         for port in self.frame.ports:
             # Map location (E, W, N, S) to the dictionary
             loc = port.location.upper() if port.location else "N"
@@ -385,8 +388,10 @@ class Circuit:
                 
                 # GLOBAL RENAME: Update the shared Net object so all internal
                 # cells connected to this net use the frame port name.
-                target_net.number = final_name
-                target_net.index = -1 
+                if target_net not in named_nets:
+                    target_net.number = final_name
+                    target_net.index = -1
+                    named_nets.add(target_net) 
                 
                 # Save to pin_info list for this direction
                 pin_info[loc].append(final_name)
@@ -394,31 +399,18 @@ class Circuit:
         return pin_info
     
     def handle_port_collision(self):
-
-        net_collision = {}
-        net_patch_flag = 0
-        patch_str = "\n\n\n\n"
-
+        """Preserve independent bus lanes when frame ports share a net."""
+        first = {}
+        aliases = []
         for port in self.frame.ports:
-            net_tmp = port.pins[0].getNet()
-
-            if net_tmp in net_collision:
-                net_collision[net_tmp].append(port.name)
-            else:
-                net_collision[net_tmp] = [port.name]
-
-        
-        for key in net_collision:
-
-            if len(net_collision[key]) > 1:
-                patch_str += f"\twire patch_{net_patch_flag};\n"
-
-                for port_name in net_collision[key]:
-                    patch_str += f"\tassign {port_name} = patch_{net_patch_flag};\n"
-                
-                net_patch_flag = net_patch_flag + 1
-
-        return patch_str
+            for index, pin in enumerate(port.pins):
+                name = f'{port.name}[{index}]' if len(port.pins) > 1 else port.name
+                net = pin.getNet()
+                if net in first:
+                    aliases.append(f'\tassign {name} = {first[net]};')
+                else:
+                    first[net] = name
+        return '\n'.join(aliases) + '\n'
 
 
 
@@ -963,19 +955,12 @@ class Port:
     - Pins (list)
     - Cell (single)
     """
-<<<<<<< HEAD:ashes_fg/asic/model/asic_compile.py
     def __init__(self,circuit,cell,name,location,pinNumber,static = False,native_name=None,native_location=None):
         self.circuit = circuit
         self.name = name
         # Logical name/side govern the designer API and matrix indexing.
         # Netlists reference the physical pin identifier supplied by the library.
         self.native_name = native_name if native_name is not None else name
-=======
-    def __init__(self,circuit,cell,name,location,pinNumber,static = False,native_name=None):
-        self.circuit = circuit
-        self.name = name
-        self.native_name = name if native_name is None else native_name
->>>>>>> 868a5e4 (feat: centralize process-independent cell library generation):ashes_fg/asic/asic_compile.py
         self.location = location
         if native_location is not None:
             self.native_location = native_location
@@ -1139,11 +1124,7 @@ class Port:
                     if extraIdx > 0:
                         line += "_n" + str(extraIdx)
 
-<<<<<<< HEAD:ashes_fg/asic/model/asic_compile.py
                     line += "_n" + str(i) + "_" + self.native_name
-=======
-                    line += "_n" + str(i) + "_" + getattr(self, "native_name", self.name)
->>>>>>> 868a5e4 (feat: centralize process-independent cell library generation):ashes_fg/asic/asic_compile.py
 
                     # Add pin number for ports with size > 1
                     if self.numPins() > 1:
@@ -1167,11 +1148,7 @@ class Port:
             pin = self.pins[i]
 
             if pin.isVectorConnected():
-<<<<<<< HEAD:ashes_fg/asic/model/asic_compile.py
                 line += ", ." + self.native_name
-=======
-                line += ", ." + getattr(self, "native_name", self.name)
->>>>>>> 868a5e4 (feat: centralize process-independent cell library generation):ashes_fg/asic/asic_compile.py
                 # Add vector notation for a vectorized port
                 if self.numPins() > 1:
                     line +=  "_" + str(i) + "_"
@@ -1243,38 +1220,34 @@ class Port:
             if not is_on_edge:
                 return ""
 
-        # 3. Extract the nets
-        net_list = []
-        if self.isStatic:
-            # Static pins (like shared Enable/VDD) are applied to every instance in full
-            for pin in self.pins:
-                net_list.append(pin.net.print())
-        else:
-            # Vectorized pins: extract the specific slice for this instance index
-            start_idx = inst_idx * pins_per_inst
-            for i in range(pins_per_inst):
-                if (start_idx + i) < len(self.pins):
-                    if not self.pins[start_idx+i].net.isEmpty():
-                        net_list.append(self.pins[start_idx + i].net.print())
-
-        if not net_list:
+        # Preserve every physical lane; unused positions must never shift indices.
+        selected = (list(self.pins) if self.isStatic else
+                    self.pins[inst_idx*pins_per_inst:(inst_idx+1)*pins_per_inst])
+        if not selected or all(pin.net.isEmpty() for pin in selected):
             return ""
+        net_list = []
+        for index, pin in enumerate(selected):
+            if not pin.net.isEmpty():
+                net_list.append(pin.net.print())
+            else:
+                cell_id = self.circuit.Instances.index(self.cell)
+                port_id = self.cell.ports.index(self)
+                name = f'__ashes_open_{cell_id}_{port_id}_{r}_{c}_{index}'
+                occupied = {net.print() for net in self.circuit.Nets if not net.isEmpty()}
+                while name in occupied:
+                    name += '_isolated'
+                if not hasattr(self.circuit, '_conventional_open_wires'):
+                    self.circuit._conventional_open_wires = set()
+                self.circuit._conventional_open_wires.add(name)
+                net_list.append(name)
 
         # 4. Format for Verilog
         if len(net_list) == 1:
-<<<<<<< HEAD:ashes_fg/asic/model/asic_compile.py
             return f".{self.native_name}({net_list[0]})"
         else:
             # Reverse for Verilog {MSB, ..., LSB} convention
             net_list.reverse()
             return f".{self.native_name}({{{', '.join(net_list)}}})"
-=======
-            return f".{getattr(self, 'native_name', self.name)}({net_list[0]})"
-        else:
-            # Reverse for Verilog {MSB, ..., LSB} convention
-            net_list.reverse()
-            return f".{getattr(self, 'native_name', self.name)}({{{', '.join(net_list)}}})"
->>>>>>> 868a5e4 (feat: centralize process-independent cell library generation):ashes_fg/asic/asic_compile.py
         
         
         

@@ -72,6 +72,8 @@ def main():
     # Cell-module selection belongs to algorithm construction, not compilation.
     if args.flow == "asic":
         compile_args.pop("cell_module", None)
+        # The loaded design already resolves run-level area and explicit overrides.
+        compile_args.pop("design_limits", None)
 
     # ---- load routing settings ----
     config_path = project_dir / "router_settings.json"

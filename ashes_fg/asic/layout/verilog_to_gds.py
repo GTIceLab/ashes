@@ -41,7 +41,7 @@ verbose = False
 pypath = sys.executable
 
 
-def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None, routed_def=False, router_tool='qrouter', process_coordinates="xy", physical_cells_plan=None, fg_layout_plan=None):
+def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None, routed_def=False, router_tool='qrouter', process_coordinates="xy", physical_cells_plan=None, fg_layout_plan=None, supply_access_policy=None, routing_export_instances=None, routing_access_policy=None):
     placement_axes = PlacementAxes(process_coordinates)
     tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer,pd_tool = process_params
     external_pd = is_external_pd_tool(pd_tool)
@@ -143,17 +143,34 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
     # Parse cell GDS, separate out things that need to be generated
     inst_except_list = ['cab_frame']
     generate_cells_list = []
-    for inst in top_module.module_instances:
-        if inst.module_name in module_list and inst.instance_name.lower() not in inst_except_list:
-            cell_text = parse_cell_gds(inst.module_name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process,lib_path,prBoundary_layer)
-            if not routed_def: update_output_layout(cell_text, text_layout_path)
-            first_cell = False
-        elif inst.instance_name.lower() in inst_except_list:
-            generate_cells_list.append(inst)
+    from ashes_fg.asic.common.pin_preflight import pin_diagnostic_log
+    with pin_diagnostic_log(os.path.join(file_path, 'pin_extraction.log')) as pin_logger:
+        for inst in top_module.module_instances:
+            if inst.module_name in module_list and inst.instance_name.lower() not in inst_except_list:
+                cell_text = parse_cell_gds(inst.module_name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process,lib_path,prBoundary_layer, pin_logger=pin_logger)
+                if not routed_def: update_output_layout(cell_text, text_layout_path)
+                first_cell = False
+            elif inst.instance_name.lower() in inst_except_list:
+                generate_cells_list.append(inst)
     if verbose: print('Cell Info:')
     if verbose: pprint.pprint(cell_info)
     if verbose: print(f'Module List:\n{top_module.module_instances}')
     #pprint.pprint(cell_info)
+
+    # Persist extraction diagnostics before failing connected-pin preflight.
+    diagnostics_path = os.path.join(file_path, 'pin_extraction_diagnostics.json')
+    diagnostics = [issue for metadata in cell_info.values()
+                   for issue in metadata.get('pin_diagnostics', [])]
+    with open(diagnostics_path, 'w') as report:
+        json.dump(diagnostics, report, indent=2)
+    if external_pd and not routed_def:
+        from ashes_fg.asic.common.pin_preflight import validate_connected_abstract_ports
+        conventional_path = os.path.join(pd_inputs, verilog_file_name)
+        with open(conventional_path) as netlist:
+            try:
+                validate_connected_abstract_ports(netlist.read(), cell_info)
+            except ValueError as error:
+                raise ValueError(f'{error}\nPin extraction report: {diagnostics_path}') from error
 
     # Separate cells into islands and arrange cell list to start at bottom left
     # I doubt this is needed anymore.
@@ -251,7 +268,19 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
         update_output_layout('ENDLIB\n', text_layout_path)
         subprocess.run([pypath, txt2gds_path, '-o', gds_path, text_layout_path], check=True)
 
-        generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu, cell_order_in_island,lib_path,pd_tool)
+        routing_pin_plan = {}
+        if external_pd and routing_access_policy:
+            if supply_access_policy and supply_access_policy.get('mode') != 'exposed_boundary':
+                raise ValueError('Multi-access pins require exposed_boundary supply filtering')
+            from ashes_fg.asic.pd.multi_access import pin_plan, canonical_netlist
+            from ashes_fg.asic.pd.routing_export import omit_native_abutment_connections
+            routing_pin_plan = pin_plan(cell_info, routing_access_policy, supply_policy=supply_access_policy)
+            # Validate all alias net identities before writing the new abstract.
+            with open(os.path.join(pd_inputs, verilog_file_name)) as source:
+                raw, _ = omit_native_abutment_connections(source.read(), routing_export_instances or {})
+                canonical_netlist(raw, cell_info, routing_pin_plan)
+        generate_lef(module_list, cell_info, tech_process, lef_file_path, dbu, cell_order_in_island,lib_path,pd_tool, routing_pin_plan=routing_pin_plan)
+
 
         #metal_layers = count_metal_layers(layer_map, tech_process)
         metal_layers = count_metal_layers_drawing(layer_map, tech_process)
@@ -261,6 +290,14 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
             def_blocks, def_nets = generate_def(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table,lef_file_path)
         else:
             generate_def_fr_cadence(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table,lef_file_path)
+            if supply_access_policy or routing_export_instances or routing_pin_plan:
+                from ashes_fg.asic.pd.supply_access import apply_supply_access
+                apply_supply_access(
+                    os.path.join(pd_inputs, verilog_file_name), def_file_path, cell_info,
+                    supply_access_policy, metal_layers, dbu,
+                    os.path.join(file_path, 'routing_access.json' if routing_access_policy else 'supply_access.json'),
+                    native_abutment=routing_export_instances, routing_pin_plan=routing_pin_plan)
+
 
         #island_info = sanitize_island_info(island_info)
         if verbose:
@@ -278,7 +315,7 @@ def gds_synthesis(process_params, design_area, proj_name,proj_path,isle_loc=None
         subprocess.run([pypath, txt2gds_path, '-o', merged_gds_file_path, text_merged_layout_path], check=True)
     
 
-def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process,lib_path,prBoundary_layer):
+def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map, tech_process,lib_path,prBoundary_layer, pin_logger=None):
     """
     Convert the cell gds to text
     - Omit header and libary tags for subsequent cells
@@ -367,7 +404,9 @@ def parse_cell_gds(name, first_cell, cell_info, module_list, pin_list, layer_map
                         # Add pin list to cell info of cell
                         if track_pins: 
                             track_pins = False
-                            cell_pins = assign_pins_to_polygon(cell_pin_names, cell_pin_boxes, layer_map, pin_list[0][1])
+                            pin_diagnostics = []
+                            cell_pins = assign_pins_to_polygon(cell_pin_names, cell_pin_boxes, layer_map, pin_list[0][1], sub_cell_name, pin_diagnostics, logger=pin_logger)
+                            cell_info[sub_cell_name]['pin_diagnostics'] = pin_diagnostics
                             cell_info[sub_cell_name]['cell_pins'] = cell_pins
                     # Inidicate a text record
                     if rec.tag_name == 'TEXT' and track_pins:
@@ -1687,120 +1726,60 @@ def generate_frame(cell_order_in_island, cell_info, island_dims, island_place, g
     return ''.join(ret_string), frame_module
 
 
-def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_order_in_island,lib_path,pd_tool):
-    '''
-    Create a lef file for the design
-    - Start with a copy of the technology lef
-    - Use the module list to define any pins found
-    '''
+def generate_lef(module_list, cell_info, tech_process, file_path, dbu, cell_order_in_island,lib_path,pd_tool, routing_pin_plan=None):
+    """Write each routing PIN once, with all internal access shapes in one PORT."""
+    from ashes_fg.asic.pd.multi_access import merged_pins
     external_pd = is_external_pd_tool(pd_tool)
-
-    # Copy the technology lef for the design
     tech_lef_path = os.path.join(lib_path, 'tech_lef', tech_process + '.lef')
-    #tech_lef_path = os.path.join('.', 'ashes_fg', 'asic', 'lib', 'tech_lef', tech_process + '_toplevelroute.lef')
-    
     if external_pd:
-        header_str = 'VERSION 5.8 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n'
-        ## Harcoded fix for innovus import, because cells.lef is not recognized properly according to dbu the def is 1000
-        dbu=1000
-
+        # Existing external-PD database-unit convention, unchanged by aliasing.
+        dbu = 1000
     else:
-        if os.path.exists(tech_lef_path): shutil.copy(tech_lef_path, file_path)
-        else: raise CellNotFound(f'Could not find the technology lef file {tech_process}.lef. Is it in the ./lib/tech_lef/ directory?')
-
-    lef_file = open(file_path, 'a')
-
-    if external_pd:
-        lef_file.write(header_str) 
-        lef_file.write(f"UNITS\n    DATABASE MICRONS {dbu} ;\nEND UNITS\n\n") 
-
-    lef_file.write('\n\n') 
+        if not os.path.exists(tech_lef_path):
+            raise CellNotFound(f'Could not find the technology lef file {tech_process}.lef.')
+        shutil.copy(tech_lef_path, file_path)
+    modules = []
     seen = set()
-    # Run through cell order dict
-    for val, island in cell_order_in_island.items():
-        for idx, item in island['items'].items():
-            processed = 'name' in item and item['name'] in seen
-            if item['type'] == 'cell' and not processed:
-                module = item['name']
-                lef_file.write(f'MACRO {module}\n')
-
-                if (external_pd):
-                    lef_file.write(f'  CLASS BLOCK ;\n')
-                    lef_file.write(f"  ORIGIN {cell_info[module]['origin'][0]/dbu} {cell_info[module]['origin'][1]/dbu} ;\n")
-                    lef_file.write(f"  SIZE {cell_info[module]['width']/dbu} BY {cell_info[module]['height']/dbu} ;\n")
-                    # Currently hardcoded as no rotation
-                    lef_file.write(f'  SYMMETRY X Y R90 ;\n')
-
-                try:
-                    pins = cell_info[module]['cell_pins']
-                except:
-                    if verbose:
-                        print(f'Warning: module {module} has no pins defined on the cell.')
-                    pins = {}
-                for pin, value in pins.items():
-                    ## Maybe Qrouter also needs [] instead of <>, relook and remove this flag later
-                    if (external_pd):
-                        formatted_pin = pin.replace('<', '[').replace('>', ']')
-                        lef_file.write(f'  PIN {formatted_pin}\n')
-                    else:
-                        lef_file.write(f'  PIN {pin}\n')
-                    lef_file.write(f'    DIRECTION INOUT ;\n')
-                    lef_file.write(f'    USE SIGNAL ;\n')
-                    lef_file.write(f'    PORT\n')
-                    layer = value['Layer']
-                    lef_file.write(f'      LAYER {layer} ;\n')
-                    rect = value['RECT']
-                    lef_file.write(f'        RECT {rect[0]/dbu} {rect[1]/dbu} {rect[2]/dbu} {rect[3]/dbu} ;\n')
-                    lef_file.write(f'    END\n')
-                    if (external_pd):
-                        lef_file.write(f'  END {formatted_pin}\n')
-                    else:
-                        lef_file.write(f'  END {pin}\n')                
-                lef_file.write(f'END {module}\n\n')
+    for island in cell_order_in_island.values():
+        for item in island['items'].values():
+            if item['type'] == 'cell' and item['name'] not in seen:
+                modules.append(item['name'])
                 seen.add(item['name'])
-    
-    # Double check the module list for things like frame 
     for module in module_list:
-        processed = module in seen
-        if not processed:
-            lef_file.write(f'MACRO {module}\n')
-            
-            if (external_pd):
-                lef_file.write(f'  CLASS BLOCK ;\n')
-                lef_file.write(f"  ORIGIN {cell_info[module]['origin'][0]/dbu} {cell_info[module]['origin'][1]/dbu} ;\n")
-                lef_file.write(f"  SIZE {cell_info[module]['width']/dbu} BY {cell_info[module]['height']/dbu} ;\n")
-                # Currently hardcoded as no rotation
-                lef_file.write(f'  SYMMETRY X Y R90 ;\n')
-
-            try:
-                pins = cell_info[module]['cell_pins']
-            except:
-                if verbose:
-                    print(f'Warning: module {module} has no pins defined on the cell.')
-                pins = {}
-            for pin, value in pins.items():
-                if (external_pd):
-                    formatted_pin = pin.replace('<', '[').replace('>', ']')
-                    lef_file.write(f'  PIN {formatted_pin}\n')
-                else:
-                    lef_file.write(f'  PIN {pin}\n')
-                lef_file.write(f'    DIRECTION INOUT ;\n')
-                lef_file.write(f'    USE SIGNAL ;\n')
-                lef_file.write(f'    PORT\n')
-                layer = value['Layer']
-                lef_file.write(f'      LAYER {layer} ;\n')
-                rect = value['RECT']
-                lef_file.write(f'        RECT {rect[0]/dbu} {rect[1]/dbu} {rect[2]/dbu} {rect[3]/dbu} ;\n')
-                lef_file.write(f'    END\n')
-                if (external_pd):
-                    lef_file.write(f'  END {formatted_pin}\n')
-                else:
-                    lef_file.write(f'  END {pin}\n')
-            lef_file.write(f'END {module}\n\n')
+        if module not in seen:
+            modules.append(module)
             seen.add(module)
-
-    lef_file.write('END LIBRARY')
-    lef_file.close()
+    with open(file_path, 'a') as lef_file:
+        if external_pd:
+            lef_file.write('VERSION 5.8 ;\nNAMESCASESENSITIVE ON ;\nDIVIDERCHAR "/" ;\nBUSBITCHARS "[]" ;\n\n')
+            lef_file.write(f'UNITS\n    DATABASE MICRONS {dbu} ;\nEND UNITS\n\n')
+        lef_file.write('\n\n')
+        for module in modules:
+            metadata = cell_info[module]
+            lef_file.write(f'MACRO {module}\n')
+            if external_pd:
+                lef_file.write('  CLASS BLOCK ;\n')
+                lef_file.write(f"  ORIGIN {metadata['origin'][0]/dbu} {metadata['origin'][1]/dbu} ;\n")
+                lef_file.write(f"  SIZE {metadata['width']/dbu} BY {metadata['height']/dbu} ;\n")
+                lef_file.write('  SYMMETRY X Y R90 ;\n')
+            pins = metadata.get('cell_pins', {})
+            if external_pd:
+                pins = merged_pins(module, pins, routing_pin_plan or {})
+            for pin, value in pins.items():
+                formatted = pin.replace('<', '[').replace('>', ']') if external_pd else pin
+                lef_file.write(f'  PIN {formatted}\n    DIRECTION INOUT ;\n    USE SIGNAL ;\n    PORT\n')
+                seen_shapes = set()
+                for shape in value.get('access_shapes', [value]):
+                    layer, rect = shape['Layer'], shape['RECT']
+                    key = (layer, tuple(rect))
+                    if key in seen_shapes:
+                        continue
+                    seen_shapes.add(key)
+                    lef_file.write(f'      LAYER {layer} ;\n')
+                    lef_file.write(f'        RECT {rect[0]/dbu} {rect[1]/dbu} {rect[2]/dbu} {rect[3]/dbu} ;\n')
+                lef_file.write(f'    END\n  END {formatted}\n')
+            lef_file.write(f'END {module}\n\n')
+        lef_file.write('END LIBRARY')
 
 
 def generate_def(island_info, cell_info, cell_order_in_island, def_params, metal_layers, nets_table, lef_file_path):

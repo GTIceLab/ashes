@@ -37,12 +37,77 @@ class AlgorithmGrid:
         return (self.origin[0] + x * self.x_axis[0] + y * self.y_axis[0],
                 self.origin[1] + x * self.x_axis[1] + y * self.y_axis[1])
 
+    def create(self, cell_class, circuit, *, dim=(1, 1), **kwargs):
+        """Construct on this island using canonical (row, column) counts.
+
+        A matrix_axes profile maps electrical rows/columns to physical axes.
+        Process staging conversion is then applied. The cell retains the
+        process staging dimensions expected by peripheral and layout APIs.
+        Position is supplied separately through place().
+        """
+        vertical, horizontal = (index(value) for value in dim)
+        if vertical < 1 or horizontal < 1:
+            raise ValueError('Array dimensions must be positive')
+        axes = getattr(cell_class, 'matrix_axes', ('rows', 'columns'))
+        if axes == ('columns', 'rows'):
+            vertical, horizontal = horizontal, vertical
+        elif axes != ('rows', 'columns'):
+            raise ValueError('Invalid library matrix_axes')
+        staging_dim = ((vertical, horizontal) if self.x_axis == (0, 1)
+                       else (horizontal, vertical))
+        cell = cell_class(circuit, self.island, dim=staging_dim, **kwargs)
+        cell.algorithm_dim = tuple(dim)
+        return cell
+
+    def shape(self, cell):
+        """Physical array counts (vertical, horizontal) in golden XY."""
+        if cell.island is not self.island:
+            raise ValueError('Algorithm grid and cell must belong to the same island')
+        return tuple(cell.dim) if self.x_axis == (0, 1) else tuple(reversed(cell.dim))
+
     def place(self, cell, xy):
         if cell.island is not self.island:
             raise ValueError('Algorithm grid and cell must belong to the same island')
         cell.place(self.staging_point(xy))
         cell.algorithm_xy = tuple(index(value) for value in xy)
         return cell
+
+    def bounds(self, body):
+        """Return canonical grid bounds for a cell or a group of body cells.
+
+        These indices describe body topology only. Generated peripherals are
+        laid out separately from measured footprints by their owning API.
+        """
+        members = tuple(body) if isinstance(body, (tuple, list)) else (body,)
+        if not members:
+            raise ValueError('A body group must not be empty')
+        boxes = []
+        for cell in members:
+            if cell.island is not self.island:
+                raise ValueError('Body and grid must belong to the same island')
+            loc = self.island.getLocation(cell)
+            if not len(loc[0]) or not len(loc[1]):
+                raise ValueError('Place the reference body before relative placement')
+            row = int(loc[0][0]) - self.origin[0]
+            col = int(loc[1][0]) - self.origin[1]
+            x, y = (col, row) if self.x_axis == (0, 1) else (row, col)
+            vertical, horizontal = self.shape(cell)
+            boxes.append((x, y, x + horizontal, y + vertical))
+        return (min(b[0] for b in boxes), min(b[1] for b in boxes),
+                max(b[2] for b in boxes), max(b[3] for b in boxes))
+
+    def below(self, body):
+        """Return the next body origin, below and left-aligned with a body group.
+
+        Increasing canonical grid Y follows the top-to-bottom band order.
+        Physical pitches and peripheral/companion footprints remain backend work.
+        """
+        left, _, _, bottom = self.bounds(body)
+        return left, bottom
+
+    def place_below(self, cell, body):
+        """Place a new body after a cell/group without caller-side row arithmetic."""
+        return self.place(cell, self.below(body))
 
 
 def grid_layout(context):

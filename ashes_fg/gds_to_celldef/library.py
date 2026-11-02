@@ -17,7 +17,8 @@ from . import json2python
 COORDINATES = ("xy", "columns_y_rows_minus_x")
 HEADER = "from ashes_fg.asic.asic_compile import StandardCell, Port\n\n"
 PIN = re.compile(r"^(.*?)(?:[<\[]([0-9]+)(?::([0-9]+))?[>\]])?$")
-SIDES = re.compile(r"_([nesw])$", re.I)
+# Only lowercase suffixes encode sides; SEL_S is a signal name.
+SIDES = re.compile(r"_([nesw])$")
 
 
 def identifier(name, what):
@@ -85,17 +86,20 @@ def bounds(cell, boundary=None):
     return box
 
 
-def label_parts(text):
+def label_parts(text, cell_name=None, label=None):
     match = PIN.fullmatch(text)
     if not match or not match[1]:
-        raise ValueError(f"Invalid pin label {text!r}")
+        context = f"Cell {cell_name}: " if cell_name is not None else ""
+        location = (f" at {label.origin} on layer {label.layer}, texttype {label.texttype}"
+                    if label is not None else "")
+        raise ValueError(f"{context}Invalid pin label {text!r}{location}")
     base, a, b = match.groups()
     bits = None if a is None else set(range(min(int(a), int(b or a)), max(int(a), int(b or a)) + 1))
     return base, bits
 
 
 def pin_side(label, box, overrides, cell_name="<unknown>", corner_layers=None, corner_distance=0.25):
-    base, _ = label_parts(label.text)
+    base, _ = label_parts(label.text, cell_name, label)
     override = overrides.get(label.text, overrides.get(base))
     if override is not None:
         if not isinstance(override, str) or override.upper() not in ('N', 'S', 'E', 'W'):
@@ -131,7 +135,9 @@ def labels_for(cell, label_layers):
               and (not label_layers or any(label.layer == layer and (datatype is None or label.texttype == datatype)
                                           for layer, datatype in label_layers))]
     if not labels:
-        raise ValueError(f"Cell {cell.name}: no selected top-cell pin labels")
+        logging.getLogger(__name__).warning(
+            "Cell %s: no selected top-cell pin labels; continuing with no pins.",
+            cell.name)
     return labels
 
 
@@ -139,7 +145,7 @@ def prepare(library, name, boundary=None, label_layers=None, directions=None, co
     cell = selected_cell(library, name)
     box = bounds(cell, boundary)
     for label in labels_for(cell, label_layers):
-        base, bits = label_parts(label.text)
+        base, bits = label_parts(label.text, cell.name, label)
         side = pin_side(label, box, directions or {}, cell.name, corner_layers, corner_distance)
         if not SIDES.search(base):
             # Preserve the original bus notation and indices verbatim.
@@ -148,13 +154,19 @@ def prepare(library, name, boundary=None, label_layers=None, directions=None, co
 
 
 def specification(library, name, process_node, foundry, coordinates='xy', boundary=None,
-                  label_layers=None, directions=None, pin_map=None, corner_layers=None, corner_distance=0.25):
+                  label_layers=None, directions=None, pin_map=None, corner_layers=None, corner_distance=0.25, excluded_pin_labels=None):
     identifier(name, 'Cell name')
     cell = selected_cell(library, name)
     box = bounds(cell, boundary)
     groups = {}
     for label in labels_for(cell, label_layers):
-        base, bits = label_parts(label.text)
+        label_key = (label.text, label.layer, tuple(label.origin))
+        if excluded_pin_labels and label_key in excluded_pin_labels:
+            logging.getLogger(__name__).warning(
+                'Cell %s: omitting pin label %s at %s on layer %s from cell definitions: '
+                'no usable physical pin rectangle', name, label.text, label.origin, label.layer)
+            continue
+        base, bits = label_parts(label.text, cell.name, label)
         if not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_$]*', base):
             raise ValueError(f"Cell {name}: native label {base!r} is not a supported Verilog pin identifier. Review internal annotations or explicitly select pin-label layers; no labels were silently removed.")
         side = pin_side(label, box, directions or {}, name, corner_layers, corner_distance)
@@ -247,3 +259,82 @@ def commit_library(generated, json_path, python_path, extra=None):
     for name, text in histories:
         contents[python_path.parent / 'cell_histories' / f'{name}.{stamp}.py.txt'] = text.encode()
     write_outputs(contents)
+
+
+def validate_pin_geometry(library, name, label_layers=None, pin_layers=None, strict=False):
+    """Check selected top-cell labels with the physical parser's rectangle matcher.
+
+    Explicit pin layers are authoritative. Without them, checking all top-cell
+    polygons on each label layer is diagnostic only, not physical signoff.
+    """
+    from ashes_fg.asic.common.pin_preflight import match_pin_labels
+    cell = selected_cell(library, name)
+    labels = labels_for(cell, label_layers)
+    if not labels:
+        return []
+    logger = logging.getLogger(__name__)
+    if strict and not pin_layers:
+        raise ValueError(f'Cell {name}: strict pin geometry requires --pin-layer or a usable --pin-layer-map')
+    if not pin_layers:
+        logger.warning('Cell %s: no physical pin-layer selection available; checking all top-cell '
+                       'polygon datatypes on label layers only. Use --pin-layer or --pin-layer-map '
+                       'for physical-parser-compatible validation.', name)
+    diagnostics = []
+    # The physical parser currently selects one common datatype for all layers.
+    # Keep that behavior here; do not claim other datatypes will survive export.
+    selected = [(str(layer), str(dt)) for layer, dt in (pin_layers or [])]
+    if selected:
+        common = max(set(dt for _, dt in selected), key=[dt for _, dt in selected].count)
+        allowed_layers = {int(layer) for layer, dt in selected if dt == common}
+    else:
+        common = None
+        allowed_layers = {label.layer for label in labels}
+    for label in labels:
+        if label.layer not in allowed_layers:
+            issue = dict(cell=name, pin=label.text, coordinates=list(label.origin),
+                         layer=label.layer, texttype=label.texttype,
+                         reason='label_layer_not_selected_by_physical_parser',
+                         selected_datatype=common)
+            diagnostics.append(issue)
+            logger.warning('Unmatched physical pin: cell=%s pin=%s coordinates=%s layer=%s '
+                           'texttype=%s reason=%s selected_datatype=%s',
+                           name, label.text, label.origin, label.layer, label.texttype,
+                           issue['reason'], common)
+            continue
+        boxes = []
+        for polygon in cell.polygons:
+            if polygon.layer != label.layer or (common is not None and polygon.datatype != int(common)):
+                continue
+            # Match the existing physical parser's axis-aligned rectangular
+            # representation; this does not invent geometry or flatten hierarchy.
+            points = polygon.points
+            if len(points) < 3:
+                continue
+            boxes.append((label.layer, float(points[0][0]), float(points[0][1]),
+                          float(points[2][0]), float(points[2][1])))
+        dt = common if common is not None else 'diagnostic'
+        before = len(diagnostics)
+        match_pin_labels([(label.layer, label.text, *label.origin)], boxes,
+                         {f'{label.layer},{dt}': {'pdk_name': str(label.layer)}}, dt,
+                         name, diagnostics, logger=logger)
+        for issue in diagnostics[before:]:
+            issue['texttype'] = label.texttype
+    if strict and diagnostics:
+        raise ValueError(f'Cell {name}: {len(diagnostics)} pin labels have no usable physical '
+                         'pin rectangle; see preceding diagnostics. No outputs committed.')
+    return diagnostics
+
+
+def physical_pin_layers(layer_map_path):
+    """Use the existing physical parser's process-independent pin-purpose map."""
+    mapping = load_object(layer_map_path)
+    result = []
+    for key, value in mapping.items():
+        if value.get('purpose') == 'pin':
+            parts = key.split(',')
+            if len(parts) != 2:
+                raise ValueError(f'Invalid pin layer-map key: {key!r}')
+            result.append(tuple(int(part) for part in parts))
+    if not result:
+        raise ValueError(f'No pin-purpose entries in {layer_map_path}; use --pin-layer for label-purpose processes')
+    return result

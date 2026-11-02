@@ -102,6 +102,9 @@ def _bind_companion(group, side, companion, boundary, profile, exposed, fulfille
             for dst, src in zip(port.pins, bindings):
                 if dst.net is not src.net:
                     dst.connect(src)
+        if source_ports and all(getattr(p, 'native_abutment', False) for p in source_ports):
+            for port in targets:
+                port.native_abutment = True
         for port in exposed.get(family, source_ports):
             port.routing_hidden = True
         # Retain only the outer port if both inner and outer ports are present.
@@ -147,6 +150,8 @@ def prepare_groups(work, island, catalog, edges, taps, swapped, report, insert):
                     continue
                 companion = catalog[name](work, island=island, dim=dim)
                 companion.physical_companion = True
+                if all(getattr(cell, 'routing_export', None) == 'native_abutment' for cell in group.members):
+                    companion.routing_export = 'native_abutment'
                 _bind_companion(group, side, companion, boundary, profile, exposed, fulfilled)
                 insert(island, companion, previous, side, swapped, dim)
                 relationships.append((companion, previous, side))

@@ -64,18 +64,10 @@ def make_pin_list(layer_map, tech_process):
     
     return pin_list
 
-def assign_pins_to_polygon(pin_names, pin_boxes, layer_map, pin_dt):
-    '''
-    Given a list of pin centers and pin boxes, match the pin centers to the right boxes
-    '''
-    assigned_pins = {}
-    for pin in pin_names:
-        pin_x, pin_y = pin[2], pin[3]
-        for box in pin_boxes:
-            if box[1] < pin_x < box[3] and box[2] < pin_y < box[4] and box[0] == pin[0]:
-                assigned_pins.update({pin[1]: { "Layer": layer_map[f'{pin[0]},{pin_dt}']['pdk_name'], "RECT": (box[1], box[2], box[3], box[4])} })
-                break
-    return assigned_pins
+def assign_pins_to_polygon(pin_names, pin_boxes, layer_map, pin_dt, cell_name=None, diagnostics=None, logger=None):
+    from ashes_fg.asic.common.pin_preflight import match_pin_labels
+    return match_pin_labels(pin_names, pin_boxes, layer_map, pin_dt, cell_name, diagnostics, logger=logger)
+
 
 def reverse_pdk_doc(layer_map):
     '''

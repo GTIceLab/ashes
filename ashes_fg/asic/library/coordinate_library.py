@@ -1,5 +1,6 @@
-"""Adapt native generated cells to a placement convention, without rotating masters."""
+"""Adapt declared cell interfaces between placement conventions without rotating masters."""
 import inspect
+from functools import wraps
 import sys
 from types import ModuleType
 from .cell_profiles import load_cell_library
@@ -12,9 +13,9 @@ def for_coordinates(cells, process_coordinates='xy'):
     declared = getattr(library, 'cell_coordinates', 'xy')
     if declared == process_coordinates:
         return library
-    if declared != 'xy' or process_coordinates != 'columns_y_rows_minus_x':
-        raise ValueError('Coordinate adaptation requires a native XY cell library')
-    name = library.__name__ + '__columns_y_rows_minus_x'
+    if declared not in ('xy', 'columns_y_rows_minus_x'):
+        raise ValueError('Invalid library cell_coordinates')
+    name = library.__name__ + '__' + process_coordinates
     if name in sys.modules:
         return sys.modules[name]
     result = ModuleType(name)
@@ -26,6 +27,7 @@ def for_coordinates(cells, process_coordinates='xy'):
     logical_side = dict(N='E', E='S', S='W', W='N')
     def adapted(base):
         signature = inspect.signature(base.__init__)
+        @wraps(base.__init__)
         def init(self, *args, **kwargs):
             bound = signature.bind(self, *args, **kwargs)
             bound.apply_defaults()
@@ -36,9 +38,14 @@ def for_coordinates(cells, process_coordinates='xy'):
             if dim is not None:
                 self.dim = tuple(dim)
             for port in self.ports:
-                native = getattr(port, 'native_location', port.location)
+                native_name = getattr(port, 'native_name', port.name)
+                suffix = native_name.rsplit('_', 1)[-1].upper()
+                source_side = ({v: k for k, v in logical_side.items()}[port.location]
+                               if declared != 'xy' else port.location)
+                native = getattr(port, 'native_location',
+                                 suffix if suffix in logical_side else source_side)
                 port.native_location = native
-                port.location = logical_side[native]
+                port.location = logical_side[native] if process_coordinates != 'xy' else native
         return type(base.__name__, (base,), dict(__init__=init, __module__=name,
                     library_master_name=base.__name__))
     for key, value in vars(library).items():

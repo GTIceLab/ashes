@@ -11,22 +11,23 @@ from ..library.cell_profiles import load_cell_library
 
 
 def generate_drain_extension(island, scopes, *, cells, process_coordinates='xy', decoder=None):
-    """Generate one drain programming chain for ordered (P, R) pin scopes."""
-    from algorithms.decoders.folded_radix4 import DrainDecoder
+    """Generate one drain chain; (P, None) adds a program-only memory scope."""
+    from ashes_fg.algorithms.decoders.folded_radix4 import DrainDecoder
     cells = load_cell_library(cells)
     parents, channels = [], []
     for program_p, program_r in scopes:
-        pp, rr = list(program_p), list(program_r)
+        pp = list(program_p)
+        rr = list(program_r) if program_r is not None else [None] * len(pp)
         if len(pp) != len(rr) or not pp:
             raise ValueError('Drain extension scopes need equal, nonempty P/R widths')
         for p, r in zip(pp, rr):
-            for pin in (p, r):
+            for pin in (p, r) if r is not None else (p,):
                 if pin.cell.circuit is not island.circuit:
                     raise ValueError('Drain extension targets must belong to the same circuit')
                 if pin.cell not in parents:
                     parents.append(pin.cell)
             index = len(channels)
-            channels.append(Channel(index, index // 4, index % 4, [p, r]))
+            channels.append(Channel(index, index // 4, index % 4, [p, r] if r is not None else [p]))
     if not channels or len(channels) % 4:
         raise ValueError('Drain extension channels must fit the selected four-lane interface')
     if island.instances or hasattr(island, 'fg_generated'):
@@ -55,6 +56,32 @@ def generate_drain_extension(island, scopes, *, cells, process_coordinates='xy',
     return generated
 
 
+def append_drain_control(generated, cell_class, *, supplies):
+    """Append a control shifter to an extension's existing shifter band.
+
+    The API owns staging slots, layout descriptors, companion grouping, and
+    instance coverage. The caller connects the returned cell's functional pins.
+    """
+    from ..placement.companion_groups import register_companion_group
+    chain = generated.drain
+    if generated.layout is not layout_drain_extension or chain is None:
+        raise ValueError('A drain extension is required')
+    island = chain.owner
+    if any(getattr(cell, 'fg_geometry', (None,))[0] == 'extension_control'
+           for cell in island.instances):
+        raise ValueError('The extension already has a control shifter')
+    units = chain.output_count // 4
+    coordinates = chain.process_coordinates
+    grid = AlgorithmGrid.for_process(island, coordinates)
+    control = grid.create(cell_class, island.circuit)
+    grid.place(control, (units, 1))
+    control.fg_peripheral = True
+    control.fg_geometry = ('extension_control', units, coordinates)
+    register_companion_group(island, (chain.level_shifters, control), supplies=supplies)
+    generated.instances = tuple(island.instances)
+    return control
+
+
 def layout_drain_extension(context):
     """Place a program-only strip in native XY, then adapt its block pose."""
     from .fg_peripherals import DecoderPlacementContext
@@ -81,6 +108,12 @@ def layout_drain_extension(context):
     if sw != lw:
         raise ValueError('Extended switch/shifter channel pitches differ')
     boxes = {switch: [0, -sh, sw, 0], shifter: [0, -sh-lh, lw, -sh]}
+    for idx, desc in context.entries.items():
+        if desc[0] == 'extension_control':
+            width, height = size(idx)
+            if height != lh:
+                raise ValueError('Control level shifter must match the drain shifter row height')
+            boxes[idx] = [lw, -sh-lh, lw + width, -sh]
     decoder = {idx: d[4] for idx, d in context.entries.items() if d[0] == 'extension_decoder'}
     callback = next(d[3] for d in context.entries.values() if d[0] == 'extension_decoder')
     scope = dict(context.island, items=items)

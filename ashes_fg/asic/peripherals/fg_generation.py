@@ -112,13 +112,7 @@ def generate(island, *, cells=None, process_coordinates='columns_y_rows_minus_x'
             if isinstance(options.get(key), str) and '.' in options[key]:
                 options[key] = _algorithm(options[key])
             if options.get(key) is None or options.get(key) is True:
-                try:
-                    algorithms = import_module('algorithms.decoders.folded_radix4')
-                except ModuleNotFoundError as error:
-                    if error.name not in ('algorithms', 'algorithms.decoders', 'algorithms.decoders.folded_radix4'):
-                        raise
-                    raise ValueError('Add the shared library directory to sys.path or '
-                                     'pass gate_decoder/drain_decoder builders') from error
+                algorithms = import_module('ashes_fg.algorithms.decoders.folded_radix4')
                 options[key] = getattr(algorithms, 'GateDecoder' if role == 'gate' else 'DrainDecoder')
         plan = prepare(island, cells=cells, process_coordinates=process_coordinates, **options)
         if algorithm is not None:
@@ -236,6 +230,10 @@ def wire_chain(chain, generated, parents, result):
         select_n = native_port(switch, 'SELN_w' if role == 'gate' else 'SelN_s')
         if len(select) != chain.output_count or len(select_n) != chain.output_count:
             raise ValueError(f'{role}: selected switch pin width mismatch')
+        # Selector contacts meet their shifters through native abutment.
+        if chain.level_shifters is not None:
+            for pin in list(select) + list(select_n):
+                pin.port.native_abutment = True
         for index in range(chain.output_count):
             connect(true_out[index], select[index])
             connect(complement_out[index], select_n[index])
@@ -517,7 +515,7 @@ def apply_layout(islands, cells, plans, companions=(), swapped=True):
         for index, a in enumerate(values):
             for b in values[index + 1:]:
                 if min(a[2], b[2]) > max(a[0], b[0]) and min(a[3], b[3]) > max(a[1], b[1]):
-                    raise ValueError('Generated FG cells overlap')
+                    raise ValueError(f'Generated FG cells overlap in island {number}: {a} / {b}')
 
 
 def _apply_native_regular(islands, cells, plans, companions):

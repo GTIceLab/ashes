@@ -41,6 +41,9 @@ def add_arguments(parser, action):
         parser.add_argument('--foundry', '-foundry', required=True, help='Foundry identifier; no process-specific default')
         parser.add_argument('--process-coordinates', required=True, choices=lib.COORDINATES, help='Logical pin interface; geometry remains native')
         parser.add_argument('--pin-map', type=Path, help='JSON object: cell -> {logical_pin: existing_native_pin}')
+        parser.add_argument('--pin-layer', type=layer_spec, action='append', default=[], help='Physical pin polygon LAYER:DATATYPE; repeat for each layer')
+        parser.add_argument('--pin-layer-map', type=Path, help='Physical JSON layer map; default: layer_map/FOUNDRY_NODEnm.json when present')
+        parser.add_argument('--strict-pin-geometry', action='store_true', help='Reject unmatched pin labels before committing outputs; pinless cells remain allowed')
     parser.add_argument('--boundary-layer', type=layer_spec, help='Optional top-cell boundary LAYER:DATATYPE; default: named-cell bounding box')
     parser.add_argument('--label-layer', type=layer_spec, action='append', default=[], help='Explicit pin-label LAYER[:TEXTTYPE]; repeat to select layers (default: all top-cell labels except & markers)')
     parser.add_argument('--vertical-pin-layers', nargs='+', type=int, default=[], help='Pin-label layers routed vertically near corners; choose N/S')
@@ -114,6 +117,17 @@ def _run(args):
     if not 0 < args.corner_distance < float('inf'):
         raise ValueError('--corner-distance must be finite and positive')
     corner_layers = (vertical, horizontal)
+    pin_layers = getattr(args, 'pin_layer', [])
+    if any(dt is None for _, dt in pin_layers):
+        raise ValueError('--pin-layer requires LAYER:DATATYPE')
+    explicit_map = getattr(args, 'pin_layer_map', None)
+    if explicit_map and pin_layers:
+        raise ValueError('Select --pin-layer or --pin-layer-map, not both')
+    if action in ('generate', 'build') and not pin_layers:
+        map_path = explicit_map or (root / 'layer_map' / f'{args.foundry}_{args.process_node}nm.json')
+        if explicit_map or map_path.is_file():
+            pin_layers = lib.physical_pin_layers(map_path)
+            logging.getLogger(lib.__name__).warning('Pin geometry uses layer map %s', map_path)
     extra, generated = {}, []
     for path in files:
         library = lib.gdstk.read_gds(str(path), unit=1e-6)
@@ -127,8 +141,12 @@ def _run(args):
         if action in ('generate', 'build'):
             if not args.foundry.strip():
                 raise ValueError('--foundry must not be empty')
+            issues = lib.validate_pin_geometry(library, path.stem, args.label_layer, pin_layers,
+                                               getattr(args, 'strict_pin_geometry', False))
+            excluded = {(issue['pin'], issue['layer'], tuple(issue['coordinates'])) for issue in issues}
             spec, text = lib.specification(library, path.stem, args.process_node, args.foundry.strip(),
-                args.process_coordinates, boundary, args.label_layer, per_cell_directions, pin_maps.get(path.stem), corner_layers, args.corner_distance)
+                args.process_coordinates, boundary, args.label_layer, per_cell_directions, pin_maps.get(path.stem), corner_layers, args.corner_distance,
+                excluded_pin_labels=excluded)
             generated.append((path.stem, spec, text))
     if action == 'prepare':
         lib.write_outputs(extra)

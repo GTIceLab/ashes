@@ -194,6 +194,8 @@ def _prepare_physical_cells(circuit, settings=None, process_coordinates='xy', re
                         continue
                     companion = catalog[name](work, island=island, dim=dim)
                     companion.physical_companion = True
+                    if getattr(parent, 'routing_export', None) == 'native_abutment':
+                        companion.routing_export = 'native_abutment'
                     next_boundary = []
                     for requested_name, source, exposed_ports in boundary:
                         matches = [p for p in companion.ports if p.native_name == requested_name
@@ -228,6 +230,8 @@ def _prepare_physical_cells(circuit, settings=None, process_coordinates='xy', re
                                     raise ValueError(f'{parent.name} -> {name}: North/South fallback pin width '
                                                      f'does not match {requested_name}')
                                 for target in vertical:
+                                    if getattr(source, 'native_abutment', False):
+                                        target.native_abutment = True
                                     for dst in target.pins:
                                         if nets:
                                             dst.net.removePin(dst)
@@ -253,6 +257,8 @@ def _prepare_physical_cells(circuit, settings=None, process_coordinates='xy', re
                                              f'on native {native_side} with {len(source)} pins; '
                                              'cannot transfer the connected net')
                         target = matches[0]
+                        if getattr(source, 'native_abutment', False):
+                            target.native_abutment = True
                         if fallback:
                             report(f'WARNING: {parent.name} -> {name}: {requested_name} on native '
                                   f'{native_side} is unavailable; using {target.native_name} on native {opposite}.')

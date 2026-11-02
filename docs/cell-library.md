@@ -303,3 +303,21 @@ The process metadata and boundary above are examples, not defaults. Use the
 project README's actual command. Corner distance affects side inference near
 corners; it does not move pins or change cell geometry. Use `build` to repair
 prepared labels from original exports after changing the corner settings.
+
+
+### Signal names ending in uppercase direction letters
+
+Native direction suffixes are lowercase `_n`, `_e`, `_s`, `_w`. Uppercase
+signal endings such as `SEL_S` are preserved as part of the signal name;
+preparation infers the side and appends a lowercase suffix, e.g. `SEL_S_w`.
+Use `--direction-map` when geometry needs an explicit side override.
+
+
+## Cell-library geometry validation
+
+Cell build/generate now omit unmatched physical pin labels from definitions and log each omission. Add --strict-pin-geometry to reject unusable labels before committing the batch. Pinless cells remain allowed. See /home/praveen/Tools/ashes/docs/cell-pin-geometry.md for explicit layer selection, defaults and inherited geometry limitations.
+
+
+### Pin geometry modes
+
+Default warning mode omits unmatched labels from cells.py and cells.json and logs each omission in cell_generation.log. With --strict-pin-geometry, the same issue stops generation before committing any batch outputs. Genuinely pinless cells remain supported. This supersedes any earlier statement that unmatched pins are retained. No cell-specific exceptions were added.

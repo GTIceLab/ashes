@@ -152,3 +152,22 @@ routing layers, and physical rules are not rotated by the coordinate option.
   synthetic regression tests.
 
 See [PD settings](pd-settings.md) for all pd_settings.json sections and backend-specific options.
+
+
+## Golden XY array construction
+
+Use `grid = AlgorithmGrid.for_process(island, process_coordinates)` and
+`grid.create(CellClass, circuit, dim=(vertical_count, horizontal_count))` to
+construct arrays from golden XY counts. Use `grid.place(cell, (x, y))` for
+golden XY grid positions. The grid converts both at the staging boundary;
+existing direct constructors continue to accept process staging dimensions.
+Generated libraries whose ports are already mapped must declare their
+`cell_coordinates` convention (in the module or its registration profile).
+
+
+For matrix cells, `grid.create(..., dim=(rows, columns))` can use a class profile
+`matrix_axes = ('columns', 'rows')` when electrical rows extend horizontally
+and columns vertically in the native master. The default is
+`('rows', 'columns')`. This library-specific mapping is separate from the process
+coordinate mapping. `grid.shape(cell)` returns physical golden XY extents for
+placing adjacent blocks; `cell.algorithm_dim` records the requested dimensions.

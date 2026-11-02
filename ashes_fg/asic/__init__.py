@@ -23,6 +23,13 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
         The ASHES flow selects its detailed router independently.
         """
 
+        # Reject configuration errors before model mutation or file creation.
+        supported_processes = ('tsmc_350nm', 'sky_130nm', 'tsmc_16nm', 'gf_180nm', 'gf_22nm')
+        if not isinstance(process, str) or process.lower() not in supported_processes:
+                raise ValueError(
+                        f"Unsupported or missing process {process!r}. Set 'process' in "
+                        f"synthesis_settings.json to one of: {', '.join(supported_processes)}")
+
         external_pd = is_external_pd_tool(pd_tool)
 
         # Validate the placement convention before creating outputs.
@@ -57,9 +64,12 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
         with open(verilog_path, "w") as f:
                 f.write(circuit.print(process))
 
+        routing_export_instances = {}
         # Generate conventional Verilog for the selected external PD tool.
         if external_pd:
                 flat_verilog, pin_info, ndr_info = circuit.print_conventional(process)
+                from ashes_fg.asic.pd.routing_export import native_abutment_instances
+                routing_export_instances = native_abutment_instances(circuit)
                 flat_verilog_path = os.path.join(pd_inputs, project_name + '.v')
 
                 with open(flat_verilog_path, "w") as f:
@@ -166,7 +176,7 @@ def compile(circuit,process="Process",project_path = ".",project_name = "project
                 #drainmux_space_isle_idx = 0
                 process_params = (tech_process, dbu, track_spacing, x_offset, y_offset, cell_pitch, drainmux_space_isle_idx, drainmux_space, gatemux_space_isle_idx, gatemux_space,lib_path,prBoundary_layer,pd_tool)
                 pl_start = time.time()
-                gds_synthesis(process_params, design_area, project_name,project_path,isle_loc=location_islands, process_coordinates=process_coordinates, physical_cells_plan=physical_cells_plan, fg_layout_plan=fg_layout_plan)
+                gds_synthesis(process_params, design_area, project_name,project_path,isle_loc=location_islands, process_coordinates=process_coordinates, physical_cells_plan=physical_cells_plan, fg_layout_plan=fg_layout_plan, supply_access_policy=(pd_args or {}).get('supply_access') if external_pd else None, routing_export_instances=routing_export_instances, routing_access_policy=getattr(circuit, 'routing_access_contract', None))
                 pl_end = time.time()
 
                 if route == True and not external_pd:

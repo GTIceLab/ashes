@@ -52,8 +52,8 @@ def _cadence_init(config_data, filepath, top_level="proj_name"):
         f'read_physical -lefs {{ {lef_files_str} }}',
         f'read_netlist ../inputs/{top_level}.v',
         "",
-        #"set_multi_cpu_usage -local_cpu 16 -cpu_per_remote_host 16 -remote_host 8 -keep_license true",
-        #"set_distributed_hosts -local",
+        "set_multi_cpu_usage -local_cpu 64 -cpu_per_remote_host 64 -remote_host 8 -keep_license true",
+        "set_distributed_hosts -local",
         f"set_db init_ground_nets {gnd_nets}",
         f"set_db init_power_nets {{{pwr_nets}}}",
         "init_design",
@@ -85,10 +85,18 @@ def _cadence_pins(config_data, design_area, pin_signal_groups, filepath):
             
     edge_map = {"W": 0, "N": 1, "E": 2, "S": 3}
     
+    margins = full_pin_props.get('core_margins', {})
+    left = margins.get('left', design_area[0]/1000)
+    right = margins.get('right', design_area[0]/1000)
+    bottom = margins.get('bottom', design_area[1]/1000)
+    top = margins.get('top', design_area[1]/1000)
+    if any(not isinstance(v, (int, float)) or v < 0 for v in (left, right, bottom, top)):
+        raise ValueError('Core margins must be nonnegative micron distances')
+
     # 1. Start with the Floorplan section
     tcl = [
         "######## Floorplan ########",
-        f'create_floorplan -site {site} -core_size {design_area[2]/1000} {design_area[3]/1000} {design_area[0]/1000} {design_area[1]/1000} {design_area[0]/1000} {design_area[1]/1000} \n'
+        f'create_floorplan -site {site} -core_size {design_area[2]/1000} {design_area[3]/1000} {left} {bottom} {right} {top} \n'
     ]
 
     # 2. Buffer the Pin Assignment logic so we only add headers if pins exist
@@ -235,7 +243,9 @@ def _cadence_route(config_data, ndr_info, filepath):
         rules_map = {}
         for net_name, rule in ndr_info.items():
             # CHANGE: If rule is 'default', reassign to 'ANALOG'
-            effective_rule = "ANALOG" if rule.lower() == "default" else rule
+            effective_rule = r_cfg.get("default_ndr", "ANALOG") if rule.lower() == "default" else rule
+            if effective_rule is None:
+                continue
             rules_map.setdefault(effective_rule, []).append(net_name)
 
         for rule, nets in rules_map.items():
@@ -274,14 +284,14 @@ def _cadence_route(config_data, ndr_info, filepath):
         ("route_antenna_cell_name", r_cfg.get('ant_dio_cell')),
         ("design_top_routing_layer", r_cfg.get('top_layer')),
         ("design_bottom_routing_layer", r_cfg.get('bot_layer')),
-        ("route_antenna_diode_insertion", "1"),
+        ("route_antenna_diode_insertion", r_cfg.get("antenna_diode_insertion", "1")),
         ("route_with_timing_driven", "true"),
         ("route_with_si_driven", "true"),
         ("route_with_litho_driven", "1"),
         ("route_detail_post_route_litho_repair", "1"),
         ("route_detail_auto_stop", "0"),
         ("route_selected_net_only", "0"),
-        ("route_detail_end_iteration", "10"),
+        ("route_detail_end_iteration", r_cfg.get("iterations", "10")),
         ("route_with_eco", "0")
     ]
 
@@ -396,7 +406,11 @@ def _openroad_pins(config, area, groups, filepath):
     if cfg.get('place_type', 'side') != 'side':
         raise ValueError('OpenROAD pin placement supports place_type="side".')
     x, y, width, height = (value / 1000 for value in area[:4])
-    die_w, die_h = width + 2*x, height + 2*y
+    margins = cfg.get('core_margins', {})
+    left, right = (margins.get(side, x) for side in ('left', 'right'))
+    bottom, top = (margins.get(side, y) for side in ('bottom', 'top'))
+    die_w, die_h = width + left + right, height + bottom + top
+    x, y = left, bottom
     # Match the existing Cadence core_size interpretation; preserve imported instances.
     command = (f'initialize_floorplan -die_area {{0 0 {die_w} {die_h}}} '
                f'-core_area {{{x} {y} {x+width} {y+height}}}')
@@ -712,6 +726,9 @@ def generate_pins_tcl(config_data, design_area, pin_signal_groups, filepath, pd_
 
 
 def generate_power_tcl(config_data, filepath, pd_tool="cadence"):
+    if config_data.get('power_enabled', True) is False:
+        Path(filepath).write_text('# Power routing disabled by PD configuration.\n')
+        return
     return _generate_tcl(pd_tool, "power", config_data, filepath)
 
 
